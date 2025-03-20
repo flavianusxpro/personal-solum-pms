@@ -1,6 +1,7 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { PaymentMethodFormInput } from '@/validators/payment-method.schema';
 import CheckCircleIcon from '@core/components/icons/check-circle';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
@@ -22,6 +23,7 @@ const STEP = {
 
 const ModalEstimationCost = () => {
   const { closeModal } = useModal();
+  const router = useRouter();
 
   const [step, setStep] = React.useState(STEP.ESTIMATE_COST);
 
@@ -198,7 +200,10 @@ const ModalEstimationCost = () => {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Button className="bg-green-600" onClick={closeModal}>
+            <Button
+              className="bg-green-600"
+              onClick={() => router.push('/form/consent-form')}
+            >
               OK
             </Button>
           </div>
