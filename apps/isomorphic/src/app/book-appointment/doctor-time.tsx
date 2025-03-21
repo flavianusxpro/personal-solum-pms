@@ -4,9 +4,10 @@ import ModalBookConfirmation from './book-confirmation';
 import { useAtom } from 'jotai';
 import bookAppointmentAtom from '@/store/book-appointment';
 import Image from 'next/image';
-import { Text } from 'rizzui';
+import { Select, Text } from 'rizzui';
 import { useModal } from '../shared/modal-views/use-modal';
 import ModalDoctorDetails from './modal/modal-doctor-detail';
+import CSelect from '../shared/ui/select';
 
 const doctors = [
   {
@@ -82,6 +83,17 @@ const doctors = [
   },
 ];
 
+const timeZoneOptions = [
+  {
+    value: 'practice-time-sydney',
+    label: 'Showing Practice Time - Sydney',
+  },
+  {
+    value: 'local-time-jakarta',
+    label: 'Showing Local Time - Jakarta',
+  },
+];
+
 const DoctorTime = ({
   onNextStep,
 }: {
@@ -92,6 +104,7 @@ const DoctorTime = ({
     useAtom(bookAppointmentAtom);
   const [currentOpen, setCurrentOpen] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [timeZone, setTimeZone] = useState(timeZoneOptions[0].value);
 
   const nextStep = (hideStep: boolean) => {
     setModalOpen(false);
@@ -111,10 +124,14 @@ const DoctorTime = ({
   return (
     <div className="min-w-full">
       {/* Timezone Notification */}
-      <div className="mt-6 text-center">
-        <button className="mt-2 rounded-lg bg-green-700 px-4 py-2 text-white">
-          Showing Local time - Melbourne ▼
-        </button>
+      <div className="mt-6 flex justify-center text-center">
+        <CSelect
+          options={timeZoneOptions}
+          value={timeZone}
+          className="w-1/5 rounded-md bg-green-600"
+          selectClassName="text-white "
+          onChange={(e: string) => setTimeZone(e)}
+        />
       </div>
 
       {/* Doctor List */}
