@@ -11,8 +11,10 @@ import {
 } from '@/validators/consent-form.schema';
 import SignaturePad from '../signature-pad';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 
 const MedicinalCannabisConsentForm: React.FC = () => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -23,7 +25,7 @@ const MedicinalCannabisConsentForm: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<ConsentFormInput> = (data) => {
-    console.log('🚀 ~ data:', data);
+    router.push('/form/consent-form/confirmation');
   };
 
   return (

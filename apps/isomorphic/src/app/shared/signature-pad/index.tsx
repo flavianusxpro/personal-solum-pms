@@ -32,8 +32,8 @@ const SignaturePad: React.FC<IProps> = ({
         ref={signatureCanvasRef}
         penColor="black"
         canvasProps={{
-          width: 500,
-          height: 300,
+          width: 400,
+          height: 200,
           className: 'border',
         }}
       />

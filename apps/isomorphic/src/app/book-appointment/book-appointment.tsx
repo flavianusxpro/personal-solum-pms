@@ -1,3 +1,5 @@
+import bookAppointmentAtom from '@/store/book-appointment';
+import { useAtom } from 'jotai';
 import React, { useState } from 'react';
 import { IoArrowBack, IoClose } from 'react-icons/io5';
 import { ActionIcon, Button, Modal, ModalSize, Title } from 'rizzui';
@@ -24,7 +26,35 @@ const ModalBookAppointment = ({
   onClose: () => void;
   onNextStep: () => void;
 }) => {
+  const [bookAppointmentValue, setBookAppointment] =
+    useAtom(bookAppointmentAtom);
+
   const [step, setStep] = useState(1);
+
+  const onSelectOption = (answer: string) => {
+    if (step == 1) {
+      setBookAppointment((p) => ({
+        ...p,
+        step1: answer,
+      }));
+    }
+
+    if (step == 2) {
+      setBookAppointment((p) => ({
+        ...p,
+        step2: answer,
+      }));
+    }
+
+    if (step == 3) {
+      setBookAppointment((p) => ({
+        ...p,
+        step3: answer,
+      }));
+      onNextStep();
+    }
+    setStep((p) => p + 1);
+  };
 
   return (
     <Modal
@@ -58,14 +88,14 @@ const ModalBookAppointment = ({
                 <Button
                   className="border-green-700 bg-white text-green-700 hover:bg-green-700 hover:text-white"
                   variant="outline"
-                  onClick={() => setStep(2)}
+                  onClick={() => onSelectOption('myself')}
                 >
                   Myself
                 </Button>
                 <Button
                   className="border-green-700 bg-white text-green-700 hover:bg-green-700 hover:text-white"
                   variant="outline"
-                  onClick={() => setStep(2)}
+                  onClick={() => onSelectOption('myself')}
                 >
                   Somebody else
                 </Button>
@@ -80,14 +110,14 @@ const ModalBookAppointment = ({
                 <Button
                   className="border-green-700 bg-white text-green-700 hover:bg-green-700 hover:text-white"
                   variant="outline"
-                  onClick={() => setStep(3)}
+                  onClick={() => onSelectOption('new patient')}
                 >
                   New Patient
                 </Button>
                 <Button
                   className="border-green-700 bg-white text-green-700 hover:bg-green-700 hover:text-white"
                   variant="outline"
-                  onClick={() => setStep(3)}
+                  onClick={() => onSelectOption('returning patient')}
                 >
                   Returning Patient
                 </Button>
@@ -103,7 +133,7 @@ const ModalBookAppointment = ({
                   <Button
                     className="border-green-700 bg-white text-green-700 hover:bg-green-700 hover:text-white"
                     variant="outline"
-                    onClick={onNextStep}
+                    onClick={() => onSelectOption(value.toLowerCase())}
                     key={key}
                   >
                     {value}

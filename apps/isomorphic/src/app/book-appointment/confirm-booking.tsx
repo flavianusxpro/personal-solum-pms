@@ -19,16 +19,38 @@ const ConfirmBooking = () => {
   const {
     register,
     control,
+    trigger,
     formState: { errors },
   } = useForm();
 
-  const submitButton = () => {
+  const handleNextToFillData = async () => {
+    await trigger(['firstName', 'lastName', 'emailAddress'], {
+      shouldFocus: true,
+    });
+
+    setCurrentStep(STEP.FILL_DATA);
+  };
+
+  const submitButton = async () => {
+    await trigger(
+      [
+        'patientTitle',
+        'patientGender',
+        'patientFirstName',
+        'patientLastName',
+        'patientEmailAddress',
+        'patientPhoneNumber',
+        'patientDateOfBirth',
+      ],
+      {}
+    );
     if (currentStep == STEP.FILL_DATA) {
       return openModal({
         view: <ModalEstimationCost />,
       });
     }
   };
+
   return (
     <div className="flex min-h-full min-w-full flex-col items-center">
       <div className="mt-8 w-full max-w-6xl rounded-lg bg-white p-6 shadow-lg">
@@ -54,24 +76,24 @@ const ConfirmBooking = () => {
                 <Input
                   label="First Name"
                   placeholder="First Name"
-                  {...register('firstName')}
+                  {...register('firstName', { required: true })}
                   error={errors.firstName?.message as string}
                 />
                 <Input
                   label="Last Name"
                   placeholder="Last Name"
-                  {...register('lastName')}
+                  {...register('lastName', { required: true })}
                   error={errors.lastName?.message as string}
                 />
                 <Input
                   label="Email Address"
                   placeholder="Email Address"
-                  {...register('emailAddress')}
+                  {...register('emailAddress', { required: true })}
                   error={errors.emailAddress?.message as string}
                 />
                 <Button
                   className="mt-4 w-full bg-green-600 text-white"
-                  onClick={() => setCurrentStep(STEP.FILL_DATA)}
+                  onClick={handleNextToFillData}
                 >
                   Next
                 </Button>
@@ -162,7 +184,7 @@ const ConfirmBooking = () => {
                     label="Last Name"
                     placeholder="Last Name"
                     className="group relative z-0 w-full"
-                    {...register('lastName')}
+                    {...register('patientLastName')}
                     error={errors.lastName?.message as string}
                   />
                 </div>

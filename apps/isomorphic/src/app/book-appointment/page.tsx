@@ -6,8 +6,13 @@ import { Button, Flex, Select, Stepper, Text, Title } from 'rizzui';
 import ModalBookAppointment from './book-appointment';
 import DoctorTime from './doctor-time';
 import ConfirmBooking from './confirm-booking';
+import ModalSelectDate from './modal/modal-select-date';
+import { useModal } from '../shared/modal-views/use-modal';
+import { useAtom } from 'jotai';
+import bookAppointmentAtom from '@/store/book-appointment';
+import ModalCentreDetails from './modal/modal-centre-details';
 
-const clinics = [
+export const clinics = [
   {
     id: 1,
     name: 'Solum Clinic',
@@ -43,7 +48,17 @@ const clinics = [
 ];
 
 const BookAppointment = () => {
-  const [selectedClinic, setSelectedClinic] = useState<any>(null);
+  const { openModal } = useModal();
+  const [bookAppointmentValue, setBookAppointment] =
+    useAtom(bookAppointmentAtom);
+  console.log(
+    '🚀 ~ BookAppointment ~ bookAppointmentValue:',
+    bookAppointmentValue
+  );
+
+  const [selectedClinic, setSelectedClinic] = useState<
+    (typeof clinics)[0] | null
+  >(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [hideStep, setHideStep] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -59,6 +74,18 @@ const BookAppointment = () => {
 
   // if (!isLoaded) return <p>Loading...</p>;
 
+  const openSelectDateModal = () => {
+    return openModal({
+      view: <ModalSelectDate onSelectDate={() => setModalOpen(true)} />,
+    });
+  };
+
+  const openCentreDetailsModal = () => {
+    return openModal({
+      view: <ModalCentreDetails dataCentre={selectedClinic} />,
+    });
+  };
+
   return (
     <div className="flex w-full flex-col items-center bg-white">
       <header className="w-full bg-gradient-to-r from-orange-400 to-orange-600 p-14 text-center text-white">
@@ -72,7 +99,11 @@ const BookAppointment = () => {
           <Stepper.Step
             size="lg"
             title={selectedClinic ? selectedClinic.name : 'Select Location'}
-            description="Click to change location"
+            description={
+              selectedClinic
+                ? selectedClinic.address
+                : 'Click to change location'
+            }
             className="basis-min-content cursor-pointer"
             status={currentStep >= 1 ? 'complete' : 'in-progress'}
             onClick={() => setCurrentStep(1)}
@@ -126,6 +157,10 @@ const BookAppointment = () => {
                   <div
                     key={clinic.id}
                     onClick={() => {
+                      setBookAppointment((p) => ({
+                        ...p,
+                        clinic,
+                      }));
                       setSelectedClinic(clinics[idx]);
                       setShowClinicOptions(false);
                     }}
@@ -149,6 +184,7 @@ const BookAppointment = () => {
                 </div>
                 <Flex justify="between">
                   <Button
+                    onClick={openCentreDetailsModal}
                     className="border-green-700 text-green-700"
                     variant="outline"
                   >
@@ -156,6 +192,7 @@ const BookAppointment = () => {
                   </Button>
                   <hr />
                   <Button
+                    onClick={openSelectDateModal}
                     className="border-green-700 text-green-700"
                     variant="outline"
                   >
