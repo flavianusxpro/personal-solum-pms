@@ -55,13 +55,13 @@ export const authOptions: NextAuthOptions = {
         // You need to provide your own logic here that takes the credentials
         // submitted and returns either a object representing a user or value
         // that is false/null if the credentials are invalid
-        console.log(`Credential: ${credentials}`)
+        console.log(`Credential: ${credentials}`);
         const user = {
           email: 'rizalhidayat180499@gmail.com',
           password: '12345678',
         };
 
-        const response:any = await post('admin/auth/login', user)
+        const response: any = await post('admin/auth/login', user);
 
         if (response.success) {
           return {

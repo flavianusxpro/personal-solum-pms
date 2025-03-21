@@ -1,82 +1,225 @@
-'use client'
+'use client';
 
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { BiChevronRight } from 'react-icons/bi';
-import { Button, Stepper, Text, Title } from 'rizzui';
-import ModalBookAppointment from './book-appointment';
+import { Button, Flex, Select, Stepper, Text, Title } from 'rizzui';
 import DoctorTime from './doctor-time';
 import ConfirmBooking from './confirm-booking';
+import ModalSelectDate from './modal/modal-select-date';
+import { useModal } from '../shared/modal-views/use-modal';
+import { useAtom } from 'jotai';
+import bookAppointmentAtom from '@/store/book-appointment';
+import ModalCentreDetails from './modal/modal-centre-details';
+import StandartConsult from './standart-consult';
 
-const clinics = [
-  { id: 1, name: "Solum Clinic", lat: -37.8136, lng: 144.9631, address: 'Po Box 676', suburb: 'Gladesville' },
+export const clinics = [
+  {
+    id: 1,
+    name: 'Solum Clinic',
+    lat: -37.8136,
+    lng: 144.9631,
+    address: 'Po Box 676',
+    suburb: 'Gladesville',
+  },
+  {
+    id: 2,
+    name: 'Dummy Clinic 1',
+    lat: -37.8141,
+    lng: 144.9654,
+    address: '123 Main St',
+    suburb: 'Gladesville',
+  },
+  {
+    id: 3,
+    name: 'Dummy Clinic 2',
+    lat: -37.8156,
+    lng: 144.9677,
+    address: '456 Other St',
+    suburb: 'Gladesville',
+  },
+  {
+    id: 4,
+    name: 'Dummy Clinic 3',
+    lat: -37.8161,
+    lng: 144.9694,
+    address: '789 Another St',
+    suburb: 'Gladesville',
+  },
 ];
 
 const BookAppointment = () => {
-  const [selectedClinic, setSelectedClinic] = useState<any>(null);
+  const { openModal } = useModal();
+  const [bookAppointmentValue, setBookAppointment] =
+    useAtom(bookAppointmentAtom);
+  console.log(
+    '🚀 ~ BookAppointment ~ bookAppointmentValue:',
+    bookAppointmentValue
+  );
+
+  const [selectedClinic, setSelectedClinic] = useState<
+    (typeof clinics)[0] | null
+  >(null);
   const [currentStep, setCurrentStep] = useState(1);
-  const [hideStep, setHideStep] = useState(false)
-  const [modalOpen, setModalOpen] = useState(false)
+  const [hideStep, setHideStep] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [showClinicOptions, setShowClinicOptions] = useState(false);
 
   const nextStep = (hideStep = false) => {
-    console.log(hideStep)
-    setModalOpen(false)
-    setCurrentStep(prev => prev + 1)
-    setHideStep(hideStep)
-  }
+    setModalOpen(false);
+    setCurrentStep((prev) => prev + 1);
+    setHideStep(hideStep);
+  };
   // const { isLoaded } = useLoadScript({ googleMapsApiKey: "YOUR_GOOGLE_MAPS_API_KEY" });
 
   // if (!isLoaded) return <p>Loading...</p>;
 
+  const openSelectDateModal = () => {
+    return openModal({
+      view: <ModalSelectDate onSelectDate={() => setModalOpen(true)} />,
+    });
+  };
+
+  const openCentreDetailsModal = () => {
+    return openModal({
+      view: <ModalCentreDetails dataCentre={selectedClinic} />,
+    });
+  };
+
   return (
-    <div className="w-full flex flex-col items-center bg-white">
-      <header className="w-full bg-gradient-to-r from-orange-400 to-orange-600 text-white p-14 text-center">
+    <div className="flex w-full flex-col items-center bg-white">
+      <header className="w-full bg-gradient-to-r from-orange-400 to-orange-600 p-14 text-center text-white">
         <h1 className="text-3xl font-bold">Solum</h1>
-        <p className="text-lg font-semibold">Find your nearest Solum Clinic Centre</p>
+        <p className="text-lg font-semibold">
+          Find your nearest Solum Clinic Centre
+        </p>
       </header>
       {!hideStep ? (
-        <Stepper currentIndex={currentStep} className="mt-4 p-4 flex-wrap">
-          <Stepper.Step size="lg" title={selectedClinic ? selectedClinic.name : 'Select Location'} description="Click to change location" className="cursor-pointer basis-min-content" status={currentStep >= 1 ? 'complete' : 'in-progress'} onClick={() => setCurrentStep(1)} />
-          <Stepper.Step size="lg" title={selectedClinic ? 'March 20th 5.15 am' : 'Select Date'} description="Click to change date" className="cursor-pointer basis-min-content" status={currentStep >= 2 ? 'complete' : 'waiting'} onClick={() => setCurrentStep(1)} />
-          <Stepper.Step size="lg" title={selectedClinic ? 'Standard Consult' : 'Select Location'} description="Click to change type" className="cursor-pointer basis-min-content" status={currentStep >= 2 ? 'complete' : 'waiting'} onClick={() => setCurrentStep(1)} />
-          <Stepper.Step size="lg" title={selectedClinic ? 'Doctor & Time' : 'Doctor & Time'} className="cursor-pointer basis-min-content" status={currentStep >= 2 ? 'complete' : 'waiting'} />
+        <Stepper
+          currentIndex={currentStep}
+          className="mt-4 w-full max-w-5xl flex-wrap p-4"
+        >
+          <Stepper.Step
+            size="lg"
+            title={selectedClinic ? selectedClinic.name : 'Select Location'}
+            description={
+              selectedClinic
+                ? selectedClinic.address
+                : 'Click to change location'
+            }
+            className="basis-min-content cursor-pointer"
+            status={currentStep >= 1 ? 'complete' : 'in-progress'}
+            onClick={() => setCurrentStep(1)}
+          />
+          <Stepper.Step
+            size="lg"
+            title={selectedClinic ? 'March 20th 5.15 am' : 'Select Date'}
+            description="Click to change date"
+            className="basis-min-content cursor-pointer"
+            status={currentStep >= 2 ? 'complete' : 'waiting'}
+            onClick={() => setCurrentStep(1)}
+          />
+          <Stepper.Step
+            size="lg"
+            title={selectedClinic ? 'Standard Consult' : 'Select Location'}
+            description="Click to change type"
+            className="basis-min-content cursor-pointer"
+            status={currentStep >= 3 ? 'complete' : 'waiting'}
+            onClick={() => setCurrentStep(1)}
+          />
+          <Stepper.Step
+            size="lg"
+            title={selectedClinic ? 'Doctor & Time' : 'Doctor & Time'}
+            className="basis-min-content cursor-pointer"
+            status={currentStep >= 4 ? 'complete' : 'waiting'}
+          />
         </Stepper>
       ) : null}
-      <div className="w-full bg-white">
+      <div className="flex w-full justify-center bg-white">
         {currentStep == 1 ? (
-          <aside className="sm:w-1/3 p-6">
-            <h2 className="text-xl font-semibold text-green-700">Solum Clinic Centres</h2>
+          <aside className="relative p-6 sm:w-1/3">
+            <h2 className="text-xl font-semibold text-green-700">
+              Select Clinic Center
+            </h2>
+            <div
+              onClick={() => setShowClinicOptions((p) => !p)}
+              className="mt-4 flex cursor-pointer items-center justify-between overflow-hidden rounded-lg bg-slate-100 shadow-md transition-all hover:bg-green-200"
+            >
+              <div className="flex items-center p-3">
+                <div className="mr-2 text-green-700">
+                  <span className="font-medium">
+                    {selectedClinic?.name ?? 'Select Clinic'}
+                  </span>
+                </div>
+              </div>
+              <BiChevronRight size={30} />
+            </div>
+            {showClinicOptions && (
+              <div className="absolute mt-2 w-5/6 rounded-lg border bg-white">
+                {clinics.map((clinic, idx) => (
+                  <div
+                    key={clinic.id}
+                    onClick={() => {
+                      setBookAppointment((p) => ({
+                        ...p,
+                        clinic,
+                      }));
+                      setSelectedClinic(clinics[idx]);
+                      setShowClinicOptions(false);
+                    }}
+                    className="mt-2 flex cursor-pointer items-center justify-between transition-all hover:bg-green-200"
+                  >
+                    <div className="flex items-center p-3">
+                      <div className="mr-2 text-green-700">
+                        <span className="font-medium">{clinic.name}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
             {selectedClinic ? (
-              <div className="w-full mt-4">
-                <Title as="h3">{selectedClinic.name}</Title>
-                <Text fontWeight="medium">{selectedClinic?.address}</Text>
-                <Text fontWeight="medium">{selectedClinic?.suburb}</Text>
-                <Button className=" mb-3 text-green-700 border-green-700" variant="outline">Centre Details</Button>
-                <hr />
-                <Button className=" mt-3 text-green-700 border-green-700" variant="outline">Select a Date</Button>
-                <Button className="mt-3 bg-green-700 border-green-700 block font-bold" variant="solid" onClick={() => setModalOpen(true)}>Next Available: March 20th 5.15 am</Button>
+              <div className="mt-4 grid grid-cols-1 gap-4">
+                <div className="">
+                  <Title as="h3">{selectedClinic.name}</Title>
+                  <Text fontWeight="medium">{selectedClinic?.address}</Text>
+                  <Text fontWeight="medium">{selectedClinic?.suburb}</Text>
+                </div>
+                <Flex justify="between">
+                  <Button
+                    onClick={openCentreDetailsModal}
+                    className="border-green-700 text-green-700"
+                    variant="outline"
+                  >
+                    Centre Details
+                  </Button>
+                  <hr />
+                  <Button
+                    onClick={openSelectDateModal}
+                    className="border-green-700 text-green-700"
+                    variant="outline"
+                  >
+                    Select a Date
+                  </Button>
+                </Flex>
+
+                <Button
+                  className="mt-3 block border-green-700 bg-green-700 font-bold"
+                  variant="solid"
+                  onClick={() => nextStep()}
+                >
+                  Next Available: March 20th 5.15 am
+                </Button>
               </div>
             ) : null}
-            {clinics.map((clinic) => (
-              <div
-                key={clinic.id}
-                onClick={() => setSelectedClinic(clinics[0])}
-                className="shadow-md rounded-lg overflow-hidden mt-4 cursor-pointer bg-slate-100 hover:bg-green-200 transition-all flex justify-between items-center"
-              >
-                <div className="p-3 flex items-center">
-                  <div className="text-green-700 mr-2">
-                    <span className="font-medium">{clinic.name}</span>
-                  </div>
-                </div>
-                <BiChevronRight size={30} />
-              </div>
-            ))}
           </aside>
         ) : currentStep == 2 ? (
-          <DoctorTime onNextStep={nextStep} />
+          <StandartConsult onNextStep={nextStep} />
         ) : currentStep == 3 ? (
+          <DoctorTime onNextStep={nextStep} />
+        ) : currentStep == 4 ? (
           <ConfirmBooking />
         ) : null}
-          {/* <GoogleMap
+        {/* <GoogleMap
             zoom={15}
             center={{ lat: selectedClinic.lat, lng: selectedClinic.lng }}
             mapContainerClassName="w-full h-full"
@@ -84,9 +227,8 @@ const BookAppointment = () => {
             <Marker position={{ lat: selectedClinic.lat, lng: selectedClinic.lng }} />
           </GoogleMap> */}
       </div>
-      <ModalBookAppointment isOpen={modalOpen} onClose={() => setModalOpen(false)} onNextStep={nextStep} />
     </div>
   );
-}
+};
 
 export default BookAppointment;
