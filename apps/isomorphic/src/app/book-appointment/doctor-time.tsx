@@ -1,14 +1,13 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
-import { Accordion } from 'rizzui';
 import ModalBookConfirmation from './book-confirmation';
 import { useAtom } from 'jotai';
 import bookAppointmentAtom from '@/store/book-appointment';
+import Image from 'next/image';
 
-const doctors: any = [
+const doctors = [
   {
     id: 1,
-    open: true,
     name: 'Dr Hermanus Bosman',
     clinic: 'Solum Clinic',
     image:
@@ -40,16 +39,38 @@ const doctors: any = [
   },
   {
     id: 2,
-    open: false,
     name: 'Dr Geoffrey Cutter',
     clinic: 'Solum Clinic',
     image:
       'https://solumclinic.zedmed-appointments.systems/images/doctor_default.png',
     nextAvailable: 'Please contact centre',
+    times: [
+      '5:15am',
+      '5:30am',
+      '6:00am',
+      '6:15am',
+      '6:30am',
+      '6:45am',
+      '7:00am',
+      '7:15am',
+      '7:30am',
+      '7:45am',
+      '8:00am',
+      '8:15am',
+      '8:30am',
+      '8:45am',
+      '9:00am',
+      '9:15am',
+      '9:30am',
+      '9:45am',
+      '10:00am',
+      '10:15am',
+      '10:30am',
+      '10:45am',
+    ],
   },
   {
     id: 3,
-    open: false,
     name: 'Dr Sathya Gandhidasan',
     clinic: 'Solum Clinic',
     image:
@@ -65,7 +86,7 @@ const DoctorTime = ({
 }) => {
   const [bookAppointmentValue, setBookAppointment] =
     useAtom(bookAppointmentAtom);
-  const [currentOpen, setCurrentOpen] = useState(null);
+  const [currentOpen, setCurrentOpen] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   const nextStep = (hideStep: boolean) => {
@@ -77,7 +98,6 @@ const DoctorTime = ({
     <div className="min-w-full">
       {/* Timezone Notification */}
       <div className="mt-6 text-center">
-        {/* <p className="font-semibold text-lg">Your current time zone is different to the practice.</p> */}
         <button className="mt-2 rounded-lg bg-green-700 px-4 py-2 text-white">
           Showing Local time - Melbourne ▼
         </button>
@@ -85,83 +105,88 @@ const DoctorTime = ({
 
       {/* Doctor List */}
       <div className="mx-auto mt-8 max-w-4xl">
-        {doctors.map((doctor: any, index: number) => (
-          <Accordion key={index} defaultOpen={true} className="mb-5">
-            <Accordion.Header className="bg-gray-50 p-6">
-              {({ open }) => (
-                <>
-                  <div
-                    className="flex items-center justify-between space-x-4"
-                    onClick={() =>
-                      setCurrentOpen((prev) =>
-                        prev == doctor.id ? null : doctor.id
-                      )
-                    }
-                  >
-                    <div className="flex items-center space-x-4">
-                      {doctor.image ? (
-                        <img
-                          src={doctor.image}
-                          alt={doctor.name}
-                          className="h-12 w-12 rounded-full"
-                        />
-                      ) : (
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-300">
-                          🏥
-                        </div>
-                      )}
-                      <div>
-                        <h3 className="text-lg font-bold">{doctor.name}</h3>
-                        <p className="text-left text-sm text-gray-500">
-                          {doctor.clinic}
-                        </p>
-                      </div>
-                    </div>
-                    <div>
-                      {currentOpen == doctor.id ? (
-                        <BiChevronUp size={30} />
-                      ) : (
-                        <BiChevronDown size={30} />
-                      )}
-                    </div>
+        {doctors.map((doctor, index: number) => (
+          <div key={index} className="mb-5 bg-gray-50">
+            {/* Doctor Header */}
+            <div
+              className="flex cursor-pointer items-center justify-between space-x-4 bg-gray-50 p-6"
+              onClick={() =>
+                setCurrentOpen((prev) =>
+                  prev === doctor.id ? null : doctor.id
+                )
+              }
+            >
+              <div className="flex items-center space-x-4">
+                {doctor.image ? (
+                  <Image
+                    src={doctor.image}
+                    alt={doctor.name}
+                    className="h-12 w-12 rounded-full"
+                    height={48}
+                    width={48}
+                  />
+                ) : (
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-300">
+                    🏥
                   </div>
-                  {!doctor?.times?.length ? (
-                    <p className="mt-2 p-4 text-left text-sm text-gray-500">
-                      <span className="rounded-md bg-green-100 px-2 py-1 text-green-700">
-                        Next available: {doctor.nextAvailable}
-                      </span>
-                    </p>
-                  ) : null}
-                </>
-              )}
-            </Accordion.Header>
-            <Accordion.Body title={doctor.name} className="border-b">
-              <div className="rounded-lg bg-gray-50 p-4">
-                {doctor?.times?.length > 0 ? (
-                  <div className="mt-4 grid grid-cols-4 gap-2">
-                    {doctor?.times?.map((time: string, idx: number) => (
-                      <button
-                        key={idx}
-                        className="rounded-lg border bg-white px-3 py-2 text-sm hover:bg-green-100"
-                        onClick={() => {
-                          setBookAppointment((p) => ({
-                            ...p,
-                            doctorName: doctor.name,
-                            doctorTime: time,
-                          }));
-                          setModalOpen(true);
-                        }}
-                      >
-                        {time}
-                      </button>
-                    ))}
-                  </div>
-                ) : null}
+                )}
+                <div>
+                  <h3 className="text-lg font-bold">{doctor.name}</h3>
+                  <p className="text-left text-sm text-gray-500">
+                    {doctor.clinic}
+                  </p>
+                </div>
               </div>
-            </Accordion.Body>
-          </Accordion>
+              <div>
+                {currentOpen === doctor.id ? (
+                  <BiChevronUp size={30} />
+                ) : (
+                  <BiChevronDown size={30} />
+                )}
+              </div>
+            </div>
+
+            {/* Doctor Times */}
+
+            <div className="border-b px-4 pb-4">
+              {doctor.times && doctor.times.length > 0 ? (
+                <div
+                  className={`mt-4 grid transition-all delay-300 duration-1000 ease-in-out ${
+                    currentOpen === doctor.id
+                      ? 'max-h-[500px]' // a large enough value to accommodate all items (or adjust based on the number of items)
+                      : 'max-h-20' // collapse the height
+                  } grid-cols-4 gap-2 overflow-hidden`}
+                >
+                  {doctor.times.map((time: string, idx: number) => (
+                    <button
+                      key={idx}
+                      className={`rounded-lg transition-all delay-300 duration-1000 ease-in-out ${currentOpen !== doctor.id && idx >= 4 ? 'opacity-50' : 'opacity-100'} border bg-white px-3 py-2 text-sm hover:bg-green-100`}
+                      onClick={() => {
+                        setBookAppointment((p) => ({
+                          ...p,
+                          doctorName: doctor.name,
+                          doctorTime: time,
+                        }));
+                        setModalOpen(true);
+                      }}
+                    >
+                      {time}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-2 p-4 text-left text-sm text-gray-500">
+                  <span className="rounded-md bg-green-100 px-2 py-1 text-green-700">
+                    Next available: {doctor.nextAvailable}
+                  </span>
+                </p>
+              )}
+            </div>
+          </div>
         ))}
       </div>
+
+      {/* Modal Confirmation */}
       <ModalBookConfirmation
         size="xl"
         isOpen={modalOpen}

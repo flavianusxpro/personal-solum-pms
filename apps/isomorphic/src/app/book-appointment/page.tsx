@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { BiChevronRight } from 'react-icons/bi';
 import { Button, Flex, Select, Stepper, Text, Title } from 'rizzui';
-import ModalBookAppointment from './book-appointment';
 import DoctorTime from './doctor-time';
 import ConfirmBooking from './confirm-booking';
 import ModalSelectDate from './modal/modal-select-date';
@@ -11,6 +10,7 @@ import { useModal } from '../shared/modal-views/use-modal';
 import { useAtom } from 'jotai';
 import bookAppointmentAtom from '@/store/book-appointment';
 import ModalCentreDetails from './modal/modal-centre-details';
+import StandartConsult from './standart-consult';
 
 export const clinics = [
   {
@@ -65,7 +65,6 @@ const BookAppointment = () => {
   const [showClinicOptions, setShowClinicOptions] = useState(false);
 
   const nextStep = (hideStep = false) => {
-    console.log(hideStep);
     setModalOpen(false);
     setCurrentStep((prev) => prev + 1);
     setHideStep(hideStep);
@@ -95,7 +94,10 @@ const BookAppointment = () => {
         </p>
       </header>
       {!hideStep ? (
-        <Stepper currentIndex={currentStep} className="mt-4 flex-wrap p-4">
+        <Stepper
+          currentIndex={currentStep}
+          className="mt-4 w-full max-w-5xl flex-wrap p-4"
+        >
           <Stepper.Step
             size="lg"
             title={selectedClinic ? selectedClinic.name : 'Select Location'}
@@ -121,14 +123,14 @@ const BookAppointment = () => {
             title={selectedClinic ? 'Standard Consult' : 'Select Location'}
             description="Click to change type"
             className="basis-min-content cursor-pointer"
-            status={currentStep >= 2 ? 'complete' : 'waiting'}
+            status={currentStep >= 3 ? 'complete' : 'waiting'}
             onClick={() => setCurrentStep(1)}
           />
           <Stepper.Step
             size="lg"
             title={selectedClinic ? 'Doctor & Time' : 'Doctor & Time'}
             className="basis-min-content cursor-pointer"
-            status={currentStep >= 2 ? 'complete' : 'waiting'}
+            status={currentStep >= 4 ? 'complete' : 'waiting'}
           />
         </Stepper>
       ) : null}
@@ -203,7 +205,7 @@ const BookAppointment = () => {
                 <Button
                   className="mt-3 block border-green-700 bg-green-700 font-bold"
                   variant="solid"
-                  onClick={() => setModalOpen(true)}
+                  onClick={() => nextStep()}
                 >
                   Next Available: March 20th 5.15 am
                 </Button>
@@ -211,8 +213,10 @@ const BookAppointment = () => {
             ) : null}
           </aside>
         ) : currentStep == 2 ? (
-          <DoctorTime onNextStep={nextStep} />
+          <StandartConsult onNextStep={nextStep} />
         ) : currentStep == 3 ? (
+          <DoctorTime onNextStep={nextStep} />
+        ) : currentStep == 4 ? (
           <ConfirmBooking />
         ) : null}
         {/* <GoogleMap
@@ -223,11 +227,6 @@ const BookAppointment = () => {
             <Marker position={{ lat: selectedClinic.lat, lng: selectedClinic.lng }} />
           </GoogleMap> */}
       </div>
-      <ModalBookAppointment
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onNextStep={nextStep}
-      />
     </div>
   );
 };
