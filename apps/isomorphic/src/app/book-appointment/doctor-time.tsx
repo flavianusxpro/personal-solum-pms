@@ -5,6 +5,8 @@ import { useAtom } from 'jotai';
 import bookAppointmentAtom from '@/store/book-appointment';
 import Image from 'next/image';
 import { Text } from 'rizzui';
+import { useModal } from '../shared/modal-views/use-modal';
+import ModalDoctorDetails from './modal/modal-doctor-detail';
 
 const doctors = [
   {
@@ -85,6 +87,7 @@ const DoctorTime = ({
 }: {
   onNextStep: (hideStep: boolean) => void;
 }) => {
+  const { openModal } = useModal();
   const [bookAppointmentValue, setBookAppointment] =
     useAtom(bookAppointmentAtom);
   const [currentOpen, setCurrentOpen] = useState<number | null>(null);
@@ -93,6 +96,16 @@ const DoctorTime = ({
   const nextStep = (hideStep: boolean) => {
     setModalOpen(false);
     onNextStep(hideStep);
+  };
+
+  const openDoctorDetailsModal = (doctor: (typeof doctors)[number]) => {
+    setBookAppointment((p) => ({
+      ...p,
+      doctor,
+    }));
+    openModal({
+      view: <ModalDoctorDetails />,
+    });
   };
 
   return (
@@ -110,7 +123,10 @@ const DoctorTime = ({
           <div key={index} className="mb-5">
             {/* Doctor Header */}
             <div className="flex items-center justify-between space-x-4 p-6">
-              <div className="flex cursor-pointer items-center space-x-4">
+              <div
+                className="flex cursor-pointer items-center space-x-4"
+                onClick={() => openDoctorDetailsModal(doctor)}
+              >
                 {doctor.image ? (
                   <Image
                     src={doctor.image}
