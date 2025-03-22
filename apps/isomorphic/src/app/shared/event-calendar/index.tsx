@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { CalendarEvent } from '@/types';
 import dayjs from 'dayjs';
 import { Calendar, dayjsLocalizer } from 'react-big-calendar';
@@ -10,6 +10,7 @@ import { useModal } from '@/app/shared/modal-views/use-modal';
 import useEventCalendar from '@core/hooks/use-event-calendar';
 import cn from '@core/utils/class-names';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
+import CSelect from '../ui/select';
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -23,6 +24,8 @@ export default function EventCalendarView() {
   const { events } = useEventCalendar();
   const { openModal } = useModal();
   const { colorPresetName } = useColorPresetName();
+
+  const [selectDoctor, setSelectDoctor] = useState('');
 
   const handleSelectSlot = useCallback(
     ({ start, end }: { start: Date; end: Date }) => {
@@ -68,6 +71,28 @@ export default function EventCalendarView() {
 
   return (
     <div className="@container">
+      <div className="mb-4 flex w-1/4">
+        <CSelect
+          label="Select Doctor"
+          options={[
+            {
+              label: 'All',
+              value: '',
+            },
+            {
+              label: 'Dr. John Doe',
+              value: 'Dr. John Doe',
+            },
+            {
+              label: 'Dr. Jane Doe',
+              value: 'Dr. Jane Doe',
+            },
+          ]}
+          value={selectDoctor}
+          onChange={(e: string) => setSelectDoctor(e)}
+        />
+      </div>
+
       <Calendar
         localizer={localizer}
         events={events}
