@@ -75,7 +75,7 @@ const BookAppointment = () => {
 
   const openSelectDateModal = () => {
     return openModal({
-      view: <ModalSelectDate onSelectDate={() => setModalOpen(true)} />,
+      view: <ModalSelectDate onSelectDate={() => nextStep()} />,
     });
   };
 
@@ -107,7 +107,6 @@ const BookAppointment = () => {
                 : 'Click to change location'
             }
             className="basis-min-content cursor-pointer"
-            status={currentStep >= 1 ? 'complete' : 'in-progress'}
             onClick={() => setCurrentStep(1)}
           />
           <Stepper.Step
@@ -115,7 +114,6 @@ const BookAppointment = () => {
             title={selectedClinic ? 'March 20th 5.15 am' : 'Select Date'}
             description="Click to change date"
             className="basis-min-content cursor-pointer"
-            status={currentStep >= 2 ? 'complete' : 'waiting'}
             onClick={() => setCurrentStep(1)}
           />
           <Stepper.Step
@@ -123,14 +121,12 @@ const BookAppointment = () => {
             title={selectedClinic ? 'Standard Consult' : 'Select Location'}
             description="Click to change type"
             className="basis-min-content cursor-pointer"
-            status={currentStep >= 3 ? 'complete' : 'waiting'}
             onClick={() => setCurrentStep(1)}
           />
           <Stepper.Step
             size="lg"
             title={selectedClinic ? 'Doctor & Time' : 'Doctor & Time'}
             className="basis-min-content cursor-pointer"
-            status={currentStep >= 4 ? 'complete' : 'waiting'}
           />
         </Stepper>
       ) : null}
