@@ -2,7 +2,7 @@ import { useModal } from '@/app/shared/modal-views/use-modal';
 import React from 'react';
 import { PiX } from 'react-icons/pi';
 import { Flex, Text, Title } from 'rizzui';
-import { clinics } from '../page';
+import { clinics } from '..';
 
 interface IProps {
   dataCentre: (typeof clinics)[number] | null;

@@ -1,6 +1,6 @@
 {
   "name": "iso",
-  "version": "7.3.0",
+  "version": "7.3.0", 
   "description": "A nextjs template to build dashboard",
   "private": true,
   "scripts": {

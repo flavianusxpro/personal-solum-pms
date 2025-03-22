@@ -4,12 +4,13 @@ import ModalBookConfirmation from './book-confirmation';
 import { useAtom } from 'jotai';
 import bookAppointmentAtom from '@/store/book-appointment';
 import Image from 'next/image';
-import { Select, Text } from 'rizzui';
-import { useModal } from '../shared/modal-views/use-modal';
+import { ActionIcon, Text } from 'rizzui';
 import ModalDoctorDetails from './modal/modal-doctor-detail';
-import CSelect from '../shared/ui/select';
 import ModalCentreDetails from './modal/modal-centre-details';
-import { clinics } from './page';
+import { clinics } from '.';
+import { useModal } from '../modal-views/use-modal';
+import CSelect from '../ui/select';
+import { IoArrowBackCircle } from 'react-icons/io5';
 
 const doctors = [
   {
@@ -98,8 +99,10 @@ const timeZoneOptions = [
 
 const DoctorTime = ({
   onNextStep,
+  onPrevStep,
 }: {
-  onNextStep: (hideStep: boolean) => void;
+  onPrevStep: () => void;
+  onNextStep: () => void;
 }) => {
   const { openModal } = useModal();
   const [bookAppointmentValue, setBookAppointment] =
@@ -108,9 +111,9 @@ const DoctorTime = ({
   const [modalOpen, setModalOpen] = useState(false);
   const [timeZone, setTimeZone] = useState(timeZoneOptions[0].value);
 
-  const nextStep = (hideStep: boolean) => {
+  const nextStep = () => {
     setModalOpen(false);
-    onNextStep(hideStep);
+    onNextStep();
   };
 
   const openDoctorDetailsModal = (doctor: (typeof doctors)[number]) => {
@@ -133,6 +136,9 @@ const DoctorTime = ({
     <div className="min-w-full">
       {/* Timezone Notification */}
       <div className="mt-6 flex justify-center text-center">
+        <ActionIcon variant="text" onClick={onPrevStep} className="">
+          <IoArrowBackCircle className="h-auto w-6" size={30} />
+        </ActionIcon>
         <CSelect
           options={timeZoneOptions}
           value={timeZone}

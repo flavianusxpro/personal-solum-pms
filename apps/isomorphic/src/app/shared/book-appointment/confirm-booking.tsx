@@ -1,10 +1,11 @@
 import { gender, patientTitle } from '@/config/constants';
 import React, { useState } from 'react';
-import { Button, Input, Select, Text } from 'rizzui';
+import { ActionIcon, Button, Input, Select, Text } from 'rizzui';
 import AdditionalInformation from './additional-information';
 import { Controller, useForm } from 'react-hook-form';
-import { useModal } from '../shared/modal-views/use-modal';
 import ModalEstimationCost from './modal/modal-estimation';
+import { useModal } from '../modal-views/use-modal';
+import { IoArrowBackCircle } from 'react-icons/io5';
 
 const STEP = {
   REGISTER: 1,
@@ -12,7 +13,7 @@ const STEP = {
   FILL_DATA: 3,
 };
 
-const ConfirmBooking = () => {
+const ConfirmBooking = ({ onPrevStep }: { onPrevStep: () => void }) => {
   const { openModal } = useModal();
   const [currentStep, setCurrentStep] = useState(STEP.REGISTER);
 
@@ -54,8 +55,11 @@ const ConfirmBooking = () => {
   return (
     <div className="flex min-h-full min-w-full flex-col items-center">
       <div className="mt-8 w-full max-w-6xl rounded-lg bg-white p-6 shadow-lg">
-        <h2 className="my-4 text-center text-2xl font-semibold">
-          Confirm My Booking
+        <h2 className="flex items-center justify-center">
+          <ActionIcon variant="text" onClick={onPrevStep} className="">
+            <IoArrowBackCircle className="h-auto w-6" size={30} />
+          </ActionIcon>
+          <h2 className="text-2xl font-semibold">Confirm My Booking</h2>
         </h2>
         <div className="sm:flex">
           {/* Left: Booking Form */}
