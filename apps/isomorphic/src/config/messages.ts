@@ -34,7 +34,7 @@ export const messages = {
   cardHolderNameIsRequired: 'Card holder name is required',
   cardNumberIsRequired: 'Card Number is required',
   cardExpireIsRequired: 'Expire Date is required',
-  cvcNumberIsRequired: 'CVC Number is required',
+  cvcNumberIsRequired: 'CVC is required',
   catNameIsRequired: 'Category name is required',
   slugIsRequired: 'Slug is required',
   addressIsRequired: 'Address is required',
@@ -72,4 +72,8 @@ export const messages = {
   roleNameLengthMin: 'Role name must be at least 3 letters',
   errorSendingEmail: 'Error sending email',
   emailSentSuccessfully: 'Your email has been sent successfully.',
+  surnameRequired: 'Surname is required',
+  signatureIsRequired: 'Signature is required',
+  dateIsRequired: 'Date is required',
+  checkboxIsRequired: 'This Check is required',
 };

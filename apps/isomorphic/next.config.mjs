@@ -3,7 +3,7 @@ import './src/env.mjs';
 
 const nextConfig = {
   // Menggunakan mode standalone untuk Docker
-  output: 'standalone', 
+  output: 'standalone',
   images: {
     remotePatterns: [
       {
@@ -49,6 +49,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'isomorphic-furyroad.vercel.app',
+      },
+      {
+        protocol: 'https',
+        hostname: 'solumclinic.zedmed-appointments.systems',
       },
     ],
   },

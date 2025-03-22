@@ -1,42 +1,47 @@
-# Tahap 1: Base image
+# Stage 1: Base image
 FROM node:18-alpine AS base
 
-# Install dependencies untuk kompatibilitas
+# Install dependencies for compatibility
 RUN apk add --no-cache libc6-compat
 
 # Set working directory
 WORKDIR /app
 
-# Instal turbo secara global
+# Install turbo globally
 RUN npm install -g turbo
 
-# Salin file konfigurasi utama
+# Copy main configuration files
 COPY package.json pnpm-lock.yaml turbo.json ./
 COPY apps/isomorphic/package.json ./apps/isomorphic/
 
-# Instal dependensi dengan pnpm
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
+# Install dependencies with pnpm
+RUN npm install -g pnpm
+RUN pnpm install --frozen-lockfile
 
-# Tahap 2: Builder
+# Install dependencies for the "isomorphic" app specifically
+WORKDIR /app/apps/isomorphic
+RUN pnpm install --no-frozen-lockfile
+
+# Stage 2: Builder
 FROM base AS builder
 WORKDIR /app
 
-# Salin seluruh kode proyek
+# Copy entire project code
 COPY . .
 
-# Build aplikasi Next.js dengan filter "iso"
+# Build the Next.js app with the "iso" filter
 RUN pnpm turbo run build --filter=iso
 
-# Tahap 3: Runner
+# Stage 3: Runner
 FROM node:18-alpine AS runner
 WORKDIR /app
 
-# Tambahkan user non-root untuk keamanan
+# Add non-root user for security
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
-# Salin output standalone dari aplikasi Next.js
+# Copy output from the builder stage
 COPY --from=builder --chown=nextjs:nodejs /app/apps/isomorphic/.next/standalone ./apps/isomorphic/
 COPY --from=builder --chown=nextjs:nodejs /app/apps/isomorphic/.next/static ./apps/isomorphic/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/isomorphic/public ./apps/isomorphic/public
@@ -46,8 +51,8 @@ ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Expose port
+# Expose the port
 EXPOSE 3000
 
-# Jalankan aplikasi
+# Run the app
 CMD ["node", "apps/isomorphic/server.js"]
