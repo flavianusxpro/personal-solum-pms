@@ -498,7 +498,7 @@ const MedicinalCannabisConsentForm: React.FC = () => {
                 control={control}
                 render={({ field }) => (
                   <SignaturePad
-                    className="col-span-6"
+                    className=""
                     saveSignature={(base64) => field.onChange(base64)}
                     error={errors.signature?.message}
                   />

@@ -8,6 +8,8 @@ import { Select, Text } from 'rizzui';
 import { useModal } from '../shared/modal-views/use-modal';
 import ModalDoctorDetails from './modal/modal-doctor-detail';
 import CSelect from '../shared/ui/select';
+import ModalCentreDetails from './modal/modal-centre-details';
+import { clinics } from './page';
 
 const doctors = [
   {
@@ -121,6 +123,12 @@ const DoctorTime = ({
     });
   };
 
+  const openCentreDetailsModal = () => {
+    return openModal({
+      view: <ModalCentreDetails dataCentre={clinics[0]} />,
+    });
+  };
+
   return (
     <div className="min-w-full">
       {/* Timezone Notification */}
@@ -140,10 +148,7 @@ const DoctorTime = ({
           <div key={index} className="mb-5">
             {/* Doctor Header */}
             <div className="flex items-center justify-between space-x-4 p-6">
-              <div
-                className="flex cursor-pointer items-center space-x-4"
-                onClick={() => openDoctorDetailsModal(doctor)}
-              >
+              <div className="flex items-center space-x-4">
                 {doctor.image ? (
                   <Image
                     src={doctor.image}
@@ -158,8 +163,17 @@ const DoctorTime = ({
                   </div>
                 )}
                 <div>
-                  <h3 className="text-lg font-bold">{doctor.name}</h3>
-                  <p className="text-left text-sm text-gray-500">
+                  <h3
+                    onClick={() => openDoctorDetailsModal(doctor)}
+                    className="cursor-pointer text-lg font-bold hover:underline"
+                  >
+                    {doctor.name}
+                  </h3>
+
+                  <p
+                    onClick={openCentreDetailsModal}
+                    className="cursor-pointer text-left text-sm text-gray-500 hover:underline"
+                  >
                     {doctor.clinic}
                   </p>
                 </div>
@@ -216,11 +230,12 @@ const DoctorTime = ({
                   ))}
                 </div>
               ) : (
-                <p className="mt-2 p-4 text-left text-sm text-gray-500">
-                  <span className="rounded-md bg-green-100 px-2 py-1 text-green-700">
-                    Next available: {doctor.nextAvailable}
+                <div className="mt-2 w-full bg-gray-50 p-4 text-left text-sm text-gray-500">
+                  <span className="rounded-md px-2 py-1 text-green-700">
+                    Next available:{' '}
+                    <span className="text-black">{doctor.nextAvailable}</span>
                   </span>
-                </p>
+                </div>
               )}
             </div>
           </div>

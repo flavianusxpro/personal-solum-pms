@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
-import { IoClose } from 'react-icons/io5';
-import { ActionIcon, Button, Modal, ModalSize, Text, Title } from 'rizzui';
-import { variantOption } from '../shared/ecommerce/product/create-edit/form-utils';
+import React from 'react';
+import { Button, Modal, ModalSize, Text, Title } from 'rizzui';
 
 const step3Button = [
   'Integrative health consult',
@@ -25,8 +23,6 @@ const ModalBookConfirmation = ({
   onClose: () => void;
   onNextStep: (hideStep: boolean) => void;
 }) => {
-  const [step, setStep] = useState(1);
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="content-center">
       <div className="mx-auto flex w-full flex-col items-center justify-center py-6 text-center">

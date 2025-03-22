@@ -69,6 +69,11 @@ const BookAppointment = () => {
     setCurrentStep((prev) => prev + 1);
     setHideStep(hideStep);
   };
+
+  const onPrevStep = () => {
+    if (currentStep === 1) return;
+    setCurrentStep((prev) => prev - 1);
+  };
   // const { isLoaded } = useLoadScript({ googleMapsApiKey: "YOUR_GOOGLE_MAPS_API_KEY" });
 
   // if (!isLoaded) return <p>Loading...</p>;
@@ -210,7 +215,7 @@ const BookAppointment = () => {
             ) : null}
           </aside>
         ) : currentStep == 2 ? (
-          <StandartConsult onNextStep={nextStep} />
+          <StandartConsult onPrevStep={onPrevStep} onNextStep={nextStep} />
         ) : currentStep == 3 ? (
           <DoctorTime onNextStep={nextStep} />
         ) : currentStep == 4 ? (

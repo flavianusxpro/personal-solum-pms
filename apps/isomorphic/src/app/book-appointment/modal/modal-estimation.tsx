@@ -5,8 +5,10 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
+  ActionIcon,
   Button,
   FieldError,
+  Flex,
   Input,
   NumberInput,
   NumberInputProps,
@@ -45,9 +47,43 @@ const ModalEstimationCost = () => {
         <div className="flex flex-col items-center gap-4 text-center">
           <div className="">
             <Title as="h4" className="">
-              $30
+              Estimate Cost
             </Title>
-            <Text>Estimate Cost</Text>
+          </div>
+          <div className="grid w-full grid-cols-1 gap-2">
+            <Flex justify="between" align="center">
+              <Text>Total Cost:</Text>
+              <Text>$100</Text>
+            </Flex>
+            <Flex justify="between" align="center">
+              <Text>Sub Total:</Text>
+              <Text>$10</Text>
+            </Flex>
+            <Flex justify="between" align="center">
+              <Text>Coupon:</Text>
+              <Text>-</Text>
+            </Flex>
+            <Flex justify="between" align="center">
+              <Text>Merchant Fee:</Text>
+              <Text>$10</Text>
+            </Flex>
+            <Flex justify="between" align="center">
+              <Text>Coupon:</Text>
+              <Input
+                placeholder="Enter coupon code"
+                inputClassName="text-sm"
+                size="sm"
+                suffix={
+                  <ActionIcon
+                    variant="text"
+                    className="flex items-center gap-1 text-xs"
+                    onClick={() => {}}
+                  >
+                    Apply
+                  </ActionIcon>
+                }
+              />
+            </Flex>
           </div>
           <Text>
             We require a payment method before this appointment may be

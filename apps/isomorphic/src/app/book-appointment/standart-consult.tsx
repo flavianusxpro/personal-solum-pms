@@ -1,11 +1,11 @@
 import bookAppointmentAtom from '@/store/book-appointment';
 import { useAtom } from 'jotai';
 import React, { useState } from 'react';
-import { IoArrowBack, IoClose } from 'react-icons/io5';
-import { ActionIcon, Button, Modal, ModalSize, Title } from 'rizzui';
+import { IoArrowBackCircle } from 'react-icons/io5';
+import { ActionIcon, Button, Title } from 'rizzui';
 
 const step3Button = [
-  'Integrative health consult',
+  'Natural therapy consult',
   'Follow up appointment',
   'Script renewal',
   'Standard Consult',
@@ -15,7 +15,13 @@ const step3Button = [
   'Weight Loss',
 ];
 
-const StandartConsult = ({ onNextStep }: { onNextStep: () => void }) => {
+const StandartConsult = ({
+  onNextStep,
+  onPrevStep,
+}: {
+  onNextStep: () => void;
+  onPrevStep: () => void;
+}) => {
   const [bookAppointmentValue, setBookAppointment] =
     useAtom(bookAppointmentAtom);
 
@@ -46,9 +52,19 @@ const StandartConsult = ({ onNextStep }: { onNextStep: () => void }) => {
     setStep((p) => p + 1);
   };
 
+  const backButton = () => {
+    if (step == 1) {
+      onPrevStep();
+    }
+    setStep((p) => p - 1);
+  };
+
   return (
     <div className="mx-auto flex w-full flex-col items-center justify-center p-6 text-center">
       <div className="flex flex-col items-center justify-center">
+        <ActionIcon variant="text" onClick={backButton} className="">
+          <IoArrowBackCircle className="h-auto w-6" size={30} />
+        </ActionIcon>
         {step == 1 ? (
           <>
             <Title as="h2" className="font-semibold">
