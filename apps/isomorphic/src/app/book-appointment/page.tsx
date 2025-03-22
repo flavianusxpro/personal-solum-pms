@@ -107,6 +107,7 @@ const BookAppointment = () => {
                 : 'Click to change location'
             }
             className="basis-min-content cursor-pointer"
+            status={selectedClinic?.name ? '' : 'incomplete'}
             onClick={() => setCurrentStep(1)}
           />
           <Stepper.Step
