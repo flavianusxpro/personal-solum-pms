@@ -5,6 +5,7 @@ import HydrogenLayout from '@/layouts/hydrogen/layout';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { routes } from '@/config/routes';
+import AccessDenied from '../access-denied';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -15,18 +16,9 @@ export default function DefaultLayout({ children }: LayoutProps) {
 }
 
 function LayoutProvider({ children }: LayoutProps) {
-  const router = useRouter();
-  const pathname = usePathname();
   const isMounted = useIsMounted();
-
-  const { status } = useSession();
-
   if (!isMounted) {
     return null;
-  }
-
-  if (status === 'unauthenticated') {
-    router.push(`${routes.signIn}?callbackUrl=${pathname}`);
   }
   return <HydrogenLayout>{children}</HydrogenLayout>;
 }

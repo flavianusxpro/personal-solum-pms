@@ -15,3 +15,10 @@ export interface SignInApiResponse {
   success: boolean;
   data: UserData;
 }
+
+export interface SignInApiInvalidResponse {
+  error: string;
+  status: number;
+  ok: boolean;
+  url: null;
+}

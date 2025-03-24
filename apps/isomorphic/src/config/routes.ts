@@ -13,7 +13,7 @@ export const routes = {
   },
   setting: {
     dashboard: '/setting',
-    setup: '/setting/setup'
+    setup: '/setting/setup',
   },
   product: {
     dashboard: '/product',
@@ -27,6 +27,10 @@ export const routes = {
     edit: (id: string) => `/patient/edit/${id}`,
     patientDetail: (id: string) => `/patient/${id}`,
   },
+
+  // Patient
+  myDashboard: '/my-dashboard',
+
   eCommerce: {
     dashboard: '/ecommerce',
     products: '/ecommerce/products',

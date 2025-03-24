@@ -5,7 +5,7 @@ import cn from '@core/utils/class-names';
 import { routes } from '@/config/routes';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function ProfileMenu({
@@ -82,6 +82,12 @@ const menuItems = [
 ];
 
 function DropdownMenu() {
+  const router = useRouter();
+  const handleSignOut = async () => {
+    await signOut({ redirect: false }); // Prevent automatic re-render
+    router.replace('/signin'); // Redirect immediately
+  };
+
   return (
     <div className="w-64 text-left rtl:text-right">
       <div className="flex items-center border-b border-gray-300 px-6 pb-5 pt-6">
@@ -111,7 +117,7 @@ function DropdownMenu() {
         <Button
           className="h-auto w-full justify-start p-0 font-medium text-gray-700 outline-none focus-within:text-gray-600 hover:text-gray-900 focus-visible:ring-0"
           variant="text"
-          onClick={() => signOut()}
+          onClick={handleSignOut}
         >
           Sign Out
         </Button>

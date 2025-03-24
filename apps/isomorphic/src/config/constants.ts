@@ -1,4 +1,4 @@
-import { SelectOption } from "rizzui";
+import { SelectOption } from 'rizzui';
 
 export const CART_KEY = 'isomorphic-cart';
 export const POS_CART_KEY = 'isomorphic-pos-cart';
@@ -31,7 +31,8 @@ export const ROW_PER_PAGE_OPTIONS = [
 ];
 
 export const ROLES = {
-  Administrator: 'Administrator',
+  Administrator: 'administrator',
+  Patient: 'patient',
   Manager: 'Manager',
   Sales: 'Sales',
   Support: 'Support',
@@ -40,7 +41,6 @@ export const ROLES = {
   RestrictedUser: 'Restricted User',
   Customer: 'Customer',
 } as const;
-
 
 export const patientTitle: SelectOption[] = [
   { label: 'Mr', value: 'Mr' },

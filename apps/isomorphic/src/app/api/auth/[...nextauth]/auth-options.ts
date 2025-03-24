@@ -36,10 +36,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async redirect({ url, baseUrl }) {
-      console.log('🚀 ~ redirect ~ url:', url);
-      console.log('🚀 ~ redirect ~ baseUrl:', baseUrl);
       const parsedUrl = new URL(url, baseUrl);
-      console.log('🚀 ~ redirect ~ parsedUrl:', parsedUrl);
       if (parsedUrl.searchParams.has('callbackUrl')) {
         return `${baseUrl}${parsedUrl.searchParams.get('callbackUrl')}`;
       }
@@ -55,6 +52,7 @@ export const authOptions: NextAuthOptions = {
       name: 'Credentials',
       credentials: {},
       async authorize(credentials: any) {
+        console.log(`Credential: ${credentials}`);
         const payload = {
           email: credentials.email,
           password: credentials.password,

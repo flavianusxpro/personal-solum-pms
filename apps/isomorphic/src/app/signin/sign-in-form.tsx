@@ -8,6 +8,8 @@ import { Form } from '@core/ui/form';
 import { routes } from '@/config/routes';
 import { loginSchema, LoginSchema } from '@/validators/login.schema';
 import { signIn } from 'next-auth/react';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 const initialValues: LoginSchema = {
   email: 'rizalhidayat180499@gmail.com',
@@ -16,11 +18,22 @@ const initialValues: LoginSchema = {
 };
 
 export default function SignInForm() {
+  const router = useRouter();
   const isMedium = useMedia('(max-width: 1200px)', false);
-  const onSubmit: SubmitHandler<LoginSchema> = (data: any) => {
-    signIn('credentials', {
+  const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
+    const res = await signIn('credentials', {
       ...data,
+      redirect: false, // Prevent automatic redirection
     });
+
+    if (res?.ok) {
+      toast.success('Login successful');
+      router.push('/');
+    }
+
+    if (res?.error) {
+      toast.error(res.error || 'Invalid credentials');
+    }
   };
 
   return (
@@ -72,6 +85,13 @@ export default function SignInForm() {
               size={isMedium ? 'lg' : 'xl'}
             >
               Sign In
+            </Button>
+            <Button
+              onClick={() => {
+                toast.error('test toast');
+              }}
+            >
+              test toast
             </Button>
           </div>
         )}
