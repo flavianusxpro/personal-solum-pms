@@ -10,13 +10,12 @@ import { loginSchema, LoginSchema } from '@/validators/login.schema';
 import { signIn } from 'next-auth/react';
 
 const initialValues: LoginSchema = {
-  email: 'admin@admin.com',
-  password: 'admin',
-  rememberMe: true,
+  email: 'rizalhidayat180499@gmail.com',
+  password: '12345678',
+  // rememberMe: true,
 };
 
 export default function SignInForm() {
-
   const isMedium = useMedia('(max-width: 1200px)', false);
   const onSubmit: SubmitHandler<LoginSchema> = (data: any) => {
     signIn('credentials', {
@@ -67,15 +66,13 @@ export default function SignInForm() {
               </Link>
             </div>
 
-            <Link href={'/appointment'}>
-              <Button
-                className="w-full"
-                type="submit"
-                size={isMedium ? 'lg' : 'xl'}
-              >
-                Sign In
-              </Button>
-            </Link>
+            <Button
+              className="w-full"
+              type="submit"
+              size={isMedium ? 'lg' : 'xl'}
+            >
+              Sign In
+            </Button>
           </div>
         )}
       </Form>

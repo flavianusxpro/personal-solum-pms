@@ -2,9 +2,9 @@ import { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { env } from '@/env.mjs';
-import isEqual from 'lodash/isEqual';
 import { pagesOptions } from './pages-options';
 import { post } from '../../api';
+import { SignInApiResponse } from '@/types/ApiResponse';
 
 export const authOptions: NextAuthOptions = {
   debug: true,
@@ -36,13 +36,16 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async redirect({ url, baseUrl }) {
-      // const parsedUrl = new URL(url, baseUrl);
-      // if (parsedUrl.searchParams.has('callbackUrl')) {
-      //   return `${baseUrl}${parsedUrl.searchParams.get('callbackUrl')}`;
-      // }
-      // if (parsedUrl.origin === baseUrl) {
-      //   return url;
-      // }
+      console.log('🚀 ~ redirect ~ url:', url);
+      console.log('🚀 ~ redirect ~ baseUrl:', baseUrl);
+      const parsedUrl = new URL(url, baseUrl);
+      console.log('🚀 ~ redirect ~ parsedUrl:', parsedUrl);
+      if (parsedUrl.searchParams.has('callbackUrl')) {
+        return `${baseUrl}${parsedUrl.searchParams.get('callbackUrl')}`;
+      }
+      if (parsedUrl.origin === baseUrl) {
+        return url;
+      }
       return baseUrl;
     },
   },
@@ -52,22 +55,25 @@ export const authOptions: NextAuthOptions = {
       name: 'Credentials',
       credentials: {},
       async authorize(credentials: any) {
-        // You need to provide your own logic here that takes the credentials
-        // submitted and returns either a object representing a user or value
-        // that is false/null if the credentials are invalid
-        console.log(`Credential: ${credentials}`);
-        const user = {
-          email: 'rizalhidayat180499@gmail.com',
-          password: '12345678',
+        const payload = {
+          email: credentials.email,
+          password: credentials.password,
         };
 
-        const response: any = await post('admin/auth/login', user);
+        try {
+          const response = await post<SignInApiResponse>(
+            'admin/auth/login',
+            payload
+          );
 
-        if (response.success) {
-          return {
-            accessToken: response.data.access_token,
-            role: response.data.role,
-          } as any;
+          if (response.success && response.data) {
+            return {
+              accessToken: response.data.access_token,
+              role: response.data.role.name,
+            } as any;
+          }
+        } catch (error) {
+          throw new Error('Invalid credentials');
         }
         return null;
       },

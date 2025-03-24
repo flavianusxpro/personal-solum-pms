@@ -4,6 +4,6 @@ export const metadata = {
   ...metaObject(),
 };
 
-export default function FileDashboardPage() {
+export default function DashboardPage() {
   return <></>;
 }

@@ -134,28 +134,28 @@ export interface FlightingCardProps {
 }
 
 export interface Patient {
-  id: number
-  patient_id: string
-  first_name: string
-  last_name: string
-  email: string
-  mobile_number: string
-  password: string
-  status: number
-  address: string
-  date_of_birth: string
-  gender: string
-  medicare_card_number: string
-  medicare_expired_date: string
-  patient_type: any
-  patient_problem: any
-  emergency_first_name: any
-  emergency_last_name: any
-  emergency_mobile_number: any
-  emergency_email: any
-  emergency_relationship: any
-  verification_token: any
-  timezone: string
-  created_at: string
-  updated_at: string
+  id: number;
+  patient_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  mobile_number: string;
+  password: string;
+  status: number;
+  address: string;
+  date_of_birth: string;
+  gender: string;
+  medicare_card_number: string;
+  medicare_expired_date: string;
+  patient_type: any;
+  patient_problem: any;
+  emergency_first_name: any;
+  emergency_last_name: any;
+  emergency_mobile_number: any;
+  emergency_email: any;
+  emergency_relationship: any;
+  verification_token: any;
+  timezone: string;
+  created_at: string;
+  updated_at: string;
 }
