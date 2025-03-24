@@ -3,6 +3,7 @@ import React from 'react';
 import { PiX } from 'react-icons/pi';
 import { Flex, Text, Title } from 'rizzui';
 import { clinics } from '..';
+import Image from 'next/image';
 
 interface IProps {
   dataCentre: (typeof clinics)[number] | null;
@@ -51,7 +52,16 @@ export default function ModalCentreDetails({ dataCentre }: IProps) {
         />
       </div>
       <div className="grid grid-cols-1 gap-6 p-4">
-        <div className="">
+        <div className="grid-cols-full flex items-center justify-center">
+          <Image
+            src={dataCentre?.image || '/solum.jpeg'}
+            width={100}
+            height={100}
+            alt={dataCentre?.name || 'image'}
+            className="rounded-full object-cover shadow-sm"
+          />
+        </div>
+        <div className="text-center">
           <Text className="text-lg font-semibold">{dataCentre?.name}</Text>
         </div>
 

@@ -13,13 +13,14 @@ import StandartConsult from './standart-consult';
 import { useModal } from '../modal-views/use-modal';
 import dayjs from 'dayjs';
 
-interface IClinics {
+export interface IClinics {
   id: number;
   name: string;
   lat: number;
   lng: number;
   address: string;
   suburb: string;
+  image: string;
 }
 
 export const clinics: IClinics[] = [
@@ -30,6 +31,8 @@ export const clinics: IClinics[] = [
     lng: 144.9631,
     address: 'Po Box 676',
     suburb: 'Gladesville',
+    image:
+      'https://solumclinic.zedmed-appointments.systems/images/doctor_default.png',
   },
   {
     id: 2,
@@ -38,6 +41,8 @@ export const clinics: IClinics[] = [
     lng: 144.9654,
     address: '123 Main St',
     suburb: 'Gladesville',
+    image:
+      'https://solumclinic.zedmed-appointments.systems/images/doctor_default.png',
   },
   {
     id: 3,
@@ -46,6 +51,8 @@ export const clinics: IClinics[] = [
     lng: 144.9677,
     address: '456 Other St',
     suburb: 'Gladesville',
+    image:
+      'https://solumclinic.zedmed-appointments.systems/images/doctor_default.png',
   },
   {
     id: 4,
@@ -54,6 +61,8 @@ export const clinics: IClinics[] = [
     lng: 144.9694,
     address: '789 Another St',
     suburb: 'Gladesville',
+    image:
+      'https://solumclinic.zedmed-appointments.systems/images/doctor_default.png',
   },
 ];
 
