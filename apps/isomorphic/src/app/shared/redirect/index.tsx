@@ -4,6 +4,7 @@ import { routes } from '@/config/routes';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
+import { Loader } from 'rizzui';
 
 const Redirect = () => {
   const router = useRouter();
@@ -18,7 +19,11 @@ const Redirect = () => {
     }
   }, [data?.user, router]);
 
-  return <div></div>;
+  return (
+    <div className="flex h-screen flex-col items-center justify-center">
+      <Loader size="xl" />
+    </div>
+  );
 };
 
 export default Redirect;

@@ -1,5 +1,6 @@
 import { routes } from '@/config/routes';
 import dynamic from 'next/dynamic';
+import { PiDoorOpen } from 'react-icons/pi';
 
 // Dynamic imports untuk ikon yang digunakan
 const PiHouse = dynamic(() =>
@@ -87,47 +88,42 @@ export const patientMenuItems = [
   },
   {
     name: 'Dashboard',
-    href: routes.appointment.dashboard,
+    href: routes.myDashboard,
     icon: <PiHouse />,
   },
   {
-    name: 'Invoice',
-    href: routes.invoice.home,
+    name: 'My Appointment',
     icon: <PiCurrencyDollarDuotone />,
+    href: routes.myAppointment.dashboard,
+    dropdownItems: [
+      {
+        name: 'Upcoming',
+        href: routes.myAppointment.upcoming,
+      },
+      {
+        name: 'Previous',
+        href: routes.myAppointment.previous,
+      },
+    ],
   },
   {
-    name: 'Appointment',
-    href: routes.appointment.appointmentList,
+    name: 'My Family',
+    href: routes.myFamily.dashboard,
     icon: <PiCalendarDuotone />,
   },
   {
-    name: 'Patients',
-    href: routes.patient.dashboard,
+    name: 'Payment Methods',
+    href: routes.paymentMethods,
     icon: <PiUserCirclePlus />,
   },
   {
-    name: 'Doctors',
-    href: routes.doctor.dashboard,
-    icon: <PiUserFocus />,
-  },
-  {
-    name: 'Calendars',
-    href: routes.eventCalendar,
-    icon: <PiCalendar />,
-  },
-  {
-    name: 'Users',
-    href: routes.user.dashboard,
+    name: 'My Account Details',
+    href: routes.myAccountDetails,
     icon: <PiUser />,
   },
   {
-    name: 'Products',
-    href: routes.product.dashboard,
-    icon: <PiBoundingBox />,
-  },
-  {
-    name: 'Settings',
+    name: 'Sign Out',
     href: routes.setting.setup,
-    icon: <PiGear />,
+    icon: <PiDoorOpen />,
   },
 ];

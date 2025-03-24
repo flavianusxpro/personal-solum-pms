@@ -71,7 +71,7 @@ export const authOptions: NextAuthOptions = {
 
           if (response.success && response.data) {
             return {
-              accessToken: response.data.access_token,
+              ...response.data,
               role: response?.data?.role?.name ?? 'patient',
             } as any;
           }

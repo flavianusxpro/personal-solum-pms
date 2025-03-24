@@ -1,7 +1,8 @@
+import MyDashboard from '@/app/shared/my-dashboard';
 import React from 'react';
 
 const MyDashboardPage = () => {
-  return <div>MyDashboardPage</div>;
+  return <MyDashboard />;
 };
 
 export default MyDashboardPage;

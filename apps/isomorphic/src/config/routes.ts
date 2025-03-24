@@ -30,6 +30,18 @@ export const routes = {
 
   // Patient
   myDashboard: '/my-dashboard',
+  myAppointment: {
+    dashboard: '/my-appointment',
+    upcoming: '/my-appointment/upcoming',
+    previous: '/my-appointment/previous',
+  },
+  myFamily: {
+    dashboard: '/my-family',
+    announcement: '/my-family/announcement',
+    familyList: '/my-family/family-list',
+  },
+  paymentMethods: '/payment-methods',
+  myAccountDetails: '/my-account-details',
 
   eCommerce: {
     dashboard: '/ecommerce',
