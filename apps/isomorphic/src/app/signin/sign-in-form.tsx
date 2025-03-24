@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { SubmitHandler } from 'react-hook-form';
+import { Controller, SubmitHandler } from 'react-hook-form';
 import { Password, Checkbox, Button, Input, Text } from 'rizzui';
 import { useMedia } from '@core/hooks/use-media';
 import { Form } from '@core/ui/form';
@@ -10,10 +10,12 @@ import { loginSchema, LoginSchema } from '@/validators/login.schema';
 import { signIn } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import CSelect from '../shared/ui/select';
 
 const initialValues: LoginSchema = {
   email: 'rizalhidayat180499@gmail.com',
   password: '12345678',
+  role: 'patient',
   // rememberMe: true,
 };
 
@@ -46,7 +48,7 @@ export default function SignInForm() {
           defaultValues: initialValues,
         }}
       >
-        {({ register, formState: { errors } }) => (
+        {({ register, control, formState: { errors } }) => (
           <div className="space-y-5 lg:space-y-6">
             <Input
               type="email"
@@ -65,12 +67,32 @@ export default function SignInForm() {
               {...register('password')}
               error={errors.password?.message}
             />
+            <Controller
+              name="role"
+              control={control}
+              render={({ field }) => (
+                <CSelect
+                  label="Role"
+                  size={isMedium ? 'lg' : 'xl'}
+                  className="[&>label>span]:font-medium"
+                  options={[
+                    { label: 'Admin', value: 'admin' },
+                    {
+                      label: 'Patient',
+                      value: 'patient',
+                    },
+                  ]}
+                  error={errors.role?.message}
+                  {...field}
+                />
+              )}
+            />
             <div className="flex items-center justify-between pb-1">
-              <Checkbox
+              {/* <Checkbox
                 {...register('rememberMe')}
                 label="Remember Me"
                 className="[&>label>span]:font-medium"
-              />
+              /> */}
               <Link
                 href={routes.auth.forgotPassword4}
                 className="h-auto p-0 text-sm font-semibold text-gray-700 underline transition-colors hover:text-primary hover:no-underline"
@@ -85,13 +107,6 @@ export default function SignInForm() {
               size={isMedium ? 'lg' : 'xl'}
             >
               Sign In
-            </Button>
-            <Button
-              onClick={() => {
-                toast.error('test toast');
-              }}
-            >
-              test toast
             </Button>
           </div>
         )}

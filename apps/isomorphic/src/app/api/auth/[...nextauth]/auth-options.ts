@@ -5,6 +5,7 @@ import { env } from '@/env.mjs';
 import { pagesOptions } from './pages-options';
 import { post } from '../../api';
 import { SignInApiResponse } from '@/types/ApiResponse';
+import { LoginSchema } from '@/validators/login.schema';
 
 export const authOptions: NextAuthOptions = {
   debug: true,
@@ -50,24 +51,28 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       id: 'credentials',
       name: 'Credentials',
-      credentials: {},
-      async authorize(credentials: any) {
-        console.log(`Credential: ${credentials}`);
+      credentials: {
+        email: { label: 'Email', type: 'text' },
+        password: { label: 'Password', type: 'password' },
+        role: { label: 'Role', type: 'text' },
+      },
+      async authorize(credentials) {
+        const role = credentials?.role;
         const payload = {
-          email: credentials.email,
-          password: credentials.password,
+          email: credentials?.email,
+          password: credentials?.password,
         };
 
+        const url =
+          role === 'admin' ? 'admin/auth/login' : 'patient/auth/login';
+
         try {
-          const response = await post<SignInApiResponse>(
-            'admin/auth/login',
-            payload
-          );
+          const response = await post<SignInApiResponse>(url, payload);
 
           if (response.success && response.data) {
             return {
               accessToken: response.data.access_token,
-              role: response.data.role.name,
+              role: response?.data?.role?.name ?? 'patient',
             } as any;
           }
         } catch (error) {

@@ -5,6 +5,7 @@ export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
   rememberMe: z.boolean().optional(),
+  role: z.string().min(1, { message: 'Role is required' }),
 });
 
 // generate form types from zod validation schema
