@@ -43,16 +43,10 @@ export const ROLES = {
 } as const;
 
 export const patientTitle: SelectOption[] = [
-  { label: 'Mr', value: 'Mr' },
-  { label: 'Mrs', value: 'Mrs' },
-  { label: 'Miss', value: 'Miss' },
-  { label: 'Ms', value: 'Ms' },
-  { label: 'Dr', value: 'Dr' },
+  { label: 'Mr', value: 'mr' },
+  { label: 'Mrs', value: 'mrs' },
+  { label: 'Miss', value: 'miss' },
+  { label: 'Ms', value: 'ms' },
+  { label: 'Dr', value: 'dr' },
   { label: 'Other / Prefer Not Specify', value: '' },
-];
-
-export const gender: SelectOption[] = [
-  { label: 'Male', value: 'Male' },
-  { label: 'Female', value: 'Female' },
-  { label: 'Other', value: 'Other' },
 ];

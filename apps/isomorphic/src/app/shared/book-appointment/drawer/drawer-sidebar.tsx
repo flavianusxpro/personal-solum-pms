@@ -1,3 +1,4 @@
+'use client';
 import { loginSchema, LoginSchema } from '@/validators/login.schema';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import React, { useState } from 'react';
@@ -11,8 +12,8 @@ import { registerSchema, RegisterSchema } from '@/validators/register.schema';
 import CSelect from '../../ui/select';
 import genderData from '@/data/gender-data';
 import { useRegister } from '@/hooks/useAuth';
-import { useRouter } from 'next/router';
 import { routes } from '@/config/routes';
+import { useRouter } from 'next/navigation';
 
 const DrawerSideBar = ({ onClose }: { onClose: () => void }) => {
   const router = useRouter();
