@@ -12,10 +12,10 @@ const Redirect = () => {
 
   useEffect(() => {
     if (data?.user?.role === ROLES.Administrator) {
-      router.push(routes.appointment.dashboard);
+      return router.push(routes.appointment.dashboard);
     }
     if (data?.user?.role === ROLES.Patient) {
-      router.push(routes.myDashboard);
+      return router.push(routes.myDashboard);
     }
   }, [data?.user, router]);
 

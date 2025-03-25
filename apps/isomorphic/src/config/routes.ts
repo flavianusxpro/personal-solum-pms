@@ -42,6 +42,7 @@ export const routes = {
   },
   paymentMethods: '/payment-methods',
   myAccountDetails: '/my-account-details',
+  bookAppointment: '/book-appointment',
 
   eCommerce: {
     dashboard: '/ecommerce',

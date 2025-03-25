@@ -1,8 +1,17 @@
 'use client';
 
 import React, { useState } from 'react';
-import { BiChevronRight } from 'react-icons/bi';
-import { Button, Flex, Select, Stepper, Text, Title } from 'rizzui';
+import { BiChevronRight, BiMenu } from 'react-icons/bi';
+import {
+  ActionIcon,
+  Button,
+  Drawer,
+  Flex,
+  Loader,
+  Stepper,
+  Text,
+  Title,
+} from 'rizzui';
 import DoctorTime from './doctor-time';
 import ConfirmBooking from './confirm-booking';
 import ModalSelectDate from './modal/modal-select-date';
@@ -12,68 +21,27 @@ import ModalCentreDetails from './modal/modal-centre-details';
 import StandartConsult from './standart-consult';
 import { useModal } from '../modal-views/use-modal';
 import dayjs from 'dayjs';
-
-export interface IClinics {
-  id: number;
-  name: string;
-  lat: number;
-  lng: number;
-  address: string;
-  suburb: string;
-  image: string;
-}
-
-export const clinics: IClinics[] = [
-  {
-    id: 1,
-    name: 'Solum Clinic',
-    lat: -37.8136,
-    lng: 144.9631,
-    address: 'Po Box 676',
-    suburb: 'Gladesville',
-    image:
-      'https://solumclinic.zedmed-appointments.systems/images/doctor_default.png',
-  },
-  {
-    id: 2,
-    name: 'Dummy Clinic 1',
-    lat: -37.8141,
-    lng: 144.9654,
-    address: '123 Main St',
-    suburb: 'Gladesville',
-    image:
-      'https://solumclinic.zedmed-appointments.systems/images/doctor_default.png',
-  },
-  {
-    id: 3,
-    name: 'Dummy Clinic 2',
-    lat: -37.8156,
-    lng: 144.9677,
-    address: '456 Other St',
-    suburb: 'Gladesville',
-    image:
-      'https://solumclinic.zedmed-appointments.systems/images/doctor_default.png',
-  },
-  {
-    id: 4,
-    name: 'Dummy Clinic 3',
-    lat: -37.8161,
-    lng: 144.9694,
-    address: '789 Another St',
-    suburb: 'Gladesville',
-    image:
-      'https://solumclinic.zedmed-appointments.systems/images/doctor_default.png',
-  },
-];
+import { useGetAllClinicsForPatient } from '@/hooks/useClinic';
+import DrawerSideBar from './drawer/drawer-sidebar';
 
 const BookAppointment = () => {
   const { openModal } = useModal();
   const [bookAppointmentValue, setBookAppointment] =
     useAtom(bookAppointmentAtom);
+  console.log(
+    '🚀 ~ BookAppointment ~ bookAppointmentValue:',
+    bookAppointmentValue
+  );
 
-  const [selectedClinic, setSelectedClinic] = useState<IClinics | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [showClinicOptions, setShowClinicOptions] = useState(false);
+  const [drawerSideBar, setDrawerSideBar] = useState(false);
+
+  const { data: dataClinics, isLoading: isLoadingClinics } =
+    useGetAllClinicsForPatient({
+      page: 1,
+      perPage: 10,
+    });
 
   const nextStep = (hideStep = false) => {
     setCurrentStep((prev) => prev + 1);
@@ -95,17 +63,27 @@ const BookAppointment = () => {
 
   const openCentreDetailsModal = () => {
     return openModal({
-      view: <ModalCentreDetails dataCentre={selectedClinic} />,
+      view: <ModalCentreDetails />,
     });
+  };
+
+  const toggleDrawerSideBar = () => {
+    setDrawerSideBar((prev) => !prev);
   };
 
   return (
     <div className="flex w-full flex-col items-center bg-white">
-      <header className="w-full bg-gradient-to-r from-orange-400 to-orange-600 p-14 text-center text-white">
+      <header className="relative w-full bg-gradient-to-r from-orange-400 to-orange-600 p-14 text-center text-white">
         <h1 className="text-3xl font-bold">Solum</h1>
         <p className="text-lg font-semibold">
           Find your nearest Solum Clinic Centre
         </p>
+        <ActionIcon
+          className="absolute right-4 top-4"
+          onClick={toggleDrawerSideBar}
+        >
+          <BiMenu size={32} />
+        </ActionIcon>
       </header>
       <Stepper
         currentIndex={currentStep}
@@ -113,10 +91,18 @@ const BookAppointment = () => {
       >
         <Stepper.Step
           size="lg"
-          title={selectedClinic ? selectedClinic.name : 'Select Location'}
-          description={selectedClinic ? selectedClinic.address : ''}
+          title={
+            bookAppointmentValue.clinic
+              ? bookAppointmentValue.clinic.name
+              : 'Select Location'
+          }
+          description={
+            bookAppointmentValue.clinic
+              ? bookAppointmentValue.clinic.address
+              : ''
+          }
           className="basis-min-content cursor-pointer"
-          status={selectedClinic?.name ? '' : 'incomplete'}
+          status={bookAppointmentValue.clinic?.name ? '' : 'incomplete'}
           onClick={() => setCurrentStep(1)}
         />
         <Stepper.Step
@@ -132,13 +118,17 @@ const BookAppointment = () => {
           onClick={() => setCurrentStep(1)}
         />
         <Stepper.Step
-          title={selectedClinic ? 'Standard Consult' : 'Select Location'}
+          title={
+            bookAppointmentValue.clinic ? 'Standard Consult' : 'Select Location'
+          }
           description="Type of Consult"
           className="basis-min-content cursor-pointer"
           onClick={() => setCurrentStep(1)}
         />
         <Stepper.Step
-          title={selectedClinic ? 'Doctor & Time' : 'Doctor & Time'}
+          title={
+            bookAppointmentValue.clinic ? 'Doctor & Time' : 'Doctor & Time'
+          }
           className="basis-min-content cursor-pointer"
         />
         <Stepper.Step
@@ -159,7 +149,7 @@ const BookAppointment = () => {
               <div className="flex items-center p-3">
                 <div className="mr-2 text-green-700">
                   <span className="font-medium">
-                    {selectedClinic?.name ?? 'Select Clinic'}
+                    {bookAppointmentValue.clinic?.name ?? 'Select Clinic'}
                   </span>
                 </div>
               </div>
@@ -167,7 +157,8 @@ const BookAppointment = () => {
             </div>
             {showClinicOptions && (
               <div className="absolute mt-2 w-5/6 rounded-lg border bg-white">
-                {clinics.map((clinic, idx) => (
+                {isLoadingClinics && <Loader variant="spinner" size="lg" />}
+                {dataClinics?.data.map((clinic, idx) => (
                   <div
                     key={clinic.id}
                     onClick={() => {
@@ -175,7 +166,6 @@ const BookAppointment = () => {
                         ...p,
                         clinic,
                       }));
-                      setSelectedClinic(clinics[idx]);
                       setShowClinicOptions(false);
                     }}
                     className="mt-2 flex cursor-pointer items-center justify-between transition-all hover:bg-green-200"
@@ -189,12 +179,13 @@ const BookAppointment = () => {
                 ))}
               </div>
             )}
-            {selectedClinic ? (
+            {bookAppointmentValue.clinic ? (
               <div className="mt-4 grid grid-cols-1 gap-4">
                 <div className="">
-                  <Title as="h3">{selectedClinic.name}</Title>
-                  <Text fontWeight="medium">{selectedClinic?.address}</Text>
-                  <Text fontWeight="medium">{selectedClinic?.suburb}</Text>
+                  <Title as="h3">{bookAppointmentValue.clinic.name}</Title>
+                  <Text fontWeight="medium">
+                    {bookAppointmentValue.clinic?.address}
+                  </Text>
                 </div>
                 <Flex justify="between">
                   <Button
@@ -217,9 +208,15 @@ const BookAppointment = () => {
                 <Button
                   className="mt-3 block border-green-700 bg-green-700 font-bold"
                   variant="solid"
-                  onClick={() => nextStep()}
+                  onClick={() => {
+                    nextStep();
+                    setBookAppointment((p) => ({
+                      ...p,
+                      appointmentDate: dayjs().format('YYYY-MM-DD'),
+                    }));
+                  }}
                 >
-                  Next Available: March 20th 5.15 am
+                  Next Available {dayjs().format('MMM DD')}th
                 </Button>
               </div>
             ) : null}
@@ -239,6 +236,10 @@ const BookAppointment = () => {
             <Marker position={{ lat: selectedClinic.lat, lng: selectedClinic.lng }} />
           </GoogleMap> */}
       </div>
+
+      <Drawer isOpen={drawerSideBar} onClose={() => setDrawerSideBar(false)}>
+        <DrawerSideBar onClose={() => setDrawerSideBar(false)} />
+      </Drawer>
     </div>
   );
 };

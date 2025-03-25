@@ -25,7 +25,7 @@ export default function ModalSelectDate({ onSelectDate }: IProps) {
   ) => {
     setBookAppointment((prev) => ({
       ...prev,
-      appointmentDate: value?.toLocaleString(),
+      appointmentDate: dayjs(value?.toString()).format('YYYY-MM-DD'),
     }));
     onSelectDate();
     closeModal();
@@ -65,7 +65,8 @@ export default function ModalSelectDate({ onSelectDate }: IProps) {
               if (['year', 'decade', 'century'].includes(view)) {
                 return false;
               }
-              return disabledDate.includes(date.getDate());
+              // return disabledDate.includes(date.getDate());
+              return false;
             }}
             className="!w-full !border-0 !bg-transparent px-4 pb-4 pt-2.5 !font-inter !text-base md:px-5 md:pb-5"
           />

@@ -14,7 +14,8 @@ import { ROLES } from '@/config/constants';
 
 export function SidebarMenu() {
   const pathname = usePathname();
-  const role = useSession()?.data?.role?.name;
+  const { data } = useSession();
+  const role = data?.user.role;
 
   const menuItems =
     role === ROLES.Administrator ? adminMenuItems : patientMenuItems;

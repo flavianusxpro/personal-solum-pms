@@ -5,7 +5,6 @@ import { env } from '@/env.mjs';
 import { pagesOptions } from './pages-options';
 import { post } from '../../api';
 import { SignInApiResponse } from '@/types/ApiResponse';
-import { LoginSchema } from '@/validators/login.schema';
 
 export const authOptions: NextAuthOptions = {
   debug: true,
@@ -29,10 +28,11 @@ export const authOptions: NextAuthOptions = {
         },
       };
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.accessToken = user.accessToken;
         token.role = user.role;
+        token.idToken = user.id;
       }
       return token;
     },
@@ -62,7 +62,6 @@ export const authOptions: NextAuthOptions = {
           email: credentials?.email,
           password: credentials?.password,
         };
-
         const url =
           role === 'admin' ? 'admin/auth/login' : 'patient/auth/login';
 
@@ -73,6 +72,7 @@ export const authOptions: NextAuthOptions = {
             return {
               ...response.data,
               role: response?.data?.role?.name ?? 'patient',
+              accessToken: response?.data?.access_token,
             } as any;
           }
         } catch (error) {

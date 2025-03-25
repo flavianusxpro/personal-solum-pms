@@ -20,8 +20,10 @@ export function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
+  const whitelist = [routes.signIn, , routes.bookAppointment];
+
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (status === 'unauthenticated' && !whitelist.includes(pathname)) {
       const isHomePage = pathname === '/';
       const isSignInPage = pathname === routes.signIn;
 

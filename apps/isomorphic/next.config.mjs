@@ -54,6 +54,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'solumclinic.zedmed-appointments.systems',
       },
+      {
+        protocol: 'https',
+        hostname: 'example.com',
+      },
     ],
   },
   reactStrictMode: false,
