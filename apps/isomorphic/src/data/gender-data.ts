@@ -1,10 +1,11 @@
+// eslint-disable-next-line import/no-anonymous-default-export
 export default [
   {
     label: 'Male',
-    value: 'Male',
+    value: 'male',
   },
   {
     label: 'Female',
-    value: 'Female',
+    value: 'female',
   },
 ];

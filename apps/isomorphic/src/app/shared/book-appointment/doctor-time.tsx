@@ -4,16 +4,15 @@ import ModalBookConfirmation from './book-confirmation';
 import { useAtom } from 'jotai';
 import bookAppointmentAtom from '@/store/book-appointment';
 import Image from 'next/image';
-import { ActionIcon, Loader, Text } from 'rizzui';
+import { Loader, Text } from 'rizzui';
 import ModalDoctorDetails from './modal/modal-doctor-detail';
 import ModalCentreDetails from './modal/modal-centre-details';
 import { useModal } from '../modal-views/use-modal';
 import CSelect from '../ui/select';
-import { IoArrowBackCircle } from 'react-icons/io5';
 import { useGetDoctorByClinicForPatient } from '@/hooks/useClinic';
 import { IParamGetDoctorByClinicForPatient } from '@/types/paramTypes';
 import { IGetDoctorByClinicForPatientResponse } from '@/types/ApiResponse';
-import cn from '@core/utils/class-names';
+import StepBackButton from './step-back-button';
 
 const doctors = [
   {
@@ -148,14 +147,15 @@ const DoctorScheduleList = ({
   return (
     <div className="min-w-full">
       {/* Timezone Notification */}
-      <div className="mt-6 flex justify-center text-center">
-        <ActionIcon variant="text" onClick={onPrevStep} className="">
-          <IoArrowBackCircle className="h-auto w-6" size={30} />
-        </ActionIcon>
+      <div className="relative mt-6 flex flex-col justify-center gap-4 text-center sm:flex-row sm:gap-0">
+        <div className="sm:absolute sm:left-[10%]">
+          <StepBackButton backButton={onPrevStep} />
+        </div>
+
         <CSelect
           options={timeZoneOptions}
           value={timeZone}
-          className="w-1/5 rounded-md bg-green-600"
+          className="mx-auto w-1/2 rounded-md bg-green-600 sm:w-1/5"
           selectClassName="text-white "
           onChange={(e: string) => setTimeZone(e)}
         />
@@ -257,71 +257,73 @@ function DoctorTime({
   const [bookAppointmentValue, setBookAppointment] =
     useAtom(bookAppointmentAtom);
 
-  const practices_open = '08:00';
-  const practices_close = '11:00';
-
-  const start = useMemo(() => new Date(), []);
-  const end = useMemo(() => new Date(), []);
+  const practices_open = doctor.appointment_schedule.practices_open;
+  const practices_close = doctor.appointment_schedule.practices_close;
 
   const [startHours, startMinutes] = practices_open.split(':').map(Number);
   const [endHours, endMinutes] = practices_close.split(':').map(Number);
-
-  start.setHours(startHours, startMinutes);
-  end.setHours(endHours, endMinutes);
-
-  const timeList = useMemo(() => {
-    let times = [];
-    while (start <= end) {
-      times.push(start.toTimeString().slice(0, 5));
-
-      start.setHours(start.getHours() + 1);
-    }
-    return times;
-  }, [end, start]);
 
   const bookedTimes: string[] = useMemo(() => {
     return (
       doctor.booked_times.find(
         (item) => item.date === bookAppointmentValue.appointmentDate
-      )?.booked_times ?? ['08:00']
+      )?.booked_times ?? []
     );
   }, [bookAppointmentValue.appointmentDate, doctor.booked_times]);
+
+  const timeList = useMemo(() => {
+    const times: string[] = [];
+    const start = new Date();
+    start.setHours(startHours, startMinutes, 0, 0);
+
+    const end = new Date();
+    end.setHours(endHours, endMinutes, 0, 0);
+
+    while (start <= end) {
+      const timeString = start.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      });
+
+      if (!bookedTimes.includes(timeString)) {
+        times.push(timeString);
+      }
+
+      start.setMinutes(start.getMinutes() + 15);
+    }
+
+    return times;
+  }, [startHours, startMinutes, endHours, endMinutes, bookedTimes]);
 
   return (
     <div className="px-4 pb-4">
       {doctor.appointment_schedule ? (
-        <div
-          className={`mt-4 grid transition-all delay-200 duration-1000 ease-in-out ${
-            currentOpen === doctor.id
-              ? 'max-h-[500px]' // a large enough value to accommodate all items (or adjust based on the number of items)
-              : 'max-h-16' // collapse the height
-          } grid-cols-10 gap-2 overflow-hidden`}
-        >
-          {timeList.map((time: string, idx: number) => (
-            <button
-              key={idx}
-              disabled={bookedTimes.includes(time)}
-              className={cn(
-                'rounded-md bg-green-200/50 px-3 py-2 text-sm hover:bg-green-300',
-                currentOpen !== doctor.id && idx >= 10
-                  ? 'opacity-50'
-                  : 'opacity-100',
-                bookedTimes.includes(time) &&
-                  'cursor-not-allowed bg-gray-300 hover:bg-gray-300'
-              )}
-              onClick={() => {
-                setBookAppointment((p) => ({
-                  ...p,
-                  doctorName: `${doctor.first_name} ${doctor.last_name}`,
-                  doctorId: doctor.id.toString(),
-                  doctorTime: time,
-                }));
-                setModalOpen(true);
-              }}
-            >
-              {time}
-            </button>
-          ))}
+        <div className="relative">
+          <div
+            className={`mt-4 grid transition-all delay-200 duration-1000 ease-in-out ${
+              currentOpen === doctor.id ? 'max-h-[500px]' : 'max-h-20'
+            } grid-cols-5 gap-2 overflow-hidden`}
+          >
+            {timeList.map((time, idx) => (
+              <button
+                key={idx}
+                className="rounded-md bg-green-200/50 px-3 py-2 text-sm hover:bg-green-300"
+                onClick={() => {
+                  setBookAppointment((p) => ({
+                    ...p,
+                    doctor: { ...doctor, doctorTime: time },
+                  }));
+                  setModalOpen(true);
+                }}
+              >
+                {time}
+              </button>
+            ))}
+            {currentOpen !== doctor.id && (
+              <div className="absolute bottom-0 h-1/2 w-full bg-gradient-to-t from-white to-white/50 transition-all delay-200 duration-1000 ease-in-out"></div>
+            )}
+          </div>
         </div>
       ) : (
         <div className="mt-2 w-full bg-gray-50 p-4 text-left text-sm text-gray-500">

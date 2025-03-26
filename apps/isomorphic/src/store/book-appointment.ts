@@ -1,9 +1,12 @@
-import { IGetAllClinicForPatientResponse } from '@/types/ApiResponse';
+import {
+  IGetAllClinicForPatientResponse,
+  IGetDoctorByClinicForPatientResponse,
+} from '@/types/ApiResponse';
 import { atom } from 'jotai';
 
 interface BookAppointmentState {
   appointmentDate?: string;
-  doctor?: any;
+  doctor?: IGetDoctorByClinicForPatientResponse['data'][number];
   clinic?: IGetAllClinicForPatientResponse['data'][number];
 }
 

@@ -45,6 +45,7 @@ export function StripeCheckoutForm({ amount }: IProps) {
 
     const { error: paymentError } = await stripe.confirmPayment({
       elements,
+      // clientSecret,
       confirmParams: {
         return_url: `${window.location.origin}/concent-form`,
       },

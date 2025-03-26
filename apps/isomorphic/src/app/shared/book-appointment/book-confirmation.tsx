@@ -26,15 +26,6 @@ const ModalBookConfirmation = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="content-center">
       <div className="mx-auto flex w-full flex-col items-center justify-center py-6 text-center">
-        {/* <div className="absolute top-6 right-6">
-          <ActionIcon
-            size="sm"
-            variant="text"
-            onClick={() => onClose()}
-          >
-            <IoClose className="h-auto w-6" size={30} />
-          </ActionIcon>
-        </div> */}
         <div className="flex flex-col items-center justify-center">
           <Title as="h2" className="font-semibold">
             Appointments

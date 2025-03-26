@@ -13,7 +13,7 @@ import {
   Title,
 } from 'rizzui';
 import DoctorTime from './doctor-time';
-import ConfirmBooking from './confirm-booking';
+import ConfirmBooking from './confirm-booking/confirm-booking';
 import ModalSelectDate from './modal/modal-select-date';
 import { useAtom } from 'jotai';
 import bookAppointmentAtom from '@/store/book-appointment';
@@ -28,10 +28,6 @@ const BookAppointment = () => {
   const { openModal } = useModal();
   const [bookAppointmentValue, setBookAppointment] =
     useAtom(bookAppointmentAtom);
-  console.log(
-    '🚀 ~ BookAppointment ~ bookAppointmentValue:',
-    bookAppointmentValue
-  );
 
   const [currentStep, setCurrentStep] = useState(1);
   const [showClinicOptions, setShowClinicOptions] = useState(false);
@@ -228,13 +224,6 @@ const BookAppointment = () => {
         ) : currentStep == 4 ? (
           <ConfirmBooking onPrevStep={onPrevStep} />
         ) : null}
-        {/* <GoogleMap
-            zoom={15}
-            center={{ lat: selectedClinic.lat, lng: selectedClinic.lng }}
-            mapContainerClassName="w-full h-full"
-          >
-            <Marker position={{ lat: selectedClinic.lat, lng: selectedClinic.lng }} />
-          </GoogleMap> */}
       </div>
 
       <Drawer isOpen={drawerSideBar} onClose={() => setDrawerSideBar(false)}>

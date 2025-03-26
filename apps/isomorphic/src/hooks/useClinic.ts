@@ -1,8 +1,8 @@
 import {
   getAllClinicsForPatient,
   getClinicByIdForPatient,
-  getDoctorByClinicForPatient,
-} from '@/service';
+} from '@/service/clinic';
+import { getDoctorByClinicForPatient } from '@/service/doctor';
 import {
   IParamGetAllClinicForPatient,
   IParamGetDoctorByClinicForPatient,

@@ -1,4 +1,4 @@
-import { postCheckout } from '@/service';
+import { postCheckout } from '@/service/checkout';
 import { IPayloadCheckout } from '@/types/paramTypes';
 import { useMutation } from '@tanstack/react-query';
 

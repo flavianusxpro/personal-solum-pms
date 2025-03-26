@@ -3,6 +3,7 @@ import { useAtom } from 'jotai';
 import React, { useState } from 'react';
 import { IoArrowBackCircle } from 'react-icons/io5';
 import { ActionIcon, Button, Title } from 'rizzui';
+import StepBackButton from './step-back-button';
 
 const step3Button = [
   'Natural therapy consult',
@@ -62,9 +63,7 @@ const StandartConsult = ({
   return (
     <div className="mx-auto flex w-full flex-col items-center justify-center p-6 text-center">
       <div className="flex flex-col items-center justify-center">
-        <ActionIcon variant="text" onClick={backButton} className="">
-          <IoArrowBackCircle className="h-auto w-6" size={30} />
-        </ActionIcon>
+        <StepBackButton backButton={backButton} />
         {step == 1 ? (
           <>
             <Title as="h2" className="font-semibold">

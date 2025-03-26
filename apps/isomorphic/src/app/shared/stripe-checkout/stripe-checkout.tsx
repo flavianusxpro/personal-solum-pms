@@ -9,7 +9,7 @@ export default function StripeCheckout() {
   return (
     <Elements
       stripe={stripePromise}
-      options={{ mode: 'payment', amount: 10000, currency: 'usd' }}
+      options={{ mode: 'payment', amount: 10000, currency: 'aud' }}
     >
       <StripeCheckoutForm amount={10000} />
     </Elements>

@@ -123,7 +123,7 @@ export const patientMenuItems = [
   },
   {
     name: 'Sign Out',
-    href: routes.setting.setup,
+    isButton: true,
     icon: <PiDoorOpen />,
   },
 ];
