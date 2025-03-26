@@ -31,8 +31,6 @@ export default async function RootLayout({
 }) {
   const session = await getServerSession(authOptions);
 
-  const queryClient = new QueryClient();
-
   return (
     <html
       lang="en"

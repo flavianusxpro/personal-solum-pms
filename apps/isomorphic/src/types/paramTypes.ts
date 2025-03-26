@@ -13,3 +13,7 @@ export interface IParamGetDoctorByClinicForPatient
 }
 
 export interface IPayloadRegisterForPatient extends RegisterSchema {}
+
+export interface IPayloadCheckout {
+  amount: number;
+}

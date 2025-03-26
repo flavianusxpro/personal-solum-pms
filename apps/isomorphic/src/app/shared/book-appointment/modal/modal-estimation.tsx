@@ -3,11 +3,10 @@ import { PaymentMethodFormInput } from '@/validators/payment-method.schema';
 import CheckCircleIcon from '@core/components/icons/check-circle';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import {
   ActionIcon,
   Button,
-  FieldError,
   Flex,
   Input,
   NumberInput,
@@ -16,6 +15,7 @@ import {
   Title,
   usePatternFormat,
 } from 'rizzui';
+import StripeCheckout from '../../stripe-checkout/stripe-checkout';
 
 const STEP = {
   ESTIMATE_COST: 'estimate-cost',
@@ -105,7 +105,7 @@ const ModalEstimationCost = () => {
               className="bg-green-600"
               onClick={() => setStep(STEP.PAYMENT)}
             >
-              Add Payment Method
+              Pay Now
             </Button>
             <Button variant="text" onClick={closeModal}>
               Cancel
@@ -115,111 +115,8 @@ const ModalEstimationCost = () => {
       )}
       {step == STEP.PAYMENT && (
         <div className="grid grid-cols-1 items-center gap-4">
-          <Title as="h4" className="font-semibold">
-            Add Payment Method
-          </Title>
-          <Input
-            label="Card Holder Name"
-            placeholder="John Doe"
-            {...register('name', {
-              required: { value: true, message: 'Name is required' },
-            })}
-            error={errors.name?.message}
-          />
-
-          <Controller
-            name="cardNumber"
-            control={control}
-            rules={{
-              required: { value: true, message: 'Card Number is required' },
-              pattern: {
-                value: /^\d{4} \d{4} \d{4} \d{4}$/,
-                message: 'Invalid card number',
-              },
-            }}
-            render={({ field }) => (
-              <NumberInput
-                {...field}
-                formatType="pattern"
-                format="#### #### #### ####"
-                placeholder="1234 1234 1234 1234"
-                mask="_"
-                customInput={Input as React.ComponentType<unknown>}
-                {...{
-                  label: 'Card Number',
-                  variant: 'outline',
-                  error: errors.cardNumber?.message,
-                }}
-              />
-            )}
-          />
-
-          <div className="grid grid-cols-2 gap-2">
-            <Controller
-              name="expiryDate"
-              control={control}
-              rules={{
-                required: { value: true, message: 'Card Number is required' },
-                pattern: {
-                  value: /^\d{2}\/\d{2}$/,
-                  message: 'Invalid expiry date',
-                },
-              }}
-              render={({ field }) => (
-                <CardExpiry
-                  {...field}
-                  isMask
-                  formatType="custom"
-                  placeholder="MM/YY"
-                  mask={['M', 'M', 'Y', 'Y']}
-                  allowEmptyFormatting
-                  customInput={Input as React.ComponentType<unknown>}
-                  {...{
-                    label: 'Expiry Date',
-                    variant: 'outline',
-                    error: errors.expiryDate?.message,
-                  }}
-                />
-              )}
-            />
-            <Controller
-              name="cvv"
-              control={control}
-              rules={{
-                required: { value: true, message: 'CVV is required' },
-                pattern: {
-                  value: /^\d{3}$/,
-                  message: 'Invalid CVV',
-                },
-              }}
-              render={({ field }) => (
-                <NumberInput
-                  {...field}
-                  formatType="pattern"
-                  format="###"
-                  mask={['C', 'V', 'V']}
-                  allowEmptyFormatting
-                  customInput={Input as React.ComponentType<unknown>}
-                  {...{
-                    label: 'Security Code (CVV)',
-                    variant: 'outline',
-                    error: errors.cvv?.message,
-                  }}
-                />
-              )}
-            />
-          </div>
-          <div className="rounded-lg bg-green-100 p-4">
-            <Text>
-              To verify your card details, a AU$1 temporary authorisation charge
-              will be placed on your card. This is temporary and will be removed
-              from your statement.
-            </Text>
-          </div>
+          <StripeCheckout />
           <div className="flex flex-col gap-2">
-            <Button className="bg-green-600" onClick={handleSubmit(onSubmit)}>
-              Add Payment Method
-            </Button>
             <Button variant="text" onClick={() => setStep(STEP.ESTIMATE_COST)}>
               Cancel
             </Button>

@@ -7,6 +7,7 @@ import {
 import {
   IParamGetAllClinicForPatient,
   IParamGetDoctorByClinicForPatient,
+  IPayloadCheckout,
   IPayloadRegisterForPatient,
 } from '@/types/paramTypes';
 
@@ -37,4 +38,8 @@ export async function getDoctorByClinicForPatient(
 
 export async function registerForClient(payload: IPayloadRegisterForPatient) {
   return await post<any>('/patient/auth/register', payload);
+}
+
+export async function postCheckout(payload: IPayloadCheckout) {
+  return await post<any>('/checkout', payload);
 }

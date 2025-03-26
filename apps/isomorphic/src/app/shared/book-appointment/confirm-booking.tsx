@@ -300,8 +300,6 @@ const ConfirmBooking = ({ onPrevStep }: { onPrevStep: () => void }) => {
                 }}
               >
                 {({ register, control, formState: { errors } }) => {
-                  console.log('🚀 ~ errors:', errors);
-
                   return (
                     <>
                       <div className="mt-4 space-y-4">
