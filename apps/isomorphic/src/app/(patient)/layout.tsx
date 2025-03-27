@@ -1,7 +1,7 @@
 'use client';
 
+import PatientLayout from '@/layouts/patient/patient-layout';
 import { useIsMounted } from '@core/hooks/use-is-mounted';
-import HydrogenLayout from '@/layouts/hydrogen/layout';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -17,5 +17,5 @@ function LayoutProvider({ children }: LayoutProps) {
   if (!isMounted) {
     return null;
   }
-  return <HydrogenLayout>{children}</HydrogenLayout>;
+  return <PatientLayout>{children}</PatientLayout>;
 }

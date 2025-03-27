@@ -29,7 +29,7 @@ import { PiCaretDownBold } from 'react-icons/pi';
 import Link from 'next/link';
 import StatusBadge from '@core/components/get-status-badge';
 
-const DrawerSideBar = ({ onClose }: { onClose: () => void }) => {
+const PatientDrawerSideBar = ({ onClose }: { onClose: () => void }) => {
   const router = useRouter();
   const { data, status } = useSession();
   const [open, setOpen] = useState(
@@ -441,4 +441,4 @@ const DrawerSideBar = ({ onClose }: { onClose: () => void }) => {
   );
 };
 
-export default DrawerSideBar;
+export default PatientDrawerSideBar;

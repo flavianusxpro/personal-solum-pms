@@ -22,7 +22,8 @@ import StandartConsult from './standart-consult';
 import { useModal } from '../modal-views/use-modal';
 import dayjs from 'dayjs';
 import { useGetAllClinicsForPatient } from '@/hooks/useClinic';
-import DrawerSideBar from './drawer/drawer-sidebar';
+import PatientHeader from '../patient-header';
+import patientDrawerAtom from '@/store/drawer';
 
 const BookAppointment = () => {
   const { openModal } = useModal();
@@ -31,7 +32,7 @@ const BookAppointment = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [showClinicOptions, setShowClinicOptions] = useState(false);
-  const [drawerSideBar, setDrawerSideBar] = useState(false);
+  const [patientDrawer, setPatientDrawer] = useAtom(patientDrawerAtom);
 
   const { data: dataClinics, isLoading: isLoadingClinics } =
     useGetAllClinicsForPatient({
@@ -64,23 +65,12 @@ const BookAppointment = () => {
   };
 
   const toggleDrawerSideBar = () => {
-    setDrawerSideBar((prev) => !prev);
+    setPatientDrawer((prev) => ({ ...prev, isOpen: !prev.isOpen }));
   };
 
   return (
     <div className="flex w-full flex-col items-center bg-white">
-      <header className="relative w-full bg-gradient-to-r from-orange-400 to-orange-600 p-14 text-center text-white">
-        <h1 className="text-3xl font-bold">Solum</h1>
-        <p className="text-lg font-semibold">
-          Find your nearest Solum Clinic Centre
-        </p>
-        <ActionIcon
-          className="absolute right-4 top-4"
-          onClick={toggleDrawerSideBar}
-        >
-          <BiMenu size={32} />
-        </ActionIcon>
-      </header>
+      <PatientHeader toggleDrawerSideBar={toggleDrawerSideBar} />
       <Stepper
         currentIndex={currentStep}
         className="mt-4 w-full max-w-6xl flex-wrap p-4"
@@ -225,10 +215,6 @@ const BookAppointment = () => {
           <ConfirmBooking onPrevStep={onPrevStep} />
         ) : null}
       </div>
-
-      <Drawer isOpen={drawerSideBar} onClose={() => setDrawerSideBar(false)}>
-        <DrawerSideBar onClose={() => setDrawerSideBar(false)} />
-      </Drawer>
     </div>
   );
 };

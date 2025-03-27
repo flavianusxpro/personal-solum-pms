@@ -3,7 +3,7 @@
 import { routes } from '@/config/routes';
 import { SessionProvider, useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 export default function AuthProvider({
   children,
@@ -20,7 +20,7 @@ export function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const whitelist = [routes.signIn, , routes.bookAppointment];
+  const whitelist = useMemo(() => [routes.signIn, routes.bookAppointment], []);
 
   useEffect(() => {
     if (status === 'unauthenticated' && !whitelist.includes(pathname)) {
@@ -34,7 +34,7 @@ export function ProtectedLayout({ children }: { children: React.ReactNode }) {
 
       router.push(url);
     }
-  }, [status, router, pathname]);
+  }, [status, router, pathname, whitelist]);
 
   if (status === 'loading') return <p>Loading...</p>;
 
