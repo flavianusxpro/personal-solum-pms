@@ -1,9 +1,7 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import { PaymentMethodFormInput } from '@/validators/payment-method.schema';
 import CheckCircleIcon from '@core/components/icons/check-circle';
 import { useRouter } from 'next/navigation';
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useEffect } from 'react';
 import {
   ActionIcon,
   Button,
@@ -16,6 +14,7 @@ import {
   usePatternFormat,
 } from 'rizzui';
 import StripeCheckout from '../../stripe-checkout/stripe-checkout';
+import { routes } from '@/config/routes';
 
 const STEP = {
   ESTIMATE_COST: 'estimate-cost',
@@ -26,19 +25,26 @@ const STEP = {
 const ModalEstimationCost = () => {
   const { closeModal } = useModal();
   const router = useRouter();
+  const intervalRef = React.useRef(0);
 
   const [step, setStep] = React.useState(STEP.ESTIMATE_COST);
+  const [second, setSecond] = React.useState(5);
 
-  const {
-    control,
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<PaymentMethodFormInput>({});
+  useEffect(() => {
+    if (step == STEP.CONFIRM) {
+      startCountDown();
+      setTimeout(() => {
+        router.push(routes.consentForm);
+      }, 5000);
+    }
 
-  const onSubmit = (data: PaymentMethodFormInput) => {
-    console.log('data', data);
-    setStep(STEP.CONFIRM);
+    return () => clearInterval(intervalRef.current);
+  }, [closeModal, router, step]);
+
+  const startCountDown = () => {
+    intervalRef.current = window.setInterval(() => {
+      setSecond((prev) => prev - 1);
+    }, 1000);
   };
 
   return (
@@ -115,7 +121,7 @@ const ModalEstimationCost = () => {
       )}
       {step == STEP.PAYMENT && (
         <div className="grid grid-cols-1 items-center gap-4">
-          <StripeCheckout />
+          <StripeCheckout onSuccess={() => setStep(STEP.CONFIRM)} />
           <div className="flex flex-col gap-2">
             <Button variant="text" onClick={() => setStep(STEP.ESTIMATE_COST)}>
               Cancel
@@ -132,10 +138,14 @@ const ModalEstimationCost = () => {
             </Title>
           </div>
 
+          <Text>
+            You will redirect to the consent form in {second} second...
+          </Text>
+
           <div className="flex flex-col gap-2">
             <Button
               className="bg-green-600"
-              onClick={() => router.push('/form/consent-form')}
+              onClick={() => router.push(routes.consentForm)}
             >
               OK
             </Button>
@@ -147,29 +157,3 @@ const ModalEstimationCost = () => {
 };
 
 export default ModalEstimationCost;
-
-type CardExpiryType = NumberInputProps & {
-  isMask?: boolean;
-};
-function CardExpiry({ isMask = false, ...props }: CardExpiryType) {
-  const { format } = usePatternFormat({
-    ...props,
-    format: '##/##',
-  });
-  const _format = (val: string) => {
-    let month = val.substring(0, 2);
-    const year = val.substring(2, 4);
-
-    if (month.length === 1 && parseInt(month[0]) > 1) {
-      month = `0${month[0]}`;
-    } else if (month.length === 2) {
-      if (Number(month) === 0) {
-        month = '01';
-      } else if (Number(month) > 12) {
-        month = '12';
-      }
-    }
-    return isMask ? format?.(`${month}${year}`) : `${month}/${year}`;
-  };
-  return <NumberInput {...props} format={_format as any} />;
-}

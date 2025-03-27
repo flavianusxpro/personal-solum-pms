@@ -14,13 +14,8 @@ export default function PatientSelection() {
   const { openModal } = useModal();
 
   const { data: dataProfile, isLoading: isLoadingProfile } = useProfile();
-  console.log('🚀 ~ PatientSelection ~ dataProfile:', dataProfile);
 
   const onSubmitPatient: SubmitHandler<PatientSchema> = async (data) => {
-    console.log(
-      '🚀 ~ constonSubmitPatient:SubmitHandler<PatientSchema>= ~ data:',
-      data
-    );
     return openModal({
       view: <ModalEstimationCost />,
     });

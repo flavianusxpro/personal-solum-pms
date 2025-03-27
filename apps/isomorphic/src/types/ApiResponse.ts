@@ -129,3 +129,10 @@ export interface IGetProfileResponse extends ApiResponse {
     updated_at: string;
   };
 }
+
+export interface IPostOneTimePaymentResponse extends ApiResponse {
+  data: {
+    id: string;
+    clientSecret: string;
+  };
+}

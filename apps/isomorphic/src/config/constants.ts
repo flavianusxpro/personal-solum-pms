@@ -50,3 +50,14 @@ export const patientTitle: SelectOption[] = [
   { label: 'Dr', value: 'dr' },
   { label: 'Other / Prefer Not Specify', value: '' },
 ];
+
+export const step3Button = [
+  'Natural therapy consult',
+  'Follow up appointment',
+  'Script renewal',
+  'Standard Consult',
+  'Medical certificate',
+  'Travel medicine',
+  'Nicotine Vaping Cessation',
+  'Weight Loss',
+];

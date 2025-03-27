@@ -10,6 +10,9 @@ interface BookAppointmentState {
     doctorTime?: string;
   };
   clinic?: IGetAllClinicForPatientResponse['data'][number];
+  step1?: string;
+  step2?: string;
+  step3?: string;
 }
 
 export const defaultBookAppointment: BookAppointmentState = {};

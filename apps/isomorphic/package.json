@@ -46,6 +46,7 @@
     "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/react-query": "^5.67.1",
     "@tanstack/react-table": "^8.20.5",
+    "@types/prop-types": "^15.7.14",
     "@uploadthing/react": "^6.8.0",
     "ahooks": "^3.8.1",
     "axios": "^1.8.1",

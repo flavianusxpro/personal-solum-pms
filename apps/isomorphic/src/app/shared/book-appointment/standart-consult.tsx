@@ -1,20 +1,9 @@
 import bookAppointmentAtom from '@/store/book-appointment';
 import { useAtom } from 'jotai';
 import React, { useState } from 'react';
-import { IoArrowBackCircle } from 'react-icons/io5';
-import { ActionIcon, Button, Title } from 'rizzui';
+import { Button, Title } from 'rizzui';
 import StepBackButton from './step-back-button';
-
-const step3Button = [
-  'Natural therapy consult',
-  'Follow up appointment',
-  'Script renewal',
-  'Standard Consult',
-  'Medical certificate',
-  'Travel medicine',
-  'Nicotine Vaping Cessation',
-  'Weight Loss',
-];
+import { step3Button } from '@/config/constants';
 
 const StandartConsult = ({
   onNextStep,
