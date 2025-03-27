@@ -44,7 +44,9 @@ export default function PatientHeader({
           )}
           {status === 'unauthenticated' ? (
             <div className="">
-              <Button onClick={toggleDrawerSideBar}>Sign In</Button>
+              <Button variant="outline" onClick={toggleDrawerSideBar}>
+                Sign In
+              </Button>
             </div>
           ) : (
             <>

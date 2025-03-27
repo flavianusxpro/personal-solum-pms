@@ -6,7 +6,9 @@ import { atom } from 'jotai';
 
 interface BookAppointmentState {
   appointmentDate?: string;
-  doctor?: IGetDoctorByClinicForPatientResponse['data'][number];
+  doctor?: IGetDoctorByClinicForPatientResponse['data'][number] & {
+    doctorTime?: string;
+  };
   clinic?: IGetAllClinicForPatientResponse['data'][number];
 }
 

@@ -105,7 +105,9 @@ const BookAppointment = () => {
         />
         <Stepper.Step
           title={
-            bookAppointmentValue.clinic ? 'Standard Consult' : 'Select Location'
+            bookAppointmentValue.clinic
+              ? 'Standard Consult'
+              : 'Standard Consult'
           }
           description="Type of Consult"
           className="basis-min-content cursor-pointer"
@@ -113,7 +115,9 @@ const BookAppointment = () => {
         />
         <Stepper.Step
           title={
-            bookAppointmentValue.clinic ? 'Doctor & Time' : 'Doctor & Time'
+            bookAppointmentValue.doctor?.first_name
+              ? `${bookAppointmentValue.doctor?.first_name} ${bookAppointmentValue.doctor?.last_name} & ${bookAppointmentValue.doctor?.doctorTime}`
+              : 'Doctor & Time'
           }
           className="basis-min-content cursor-pointer"
         />
