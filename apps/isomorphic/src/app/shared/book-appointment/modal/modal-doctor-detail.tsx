@@ -22,14 +22,18 @@ export default function ModalDoctorDetails() {
       <div className="grid grid-cols-1 gap-6 p-4">
         <div className="">
           <Image
-            src={bookAppointmentValue?.doctor?.image}
+            src={
+              bookAppointmentValue?.doctor?.url_photo ||
+              'https://solumclinic.zedmed-appointments.systems/images/doctor_default.png'
+            }
             width={100}
             height={100}
-            alt={bookAppointmentValue?.doctor?.name}
+            alt={bookAppointmentValue?.doctor?.first_name || 'doctor'}
             className="rounded-full object-cover"
           />
           <Text className="text-lg font-semibold">
-            {bookAppointmentValue?.doctor?.name}
+            {bookAppointmentValue?.doctor?.first_name}{' '}
+            {bookAppointmentValue?.doctor?.last_name}
           </Text>
         </div>
 

@@ -8,12 +8,11 @@ import { PiCaretLeftBold, PiCaretRightBold } from 'react-icons/pi';
 import { usePathname } from 'next/navigation';
 import { useLayout } from '@/layouts/use-layout';
 import { LAYOUT_OPTIONS } from '@/config/enums';
-import { useBerylliumSidebars } from '@/layouts/beryllium/beryllium-utils';
 
 interface menuInterface {
-  label: string,
-  value: string,
-  notif?: boolean
+  label: string;
+  value: string;
+  notif?: boolean;
 }
 
 const menuItems: menuInterface[] = [
@@ -40,7 +39,7 @@ const menuItems: menuInterface[] = [
 ];
 
 export default function Navigation() {
-// export default function Navigation() {
+  // export default function Navigation() {
 
   const pathname = usePathname();
   const { layout } = useLayout();
@@ -51,7 +50,6 @@ export default function Navigation() {
     scrollToTheRight,
     scrollToTheLeft,
   } = useScrollableSlider();
-  const { expandedLeft } = useBerylliumSidebars();
   return (
     <div
       className={cn(
@@ -60,10 +58,7 @@ export default function Navigation() {
           ? 'top-[66px] sm:top-[70px] md:top-[73px]'
           : layout === LAYOUT_OPTIONS.BERYLLIUM
             ? 'top-[62px] sm:top-[72px] 2xl:top-[72px]'
-            : 'top-[62px] md:top-[71px]',
-        layout === LAYOUT_OPTIONS.BERYLLIUM &&
-          expandedLeft &&
-          'xl:-ms-1 xl:px-0 3xl:-ms-2 3xl:ps-0 4xl:-ms-2'
+            : 'top-[62px] md:top-[71px]'
       )}
     >
       <div className="relative flex items-center overflow-hidden">
@@ -98,17 +93,16 @@ export default function Navigation() {
                 >
                   {menu.label}
                 </Text>
-                {
-                  menu?.notif ? (
-                    <Badge
-                       renderAsDot
-                       color="danger"
-                       enableOutlineRing
-                       className="absolute right-2.5 top-2.5 translate-x-1/2"
-                     />
-                  ):
-                    <></>
-                }
+                {menu?.notif ? (
+                  <Badge
+                    renderAsDot
+                    color="danger"
+                    enableOutlineRing
+                    className="absolute right-2.5 top-2.5 translate-x-1/2"
+                  />
+                ) : (
+                  <></>
+                )}
               </Link>
             ))}
           </div>
