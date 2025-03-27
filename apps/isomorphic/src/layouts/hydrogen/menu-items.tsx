@@ -95,16 +95,6 @@ export const patientMenuItems = [
     name: 'My Appointment',
     icon: <PiCurrencyDollarDuotone />,
     href: routes.myAppointment.dashboard,
-    dropdownItems: [
-      {
-        name: 'Upcoming',
-        href: routes.myAppointment.upcoming,
-      },
-      {
-        name: 'Previous',
-        href: routes.myAppointment.previous,
-      },
-    ],
   },
   {
     name: 'My Family',

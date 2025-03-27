@@ -85,7 +85,7 @@ function DropdownMenu() {
   const router = useRouter();
   const handleSignOut = async () => {
     await signOut({ redirect: false }); // Prevent automatic re-render
-    router.replace('/signin'); // Redirect immediately
+    router.replace(routes.signIn); // Redirect immediately
   };
 
   return (

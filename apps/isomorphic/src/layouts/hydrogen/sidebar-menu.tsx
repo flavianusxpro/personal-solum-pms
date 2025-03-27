@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Fragment } from 'react';
-import { usePathname } from 'next/navigation';
-import { Title, Collapse } from 'rizzui';
+import { usePathname, useRouter } from 'next/navigation';
+import { Title, Collapse, Button } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { PiCaretDownBold } from 'react-icons/pi';
 import {
@@ -9,16 +9,23 @@ import {
   patientMenuItems,
 } from '@/layouts/hydrogen/menu-items';
 import StatusBadge from '@core/components/get-status-badge';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { ROLES } from '@/config/constants';
+import { routes } from '@/config/routes';
 
 export function SidebarMenu() {
   const pathname = usePathname();
+  const router = useRouter();
   const { data } = useSession();
   const role = data?.user.role;
 
   const menuItems =
     role === ROLES.Administrator ? adminMenuItems : patientMenuItems;
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false }); // Prevent automatic re-render
+    router.replace(routes.signIn); // Redirect immediately
+  };
 
   return (
     <div className="mt-4 pb-3 3xl:mt-6">
@@ -140,6 +147,30 @@ export function SidebarMenu() {
                   </Link>
                 )}
               </>
+            ) : item?.isButton ? (
+              <Button
+                variant="text"
+                className={cn(
+                  'group relative mx-3 my-0.5 flex items-center justify-between rounded-md px-3 py-2 font-medium capitalize lg:my-1 2xl:mx-5 2xl:my-2',
+                  'w-full text-gray-700 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-700/90'
+                )}
+                onClick={() => handleSignOut()}
+              >
+                <div className="flex items-center truncate">
+                  {item?.icon && (
+                    <span
+                      className={cn(
+                        'me-2 inline-flex h-5 w-5 items-center justify-center rounded-md [&>svg]:h-[20px] [&>svg]:w-[20px]',
+
+                        'text-gray-800 dark:text-gray-500 dark:group-hover:text-gray-700'
+                      )}
+                    >
+                      {item?.icon}
+                    </span>
+                  )}
+                  <span className="truncate">{item.name}</span>
+                </div>
+              </Button>
             ) : (
               <Title
                 as="h6"
