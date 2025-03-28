@@ -3,24 +3,28 @@ import cn from '@core/utils/class-names';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Button, Flex } from 'rizzui';
+import { Button, Drawer, Flex } from 'rizzui';
 import HamburgerButton from '../hamburger-button';
 import PatientSidebar from './patient-sidebar';
+import { useAtom } from 'jotai';
+import patientDrawerAtom from '@/store/drawer';
+import PatientDrawerSideBar from '@/app/shared/book-appointment/drawer/drawer-sidebar';
 
 interface IProps {
-  toggleDrawerSideBar: () => void;
   className?: string;
 }
-export default function PatientHeader({
-  toggleDrawerSideBar,
-  className,
-}: IProps) {
+export default function PatientHeader({ className }: IProps) {
   const { status } = useSession();
   const pathname = usePathname();
+  const [patientDrawer, setPatientDrawer] = useAtom(patientDrawerAtom);
 
   const isBookingPage = pathname === routes.bookAppointment;
   const handleSignOut = async () => {
     await signOut({ redirect: false }); // Prevent automatic re-render
+  };
+
+  const toggleDrawerSideBar = () => {
+    setPatientDrawer((prev) => ({ ...prev, isOpen: !prev.isOpen }));
   };
 
   return (
@@ -71,6 +75,9 @@ export default function PatientHeader({
           )}
         </Flex>
       </div>
+      <Drawer isOpen={patientDrawer.isOpen} onClose={toggleDrawerSideBar}>
+        <PatientDrawerSideBar onClose={toggleDrawerSideBar} />
+      </Drawer>
     </header>
   );
 }
