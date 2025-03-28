@@ -49,17 +49,19 @@ export default function PatientHeader({
               </Button>
             </div>
           ) : (
-            <>
-              <Link
-                className="font-semibold hover:underline"
-                href={routes.myDashboard}
-              >
-                MyProfile
-              </Link>
-              <Button variant="outline" onClick={handleSignOut}>
-                Sign Out
-              </Button>
-            </>
+            isBookingPage && (
+              <>
+                <Link
+                  className="font-semibold hover:underline"
+                  href={routes.myDashboard}
+                >
+                  MyProfile
+                </Link>
+                <Button variant="outline" onClick={handleSignOut}>
+                  Sign Out
+                </Button>
+              </>
+            )
           )}
         </Flex>
       </div>
