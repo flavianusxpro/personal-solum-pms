@@ -43,7 +43,7 @@ const ModalEstimationCost = () => {
 
   const startCountDown = () => {
     intervalRef.current = window.setInterval(() => {
-      setSecond((prev) => prev - 1);
+      setSecond((prev) => (prev ? prev - 1 : 0));
     }, 1000);
   };
 

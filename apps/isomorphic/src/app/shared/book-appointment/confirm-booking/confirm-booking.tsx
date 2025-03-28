@@ -89,10 +89,10 @@ const ConfirmBooking = ({ onPrevStep }: { onPrevStep: () => void }) => {
                 )}
               </Text>
               <Text className="mt-3">
-                <strong>Time:</strong> 6:45 am
+                <strong>Time:</strong> {bookAppointmentValue.doctor?.doctorTime}
               </Text>
               <Text className="mt-3">
-                <strong>Type:</strong> Medical certificate
+                <strong>Type:</strong> {bookAppointmentValue.step3}
               </Text>
             </div>
             <Button

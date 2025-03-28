@@ -286,7 +286,7 @@ function DoctorTime({
         hour12: true,
       });
 
-      if (!bookedTimes.includes(timeString)) {
+      if (!bookedTimes.includes(timeString.split(' ')[0])) {
         times.push(timeString);
       }
 
