@@ -1,5 +1,5 @@
 import PatientDrawerSideBar from '@/app/shared/book-appointment/drawer/drawer-sidebar';
-import PatientHeader from '@/app/shared/patient-header';
+import PatientHeader from '@/layouts/patient/patient-header';
 import patientDrawerAtom from '@/store/drawer';
 import { useAtom } from 'jotai';
 import { Drawer } from 'rizzui';

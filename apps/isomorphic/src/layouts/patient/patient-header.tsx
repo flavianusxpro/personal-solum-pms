@@ -4,6 +4,8 @@ import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button, Flex } from 'rizzui';
+import HamburgerButton from '../hamburger-button';
+import PatientSidebar from './patient-sidebar';
 
 interface IProps {
   toggleDrawerSideBar: () => void;
@@ -28,6 +30,10 @@ export default function PatientHeader({
         className
       )}
     >
+      <HamburgerButton
+        className="absolute left-4 top-4"
+        view={<PatientSidebar className="static w-full 2xl:w-full" />}
+      />
       <h1 className="text-3xl font-bold">Solum</h1>
       <p className="text-lg font-semibold">
         Find your nearest Solum Clinic Centre

@@ -6,7 +6,7 @@ import SimpleBar from '@core/ui/simplebar';
 import Logo from '@core/components/logo';
 import { SidebarMenu } from './sidebar-menu';
 
-export default function Sidebar({ className }: { className?: string }) {
+export default function PatientSidebar({ className }: { className?: string }) {
   return (
     <aside
       className={cn(

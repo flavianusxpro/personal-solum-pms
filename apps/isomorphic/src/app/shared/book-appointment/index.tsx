@@ -22,7 +22,7 @@ import StandartConsult from './standart-consult';
 import { useModal } from '../modal-views/use-modal';
 import dayjs from 'dayjs';
 import { useGetAllClinicsForPatient } from '@/hooks/useClinic';
-import PatientHeader from '../patient-header';
+import PatientHeader from '../../../layouts/patient/patient-header';
 import patientDrawerAtom from '@/store/drawer';
 
 const BookAppointment = () => {

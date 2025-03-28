@@ -8,8 +8,7 @@ import {
   changePasswordSchema,
 } from '@/validators/change-password.schema';
 import { Form } from '@core/ui/form';
-import { BiChevronRight } from 'react-icons/bi';
-import { PiCalendar, PiCardholder } from 'react-icons/pi';
+import { PiCalendar, PiSmiley } from 'react-icons/pi';
 import { Button, Flex, Grid, Input, Password, Text, Title } from 'rizzui';
 
 export default function MyAccountDetails() {
@@ -21,7 +20,7 @@ export default function MyAccountDetails() {
             <Title className="text-lg font-semibold">
               My Booking Account Details
             </Title>{' '}
-            <PiCalendar className="h-6 w-6 text-green-600" />
+            <PiSmiley className="h-6 w-6 text-green-600" />
           </Flex>
           <div className="h-1 w-full bg-gray-50"></div>
 
