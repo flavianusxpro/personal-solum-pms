@@ -61,3 +61,49 @@ export const step3Button = [
   'Nicotine Vaping Cessation',
   'Weight Loss',
 ];
+
+export const genderOption: SelectOption[] = [
+  {
+    label: 'Male',
+    value: 'male',
+  },
+  {
+    label: 'Female',
+    value: 'female',
+  },
+];
+
+export const stateOption: SelectOption[] = [
+  {
+    label: 'NSW (New South Wales)',
+    value: 'nsw',
+  },
+  {
+    label: 'VIC (Victoria)',
+    value: 'vic',
+  },
+  {
+    label: 'QLD (Queensland)',
+    value: 'qld',
+  },
+  {
+    label: 'SA (South Australia)',
+    value: 'sa',
+  },
+  {
+    label: 'WA (Western Australia)',
+    value: 'wa',
+  },
+  {
+    label: 'TAS (Tasmania)',
+    value: 'tas',
+  },
+  {
+    label: 'NT (Northern Territory)',
+    value: 'nt',
+  },
+  {
+    label: 'ACT (Australian Capital Territory)',
+    value: 'act',
+  },
+];

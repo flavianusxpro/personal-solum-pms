@@ -19,7 +19,6 @@ import {
 import { Form } from '@core/ui/form';
 import { registerSchema, RegisterSchema } from '@/validators/register.schema';
 import CSelect from '../../ui/select';
-import genderData from '@/data/gender-data';
 import { useRegister } from '@/hooks/useAuth';
 import { routes } from '@/config/routes';
 import { useRouter } from 'next/navigation';
@@ -28,6 +27,7 @@ import cn from '@core/utils/class-names';
 import { PiCaretDownBold } from 'react-icons/pi';
 import Link from 'next/link';
 import StatusBadge from '@core/components/get-status-badge';
+import { genderOption } from '@/config/constants';
 
 const PatientDrawerSideBar = ({ onClose }: { onClose: () => void }) => {
   const router = useRouter();
@@ -391,7 +391,7 @@ const PatientDrawerSideBar = ({ onClose }: { onClose: () => void }) => {
                       <CSelect
                         {...field}
                         label="Gender"
-                        options={genderData}
+                        options={genderOption}
                         className="[&>label>span]:font-medium"
                         error={errors.gender?.message}
                       />

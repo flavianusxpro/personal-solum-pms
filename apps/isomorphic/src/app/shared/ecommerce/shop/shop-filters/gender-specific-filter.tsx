@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  genderData,
+  genderOption,
   initialState,
 } from '@/app/shared/ecommerce/shop/shop-filters/filter-utils';
 import { Radio, Title } from 'rizzui';
@@ -19,7 +19,7 @@ export default function GenderSpecificFilter({
         Items for
       </Title>
       <div className="flex flex-col space-y-4 pt-5">
-        {genderData?.map((item: any) => (
+        {genderOption?.map((item: any) => (
           <Radio
             key={`${item.name}-key-${item.id}`}
             label={item.name}

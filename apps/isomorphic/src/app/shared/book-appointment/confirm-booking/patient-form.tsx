@@ -4,8 +4,7 @@ import CSelect from '../../ui/select';
 import { Button, Input } from 'rizzui';
 import AdditionalInformation from './additional-information';
 import { Form } from '@core/ui/form';
-import { patientTitle } from '@/config/constants';
-import genderData from '@/data/gender-data';
+import { genderOption, patientTitle, stateOption } from '@/config/constants';
 import { IGetProfileResponse } from '@/types/ApiResponse';
 
 interface PatientFormProps {
@@ -76,7 +75,7 @@ const PatientForm: React.FC<PatientFormProps> = ({
                         label="Gender"
                         placeholder="Gender"
                         className="group relative z-0 w-full"
-                        options={genderData}
+                        options={genderOption}
                         error={errors.patientGender?.message as string}
                       />
                     )}
@@ -125,12 +124,19 @@ const PatientForm: React.FC<PatientFormProps> = ({
                     {...register('patienDateBirth')}
                     error={errors.patienDateBirth?.message as string}
                   />
-                  <Input
-                    label="State"
-                    placeholder="State"
-                    className="group relative z-0 w-full"
-                    {...register('patientState')}
-                    error={errors.patientState?.message as string}
+                  <Controller
+                    name="patientState"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        label="State"
+                        placeholder="State"
+                        className="group relative z-0 w-full"
+                        options={stateOption}
+                        error={errors.patientState?.message as string}
+                      />
+                    )}
                   />
                 </div>
                 <div className="grid gap-y-4 md:grid-cols-2 md:gap-6">

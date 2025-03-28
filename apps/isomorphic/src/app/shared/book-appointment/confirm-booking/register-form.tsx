@@ -6,7 +6,7 @@ import { useRegister } from '@/hooks/useAuth';
 import toast from 'react-hot-toast';
 import { Controller, SubmitHandler } from 'react-hook-form';
 import CSelect from '../../ui/select';
-import genderData from '@/data/gender-data';
+import { genderOption } from '@/config/constants';
 
 interface IProps {
   setCurrentStep: (step: number) => void;
@@ -129,7 +129,7 @@ export default function RegisterForm({ setCurrentStep }: IProps) {
                   <CSelect
                     {...field}
                     label="Gender"
-                    options={genderData}
+                    options={genderOption}
                     className="[&>label>span]:font-medium"
                     error={errors.gender?.message}
                   />

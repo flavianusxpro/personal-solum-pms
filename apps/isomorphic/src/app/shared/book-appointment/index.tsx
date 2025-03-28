@@ -32,7 +32,6 @@ const BookAppointment = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [showClinicOptions, setShowClinicOptions] = useState(false);
-  const [patientDrawer, setPatientDrawer] = useAtom(patientDrawerAtom);
 
   const { data: dataClinics, isLoading: isLoadingClinics } =
     useGetAllClinicsForPatient({
@@ -64,13 +63,9 @@ const BookAppointment = () => {
     });
   };
 
-  const toggleDrawerSideBar = () => {
-    setPatientDrawer((prev) => ({ ...prev, isOpen: !prev.isOpen }));
-  };
-
   return (
     <div className="flex w-full flex-col items-center bg-white">
-      <PatientHeader toggleDrawerSideBar={toggleDrawerSideBar} />
+      <PatientHeader />
       <Stepper
         currentIndex={currentStep}
         className="mt-4 w-full max-w-6xl flex-wrap p-4"
