@@ -4,7 +4,9 @@ import { SubmitHandler } from 'react-hook-form';
 import ModalEstimationCost from '../modal/modal-estimation';
 import { Loader } from 'rizzui';
 import { useProfile } from '@/hooks/useProfile';
-import PatientForm from './add-patient-info';
+import PatientForm from './patient-form';
+import ExistingPatient from './existing-patient';
+import { ExistingPatientSchema } from '@/validators/existing-patient.schema';
 
 export default function PatientSelection() {
   const { openModal } = useModal();
@@ -17,6 +19,15 @@ export default function PatientSelection() {
     });
   };
 
+  const onSubmitExistingPatient: SubmitHandler<ExistingPatientSchema> = async (
+    data
+  ) => {
+    console.log(
+      '🚀 ~ constonSubmitExistingPatient:SubmitHandler<ExistingPatientSchema>= ~ data:',
+      data
+    );
+  };
+
   return (
     <div className="border-r p-6 sm:w-2/3">
       <h3 className="text-lg font-semibold">Patient Selection</h3>
@@ -26,11 +37,6 @@ export default function PatientSelection() {
       </p>
 
       <div className="p-6">
-        <h3 className="text-lg font-semibold">Add Patient Information</h3>
-        <p className="text-sm text-gray-500">
-          Fill in the details of the patient who is attending this appointment.
-        </p>
-
         {!isLoadingProfile ? (
           <PatientForm
             onSubmitPatient={onSubmitPatient}
@@ -39,6 +45,7 @@ export default function PatientSelection() {
         ) : (
           <Loader variant="spinner" />
         )}
+        {/* <ExistingPatient onSubmitPatient={onSubmitExistingPatient} /> */}
       </div>
     </div>
   );
