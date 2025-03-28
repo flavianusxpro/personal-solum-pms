@@ -13,6 +13,7 @@ import { useGetDoctorByClinicForPatient } from '@/hooks/useClinic';
 import { IParamGetDoctorByClinicForPatient } from '@/types/paramTypes';
 import { IGetDoctorByClinicForPatientResponse } from '@/types/ApiResponse';
 import StepBackButton from './step-back-button';
+import cn from '@core/utils/class-names';
 
 const doctors = [
   {
@@ -320,9 +321,14 @@ function DoctorTime({
                 {time}
               </button>
             ))}
-            {currentOpen !== doctor.id && (
-              <div className="absolute bottom-0 h-1/2 w-full bg-gradient-to-t from-white to-white/50 transition-all delay-200 duration-1000 ease-in-out"></div>
-            )}
+            <div
+              className={cn(
+                'absolute bottom-0 h-1/2 w-full bg-gradient-to-t from-white to-white/50 transition-opacity duration-1000 ease-in-out',
+                currentOpen !== doctor.id
+                  ? 'opacity-100'
+                  : 'pointer-events-none opacity-0'
+              )}
+            ></div>
           </div>
         </div>
       ) : (
