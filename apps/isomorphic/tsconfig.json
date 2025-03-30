@@ -36,6 +36,6 @@
     "**/*.cjs",
     "**/*.mjs",
     ".next/types/**/*.ts"
-, "src/app/(hydrogen)/patient/[id]"  ],
+, "src/app/(admin)/patient/[id]"  ],
   "exclude": ["node_modules"]
 }

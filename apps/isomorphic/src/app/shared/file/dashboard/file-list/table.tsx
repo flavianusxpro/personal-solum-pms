@@ -2,13 +2,13 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { useTable } from '@core/hooks/use-table';
-import { useColumn } from '@core/hooks/use-column';
 import { getColumns } from '@/app/shared/file/dashboard/file-list/columns';
 import { Title } from 'rizzui';
 import ControlledTable from '@/app/shared/controlled-table/index';
 import { routes } from '@/config/routes';
 import { allFilesData } from '@/data/all-files';
+import { useTable } from '@core/hooks/use-table';
+import { useColumn } from '@core/hooks/use-column';
 
 export default function FileListTable({ className }: { className?: string }) {
   const [pageSize, setPageSize] = useState(5);

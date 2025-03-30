@@ -13,7 +13,7 @@ export const routes = {
   },
   setting: {
     dashboard: '/setting',
-    setup: '/setting/setup'
+    setup: '/setting/setup',
   },
   product: {
     dashboard: '/product',
@@ -27,6 +27,25 @@ export const routes = {
     edit: (id: string) => `/patient/edit/${id}`,
     patientDetail: (id: string) => `/patient/${id}`,
   },
+
+  // Patient
+  myDashboard: '/my-dashboard',
+  myAppointment: {
+    dashboard: '/my-appointment',
+    upcoming: '/my-appointment/upcoming',
+    previous: '/my-appointment/previous',
+  },
+  myFamily: {
+    dashboard: '/my-family',
+    announcement: '/my-family/announcement',
+    familyList: '/my-family/family-list',
+  },
+  paymentMethods: '/payment-methods',
+  myAccountDetails: '/my-account-details',
+  bookAppointment: '/book-appointment',
+  consentForm: '/form/consent-form',
+  consentFormConfirmation: '/form/consent-form/confirmation',
+
   eCommerce: {
     dashboard: '/ecommerce',
     products: '/ecommerce/products',

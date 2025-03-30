@@ -10,7 +10,7 @@ import {
 } from 'react-icons/pi';
 import { HeaderCell } from '@/app/shared/table';
 import { Title, Text, Checkbox, ActionIcon, Button, Popover } from 'rizzui';
-// import Favorite from '@/app/shared/file/manager/favorite';
+import Favorite from '@/app/shared/file/manager/favorite';
 
 type Columns = {
   data: any[];
@@ -116,38 +116,38 @@ export const getColumns = ({
       </>
     ),
   },
-  // {
-  //   title: <HeaderCell title="Shared" />,
-  //   dataIndex: 'shared',
-  //   key: 'shared',
-  //   width: 200,
-  //   render: (value: any) => {
-  //     return (
-  //       <div className="flex items-center justify-start">
-  //         {value.map((img: any, index: number) => {
-  //           return (
-  //             <Image
-  //               key={`fileavatar-${index}`}
-  //               src={img}
-  //               width={30}
-  //               height={30}
-  //               className="-me-2 aspect-square rounded-full border-2 border-gray-0 dark:border-gray-50"
-  //               alt="File Avatar"
-  //             />
-  //           );
-  //         })}
-  //       </div>
-  //     );
-  //   },
-  // },
+  {
+    title: <HeaderCell title="Shared" />,
+    dataIndex: 'shared',
+    key: 'shared',
+    width: 200,
+    render: (value: any) => {
+      return (
+        <div className="flex items-center justify-start">
+          {value.map((img: any, index: number) => {
+            return (
+              <Image
+                key={`fileavatar-${index}`}
+                src={img}
+                width={30}
+                height={30}
+                className="-me-2 aspect-square rounded-full border-2 border-gray-0 dark:border-gray-50"
+                alt="File Avatar"
+              />
+            );
+          })}
+        </div>
+      );
+    },
+  },
   {
     title: <></>,
     dataIndex: 'action',
     key: 'action',
-    width: 50,
+    width: 100,
     render: (_: string, row: any) => (
       <div className="flex items-center justify-end gap-3">
-        {/* <Favorite /> */}
+        <Favorite />
         <Popover placement="left">
           <Popover.Trigger>
             <ActionIcon variant="text">

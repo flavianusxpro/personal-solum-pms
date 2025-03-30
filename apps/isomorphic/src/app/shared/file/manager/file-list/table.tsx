@@ -2,13 +2,13 @@
 
 import { useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { useTable } from '@core/hooks/use-table';
 import { Button } from 'rizzui';
-import { useColumn } from '@core/hooks/use-column';
 import { getColumns } from '@/app/shared/file/manager/file-list/columns';
 import FileFilters from '@/app/shared/file/manager/file-filters';
 import ControlledTable from '@/app/shared/controlled-table/index';
 import { allFilesData } from '@/data/all-files';
+import { useTable } from '@core/hooks/use-table';
+import { useColumn } from '@core/hooks/use-column';
 const TableFooter = dynamic(() => import('@/app/shared/table-footer'), {
   ssr: false,
 });

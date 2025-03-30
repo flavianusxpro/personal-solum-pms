@@ -7,7 +7,7 @@ export const initialState = {
   ratings: [],
 };
 
-export const genderData = [
+export const genderOption = [
   {
     id: 1,
     name: 'Men',

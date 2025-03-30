@@ -1,8 +1,10 @@
 import { Toaster } from 'react-hot-toast';
 import { getServerSession } from 'next-auth/next';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-import AuthProvider from '@/app/api/auth/[...nextauth]/auth-provider';
+import AuthProvider, {
+  ProtectedLayout,
+} from '@/app/api/auth/[...nextauth]/auth-provider';
 import GlobalDrawer from '@/app/shared/drawer-views/container';
 import GlobalModal from '@/app/shared/modal-views/container';
 import { JotaiProvider, ThemeProvider } from '@/app/shared/theme-provider';
@@ -15,7 +17,7 @@ import NextProgress from '@core/components/next-progress';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import '@/app/globals.css';
-import { Providers } from './providers';
+import QueryQlientProvider from './shared/providers/query-client-providers';
 
 export const metadata = {
   title: siteConfig.title,
@@ -29,8 +31,6 @@ export default async function RootLayout({
 }) {
   const session = await getServerSession(authOptions);
 
-  const queryClient = new QueryClient();
-
   return (
     <html
       lang="en"
@@ -43,20 +43,19 @@ export default async function RootLayout({
         suppressHydrationWarning
         className={cn(inter.variable, lexendDeca.variable, 'font-inter')}
       >
-
-        <Providers>
+        <QueryQlientProvider>
           <AuthProvider session={session}>
             <ThemeProvider>
               <NextProgress />
               <JotaiProvider>
-                {children}
+                <ProtectedLayout>{children}</ProtectedLayout>
                 <Toaster />
                 <GlobalDrawer />
                 <GlobalModal />
               </JotaiProvider>
             </ThemeProvider>
           </AuthProvider>
-        </Providers>
+        </QueryQlientProvider>
       </body>
     </html>
   );

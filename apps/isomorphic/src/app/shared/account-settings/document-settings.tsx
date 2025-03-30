@@ -4,13 +4,13 @@ import { useState } from 'react';
 // import HorizontalFormBlockWrapper from '@/app/shared/account-settings/horiozontal-block';
 import {
   Button,
-//   Text,
+  //   Text,
   // Switch,
   // CheckboxGroup,
   // Checkbox,
   // RadioGroup,
   // Radio,
-//   Badge,
+  //   Badge,
 } from 'rizzui';
 // import { notificationsData } from '@/data/notifications';
 // import dayjs from 'dayjs';
@@ -18,14 +18,11 @@ import {
 import dynamic from 'next/dynamic';
 // import PageHeader from '@/app/shared/page-header';
 // import { routes } from '@/config/routes';
-import FileStats from '@/app/shared/file/manager/file-stats';
 // import { metaObject } from '@/config/site.config';
 import UploadButton from '@/app/shared/upload-button';
-import PageLayout from '@/app/(hydrogen)/file-manager/page-layout';
 const FileUpload = dynamic(() => import('@/app/shared/file-upload'), {
   ssr: false,
 });
-
 
 // const generalOptions = [
 //   {
@@ -67,8 +64,6 @@ export default function NotificationSettingsView() {
   return (
     <div className="@container">
       <UploadButton modalView={<FileUpload />} />
-      <FileStats className="mb-6 @5xl:mb-8 @7xl:mb-11" />
-      <PageLayout />
     </div>
   );
 }

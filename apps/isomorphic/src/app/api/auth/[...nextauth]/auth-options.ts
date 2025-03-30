@@ -2,9 +2,9 @@ import { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { env } from '@/env.mjs';
-import isEqual from 'lodash/isEqual';
 import { pagesOptions } from './pages-options';
 import { post } from '../../api';
+import { SignInApiResponse } from '@/types/ApiResponse';
 
 export const authOptions: NextAuthOptions = {
   debug: true,
@@ -28,21 +28,22 @@ export const authOptions: NextAuthOptions = {
         },
       };
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.accessToken = user.accessToken;
         token.role = user.role;
+        token.idToken = user.id;
       }
       return token;
     },
     async redirect({ url, baseUrl }) {
-      // const parsedUrl = new URL(url, baseUrl);
-      // if (parsedUrl.searchParams.has('callbackUrl')) {
-      //   return `${baseUrl}${parsedUrl.searchParams.get('callbackUrl')}`;
-      // }
-      // if (parsedUrl.origin === baseUrl) {
-      //   return url;
-      // }
+      const parsedUrl = new URL(url, baseUrl);
+      if (parsedUrl.searchParams.has('callbackUrl')) {
+        return `${baseUrl}${parsedUrl.searchParams.get('callbackUrl')}`;
+      }
+      if (parsedUrl.origin === baseUrl) {
+        return url;
+      }
       return baseUrl;
     },
   },
@@ -50,24 +51,32 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       id: 'credentials',
       name: 'Credentials',
-      credentials: {},
-      async authorize(credentials: any) {
-        // You need to provide your own logic here that takes the credentials
-        // submitted and returns either a object representing a user or value
-        // that is false/null if the credentials are invalid
-        console.log(`Credential: ${credentials}`);
-        const user = {
-          email: 'rizalhidayat180499@gmail.com',
-          password: '12345678',
+      credentials: {
+        email: { label: 'Email', type: 'text' },
+        password: { label: 'Password', type: 'password' },
+        role: { label: 'Role', type: 'text' },
+      },
+      async authorize(credentials) {
+        const role = credentials?.role;
+        const payload = {
+          email: credentials?.email,
+          password: credentials?.password,
         };
+        const url =
+          role === 'admin' ? 'admin/auth/login' : 'patient/auth/login';
 
-        const response: any = await post('admin/auth/login', user);
+        try {
+          const response = await post<SignInApiResponse>(url, payload);
 
-        if (response.success) {
-          return {
-            accessToken: response.data.access_token,
-            role: response.data.role,
-          } as any;
+          if (response.success && response.data) {
+            return {
+              ...response.data,
+              role: response?.data?.role?.name ?? 'patient',
+              accessToken: response?.data?.access_token,
+            } as any;
+          }
+        } catch (error) {
+          throw new Error('Invalid credentials');
         }
         return null;
       },

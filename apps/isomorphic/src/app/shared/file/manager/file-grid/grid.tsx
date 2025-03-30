@@ -7,8 +7,8 @@ import {
   PiTrashSimple,
 } from 'react-icons/pi';
 import { ActionIcon, Button, Popover, Title } from 'rizzui';
-import cn from '@core/utils/class-names';
 import Favorite from '@/app/shared/file/manager/favorite';
+import cn from '@core/utils/class-names';
 
 export default function Grid({
   data,

@@ -12,6 +12,7 @@ import {
 import SignaturePad from '../signature-pad';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
+import dayjs from 'dayjs';
 
 const MedicinalCannabisConsentForm: React.FC = () => {
   const router = useRouter();
@@ -22,6 +23,9 @@ const MedicinalCannabisConsentForm: React.FC = () => {
     formState: { errors },
   } = useForm<ConsentFormInput>({
     resolver: zodResolver(consentFormSchema),
+    defaultValues: {
+      date: dayjs().format('YYYY-MM-DD'),
+    },
   });
 
   const onSubmit: SubmitHandler<ConsentFormInput> = (data) => {
@@ -498,7 +502,7 @@ const MedicinalCannabisConsentForm: React.FC = () => {
                 control={control}
                 render={({ field }) => (
                   <SignaturePad
-                    className="col-span-6"
+                    className=""
                     saveSignature={(base64) => field.onChange(base64)}
                     error={errors.signature?.message}
                   />

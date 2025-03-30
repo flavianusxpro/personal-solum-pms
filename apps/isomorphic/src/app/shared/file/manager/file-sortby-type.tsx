@@ -1,13 +1,13 @@
 'use client';
 
 import { Button, Popover } from 'rizzui';
-import cn from '@core/utils/class-names';
-import DocIcon from '@core/components/icons/doc-solid';
-import FolderIcon from '@core/components/icons/folder-solid';
-import ImageIcon from '@core/components/icons/image-solid';
-import PDFIcon from '@core/components/icons/pdf-solid';
-import XMLIcon from '@core/components/icons/xml-solid';
 import { PiCaretDownBold } from 'react-icons/pi';
+import FolderIcon from '@core/components/icons/folder-solid';
+import PDFIcon from '@core/components/icons/pdf-solid';
+import DocIcon from '@core/components/icons/doc-solid';
+import XMLIcon from '@core/components/icons/xml-solid';
+import ImageIcon from '@core/components/icons/image-solid';
+import cn from '@core/utils/class-names';
 
 const fileTypeOptions = [
   {
