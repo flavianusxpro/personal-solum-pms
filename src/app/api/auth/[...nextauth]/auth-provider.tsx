@@ -28,7 +28,7 @@ export function ProtectedLayout({ children }: { children: React.ReactNode }) {
       const isSignInPage = pathname.includes(routes.signIn);
 
       const url =
-        !isHomePage || !isSignInPage
+        !isHomePage && !isSignInPage
           ? `${routes.signIn}?callbackUrl=${pathname}`
           : routes.signIn;
 

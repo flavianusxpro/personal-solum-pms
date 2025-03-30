@@ -15,7 +15,7 @@ import CSelect from '../shared/ui/select';
 const initialValues: LoginSchema = {
   email: 'rizalhidayat180499@gmail.com',
   password: '12345678',
-  role: 'patient',
+  role: 'admin',
   // rememberMe: true,
 };
 
