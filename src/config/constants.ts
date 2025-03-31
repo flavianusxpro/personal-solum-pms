@@ -107,3 +107,16 @@ export const stateOption: SelectOption[] = [
     value: 'act',
   },
 ];
+
+export const relationshipOption: SelectOption[] = [
+  { label: 'Spouse', value: 'spouse' },
+  { label: 'Parent', value: 'parent' },
+  { label: 'Sibling', value: 'sibling' },
+  { label: 'Child', value: 'child' },
+  { label: 'Guardian', value: 'guardian' },
+  { label: 'Relative', value: 'relative' },
+  { label: 'Friend', value: 'friend' },
+  { label: 'Colleague', value: 'colleague' },
+  { label: 'Neighbour', value: 'neighbour' },
+  { label: 'Other', value: 'other' },
+];

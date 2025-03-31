@@ -6,13 +6,13 @@ import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
 import { PiCaretDownBold, PiCaretUpBold } from 'react-icons/pi';
 import ControlledTable from '@/app/shared/controlled-table/index';
-import { getColumns } from '@/app/shared/tableDataPatient/columns';
+import { getColumns } from '@/app/shared/patient/table/columns';
 import { ActionIcon } from 'rizzui';
 import cn from '@core/utils/class-names';
-import ExpandedOrderRow from '@/app/shared/tableDataPatient/expanded-row';
+import ExpandedOrderRow from '@/app/shared/patient/table/expanded-row';
 // dynamic import
 const FilterElement = dynamic(
-  () => import('@/app/shared/tableDataPatient/filter-element'),
+  () => import('@/app/shared/patient/table/filter-element'),
   { ssr: false }
 );
 
@@ -66,47 +66,47 @@ export default function PatientTable({
   }, []);
 
   const {
-      isLoading,
-      isFiltered,
-      tableData,
-      currentPage,
-      totalItems,
-      handlePaginate,
-      filters,
-      updateFilter,
-      searchTerm,
-      handleSearch,
-      sortConfig,
-      handleSort,
+    isLoading,
+    isFiltered,
+    tableData,
+    currentPage,
+    totalItems,
+    handlePaginate,
+    filters,
+    updateFilter,
+    searchTerm,
+    handleSearch,
+    sortConfig,
+    handleSort,
+    selectedRowKeys,
+    setSelectedRowKeys,
+    handleRowSelect,
+    handleSelectAll,
+    handleDelete,
+    handleReset,
+  } = useTable(data, pageSize, filterState);
+
+  const columns = React.useMemo(
+    () =>
+      getColumns({
+        data,
+        sortConfig,
+        checkedItems: selectedRowKeys,
+        onHeaderCellClick,
+        onDeleteItem,
+        onChecked: handleRowSelect,
+        handleSelectAll,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
       selectedRowKeys,
-      setSelectedRowKeys,
+      onHeaderCellClick,
+      sortConfig.key,
+      sortConfig.direction,
+      onDeleteItem,
       handleRowSelect,
       handleSelectAll,
-      handleDelete,
-      handleReset,
-    } = useTable(data, pageSize, filterState);
-
-    const columns = React.useMemo(
-      () =>
-        getColumns({
-          data,
-          sortConfig,
-          checkedItems: selectedRowKeys,
-          onHeaderCellClick,
-          onDeleteItem,
-          onChecked: handleRowSelect,
-          handleSelectAll,
-        }),
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [
-        selectedRowKeys,
-        onHeaderCellClick,
-        sortConfig.key,
-        sortConfig.direction,
-        onDeleteItem,
-        handleRowSelect,
-        handleSelectAll,
-      ]
+    ]
   );
 
   const { visibleColumns, checkedColumns, setCheckedColumns } =

@@ -23,14 +23,14 @@ function getStatusBadge(status: number | string) {
       return (
         <div className="flex items-center">
           <Badge color="success" renderAsDot />
-          <Text className="ms-2 font-medium text-green-dark">{status}</Text>
+          <Text className="ms-2 font-medium text-green-dark">Active</Text>
         </div>
       );
     case 0:
       return (
         <div className="flex items-center">
           <Badge color="danger" renderAsDot />
-          <Text className="ms-2 font-medium text-red-dark">{status}</Text>
+          <Text className="ms-2 font-medium text-red-dark">Inactive</Text>
         </div>
       );
     default:
@@ -350,7 +350,7 @@ export const getWidgetColumns = ({
           color="invert"
         >
           <Link
-            href={routes.forms.profileSettings}
+            href={routes.patient.edit(row.id)}
             onClick={() => {
               localStorage.setItem('role', 'doctor');
             }}
@@ -373,7 +373,7 @@ export const getWidgetColumns = ({
           color="invert"
         >
           <Link
-            href={routes.forms.profileSettings}
+            href={routes.patient.patientDetail(row.id)}
             onClick={() => {
               localStorage.setItem('role', 'patient');
             }}
@@ -382,7 +382,7 @@ export const getWidgetColumns = ({
               as="span"
               size="sm"
               variant="outline"
-              aria-label={'View Order'}
+              aria-label={'View Patient'}
               className="hover:text-gray-700"
             >
               <EyeIcon className="h-4 w-4" />
@@ -390,8 +390,8 @@ export const getWidgetColumns = ({
           </Link>
         </Tooltip>
         <DeletePopover
-          title={`Delete the order`}
-          description={`Are you sure you want to delete this #${row.id} order?`}
+          title={`Delete the patient`}
+          description={`Are you sure you want to delete this #${row.id} patient?`}
           onDelete={() => onDeleteItem(row.id)}
         />
       </div>

@@ -1,5 +1,5 @@
 'use client';
-import { TabButton } from '@/app/shared/tab-button';
+import { TabButton } from '@/app/shared/ui/tab-button';
 import { useState, useTransition } from 'react';
 import { PiCalendar } from 'react-icons/pi';
 import { Flex, Text } from 'rizzui';

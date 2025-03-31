@@ -1,18 +1,14 @@
 'use client';
 
 import Image from 'next/image';
-import toast from 'react-hot-toast';
 import { useCallback, useState } from 'react';
 import { useDropzone } from '@uploadthing/react/hooks';
-import { generateClientDropzoneAccept } from 'uploadthing/client';
-import { useUploadThing } from '../../utils/uploadthing';
 import UploadIcon from '../../components/shape/upload';
 import { FieldError, Loader, Text } from 'rizzui';
 import cn from '../../utils/class-names';
 import { PiPencilSimple } from 'react-icons/pi';
 import { LoadingSpinner } from './upload-zone';
 import { FileWithPath } from 'react-dropzone';
-import { ClientUploadedFileData } from 'uploadthing/types';
 
 interface UploadZoneProps {
   name: string;
@@ -33,37 +29,6 @@ export default function AvatarUpload({
 
   const formValue = getValues(name);
 
-  const { startUpload, permittedFileInfo, isUploading } = useUploadThing(
-    'avatar',
-    {
-      onClientUploadComplete: (
-        res: ClientUploadedFileData<any>[] | undefined
-      ) => {
-        if (setValue) {
-          const respondedUrls = res?.map((r) => ({
-            name: r.name,
-            size: r.size,
-            url: r.url,
-          }));
-          setValue(name, respondedUrls?.[0]);
-        }
-        toast.success(
-          <Text as="b" className="font-semibold">
-            Avatar updated
-          </Text>
-        );
-      },
-      onUploadError: (error: Error) => {
-        console.error(error);
-        toast.error(error.message);
-      },
-    }
-  );
-
-  const fileTypes = permittedFileInfo?.config
-    ? Object.keys(permittedFileInfo?.config)
-    : [];
-
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[]) => {
       setFiles([
@@ -73,7 +38,7 @@ export default function AvatarUpload({
           })
         ),
       ]);
-      startUpload(files);
+      // startUpload(files);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [files]
@@ -81,7 +46,6 @@ export default function AvatarUpload({
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: fileTypes ? generateClientDropzoneAccept(fileTypes) : undefined,
   });
 
   return (
@@ -107,7 +71,7 @@ export default function AvatarUpload({
                 'absolute inset-0 grid place-content-center rounded-full bg-black/70'
               )}
             >
-              {isUploading ? (
+              {false ? (
                 <LoadingSpinner />
               ) : (
                 <PiPencilSimple className="h-5 w-5 text-white" />
@@ -126,7 +90,7 @@ export default function AvatarUpload({
             <input {...getInputProps()} />
             <UploadIcon className="mx-auto h-12 w-12" />
 
-            {isUploading ? (
+            {false ? (
               <Loader variant="spinner" className="justify-center" />
             ) : (
               <Text className="font-medium">Drop or select file</Text>
