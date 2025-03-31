@@ -36,16 +36,6 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async redirect({ url, baseUrl }) {
-      const parsedUrl = new URL(url, baseUrl);
-      if (parsedUrl.searchParams.has('callbackUrl')) {
-        return `${baseUrl}${parsedUrl.searchParams.get('callbackUrl')}`;
-      }
-      if (parsedUrl.origin === baseUrl) {
-        return url;
-      }
-      return baseUrl;
-    },
   },
   providers: [
     CredentialsProvider({

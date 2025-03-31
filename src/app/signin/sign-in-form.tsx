@@ -10,7 +10,7 @@ import { loginSchema, LoginSchema } from '@/validators/login.schema';
 import { signIn } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import CSelect from '../shared/ui/select';
+import { useSearchParams } from 'next/navigation';
 
 const initialValues: LoginSchema = {
   email: 'rizalhidayat180499@gmail.com',
@@ -21,6 +21,9 @@ const initialValues: LoginSchema = {
 
 export default function SignInForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams?.get('callbackUrl');
+
   const isMedium = useMedia('(max-width: 1200px)', false);
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
     const res = await signIn('credentials', {
@@ -31,7 +34,11 @@ export default function SignInForm() {
 
     if (res?.ok) {
       toast.success('Login successful');
-      router.push('/');
+      if (callbackUrl) {
+        router.push(callbackUrl);
+      } else {
+        router.push(routes.appointment.dashboard);
+      }
     }
 
     if (res?.error) {
