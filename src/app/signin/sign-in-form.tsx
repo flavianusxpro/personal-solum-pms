@@ -9,8 +9,7 @@ import { routes } from '@/config/routes';
 import { loginSchema, LoginSchema } from '@/validators/login.schema';
 import { signIn } from 'next-auth/react';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const initialValues: LoginSchema = {
   email: 'rizalhidayat180499@gmail.com',
@@ -34,7 +33,7 @@ export default function SignInForm() {
 
     if (res?.ok) {
       toast.success('Login successful');
-      if (callbackUrl) {
+      if (callbackUrl && callbackUrl !== '/') {
         router.push(callbackUrl);
       } else {
         router.push(routes.appointment.dashboard);
