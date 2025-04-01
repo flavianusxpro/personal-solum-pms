@@ -47,7 +47,7 @@ export default function TabAssignDoctor() {
       {({ register, control, watch, formState: { errors } }) => {
         return (
           <>
-            <Flex direction="col" className="">
+            <Flex direction="col" className="" gap="7">
               <FormGroup title="Assign Doctor" className="" />
               <div className="mb-10 grid w-full grid-cols-2 gap-7">
                 <FormGroup title="Doctors">
@@ -62,21 +62,6 @@ export default function TabAssignDoctor() {
                         clearable
                         placeholder="Select Doctor"
                         error={errors.doctor?.message}
-                        className="flex-grow"
-                      />
-                    )}
-                  />
-                </FormGroup>
-                <FormGroup title="General Practice">
-                  <Controller
-                    name="generalPractice"
-                    control={control}
-                    render={({ field }) => (
-                      <CSelect
-                        {...field}
-                        options={relationshipOption}
-                        placeholder="General Practice"
-                        error={errors.generalPractice?.message}
                         className="flex-grow"
                       />
                     )}

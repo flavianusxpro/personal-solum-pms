@@ -146,7 +146,7 @@ export const getColumns = ({
     key: 'action',
     width: 100,
     render: (_: string, row: any) => (
-      <div className="flex items-center justify-end gap-3">
+      <div className="relative flex items-center justify-end gap-3">
         <Favorite />
         <Popover placement="left">
           <Popover.Trigger>
@@ -154,7 +154,7 @@ export const getColumns = ({
               <PiDotsThreeOutlineVerticalFill className="h-[18px] w-[18px] text-gray-500" />
             </ActionIcon>
           </Popover.Trigger>
-          <Popover.Content className="min-w-[140px] px-2 dark:bg-gray-100 [&>svg]:dark:fill-gray-100">
+          <Popover.Content className="z-0 min-w-[140px] px-2 dark:bg-gray-100 [&>svg]:dark:fill-gray-100">
             <div className="text-gray-900">
               <Button
                 variant="text"

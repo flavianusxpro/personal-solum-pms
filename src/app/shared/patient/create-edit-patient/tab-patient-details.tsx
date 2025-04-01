@@ -12,10 +12,13 @@ import {
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
 import { Flex, Input, Loader, Text, Textarea } from 'rizzui';
-// import UploadZone from '@core/ui/file-upload/upload-zone';
 import AvatarUpload from '@core/ui/file-upload/avatar-upload';
 import CSelect from '@/core/ui/select';
-import { stateOption } from '@/config/constants';
+import { genderOption, stateOption } from '@/config/constants';
+import {
+  patientDetailsFormSchema,
+  PatientDetailsFormTypes,
+} from '@/validators/patient-details.schema';
 
 const Select = dynamic(() => import('rizzui').then((mod) => mod.Select), {
   ssr: false,
@@ -40,8 +43,8 @@ export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
   };
 
   return (
-    <Form<PersonalInfoFormTypes>
-      validationSchema={personalInfoFormSchema}
+    <Form<PatientDetailsFormTypes>
+      validationSchema={patientDetailsFormSchema}
       // resetValues={reset}
       onSubmit={onSubmit}
       className="@container"
@@ -75,6 +78,20 @@ export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
                     {...register('first_name')}
                     error={errors.first_name?.message}
                     className="flex-grow"
+                  />
+                </FormGroup>
+                <FormGroup title="Gender">
+                  <Controller
+                    name="first_name"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        label=""
+                        placeholder="Select Gender"
+                        options={genderOption}
+                      />
+                    )}
                   />
                 </FormGroup>
                 <FormGroup title="Birth of Date">
@@ -175,31 +192,33 @@ export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
                     className="flex-grow"
                   />
                 </FormGroup>
-                <Flex justify="between" align="center" gap="4">
-                  <Controller
-                    name="country"
-                    control={control}
-                    render={({ field }) => (
-                      <CSelect
-                        {...field}
-                        label="State"
-                        placeholder="State"
-                        className="group relative z-0"
-                        options={stateOption}
-                        error={errors.country?.message as string}
-                        labelClassName="text-base font-medium"
-                      />
-                    )}
-                  />
-                  <Input
-                    label="Post Code"
-                    placeholder="Post Code"
-                    {...register('first_name')}
-                    error={errors.first_name?.message}
-                    labelClassName="text-base font-bold"
-                    className="flex-grow"
-                  />
-                </Flex>
+                <Controller
+                  name="country"
+                  control={control}
+                  render={({ field }) => (
+                    <FormGroup title="State">
+                      <Flex justify="between" align="center" gap="4">
+                        <CSelect
+                          {...field}
+                          label=""
+                          placeholder="State"
+                          className="group relative z-0"
+                          options={stateOption}
+                          error={errors.country?.message as string}
+                          labelClassName="text-base font-medium"
+                        />
+                        <Input
+                          label="Post Code"
+                          placeholder="Post Code"
+                          {...register('first_name')}
+                          error={errors.first_name?.message}
+                          labelClassName="text-base font-bold"
+                          className="flex-grow"
+                        />
+                      </Flex>
+                    </FormGroup>
+                  )}
+                />
               </div>
             </div>
             <FormFooter

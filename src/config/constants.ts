@@ -71,6 +71,10 @@ export const genderOption: SelectOption[] = [
     label: 'Female',
     value: 'female',
   },
+  {
+    label: 'Prefer not to say',
+    value: 'prefer-not-to-say',
+  },
 ];
 
 export const stateOption: SelectOption[] = [
