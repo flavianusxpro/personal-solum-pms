@@ -59,7 +59,7 @@ export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
               <div className="flex flex-col gap-7">
                 <FormGroup
                   title="Personal Info"
-                  className="grid-cols-12 gap-4 pt-4"
+                  className="grid-cols-12 gap-4"
                 />
                 <FormGroup title="First Name">
                   <Input

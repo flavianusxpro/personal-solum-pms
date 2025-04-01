@@ -120,3 +120,11 @@ export const relationshipOption: SelectOption[] = [
   { label: 'Neighbour', value: 'neighbour' },
   { label: 'Other', value: 'other' },
 ];
+
+export const doctorsOption = [
+  { label: 'Dr. John Doe', value: 'dr-john-doe' },
+  { label: 'Dr. Jane Smith', value: 'dr-jane-smith' },
+  { label: 'Dr. Emily Johnson', value: 'dr-emily-johnson' },
+  { label: 'Dr. Michael Brown', value: 'dr-michael-brown' },
+  { label: 'Dr. Sarah Davis', value: 'dr-sarah-davis' },
+];

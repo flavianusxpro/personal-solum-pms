@@ -344,6 +344,11 @@
   scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0);
 }
 
+.rc-table-content table {
+  width: auto !important;
+  overflow: auto;
+}
+
 /* ................................................... */
 /* Change autocomplete styles in WebKit */
 /* ................................................... */

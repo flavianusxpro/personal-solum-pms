@@ -9,7 +9,8 @@ import PatientDetails from './tab-patient-details';
 import TabPassword from './tab-password';
 import TabEmergencyContact from './tab-emergency-contact';
 import TabBillingAppointments from './tab-billing-appointment';
-import TabDocumentation from './documentations/tab-documentation';
+import TabDocumentation from './tab-documentation';
+import TabAssignDoctor from './tab-assign-doctor';
 const pageHeader = {
   title: 'Alice Ronnie',
   breadcrumb: [
@@ -43,6 +44,10 @@ export const navItems = [
   {
     value: 'documentation',
     label: 'Documentations',
+  },
+  {
+    value: 'assign',
+    label: 'Assign Doctor',
   },
 ];
 
@@ -82,6 +87,7 @@ export default function CreateEditPatient() {
             {tab === 'emergency' && <TabEmergencyContact />}
             {tab === 'billing' && <TabBillingAppointments />}
             {tab === 'documentation' && <TabDocumentation />}
+            {tab === 'assign' && <TabAssignDoctor />}
           </div>
         </div>
       </div>

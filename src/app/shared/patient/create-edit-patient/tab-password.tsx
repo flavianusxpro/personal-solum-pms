@@ -27,7 +27,7 @@ export default function TabPassword() {
 
   return (
     <div>
-      <FormGroup title="Password" className="pt-4" />
+      <FormGroup title="Password" className="" />
       <Form<ChangePasswordSchema>
         validationSchema={changePasswordSchema}
         resetValues={reset}

@@ -57,7 +57,7 @@ export default function TabEmergencyContact() {
         return (
           <>
             <Flex direction="col" className="">
-              <FormGroup title="Emergency Contact" className="pt-4" />
+              <FormGroup title="Emergency Contact" className="" />
               <div className="mb-10 grid w-full grid-cols-2 gap-7">
                 <FormGroup title="First Name">
                   <Input
