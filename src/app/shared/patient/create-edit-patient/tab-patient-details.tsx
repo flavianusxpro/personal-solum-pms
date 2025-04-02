@@ -40,7 +40,9 @@ export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
       date_of_birth: data.date_of_birth as string,
       gender: data.date_of_birth as string,
       medicare_card_number: data.medicare_card as string,
-      medicare_expired_date: data.medicare_expiry as string,
+      medicare_expired_date: dayjs(data.medicare_expiry).format(
+        'DD MMMM YYYY'
+      ) as string,
       mobile_number: data.mobile_number as string,
       status: 1,
       timezone: data.timezone ?? 'Australia/Sydney',
@@ -264,6 +266,14 @@ export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
                     </FormGroup>
                   )}
                 />
+                <FormGroup title="Password">
+                  <Input
+                    placeholder="Password"
+                    {...register('password')}
+                    error={errors.password?.message}
+                    className="flex-grow"
+                  />
+                </FormGroup>
               </div>
             </div>
             <FormFooter
