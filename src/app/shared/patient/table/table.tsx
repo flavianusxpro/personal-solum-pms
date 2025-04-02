@@ -6,10 +6,11 @@ import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
 import { PiCaretDownBold, PiCaretUpBold } from 'react-icons/pi';
 import ControlledTable from '@/app/shared/controlled-table/index';
-import { getColumns } from '@/app/shared/patient/table/columns';
 import { ActionIcon } from 'rizzui';
 import cn from '@core/utils/class-names';
 import ExpandedOrderRow from '@/app/shared/patient/table/expanded-row';
+import { getColumns } from './columns';
+import { useGetAllPatients } from '@/hooks/usePatient';
 // dynamic import
 const FilterElement = dynamic(
   () => import('@/app/shared/patient/table/filter-element'),
@@ -37,22 +38,18 @@ function CustomExpandIcon(props: any) {
 }
 
 const filterState = {
-  price: ['', ''],
   createdAt: [null, null],
   updatedAt: [null, null],
   status: '',
 };
 
-export default function PatientTable({
-  data = [],
-  variant = 'modern',
-  className,
-}: {
-  data: any[];
-  variant?: 'modern' | 'minimal' | 'classic' | 'elegant' | 'retro';
-  className?: string;
-}) {
+export default function PatientTable({ className }: { className?: string }) {
   const [pageSize, setPageSize] = useState(10);
+
+  const { data, isLoading: isLoadingGetAllPatients } = useGetAllPatients({
+    page: 1,
+    perPage: pageSize,
+  });
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -84,12 +81,12 @@ export default function PatientTable({
     handleSelectAll,
     handleDelete,
     handleReset,
-  } = useTable(data, pageSize, filterState);
+  } = useTable(data?.data ?? [], pageSize, filterState);
 
   const columns = React.useMemo(
     () =>
       getColumns({
-        data,
+        data: data?.data ?? [],
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -106,6 +103,7 @@ export default function PatientTable({
       onDeleteItem,
       handleRowSelect,
       handleSelectAll,
+      data?.data,
     ]
   );
 
@@ -115,10 +113,9 @@ export default function PatientTable({
   return (
     <div className={cn(className)}>
       <ControlledTable
-        variant={variant}
         isLoading={isLoading}
         showLoadingText={true}
-        data={tableData}
+        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         expandable={{

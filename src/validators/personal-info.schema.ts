@@ -13,6 +13,8 @@ export const personalInfoFormSchema = z.object({
   timezone: z.string().optional(),
   bio: z.string().optional(),
   portfolios: z.array(fileSchema).optional(),
+  password: z.string().optional(),
+  date_of_birth: z.string().optional(),
 });
 
 // generate form types from zod validation schema

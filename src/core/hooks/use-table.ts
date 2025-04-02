@@ -183,7 +183,6 @@ export function useTable<T extends AnyObject>(
         )
     );
   }
-
   /*
    * Handle searching
    */
@@ -241,6 +240,11 @@ export function useTable<T extends AnyObject>(
   useEffect(() => {
     handlePaginate(1);
   }, [isFiltered, searchTerm]);
+
+  useEffect(() => {
+    if (!initialData) return;
+    setData(initialData);
+  }, [initialData]);
 
   // useTable returns
   return {

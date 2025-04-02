@@ -9,6 +9,7 @@ import PencilIcon from '@core/components/icons/pencil';
 import TableAvatar from '@core/ui/avatar-card';
 import DateCell from '@core/ui/date-cell';
 import DeletePopover from '@/app/shared/delete-popover';
+import { IGetAllPatientsResponse } from '@/types/ApiResponse';
 
 function getStatusBadge(status: number | string) {
   switch (status) {
@@ -44,7 +45,7 @@ function getStatusBadge(status: number | string) {
 }
 
 type Columns = {
-  data: any[];
+  data: IGetAllPatientsResponse['data'];
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
@@ -76,20 +77,20 @@ export const getColumns = ({
     dataIndex: 'checked',
     key: 'checked',
     width: 30,
-    render: (_: any, row: any) => (
+    render: (_: any, row: IGetAllPatientsResponse['data'][number]) => (
       <div className="inline-flex ps-2">
         <Checkbox
           className="cursor-pointer"
-          checked={checkedItems.includes(row.id)}
-          {...(onChecked && { onChange: () => onChecked(row.id) })}
+          checked={checkedItems.includes(row.id.toString())}
+          {...(onChecked && { onChange: () => onChecked(row.id.toString()) })}
         />
       </div>
     ),
   },
   {
     title: <HeaderCell title="PATIENT ID" />,
-    dataIndex: 'id',
-    key: 'id',
+    dataIndex: 'patient_id',
+    key: 'patient_id',
     width: 120,
     render: (value: string) => <Text>#{value}</Text>,
   },
@@ -98,7 +99,7 @@ export const getColumns = ({
     dataIndex: 'PATIENT NAME',
     key: 'PATIENT NAME',
     width: 300,
-    render: (_: any, row: any) => (
+    render: (_: any, row: IGetAllPatientsResponse['data'][number]) => (
       <TableAvatar
         src={''}
         name={`${row.first_name} ${row.last_name}`}
@@ -178,7 +179,7 @@ export const getColumns = ({
     dataIndex: 'action',
     key: 'action',
     width: 130,
-    render: (_: string, row: any) => (
+    render: (_: string, row: IGetAllPatientsResponse['data'][number]) => (
       <div className="flex items-center justify-end gap-3 pe-4">
         <Tooltip
           size="sm"
@@ -186,12 +187,7 @@ export const getColumns = ({
           placement="top"
           color="invert"
         >
-          <Link
-            href={routes.forms.profileSettings}
-            onClick={() => {
-              localStorage.setItem('role', 'patient');
-            }}
-          >
+          <Link href={routes.patient.edit(row.id.toString())}>
             <ActionIcon
               as="span"
               size="sm"
@@ -202,7 +198,7 @@ export const getColumns = ({
             </ActionIcon>
           </Link>
         </Tooltip>
-        <Tooltip
+        {/* <Tooltip
           size="sm"
           content={'View Data Patient'}
           placement="top"
@@ -223,11 +219,11 @@ export const getColumns = ({
               <EyeIcon className="h-4 w-4" />
             </ActionIcon>
           </Link>
-        </Tooltip>
+        </Tooltip> */}
         <DeletePopover
-          title={`Delete the order`}
-          description={`Are you sure you want to delete this #${row.id} order?`}
-          onDelete={() => onDeleteItem(row.id)}
+          title={`Delete the Patient`}
+          description={`Are you sure you want to delete this #${row.id} Patient?`}
+          onDelete={() => onDeleteItem(row.id.toString())}
         />
       </div>
     ),
@@ -241,14 +237,17 @@ export const getWidgetColumns = ({
 }: Columns) => [
   {
     title: (
-      <HeaderCell title="Order ID" className="ps-4 [&>div]:whitespace-nowrap" />
+      <HeaderCell
+        title="Patient ID"
+        className="ps-4 [&>div]:whitespace-nowrap"
+      />
     ),
     dataIndex: 'id',
     key: 'id',
     width: 90,
-    render: (value: string, row: any) => (
+    render: (value: string, row: IGetAllPatientsResponse['data'][number]) => (
       <Link
-        href={routes.eCommerce.editOrder(row.id)}
+        href={routes.patient.edit(row.id.toString())}
         className="ps-4 hover:text-gray-900 hover:underline"
       >
         #{value}
@@ -260,11 +259,11 @@ export const getWidgetColumns = ({
     dataIndex: 'customer',
     key: 'customer',
     width: 300,
-    render: (_: any, row: any) => (
+    render: (_: any, row: IGetAllPatientsResponse['data'][number]) => (
       <TableAvatar
-        src={row.avatar}
-        name={row.name}
-        number={row.number}
+        src={''}
+        name={row.first_name + ' ' + row.last_name}
+        number={''}
         description={row.email.toLowerCase()}
       />
     ),
@@ -341,16 +340,16 @@ export const getWidgetColumns = ({
     dataIndex: 'action',
     key: 'action',
     width: 130,
-    render: (_: string, row: any) => (
+    render: (_: string, row: IGetAllPatientsResponse['data'][number]) => (
       <div className="flex items-center justify-end gap-3 pe-4">
         <Tooltip
           size="sm"
-          content={'Edit Order'}
+          content={'Edit Patient'}
           placement="top"
           color="invert"
         >
           <Link
-            href={routes.patient.edit(row.id)}
+            href={routes.patient.edit(row.id.toString())}
             onClick={() => {
               localStorage.setItem('role', 'doctor');
             }}
@@ -359,7 +358,7 @@ export const getWidgetColumns = ({
               as="span"
               size="sm"
               variant="outline"
-              aria-label={'Edit Order'}
+              aria-label={'Edit Patient'}
               className="hover:text-gray-700"
             >
               <PencilIcon className="h-4 w-4" />
@@ -368,12 +367,12 @@ export const getWidgetColumns = ({
         </Tooltip>
         <Tooltip
           size="sm"
-          content={'View Order'}
+          content={'View Patient'}
           placement="top"
           color="invert"
         >
           <Link
-            href={routes.patient.patientDetail(row.id)}
+            href={routes.patient.patientDetail(row.id.toString())}
             onClick={() => {
               localStorage.setItem('role', 'patient');
             }}
@@ -392,7 +391,7 @@ export const getWidgetColumns = ({
         <DeletePopover
           title={`Delete the patient`}
           description={`Are you sure you want to delete this #${row.id} patient?`}
-          onDelete={() => onDeleteItem(row.id)}
+          onDelete={() => onDeleteItem(row.id.toString())}
         />
       </div>
     ),

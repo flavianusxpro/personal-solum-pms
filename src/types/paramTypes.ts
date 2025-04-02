@@ -36,3 +36,20 @@ export interface IPayloadPostPaymentMethod {
   payment_method: string;
   amount: number;
 }
+
+export interface IPayloadCreatePatient {
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  mobile_number: string;
+  status: number;
+  address: string;
+  date_of_birth: string;
+  gender: string;
+  medicare_card_number: string;
+  medicare_expired_date: string;
+  timezone: string;
+}
+
+export interface IParamGetAllPatient extends IParamGetDataWithPagination {}
