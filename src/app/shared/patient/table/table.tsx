@@ -113,7 +113,7 @@ export default function PatientTable({ className }: { className?: string }) {
   return (
     <div className={cn(className)}>
       <ControlledTable
-        isLoading={isLoading}
+        isLoading={isLoading || isLoadingGetAllPatients}
         showLoadingText={true}
         data={tableData ?? []}
         // @ts-ignore

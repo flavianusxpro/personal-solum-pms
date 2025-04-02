@@ -1,4 +1,4 @@
-import { get, post } from '@/app/api/api';
+import { get, post, put } from '@/app/api/api';
 import {
   IGetAllPatientsResponse,
   IGetPatientByIdResponse,
@@ -22,4 +22,8 @@ export async function getPatientById(id: string) {
 }
 export async function postCreatePatient(payload: IPayloadCreatePatient) {
   return await post<any>('/admin/patient', payload);
+}
+
+export async function putCreatePatient(payload: IPayloadCreatePatient) {
+  return await put<any>('/admin/patient/' + payload.patient_id, payload);
 }

@@ -2,6 +2,7 @@ import {
   getPatientById,
   getPatientList,
   postCreatePatient,
+  putCreatePatient,
 } from '@/service/patient';
 import { IParamGetAllPatient, IPayloadCreatePatient } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -21,6 +22,7 @@ export function useGetPatientById(id: string) {
     queryFn: async () => {
       return await getPatientById(id);
     },
+    enabled: !!id,
   });
 }
 
@@ -28,6 +30,14 @@ export function useCreatePatient() {
   return useMutation({
     mutationFn: async (payload: IPayloadCreatePatient) => {
       return await postCreatePatient(payload);
+    },
+  });
+}
+
+export function useUpdatePatient() {
+  return useMutation({
+    mutationFn: async (payload: IPayloadCreatePatient) => {
+      return await putCreatePatient(payload);
     },
   });
 }

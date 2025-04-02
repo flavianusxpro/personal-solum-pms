@@ -13,20 +13,25 @@ import {
   patientDetailsFormSchema,
   PatientDetailsFormTypes,
 } from '@/validators/patient-details.schema';
-import { useCreatePatient, useGetPatientById } from '@/hooks/usePatient';
+import {
+  useCreatePatient,
+  useGetPatientById,
+  useUpdatePatient,
+} from '@/hooks/usePatient';
 import { IPayloadCreatePatient } from '@/types/paramTypes';
 import { useParams } from 'next/navigation';
 import dayjs from 'dayjs';
 
 export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
-  const id = useParams().id as string;
+  const id = useParams<{ id: string }>().id;
 
   const { data: dataPatient } = useGetPatientById(id);
-  console.log('🚀 ~ PatientDetails ~ dataPatient:', dataPatient);
   const { mutate: mutateCreatePatient } = useCreatePatient();
+  const { mutate: mutateUpdatePatient } = useUpdatePatient();
 
   const onSubmit: SubmitHandler<PatientDetailsFormTypes> = (data) => {
     const payload: IPayloadCreatePatient = {
+      patient_id: id ?? undefined,
       first_name: data.first_name,
       last_name: data.last_name as string,
       email: data.email,
@@ -40,6 +45,20 @@ export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
       status: 1,
       timezone: data.timezone ?? 'Australia/Sydney',
     };
+
+    if (id) {
+      return mutateUpdatePatient(payload, {
+        onSuccess: () => {
+          toast.success('Patient updated successfully');
+        },
+        onError: (error) => {
+          console.log('🚀 ~ PatientDetails ~ error:', error);
+          const errorMessage =
+            (error as any)?.response?.data?.message || 'An error occurred';
+          toast.error(errorMessage);
+        },
+      });
+    }
 
     mutateCreatePatient(payload, {
       onSuccess: () => {
