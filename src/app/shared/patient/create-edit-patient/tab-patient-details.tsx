@@ -16,6 +16,7 @@ import {
 import { useCreatePatient, useGetPatientById } from '@/hooks/usePatient';
 import { IPayloadCreatePatient } from '@/types/paramTypes';
 import { useParams } from 'next/navigation';
+import dayjs from 'dayjs';
 
 export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
   const id = useParams().id as string;
@@ -64,7 +65,25 @@ export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
       }}
     >
       {({ register, control, setValue, getValues, formState: { errors } }) => {
-        console.log('errors ->', errors);
+        if (dataPatient) {
+          setValue('first_name', dataPatient.first_name);
+          setValue('last_name', dataPatient.last_name);
+          setValue('email', dataPatient.email);
+          setValue('mobile_number', dataPatient.mobile_number);
+          setValue('date_of_birth', dataPatient.date_of_birth);
+          setValue('medicare_card', dataPatient.medicare_card_number);
+          setValue(
+            'medicare_expiry',
+            dayjs(dataPatient.medicare_expired_date).format('YYYY-MM-DD')
+          );
+          // setValue('position_of_card', dataPatient.position_of_card);
+          // setValue('country', dataPatient.country);
+          // setValue('street', dataPatient.street);
+          // setValue('suburb', dataPatient.suburb);
+          // setValue('state', dataPatient.state);
+          // setValue('post_code', dataPatient.post_code);
+          // setValue('avatar', dataPatient.avatar);
+        }
 
         return (
           <>

@@ -187,7 +187,7 @@ export const getColumns = ({
           placement="top"
           color="invert"
         >
-          <Link href={routes.patient.edit(row.id.toString())}>
+          <Link href={routes.patient.edit(row.patient_id.toString())}>
             <ActionIcon
               as="span"
               size="sm"
@@ -349,7 +349,7 @@ export const getWidgetColumns = ({
           color="invert"
         >
           <Link
-            href={routes.patient.edit(row.id.toString())}
+            href={routes.patient.edit(row.patient_id.toString())}
             onClick={() => {
               localStorage.setItem('role', 'doctor');
             }}

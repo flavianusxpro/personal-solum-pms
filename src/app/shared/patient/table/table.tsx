@@ -81,12 +81,12 @@ export default function PatientTable({ className }: { className?: string }) {
     handleSelectAll,
     handleDelete,
     handleReset,
-  } = useTable(data?.data ?? [], pageSize, filterState);
+  } = useTable(data ?? [], pageSize, filterState);
 
   const columns = React.useMemo(
     () =>
       getColumns({
-        data: data?.data ?? [],
+        data: data ?? [],
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -103,7 +103,7 @@ export default function PatientTable({ className }: { className?: string }) {
       onDeleteItem,
       handleRowSelect,
       handleSelectAll,
-      data?.data,
+      data,
     ]
   );
 
