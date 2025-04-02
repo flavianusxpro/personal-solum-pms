@@ -136,3 +136,59 @@ export interface IPostOneTimePaymentResponse extends ApiResponse {
     clientSecret: string;
   };
 }
+
+export interface IGetAllPatientsResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    patient_id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    mobile_number: string;
+    status: number;
+    address: string;
+    date_of_birth: string;
+    gender: string;
+    medicare_card_number: string;
+    medicare_expired_date: string;
+    patient_type: null;
+    patient_problem: null;
+    emergency_first_name: null;
+    emergency_last_name: null;
+    emergency_mobile_number: null;
+    emergency_email: null;
+    emergency_relationship: null;
+    verification_token: null | string;
+    timezone: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+}
+
+export interface IGetPatientByIdResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    patient_id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    mobile_number: string;
+    status: number;
+    address: string;
+    date_of_birth: string;
+    gender: string;
+    medicare_card_number: string;
+    medicare_expired_date: string;
+    patient_type: null;
+    patient_problem: null;
+    emergency_first_name: null;
+    emergency_last_name: null;
+    emergency_mobile_number: null;
+    emergency_email: null;
+    emergency_relationship: null;
+    verification_token: null;
+    timezone: string;
+    created_at: string;
+    updated_at: string;
+  };
+}

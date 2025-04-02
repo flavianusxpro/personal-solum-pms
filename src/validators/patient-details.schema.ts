@@ -3,22 +3,30 @@ import { messages } from '@/config/messages';
 import { fileSchema, validateEmail } from './common-rules';
 
 // form zod validation schema
-export const personalInfoFormSchema = z.object({
+export const patientDetailsFormSchema = z.object({
   first_name: z.string().min(1, { message: messages.firstNameRequired }),
   last_name: z.string().optional(),
+  gender: z.string().optional(),
   email: validateEmail,
-  avatar: fileSchema.optional(),
-  role: z.string().optional(),
-  country: z.string().optional(),
-  timezone: z.string().optional(),
-  bio: z.string().optional(),
-  portfolios: z.array(fileSchema).optional(),
-  password: z.string().optional(),
+  mobile_number: z.string().optional(),
+  status: z.number().optional(),
+  address: z.string().optional(),
   date_of_birth: z.string().optional(),
+  state: z.string().optional(),
+  country: z.string().optional(),
+  suburb: z.string().optional(),
+  street: z.string().optional(),
+  post_code: z.string().optional(),
+  medicare_card: z.string().optional(),
+  medicare_expiry: z.string().optional(),
+  position_of_card: z.string().optional(),
+  avatar: fileSchema.optional(),
+  password: z.string().optional(),
+  timezone: z.string().optional(),
 });
 
 // generate form types from zod validation schema
-export type PersonalInfoFormTypes = z.infer<typeof personalInfoFormSchema>;
+export type PatientDetailsFormTypes = z.infer<typeof patientDetailsFormSchema>;
 
 export const defaultValues = {
   first_name: '',

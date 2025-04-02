@@ -19,7 +19,7 @@ export default function TablePagination({
   pageSize,
   setPageSize,
   total,
-  paginatorClassName = 'mt-5 xs:mt-6 sm:mt-7',
+  paginatorClassName = 'p-5',
   ...props
 }: TablePaginationProps) {
   return (
@@ -46,8 +46,8 @@ export default function TablePagination({
             value={pageSize}
             getOptionValue={({ value }) => value}
             suffix={<PiCaretDownBold />}
-            dropdownClassName="!p-1.5 border w-12 border-gray-100 !z-10 shadow-lg dropdownClassName"
-            className="ms-1 w-auto [&_button]:font-medium"
+            dropdownClassName="!p-1.5 border w-12 border-gray-100 !z-20 shadow-lg dropdownClassName"
+            className="z-30 ms-1 w-auto [&_button]:font-medium"
             optionClassName="px-1"
           />
         </div>

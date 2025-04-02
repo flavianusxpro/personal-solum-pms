@@ -6,9 +6,8 @@ import { PiPlusBold } from 'react-icons/pi';
 import { orderData } from '@/data/order-data';
 import { metaObject } from '@/config/site.config';
 import ExportButton from '@/app/shared/export-button';
-import PatientTable from '@/app/shared/tableDataPatient/table';
 import PageHeader from '@/app/shared/page-header';
-import PatientList from './PatientList';
+import PatientList from '../../shared/patient/PatientList';
 
 export const metadata = {
   ...metaObject('Patients'),
@@ -37,10 +36,7 @@ export default function PatientPage() {
             fileName="order_data"
             header="Order ID,Name,Email,Avatar,Items,Price,Status,Created At,Updated At"
           />
-          <Link
-            href={routes.patient.create}
-            className="w-full @lg:w-auto"
-          >
+          <Link href={routes.patient.create} className="w-full @lg:w-auto">
             <Button as="span" className="w-full @lg:w-auto">
               <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
               Add Patient

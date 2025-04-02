@@ -24,13 +24,11 @@ export function ProtectedLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (status === 'unauthenticated' && !whitelist.includes(pathname)) {
-      const isHomePage = pathname === '/';
       const isSignInPage = pathname.includes(routes.signIn);
 
-      const url =
-        !isHomePage && !isSignInPage
-          ? `${routes.signIn}?callbackUrl=${pathname}`
-          : routes.signIn;
+      const url = !isSignInPage
+        ? `${routes.signIn}?callbackUrl=${pathname}`
+        : routes.signIn;
 
       router.push(url);
     }

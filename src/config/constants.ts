@@ -65,11 +65,15 @@ export const step3Button = [
 export const genderOption: SelectOption[] = [
   {
     label: 'Male',
-    value: 'male',
+    value: 'MALE',
   },
   {
     label: 'Female',
-    value: 'female',
+    value: 'FEMALE',
+  },
+  {
+    label: 'Prefer not to say',
+    value: 'PREFER_NOT_TO_SAY',
   },
 ];
 
@@ -106,4 +110,25 @@ export const stateOption: SelectOption[] = [
     label: 'ACT (Australian Capital Territory)',
     value: 'act',
   },
+];
+
+export const relationshipOption: SelectOption[] = [
+  { label: 'Spouse', value: 'spouse' },
+  { label: 'Parent', value: 'parent' },
+  { label: 'Sibling', value: 'sibling' },
+  { label: 'Child', value: 'child' },
+  { label: 'Guardian', value: 'guardian' },
+  { label: 'Relative', value: 'relative' },
+  { label: 'Friend', value: 'friend' },
+  { label: 'Colleague', value: 'colleague' },
+  { label: 'Neighbour', value: 'neighbour' },
+  { label: 'Other', value: 'other' },
+];
+
+export const doctorsOption = [
+  { label: 'Dr. John Doe', value: 'dr-john-doe' },
+  { label: 'Dr. Jane Smith', value: 'dr-jane-smith' },
+  { label: 'Dr. Emily Johnson', value: 'dr-emily-johnson' },
+  { label: 'Dr. Michael Brown', value: 'dr-michael-brown' },
+  { label: 'Dr. Sarah Davis', value: 'dr-sarah-davis' },
 ];

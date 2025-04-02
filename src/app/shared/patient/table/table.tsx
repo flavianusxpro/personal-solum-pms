@@ -6,13 +6,14 @@ import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
 import { PiCaretDownBold, PiCaretUpBold } from 'react-icons/pi';
 import ControlledTable from '@/app/shared/controlled-table/index';
-import { getColumns } from '@/app/shared/tableDataPatient/columns';
 import { ActionIcon } from 'rizzui';
 import cn from '@core/utils/class-names';
-import ExpandedOrderRow from '@/app/shared/tableDataPatient/expanded-row';
+import ExpandedOrderRow from '@/app/shared/patient/table/expanded-row';
+import { getColumns } from './columns';
+import { useGetAllPatients } from '@/hooks/usePatient';
 // dynamic import
 const FilterElement = dynamic(
-  () => import('@/app/shared/tableDataPatient/filter-element'),
+  () => import('@/app/shared/patient/table/filter-element'),
   { ssr: false }
 );
 
@@ -37,22 +38,18 @@ function CustomExpandIcon(props: any) {
 }
 
 const filterState = {
-  price: ['', ''],
   createdAt: [null, null],
   updatedAt: [null, null],
   status: '',
 };
 
-export default function PatientTable({
-  data = [],
-  variant = 'modern',
-  className,
-}: {
-  data: any[];
-  variant?: 'modern' | 'minimal' | 'classic' | 'elegant' | 'retro';
-  className?: string;
-}) {
+export default function PatientTable({ className }: { className?: string }) {
   const [pageSize, setPageSize] = useState(10);
+
+  const { data, isLoading: isLoadingGetAllPatients } = useGetAllPatients({
+    page: 1,
+    perPage: pageSize,
+  });
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -66,47 +63,48 @@ export default function PatientTable({
   }, []);
 
   const {
-      isLoading,
-      isFiltered,
-      tableData,
-      currentPage,
-      totalItems,
-      handlePaginate,
-      filters,
-      updateFilter,
-      searchTerm,
-      handleSearch,
-      sortConfig,
-      handleSort,
+    isLoading,
+    isFiltered,
+    tableData,
+    currentPage,
+    totalItems,
+    handlePaginate,
+    filters,
+    updateFilter,
+    searchTerm,
+    handleSearch,
+    sortConfig,
+    handleSort,
+    selectedRowKeys,
+    setSelectedRowKeys,
+    handleRowSelect,
+    handleSelectAll,
+    handleDelete,
+    handleReset,
+  } = useTable(data ?? [], pageSize, filterState);
+
+  const columns = React.useMemo(
+    () =>
+      getColumns({
+        data: data ?? [],
+        sortConfig,
+        checkedItems: selectedRowKeys,
+        onHeaderCellClick,
+        onDeleteItem,
+        onChecked: handleRowSelect,
+        handleSelectAll,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
       selectedRowKeys,
-      setSelectedRowKeys,
+      onHeaderCellClick,
+      sortConfig.key,
+      sortConfig.direction,
+      onDeleteItem,
       handleRowSelect,
       handleSelectAll,
-      handleDelete,
-      handleReset,
-    } = useTable(data, pageSize, filterState);
-
-    const columns = React.useMemo(
-      () =>
-        getColumns({
-          data,
-          sortConfig,
-          checkedItems: selectedRowKeys,
-          onHeaderCellClick,
-          onDeleteItem,
-          onChecked: handleRowSelect,
-          handleSelectAll,
-        }),
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [
-        selectedRowKeys,
-        onHeaderCellClick,
-        sortConfig.key,
-        sortConfig.direction,
-        onDeleteItem,
-        handleRowSelect,
-        handleSelectAll,
-      ]
+      data,
+    ]
   );
 
   const { visibleColumns, checkedColumns, setCheckedColumns } =
@@ -115,15 +113,16 @@ export default function PatientTable({
   return (
     <div className={cn(className)}>
       <ControlledTable
-        variant={variant}
-        isLoading={isLoading}
+        isLoading={isLoading || isLoadingGetAllPatients}
         showLoadingText={true}
-        data={tableData}
+        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         expandable={{
           expandIcon: CustomExpandIcon,
-          expandedRowRender: (record) => <ExpandedOrderRow record={record} />,
+          expandedRowRender: (record: any) => (
+            <ExpandedOrderRow data={record} />
+          ),
         }}
         paginatorOptions={{
           pageSize,
