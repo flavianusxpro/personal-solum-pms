@@ -120,7 +120,9 @@ export default function PatientTable({ className }: { className?: string }) {
         columns={visibleColumns}
         expandable={{
           expandIcon: CustomExpandIcon,
-          expandedRowRender: (record) => <ExpandedOrderRow record={record} />,
+          expandedRowRender: (record: any) => (
+            <ExpandedOrderRow data={record} />
+          ),
         }}
         paginatorOptions={{
           pageSize,

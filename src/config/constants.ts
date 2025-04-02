@@ -65,15 +65,15 @@ export const step3Button = [
 export const genderOption: SelectOption[] = [
   {
     label: 'Male',
-    value: 'male',
+    value: 'MALE',
   },
   {
     label: 'Female',
-    value: 'female',
+    value: 'FEMALE',
   },
   {
     label: 'Prefer not to say',
-    value: 'prefer-not-to-say',
+    value: 'PREFER_NOT_TO_SAY',
   },
 ];
 
