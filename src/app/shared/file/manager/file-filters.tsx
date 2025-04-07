@@ -1,7 +1,7 @@
 'use client';
 
-import { Title, Input } from 'rizzui';
-import { PiMagnifyingGlassBold } from 'react-icons/pi';
+import { Title, Input, Button } from 'rizzui';
+import { PiMagnifyingGlassBold, PiPlus, PiPlusBold } from 'react-icons/pi';
 import ViewSwitcher from '@/app/shared/file/manager/view-switcher';
 import FileTypeDropdown from '@/app/shared/file/manager/file-sortby-type';
 import FileDateSortingDropdown from '@/app/shared/file/manager/file-sortby-date';
@@ -17,6 +17,20 @@ export default function FileFilters({
   onSearch: (searchTerm: string) => void;
   searchTerm: string;
 }) {
+  function uploadFile() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '*/*';
+    input.onchange = (event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (file) {
+        console.log('Selected file:', file);
+        // Handle file upload logic here
+      }
+    };
+    input.click();
+  }
+
   return (
     <div className="mb-4 flex flex-wrap items-center">
       <Title
@@ -29,7 +43,7 @@ export default function FileFilters({
         <FileTypeDropdown updateFilter={updateFilter} />
         <FileDateSortingDropdown />
       </div>
-      <div className="order-2 ml-auto flex basis-1/2 items-center justify-end gap-3 md:order-3 md:basis-auto	md:gap-5	">
+      <div className="order-2 ml-auto flex basis-1/2 items-center justify-end gap-3 md:order-3 md:basis-auto md:gap-5">
         <Input
           type="search"
           placeholder="Search file..."
@@ -42,7 +56,10 @@ export default function FileFilters({
           rounded="lg"
           clearable
         />
-        <ViewSwitcher />
+        <Button onClick={uploadFile}>
+          <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
+          Upload
+        </Button>
       </div>
     </div>
   );

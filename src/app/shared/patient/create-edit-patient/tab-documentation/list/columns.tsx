@@ -2,14 +2,9 @@
 
 import Image from 'next/image';
 import dayjs from 'dayjs';
-import {
-  PiCopySimple,
-  PiDotsThreeOutlineVerticalFill,
-  PiShareFat,
-  PiTrashSimple,
-} from 'react-icons/pi';
+import { PiShareFat, PiTrashSimple } from 'react-icons/pi';
 import { HeaderCell } from '@/app/shared/table';
-import { Title, Text, Checkbox, ActionIcon, Button, Popover } from 'rizzui';
+import { Title, Text, Checkbox, ActionIcon, Tooltip } from 'rizzui';
 import Favorite from '@/app/shared/file/manager/favorite';
 
 type Columns = {
@@ -97,7 +92,7 @@ export const getColumns = ({
   {
     title: (
       <HeaderCell
-        title="Modified"
+        title="Uploaded"
         sortable
         ascending={
           sortConfig?.direction === 'asc' && sortConfig?.key === 'dueDate'
@@ -117,30 +112,6 @@ export const getColumns = ({
     ),
   },
   {
-    title: <HeaderCell title="Shared" />,
-    dataIndex: 'shared',
-    key: 'shared',
-    width: 200,
-    render: (value: any) => {
-      return (
-        <div className="flex items-center justify-start">
-          {value.map((img: any, index: number) => {
-            return (
-              <Image
-                key={`fileavatar-${index}`}
-                src={img}
-                width={30}
-                height={30}
-                className="-me-2 aspect-square rounded-full border-2 border-gray-0 dark:border-gray-50"
-                alt="File Avatar"
-              />
-            );
-          })}
-        </div>
-      );
-    },
-  },
-  {
     title: <></>,
     dataIndex: 'action',
     key: 'action',
@@ -148,39 +119,16 @@ export const getColumns = ({
     render: (_: string, row: any) => (
       <div className="relative flex items-center justify-end gap-3">
         <Favorite />
-        <Popover placement="left">
-          <Popover.Trigger>
-            <ActionIcon variant="text">
-              <PiDotsThreeOutlineVerticalFill className="h-[18px] w-[18px] text-gray-500" />
-            </ActionIcon>
-          </Popover.Trigger>
-          <Popover.Content className="z-0 min-w-[140px] px-2 dark:bg-gray-100 [&>svg]:dark:fill-gray-100">
-            <div className="text-gray-900">
-              <Button
-                variant="text"
-                className="flex w-full items-center justify-start px-2 py-2 hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-50"
-              >
-                <PiCopySimple className="mr-2 h-5 w-5 text-gray-500" />
-                Copy
-              </Button>
-              <Button
-                variant="text"
-                className="flex w-full items-center justify-start px-2 py-2 hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-50"
-              >
-                <PiShareFat className="mr-2 h-5 w-5 text-gray-500" />
-                Share
-              </Button>
-              <Button
-                variant="text"
-                className="flex w-full items-center justify-start px-2 py-2 hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-50"
-                onClick={() => onDeleteItem(row.id)}
-              >
-                <PiTrashSimple className="mr-2 h-5 w-5 text-gray-500" />
-                Delete
-              </Button>
-            </div>
-          </Popover.Content>
-        </Popover>
+        <Tooltip content="Share" placement="top">
+          <ActionIcon variant="text">
+            <PiShareFat className="h-5 w-5 text-gray-500" />
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip content="Delete" placement="top">
+          <ActionIcon variant="text">
+            <PiTrashSimple className="h-5 w-5 text-gray-500" />
+          </ActionIcon>
+        </Tooltip>
       </div>
     ),
   },
