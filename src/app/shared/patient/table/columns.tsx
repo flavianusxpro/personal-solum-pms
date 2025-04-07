@@ -198,18 +198,13 @@ export const getColumns = ({
             </ActionIcon>
           </Link>
         </Tooltip>
-        {/* <Tooltip
+        <Tooltip
           size="sm"
           content={'View Data Patient'}
           placement="top"
           color="invert"
         >
-          <Link
-            href={routes.forms.profileSettings}
-            onClick={() => {
-              localStorage.setItem('role', 'patient');
-            }}
-          >
+          <Link href={routes.patient.patientDetail(row.patient_id.toString())}>
             <ActionIcon
               as="span"
               size="sm"
@@ -219,7 +214,7 @@ export const getColumns = ({
               <EyeIcon className="h-4 w-4" />
             </ActionIcon>
           </Link>
-        </Tooltip> */}
+        </Tooltip>
         <DeletePopover
           title={`Delete the Patient`}
           description={`Are you sure you want to delete this #${row.id} Patient?`}

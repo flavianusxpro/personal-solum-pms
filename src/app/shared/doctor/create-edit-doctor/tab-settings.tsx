@@ -86,6 +86,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                       placeholder="Zoom Passcode"
                       error={errors.zoom_meeting_passcode?.message}
                       className="w-full"
+                      disabled={isView}
                     />
                   </Flex>
                   <Input
