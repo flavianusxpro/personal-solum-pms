@@ -37,12 +37,11 @@ export interface IPayloadPostPaymentMethod {
   amount: number;
 }
 
-export interface IPayloadCreatePatient {
+export interface IPayloadCreateEditPatient {
   patient_id?: string;
   first_name: string;
   last_name: string;
   email: string;
-  password: string;
   mobile_number: string;
   status: number;
   address: string;
@@ -51,6 +50,24 @@ export interface IPayloadCreatePatient {
   medicare_card_number: string;
   medicare_expired_date: string;
   timezone: string;
+  password?: string;
+}
+
+export interface IPayloadCreateEditDoctor {
+  doctor_id?: string;
+  first_name: string;
+  password?: string;
+  last_name: string;
+  email: string;
+  mobile_number: string;
+  status: number;
+  address: string;
+  date_of_birth: string;
+  gender: string;
+  medicare_card_number?: string;
+  medicare_expired_date?: string;
+  timezone: string;
 }
 
 export interface IParamGetAllPatient extends IParamGetDataWithPagination {}
+export interface IParamGetAllDoctor extends IParamGetDataWithPagination {}

@@ -3,7 +3,10 @@ import {
   IGetAllPatientsResponse,
   IGetPatientByIdResponse,
 } from '@/types/ApiResponse';
-import { IParamGetAllPatient, IPayloadCreatePatient } from '@/types/paramTypes';
+import {
+  IParamGetAllPatient,
+  IPayloadCreateEditPatient,
+} from '@/types/paramTypes';
 
 export async function getPatientList(params: IParamGetAllPatient) {
   return await get<IGetAllPatientsResponse>('/admin/patient', {
@@ -20,10 +23,10 @@ export async function getPatientById(id: string) {
     }
   );
 }
-export async function postCreatePatient(payload: IPayloadCreatePatient) {
+export async function postCreatePatient(payload: IPayloadCreateEditPatient) {
   return await post<any>('/admin/patient', payload);
 }
 
-export async function putCreatePatient(payload: IPayloadCreatePatient) {
+export async function putCreatePatient(payload: IPayloadCreateEditPatient) {
   return await put<any>('/admin/patient/' + payload.patient_id, payload);
 }

@@ -44,11 +44,11 @@ export default function FilterElement({
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
   return (
     <>
-      <PriceField
+      {/* <PriceField
         value={filters['price']}
         onChange={(data) => updateFilter('price', data)}
         label={'Price'}
-      />
+      /> */}
       <DateFiled
         selectsRange
         className="w-full"
@@ -83,7 +83,7 @@ export default function FilterElement({
           },
         })}
       />
-      <StatusField
+      {/* <StatusField
         options={statusOptions}
         value={filters['status']}
         onChange={(value: string) => {
@@ -99,7 +99,7 @@ export default function FilterElement({
           labelClassName: 'font-medium text-gray-700',
         })}
         dropdownClassName="h-auto"
-      />
+      /> */}
       {isFiltered ? (
         <Button
           size="sm"

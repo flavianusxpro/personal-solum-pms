@@ -116,8 +116,8 @@ export default function TabEmergencyContact({
                             placeholder="Specify Relationship"
                             {...register('relationship')}
                             error={errors.relationship?.message}
-                            className="mt-2 flex-grow"
                             disabled={isView}
+                            className="mt-2 flex-grow"
                           />
                         )}
                       </>

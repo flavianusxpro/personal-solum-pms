@@ -3,6 +3,7 @@
 import ControlledTable from '@/app/shared/controlled-table/index';
 import { getColumns } from '@/app/shared/tableDataDoctor/columns';
 import ExpandedOrderRow from '@/app/shared/tableDataDoctor/expanded-row';
+import { useGetAllDoctors } from '@/hooks/useDoctor';
 import { useColumn } from '@core/hooks/use-column';
 import { useTable } from '@core/hooks/use-table';
 import cn from '@core/utils/class-names';
@@ -43,16 +44,14 @@ const filterState = {
   status: '',
 };
 
-export default function DoctorTable({
-  data = [],
-  variant = 'modern',
-  className,
-}: {
-  data: any[];
-  variant?: 'modern' | 'minimal' | 'classic' | 'elegant' | 'retro';
-  className?: string;
-}) {
+export default function DoctorTable({}: {}) {
   const [pageSize, setPageSize] = useState(10);
+  const [filterStateValue, setFilterStateValue] = useState(filterState);
+
+  const { data, isLoading: isLoadingGetAllDoctors } = useGetAllDoctors({
+    page: 1,
+    perPage: pageSize,
+  });
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -65,58 +64,71 @@ export default function DoctorTable({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-   const {
-      isLoading,
-      isFiltered,
-      tableData,
-      currentPage,
-      totalItems,
-      handlePaginate,
-      filters,
-      updateFilter,
-      searchTerm,
-      handleSearch,
-      sortConfig,
-      handleSort,
+  const updateFilter = useCallback(
+    (columnId: string, filterValue: string | any[]) => {
+      setFilterStateValue((prevState) => ({
+        ...prevState,
+        [columnId]: filterValue,
+      }));
+    },
+    []
+  );
+
+  const handleReset = useCallback(() => {
+    setFilterStateValue(filterState);
+  }, []);
+
+  const {
+    isLoading,
+    isFiltered,
+    tableData,
+    currentPage,
+    totalItems,
+    handlePaginate,
+    filters,
+    // updateFilter,
+    searchTerm,
+    handleSearch,
+    sortConfig,
+    handleSort,
+    selectedRowKeys,
+    setSelectedRowKeys,
+    handleRowSelect,
+    handleSelectAll,
+    handleDelete,
+    // handleReset,
+  } = useTable(data ?? [], pageSize, filterStateValue);
+
+  const columns = React.useMemo(
+    () =>
+      getColumns({
+        data: data ?? [],
+        sortConfig,
+        checkedItems: selectedRowKeys,
+        onHeaderCellClick,
+        onDeleteItem,
+        onChecked: handleRowSelect,
+        handleSelectAll,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
       selectedRowKeys,
-      setSelectedRowKeys,
+      onHeaderCellClick,
+      sortConfig.key,
+      sortConfig.direction,
+      onDeleteItem,
       handleRowSelect,
       handleSelectAll,
-      handleDelete,
-      handleReset,
-    } = useTable(data, pageSize, filterState);
-  
-    const columns = React.useMemo(
-      () =>
-        getColumns({
-          data,
-          sortConfig,
-          checkedItems: selectedRowKeys,
-          onHeaderCellClick,
-          onDeleteItem,
-          onChecked: handleRowSelect,
-          handleSelectAll,
-        }),
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [
-        selectedRowKeys,
-        onHeaderCellClick,
-        sortConfig.key,
-        sortConfig.direction,
-        onDeleteItem,
-        handleRowSelect,
-        handleSelectAll,
-      ]
+    ]
   );
 
   const { visibleColumns, checkedColumns, setCheckedColumns } =
     useColumn(columns);
 
   return (
-    <div className={cn(className)}>
+    <div>
       <ControlledTable
-        variant={variant}
-        isLoading={isLoading}
+        isLoading={isLoading || isLoadingGetAllDoctors}
         showLoadingText={true}
         data={tableData}
         // @ts-ignore

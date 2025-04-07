@@ -165,7 +165,7 @@ export interface IGetAllPatientsResponse extends ApiResponseWithPagination {
   }[];
 }
 
-export interface IGetPatientByIdResponse extends ApiResponseWithPagination {
+export interface IGetPatientByIdResponse extends ApiResponse {
   data: {
     id: number;
     patient_id: string;
@@ -191,4 +191,99 @@ export interface IGetPatientByIdResponse extends ApiResponseWithPagination {
     created_at: string;
     updated_at: string;
   };
+}
+
+export interface IGetAllDoctorsResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    mobile_number: string;
+    password: string;
+    status: number;
+    address: string;
+    date_of_birth: null;
+    gender: null;
+    url_photo: null;
+    description: null;
+    medicare_card_number: string;
+    medicare_expired_date: string;
+    specialist: null;
+    problem: null;
+    emergency_first_name: null;
+    emergency_last_name: null;
+    emergency_mobile_number: null;
+    emergency_email: null;
+    emergency_relationship: null;
+    timezone: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+}
+
+export interface IGetDoctorByIdResponse extends ApiResponse {
+  data: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    mobile_number: string;
+    password: string;
+    status: number;
+    address: string;
+    date_of_birth: string;
+    gender: null;
+    url_photo: null;
+    description: null;
+    medicare_card_number: string;
+    medicare_expired_date: string;
+    specialist: null;
+    problem: null;
+    emergency_first_name: null;
+    emergency_last_name: null;
+    emergency_mobile_number: null;
+    emergency_email: null;
+    emergency_relationship: null;
+    timezone: string;
+    created_at: string;
+    updated_at: string;
+    clinics: Clinic[];
+    setting: Setting;
+  };
+}
+
+interface Setting {
+  id: number;
+  doctorId: number;
+  microsoft_team_link: null;
+  microsoft_team_id: null;
+  microsoft_team_passcode: null;
+  zoom_meeting_link: null;
+  zoom_meeting_id: null;
+  zoom_meeting_passcode: null;
+  fee: number;
+  cancellation_fee: number;
+  practice_open_schedule_days: null;
+  practice_open_schedule_clock: string;
+  practice_close_schedule_clock: string;
+  initial_appointment_time: number;
+  followup_appointment_time: number;
+  initial_appointment_fee: string;
+  followup_appointment_fee: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Clinic {
+  id: number;
+  name: string;
+  email: string;
+  mobile_number: string;
+  address: string;
+  logo: string;
+  default: boolean;
+  status: number;
+  created_at: string;
+  updated_at: string;
 }

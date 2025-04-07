@@ -41,10 +41,12 @@ const filterState = {
   createdAt: [null, null],
   updatedAt: [null, null],
   status: '',
+  condition: '',
 };
 
 export default function PatientTable({ className }: { className?: string }) {
   const [pageSize, setPageSize] = useState(10);
+  const [filterStateValue, setFilterStateValue] = useState(filterState);
 
   const { data, isLoading: isLoadingGetAllPatients } = useGetAllPatients({
     page: 1,
@@ -62,6 +64,20 @@ export default function PatientTable({ className }: { className?: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const updateFilter = useCallback(
+    (columnId: string, filterValue: string | any[]) => {
+      setFilterStateValue((prevState) => ({
+        ...prevState,
+        [columnId]: filterValue,
+      }));
+    },
+    []
+  );
+
+  const handleReset = useCallback(() => {
+    setFilterStateValue(filterState);
+  }, []);
+
   const {
     isLoading,
     isFiltered,
@@ -70,7 +86,7 @@ export default function PatientTable({ className }: { className?: string }) {
     totalItems,
     handlePaginate,
     filters,
-    updateFilter,
+    // updateFilter,
     searchTerm,
     handleSearch,
     sortConfig,
@@ -80,8 +96,8 @@ export default function PatientTable({ className }: { className?: string }) {
     handleRowSelect,
     handleSelectAll,
     handleDelete,
-    handleReset,
-  } = useTable(data ?? [], pageSize, filterState);
+    // handleReset,
+  } = useTable(data ?? [], pageSize, filterStateValue);
 
   const columns = React.useMemo(
     () =>

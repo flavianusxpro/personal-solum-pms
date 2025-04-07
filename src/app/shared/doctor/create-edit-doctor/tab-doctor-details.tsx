@@ -8,21 +8,29 @@ import { Form } from '@core/ui/form';
 import { Flex, Input } from 'rizzui';
 import AvatarUpload from '@core/ui/file-upload/avatar-upload';
 import CSelect from '@/core/ui/select';
-import { genderOption, stateOption } from '@/config/constants';
 import {
-  patientDetailsFormSchema,
-  PatientDetailsFormTypes,
-} from '@/validators/patient-details.schema';
-import {
-  useCreatePatient,
-  useGetPatientById,
-  useUpdatePatient,
-} from '@/hooks/usePatient';
-import { IPayloadCreateEditPatient } from '@/types/paramTypes';
+  doctorTypeOption,
+  genderOption,
+  stateOption,
+} from '@/config/constants';
+import { useUpdatePatient } from '@/hooks/usePatient';
+import { IPayloadCreateEditDoctor } from '@/types/paramTypes';
 import { useParams } from 'next/navigation';
 import dayjs from 'dayjs';
+import {
+  doctorDetailsFormSchema,
+  DoctorDetailsFormTypes,
+} from '@/validators/doctor-details.schema';
+import { useGetDoctorById } from '@/hooks/useDoctor';
+import dynamic from 'next/dynamic';
+import QuillLoader from '@/core/components/loader/quill-loader';
 
-export default function PatientDetails({
+const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
+  ssr: false,
+  loading: () => <QuillLoader className="col-span-full h-[143px]" />,
+});
+
+export default function DoctorDetails({
   nextTab,
   isView,
 }: {
@@ -31,16 +39,15 @@ export default function PatientDetails({
 }) {
   const id = useParams<{ id: string }>().id;
 
-  const { data: dataPatient } = useGetPatientById(id);
-  const { mutate: mutateUpdatePatient } = useUpdatePatient();
+  const { data: dataDoctor } = useGetDoctorById(id);
+  // const { mutate: mutateUpdatePatient } = useUpdatePatient();
 
-  const onSubmit: SubmitHandler<PatientDetailsFormTypes> = (data) => {
-    const payload: IPayloadCreateEditPatient = {
-      patient_id: id ?? undefined,
+  const onSubmit: SubmitHandler<DoctorDetailsFormTypes> = (data) => {
+    const payload: IPayloadCreateEditDoctor = {
+      doctor_id: id ?? undefined,
       first_name: data.first_name,
       last_name: data.last_name as string,
       email: data.email,
-      password: data.password as string,
       address: '',
       date_of_birth: data.date_of_birth as string,
       gender: data.date_of_birth as string,
@@ -53,24 +60,36 @@ export default function PatientDetails({
       timezone: data.timezone ?? 'Australia/Sydney',
     };
 
-    if (id) {
-      return mutateUpdatePatient(payload, {
-        onSuccess: () => {
-          toast.success('Patient updated successfully');
-        },
-        onError: (error) => {
-          console.log('🚀 ~ PatientDetails ~ error:', error);
-          const errorMessage =
-            (error as any)?.response?.data?.message || 'An error occurred';
-          toast.error(errorMessage);
-        },
-      });
-    }
+    // if (id) {
+    //   return mutateUpdatePatient(payload, {
+    //     onSuccess: () => {
+    //       toast.success('Patient updated successfully');
+    //     },
+    //     onError: (error) => {
+    //       console.log('🚀 ~ PatientDetails ~ error:', error);
+    //       const errorMessage =
+    //         (error as any)?.response?.data?.message || 'An error occurred';
+    //       toast.error(errorMessage);
+    //     },
+    //   });
+    // }
+
+    // mutateCreatePatient(payload, {
+    //   onSuccess: () => {
+    //     toast.success('Patient created successfully');
+    //   },
+    //   onError: (error) => {
+    //     console.log('🚀 ~ PatientDetails ~ error:', error);
+    //     const errorMessage =
+    //       (error as any)?.response?.data?.message || 'An error occurred';
+    //     toast.error(errorMessage);
+    //   },
+    // });
   };
 
   return (
-    <Form<PatientDetailsFormTypes>
-      validationSchema={patientDetailsFormSchema}
+    <Form<DoctorDetailsFormTypes>
+      validationSchema={doctorDetailsFormSchema}
       // resetValues={reset}
       onSubmit={onSubmit}
       className="@container"
@@ -79,24 +98,24 @@ export default function PatientDetails({
       }}
     >
       {({ register, control, setValue, getValues, formState: { errors } }) => {
-        if (dataPatient) {
-          setValue('first_name', dataPatient.first_name);
-          setValue('last_name', dataPatient.last_name);
-          setValue('email', dataPatient.email);
-          setValue('mobile_number', dataPatient.mobile_number);
-          setValue('date_of_birth', dataPatient.date_of_birth);
-          setValue('medicare_card', dataPatient.medicare_card_number);
+        if (dataDoctor) {
+          setValue('first_name', dataDoctor.first_name);
+          setValue('last_name', dataDoctor.last_name);
+          setValue('email', dataDoctor.email);
+          setValue('mobile_number', dataDoctor.mobile_number);
+          setValue('date_of_birth', dataDoctor.date_of_birth);
+          setValue('medicare_card', dataDoctor.medicare_card_number);
           setValue(
             'medicare_expiry',
-            dayjs(dataPatient.medicare_expired_date).format('YYYY-MM-DD')
+            dayjs(dataDoctor.medicare_expired_date).format('YYYY-MM-DD')
           );
-          // setValue('position_of_card', dataPatient.position_of_card);
-          // setValue('country', dataPatient.country);
-          // setValue('street', dataPatient.street);
-          // setValue('suburb', dataPatient.suburb);
-          // setValue('state', dataPatient.state);
-          // setValue('post_code', dataPatient.post_code);
-          // setValue('avatar', dataPatient.avatar);
+          // setValue('position_of_card', dataDoctor.position_of_card);
+          // setValue('country', dataDoctor.country);
+          // setValue('street', dataDoctor.street);
+          // setValue('suburb', dataDoctor.suburb);
+          // setValue('state', dataDoctor.state);
+          // setValue('post_code', dataDoctor.post_code);
+          // setValue('avatar', dataDoctor.avatar);
         }
 
         return (
@@ -146,8 +165,8 @@ export default function PatientDetails({
                     type="date"
                     {...register('date_of_birth')}
                     error={errors.date_of_birth?.message}
-                    disabled={isView}
                     className="flex-grow"
+                    disabled={isView}
                   />
                 </FormGroup>
                 <FormGroup title="Phone Number">
@@ -155,8 +174,8 @@ export default function PatientDetails({
                     placeholder="Phone Number"
                     {...register('mobile_number')}
                     error={errors.mobile_number?.message}
-                    disabled={isView}
                     className="flex-grow"
+                    disabled={isView}
                   />
                 </FormGroup>
 
@@ -165,8 +184,8 @@ export default function PatientDetails({
                     placeholder="Email"
                     {...register('email')}
                     error={errors.email?.message}
-                    disabled={isView}
                     className="flex-grow"
+                    disabled={isView}
                   />
                 </FormGroup>
 
@@ -175,8 +194,8 @@ export default function PatientDetails({
                     placeholder="Medicare Card"
                     {...register('medicare_card')}
                     error={errors.medicare_card?.message}
-                    disabled={isView}
                     className="flex-grow"
+                    disabled={isView}
                   />
                 </FormGroup>
                 <FormGroup title="">
@@ -187,8 +206,8 @@ export default function PatientDetails({
                       {...register('position_of_card')}
                       error={errors.position_of_card?.message}
                       labelClassName="text-base"
-                      disabled={isView}
                       className="flex-grow"
+                      disabled={isView}
                     />
                     <Input
                       label="Expiry Date"
@@ -197,22 +216,10 @@ export default function PatientDetails({
                       {...register('medicare_expiry')}
                       error={errors.medicare_expiry?.message}
                       className="flex-grow"
-                      disabled={isView}
                       labelClassName="text-base"
+                      disabled={isView}
                     />
                   </Flex>
-                </FormGroup>
-
-                <FormGroup title="Your Photo">
-                  <div className="flex flex-col gap-6 @container @3xl:col-span-2">
-                    <AvatarUpload
-                      name="avatar"
-                      setValue={setValue}
-                      getValues={getValues}
-                      disabled={isView}
-                      error={errors?.avatar?.message as string}
-                    />
-                  </div>
                 </FormGroup>
               </div>
 
@@ -223,8 +230,8 @@ export default function PatientDetails({
                     placeholder="Country"
                     {...register('country')}
                     error={errors.country?.message}
-                    disabled={isView}
                     className="flex-grow"
+                    disabled={isView}
                   />
                 </FormGroup>
                 <FormGroup title="Street">
@@ -232,8 +239,8 @@ export default function PatientDetails({
                     placeholder="Street"
                     {...register('street')}
                     error={errors.street?.message}
-                    disabled={isView}
                     className="flex-grow"
+                    disabled={isView}
                   />
                 </FormGroup>
                 <FormGroup title="Suburb">
@@ -241,15 +248,15 @@ export default function PatientDetails({
                     placeholder="Suburb"
                     {...register('suburb')}
                     error={errors.suburb?.message}
-                    disabled={isView}
                     className="flex-grow"
+                    disabled={isView}
                   />
                 </FormGroup>
                 <Controller
                   name="state"
                   control={control}
                   render={({ field }) => (
-                    <FormGroup title="States">
+                    <FormGroup title="">
                       <Flex justify="between" align="center" gap="4">
                         <CSelect
                           {...field}
@@ -258,8 +265,8 @@ export default function PatientDetails({
                           className="group relative z-0"
                           options={stateOption}
                           error={errors.state?.message as string}
-                          disabled={isView}
                           labelClassName="text-base font-medium"
+                          disabled={isView}
                         />
                         <Input
                           label="Post Code"
@@ -267,14 +274,91 @@ export default function PatientDetails({
                           {...register('post_code')}
                           error={errors.post_code?.message}
                           labelClassName="text-base font-bold"
-                          disabled={isView}
                           className="flex-grow"
+                          disabled={isView}
                         />
                       </Flex>
                     </FormGroup>
                   )}
                 />
               </div>
+            </div>
+
+            <div className="mb-10 flex flex-col gap-7">
+              <FormGroup title="About Doctor" className="">
+                <Controller
+                  name="about"
+                  control={control}
+                  render={({ field }) => (
+                    <QuillEditor
+                      {...field}
+                      placeholder="About Doctor"
+                      error={errors.about?.message}
+                      className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
+                    />
+                  )}
+                />
+              </FormGroup>
+              <FormGroup title="Doctor Type">
+                <Controller
+                  name="doctorType"
+                  control={control}
+                  render={({ field }) => (
+                    <CSelect
+                      searchable
+                      {...field}
+                      placeholder="Select Doctor Type"
+                      options={doctorTypeOption}
+                      disabled={isView}
+                    />
+                  )}
+                />
+              </FormGroup>
+              <FormGroup title="Specialist Type">
+                <Controller
+                  name="specialistType"
+                  control={control}
+                  render={({ field }) => (
+                    <CSelect
+                      searchable
+                      {...field}
+                      placeholder="Select Specialist Type"
+                      options={doctorTypeOption}
+                      disabled={isView}
+                    />
+                  )}
+                />
+              </FormGroup>
+              <FormGroup title="Medical Interest">
+                <Input
+                  placeholder="Medical Interest"
+                  {...register('medicalInterest')}
+                  error={errors.medicalInterest?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+              <FormGroup title="Language">
+                <Input
+                  placeholder="Language"
+                  {...register('language')}
+                  error={errors.language?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+
+              <FormGroup title="Your Photo">
+                <div className="flex flex-col gap-6 @container @3xl:col-span-2">
+                  <AvatarUpload
+                    name="avatar"
+                    setValue={setValue}
+                    getValues={getValues}
+                    error={errors?.avatar?.message as string}
+                    disabled={isView}
+                  />
+                </div>
+              </FormGroup>
             </div>
             {!isView && (
               <FormFooter

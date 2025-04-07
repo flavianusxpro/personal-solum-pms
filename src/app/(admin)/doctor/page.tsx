@@ -1,24 +1,19 @@
+'use client';
 import { routes } from '@/config/routes';
-import Link from 'next/link';
 import { Button } from 'rizzui';
 import PageHeader from '@/app/shared/page-header';
-// import OrdersTable from '@/app/shared/ecommerce/order/order-list/table';
 import ExportButton from '@/app/shared/export-button';
-import DoctorTable from '@/app/shared/tableDataDoctor/table';
-import { metaObject } from '@/config/site.config';
 import { doctorData } from '@/data/doctor-data';
 import { PiPlusBold } from 'react-icons/pi';
-import DoctorList from './DoctorList';
-
-export const metadata = {
-  ...metaObject('Doctors'),
-};
+import DoctorList from '../../shared/doctor/DoctorList';
+import { useModal } from '@/app/shared/modal-views/use-modal';
+import CreateDoctorModal from '@/app/shared/doctor/modal/create-modal';
 
 const pageHeader = {
   title: 'Doctors',
   breadcrumb: [
     {
-      href: routes.eCommerce.orders,
+      href: routes.doctor.dashboard,
       name: 'Doctors',
     },
     {
@@ -28,6 +23,7 @@ const pageHeader = {
 };
 
 export default function DoctorPage() {
+  const { openModal } = useModal();
   return (
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
@@ -37,19 +33,24 @@ export default function DoctorPage() {
             fileName="order_data"
             header="Order ID,Name,Email,Avatar,Items,Price,Status,Created At,Updated At"
           />
-          <Link
-            href={routes.doctor.create}
+          <Button
+            onClick={() => {
+              openModal({
+                view: <CreateDoctorModal />,
+                size: 'xl',
+              });
+            }}
             className="w-full @lg:w-auto"
           >
             <Button as="span" className="w-full @lg:w-auto">
               <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
               Add Doctor
             </Button>
-          </Link>
+          </Button>
         </div>
       </PageHeader>
 
-      {/* <DoctorList data={doctorData} /> */}
+      <DoctorList />
     </>
   );
 }

@@ -1,71 +1,55 @@
 'use client';
 
 import { Controller, SubmitHandler } from 'react-hook-form';
-import toast from 'react-hot-toast';
 import FormGroup from '@/app/shared/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { Flex, Input } from 'rizzui';
-import AvatarUpload from '@core/ui/file-upload/avatar-upload';
+import { ActionIcon, Flex, Input, Title } from 'rizzui';
 import CSelect from '@/core/ui/select';
 import { genderOption, stateOption } from '@/config/constants';
+import { IPayloadCreateEditPatient } from '@/types/paramTypes';
+import toast from 'react-hot-toast';
+import { useModal } from '../../modal-views/use-modal';
+import { PiX } from 'react-icons/pi';
 import {
   patientDetailsFormSchema,
   PatientDetailsFormTypes,
 } from '@/validators/patient-details.schema';
-import {
-  useCreatePatient,
-  useGetPatientById,
-  useUpdatePatient,
-} from '@/hooks/usePatient';
-import { IPayloadCreateEditPatient } from '@/types/paramTypes';
-import { useParams } from 'next/navigation';
-import dayjs from 'dayjs';
+import { useCreatePatient } from '@/hooks/usePatient';
 
-export default function PatientDetails({
-  nextTab,
-  isView,
-}: {
-  nextTab: () => void;
-  isView?: boolean;
-}) {
-  const id = useParams<{ id: string }>().id;
+export default function CreatePatienModal() {
+  const { closeModal } = useModal();
 
-  const { data: dataPatient } = useGetPatientById(id);
-  const { mutate: mutateUpdatePatient } = useUpdatePatient();
+  const { mutate: mutateCreatePatient, isPending } = useCreatePatient();
 
   const onSubmit: SubmitHandler<PatientDetailsFormTypes> = (data) => {
     const payload: IPayloadCreateEditPatient = {
-      patient_id: id ?? undefined,
       first_name: data.first_name,
       last_name: data.last_name as string,
       email: data.email,
-      password: data.password as string,
       address: '',
+      password: data.password,
       date_of_birth: data.date_of_birth as string,
       gender: data.date_of_birth as string,
-      medicare_card_number: data.medicare_card as string,
-      medicare_expired_date: dayjs(data.medicare_expiry).format(
-        'DD MMMM YYYY'
-      ) as string,
       mobile_number: data.mobile_number as string,
       status: 1,
       timezone: data.timezone ?? 'Australia/Sydney',
+      medicare_card_number: data.medicare_card as string,
+      medicare_expired_date: data.medicare_expiry as string,
     };
 
-    if (id) {
-      return mutateUpdatePatient(payload, {
-        onSuccess: () => {
-          toast.success('Patient updated successfully');
-        },
-        onError: (error) => {
-          console.log('🚀 ~ PatientDetails ~ error:', error);
-          const errorMessage =
-            (error as any)?.response?.data?.message || 'An error occurred';
-          toast.error(errorMessage);
-        },
-      });
-    }
+    mutateCreatePatient(payload, {
+      onSuccess: () => {
+        toast.success('Patient created successfully');
+        closeModal();
+      },
+      onError: (error) => {
+        console.log('🚀 ~ PatientDetails ~ error:', error);
+        const errorMessage =
+          (error as any)?.response?.data?.message || 'An error occurred';
+        toast.error(errorMessage);
+      },
+    });
   };
 
   return (
@@ -79,28 +63,14 @@ export default function PatientDetails({
       }}
     >
       {({ register, control, setValue, getValues, formState: { errors } }) => {
-        if (dataPatient) {
-          setValue('first_name', dataPatient.first_name);
-          setValue('last_name', dataPatient.last_name);
-          setValue('email', dataPatient.email);
-          setValue('mobile_number', dataPatient.mobile_number);
-          setValue('date_of_birth', dataPatient.date_of_birth);
-          setValue('medicare_card', dataPatient.medicare_card_number);
-          setValue(
-            'medicare_expiry',
-            dayjs(dataPatient.medicare_expired_date).format('YYYY-MM-DD')
-          );
-          // setValue('position_of_card', dataPatient.position_of_card);
-          // setValue('country', dataPatient.country);
-          // setValue('street', dataPatient.street);
-          // setValue('suburb', dataPatient.suburb);
-          // setValue('state', dataPatient.state);
-          // setValue('post_code', dataPatient.post_code);
-          // setValue('avatar', dataPatient.avatar);
-        }
-
         return (
-          <>
+          <div className="flex flex-col gap-6 px-6 pt-6">
+            <Flex justify="between" align="center" gap="4">
+              <Title>Create Patient</Title>
+              <ActionIcon variant="text" onClick={closeModal} className="">
+                <PiX className="h-6 w-6" />
+              </ActionIcon>
+            </Flex>
             <div className="mb-10 grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
               <div className="flex flex-col gap-7">
                 <FormGroup
@@ -113,7 +83,6 @@ export default function PatientDetails({
                     {...register('first_name')}
                     error={errors.first_name?.message}
                     className="flex-grow"
-                    disabled={isView}
                   />
                 </FormGroup>
                 <FormGroup title="Last Name">
@@ -122,7 +91,6 @@ export default function PatientDetails({
                     {...register('last_name')}
                     error={errors.last_name?.message}
                     className="flex-grow"
-                    disabled={isView}
                   />
                 </FormGroup>
                 <FormGroup title="Gender">
@@ -135,7 +103,6 @@ export default function PatientDetails({
                         label=""
                         placeholder="Select Gender"
                         options={genderOption}
-                        disabled={isView}
                       />
                     )}
                   />
@@ -146,7 +113,6 @@ export default function PatientDetails({
                     type="date"
                     {...register('date_of_birth')}
                     error={errors.date_of_birth?.message}
-                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
@@ -155,7 +121,6 @@ export default function PatientDetails({
                     placeholder="Phone Number"
                     {...register('mobile_number')}
                     error={errors.mobile_number?.message}
-                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
@@ -165,7 +130,6 @@ export default function PatientDetails({
                     placeholder="Email"
                     {...register('email')}
                     error={errors.email?.message}
-                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
@@ -175,7 +139,6 @@ export default function PatientDetails({
                     placeholder="Medicare Card"
                     {...register('medicare_card')}
                     error={errors.medicare_card?.message}
-                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
@@ -187,7 +150,6 @@ export default function PatientDetails({
                       {...register('position_of_card')}
                       error={errors.position_of_card?.message}
                       labelClassName="text-base"
-                      disabled={isView}
                       className="flex-grow"
                     />
                     <Input
@@ -197,22 +159,9 @@ export default function PatientDetails({
                       {...register('medicare_expiry')}
                       error={errors.medicare_expiry?.message}
                       className="flex-grow"
-                      disabled={isView}
                       labelClassName="text-base"
                     />
                   </Flex>
-                </FormGroup>
-
-                <FormGroup title="Your Photo">
-                  <div className="flex flex-col gap-6 @container @3xl:col-span-2">
-                    <AvatarUpload
-                      name="avatar"
-                      setValue={setValue}
-                      getValues={getValues}
-                      disabled={isView}
-                      error={errors?.avatar?.message as string}
-                    />
-                  </div>
                 </FormGroup>
               </div>
 
@@ -223,7 +172,6 @@ export default function PatientDetails({
                     placeholder="Country"
                     {...register('country')}
                     error={errors.country?.message}
-                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
@@ -232,7 +180,6 @@ export default function PatientDetails({
                     placeholder="Street"
                     {...register('street')}
                     error={errors.street?.message}
-                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
@@ -241,16 +188,15 @@ export default function PatientDetails({
                     placeholder="Suburb"
                     {...register('suburb')}
                     error={errors.suburb?.message}
-                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
-                <Controller
-                  name="state"
-                  control={control}
-                  render={({ field }) => (
-                    <FormGroup title="States">
-                      <Flex justify="between" align="center" gap="4">
+                <FormGroup title="">
+                  <Flex justify="between" align="center" gap="4">
+                    <Controller
+                      name="state"
+                      control={control}
+                      render={({ field }) => (
                         <CSelect
                           {...field}
                           label="State"
@@ -258,32 +204,38 @@ export default function PatientDetails({
                           className="group relative z-0"
                           options={stateOption}
                           error={errors.state?.message as string}
-                          disabled={isView}
                           labelClassName="text-base font-medium"
                         />
-                        <Input
-                          label="Post Code"
-                          placeholder="Post Code"
-                          {...register('post_code')}
-                          error={errors.post_code?.message}
-                          labelClassName="text-base font-bold"
-                          disabled={isView}
-                          className="flex-grow"
-                        />
-                      </Flex>
-                    </FormGroup>
-                  )}
-                />
+                      )}
+                    />
+                    <Input
+                      label="Post Code"
+                      placeholder="Post Code"
+                      {...register('post_code')}
+                      error={errors.post_code?.message}
+                      labelClassName="text-base font-bold"
+                      className="flex-grow"
+                    />
+                  </Flex>
+                </FormGroup>
+                <FormGroup title="Password">
+                  <Input
+                    placeholder="Password"
+                    {...register('password')}
+                    error={errors.password?.message}
+                    className="flex-grow"
+                  />
+                </FormGroup>
               </div>
             </div>
-            {!isView && (
-              <FormFooter
-                // isLoading={isLoading}
-                altBtnText="Cancel"
-                submitBtnText="Save"
-              />
-            )}
-          </>
+            <FormFooter
+              className="rounded-b-xl"
+              isLoading={isPending}
+              altBtnText="Cancel"
+              submitBtnText="Save"
+              isSticky={false}
+            />
+          </div>
         );
       }}
     </Form>

@@ -27,7 +27,11 @@ const MultySelect = dynamic(
   }
 );
 
-export default function TabAssignDoctor() {
+export default function TabAssignDoctor({
+  isView = false,
+}: {
+  isView?: boolean;
+}) {
   const onSubmit: SubmitHandler<AssignDoctorTypes> = (data) => {
     toast.success(<Text as="b">Successfully added!</Text>);
     console.log('Profile settings data ->', {
@@ -63,17 +67,20 @@ export default function TabAssignDoctor() {
                         placeholder="Select Doctor"
                         error={errors.doctor?.message}
                         className="flex-grow"
+                        disabled={isView}
                       />
                     )}
                   />
                 </FormGroup>
               </div>
             </Flex>
-            <FormFooter
-              // isLoading={isLoading}
-              altBtnText="Cancel"
-              submitBtnText="Save"
-            />
+            {!isView && (
+              <FormFooter
+                // isLoading={isLoading}
+                altBtnText="Cancel"
+                submitBtnText="Save"
+              />
+            )}
           </>
         );
       }}

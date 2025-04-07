@@ -132,3 +132,18 @@ export const doctorsOption = [
   { label: 'Dr. Michael Brown', value: 'dr-michael-brown' },
   { label: 'Dr. Sarah Davis', value: 'dr-sarah-davis' },
 ];
+
+export const doctorTypeOption = [
+  { label: 'General Practitioner', value: 'general-practitioner' },
+  { label: 'Specialist', value: 'specialist' },
+  { label: 'Surgeon', value: 'surgeon' },
+  { label: 'Pediatrician', value: 'pediatrician' },
+  { label: 'Dermatologist', value: 'dermatologist' },
+  { label: 'Psychiatrist', value: 'psychiatrist' },
+  { label: 'Cardiologist', value: 'cardiologist' },
+  { label: 'Orthopedic Surgeon', value: 'orthopedic-surgeon' },
+  { label: 'Gynecologist', value: 'gynecologist' },
+  { label: 'Ophthalmologist', value: 'ophthalmologist' },
+  { label: 'ENT Specialist', value: 'ent-specialist' },
+  { label: 'Neurologist', value: 'neurologist' },
+];

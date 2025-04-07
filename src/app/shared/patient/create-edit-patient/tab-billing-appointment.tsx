@@ -69,7 +69,11 @@ const cardsOptions = [
   },
 ];
 
-export default function TabBillingAppointments() {
+export default function TabBillingAppointments({
+  isView = false,
+}: {
+  isView?: boolean;
+}) {
   function handleExportData() {
     exportToCSV(
       billingHistoryData,

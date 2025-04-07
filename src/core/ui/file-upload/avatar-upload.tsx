@@ -16,6 +16,7 @@ interface UploadZoneProps {
   setValue?: any;
   className?: string;
   error?: string;
+  disabled?: boolean;
 }
 
 export default function AvatarUpload({
@@ -24,6 +25,7 @@ export default function AvatarUpload({
   className,
   getValues,
   setValue,
+  disabled,
 }: UploadZoneProps) {
   const [files, setFiles] = useState<File[]>([]);
 

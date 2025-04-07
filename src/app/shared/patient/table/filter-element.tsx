@@ -3,7 +3,6 @@
 import React from 'react';
 import { PiTrashDuotone } from 'react-icons/pi';
 import DateFiled from '@/app/shared/controlled-table/date-field';
-import PriceField from '@/app/shared/controlled-table/price-field';
 import StatusField from '@/app/shared/controlled-table/status-field';
 import { Badge, Text, Button } from 'rizzui';
 import { getDateRangeStateValues } from '@core/utils/get-formatted-date';
@@ -11,20 +10,27 @@ import { useMedia } from '@core/hooks/use-media';
 
 const statusOptions = [
   {
-    value: 'completed',
-    label: 'Completed',
+    value: '1',
+    label: 'Active',
   },
   {
-    value: 'pending',
-    label: 'Pending',
+    value: '0',
+    label: 'InActive',
   },
   {
-    value: 'cancelled',
-    label: 'Cancelled',
+    value: '2',
+    label: 'Suspended',
+  },
+];
+
+const conditionOptions = [
+  {
+    value: 'no-followup',
+    label: 'No Follow Up',
   },
   {
-    value: 'refunded',
-    label: 'Refunded',
+    value: 'no-in-last-3-months',
+    label: 'No Appointment In Last 3 Months',
   },
 ];
 
@@ -44,11 +50,11 @@ export default function FilterElement({
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
   return (
     <>
-      <PriceField
+      {/* <PriceField
         value={filters['price']}
         onChange={(data) => updateFilter('price', data)}
         label={'Price'}
-      />
+      /> */}
       <DateFiled
         selectsRange
         className="w-full"
@@ -90,15 +96,31 @@ export default function FilterElement({
           updateFilter('status', value);
         }}
         getOptionValue={(option: { value: any }) => option.value}
-        getOptionDisplayValue={(option: { value: any }) =>
-          renderOptionDisplayValue(option.value)
-        }
-        displayValue={(selected: string) => renderOptionDisplayValue(selected)}
+        getOptionDisplayValue={(option) => renderOptionDisplay(option.label)}
         {...(isMediumScreen && {
           label: 'Status',
           labelClassName: 'font-medium text-gray-700',
         })}
-        dropdownClassName="h-auto"
+        dropdownClassName="h-auto z-10 bg-white/90 dark:bg-gray-800/90"
+      />
+      <StatusField
+        options={conditionOptions}
+        value={filters['condition']}
+        onChange={(value: string) => {
+          updateFilter('condition', value);
+        }}
+        getOptionValue={(option: { value: any }) => option.value}
+        getOptionDisplayValue={(option: { value: any }) =>
+          renderConditionOptionDisplayValue(option.value)
+        }
+        displayValue={(selected: string) =>
+          renderConditionOptionDisplayValue(selected)
+        }
+        {...(isMediumScreen && {
+          label: 'Condition',
+          labelClassName: 'font-medium text-gray-700',
+        })}
+        dropdownClassName="h-auto bg-white/90 dark:bg-gray-800/90"
       />
       {isFiltered ? (
         <Button
@@ -116,18 +138,9 @@ export default function FilterElement({
   );
 }
 
-function renderOptionDisplayValue(value: string) {
-  switch (value.toLowerCase()) {
-    case 'pending':
-      return (
-        <div className="flex items-center">
-          <Badge color="warning" renderAsDot />
-          <Text className="ms-2 font-medium capitalize text-orange-dark">
-            {value}
-          </Text>
-        </div>
-      );
-    case 'completed':
+function renderOptionDisplay(value: string) {
+  switch (value) {
+    case statusOptions[0].label:
       return (
         <div className="flex items-center">
           <Badge color="success" renderAsDot />
@@ -136,7 +149,39 @@ function renderOptionDisplayValue(value: string) {
           </Text>
         </div>
       );
-    case 'cancelled':
+    case statusOptions[1].label:
+      return (
+        <div className="flex items-center">
+          <Badge color="danger" renderAsDot />
+          <Text className="ms-2 font-medium capitalize text-red-dark">
+            {value}
+          </Text>
+        </div>
+      );
+    default:
+      return (
+        <div className="flex items-center">
+          <Badge renderAsDot className="bg-gray-400" />
+          <Text className="ms-2 font-medium capitalize text-gray-600">
+            {value}
+          </Text>
+        </div>
+      );
+  }
+}
+
+function renderConditionOptionDisplayValue(value: string) {
+  switch (value.toLowerCase()) {
+    case '1':
+      return (
+        <div className="flex items-center">
+          <Badge color="success" renderAsDot />
+          <Text className="ms-2 font-medium capitalize text-green-dark">
+            {value}
+          </Text>
+        </div>
+      );
+    case '0':
       return (
         <div className="flex items-center">
           <Badge color="danger" renderAsDot />
