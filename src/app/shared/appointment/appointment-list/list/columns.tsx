@@ -1,7 +1,7 @@
 'use client';
 
 import { HeaderCell } from '@/app/shared/table';
-import { Text, Checkbox, ActionIcon, Tooltip, Select } from 'rizzui';
+import { Text, Checkbox, ActionIcon, Tooltip, Select, Badge } from 'rizzui';
 import EyeIcon from '@core/components/icons/eye';
 import DeletePopover from '@/app/shared/delete-popover';
 import DateCell from '@core/ui/date-cell';
@@ -12,6 +12,8 @@ import { useModal } from '@/app/shared/modal-views/use-modal';
 import CreateUpdateAppointmentForm from '../appointment-form';
 import AppointmentDetails from './appointment-details';
 import TableAvatar from '@core/ui/avatar-card';
+import { IGetAppointmentListResponse } from '@/types/ApiResponse';
+import AvatarCard from '@core/ui/avatar-card';
 
 const statusOptions = [
   { label: 'Waiting', value: 'Waiting' },
@@ -19,7 +21,7 @@ const statusOptions = [
 ];
 
 type Columns = {
-  data: any[];
+  data?: IGetAppointmentListResponse['data'];
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
@@ -44,7 +46,7 @@ export const GetColumns = ({
           <Checkbox
             title={'Select All'}
             onChange={handleSelectAll}
-            checked={checkedItems.length === data.length}
+            checked={checkedItems.length === data?.length}
             className="cursor-pointer"
           />
         </div>
@@ -87,33 +89,36 @@ export const GetColumns = ({
       ),
     },
     {
-      title: (
-        <HeaderCell title={<span className="whitespace-nowrap">DATE</span>} />
-      ),
+      title: <HeaderCell title="Date" />,
       dataIndex: 'date',
       key: 'date',
       width: 250,
       render: (createdDate: Date) => <DateCell date={createdDate} />,
     },
-    // {
-    //   title: <HeaderCell title="Appointed to" />,
-    //   onHeaderCell: () => onHeaderCellClick('doctor.name'),
-    //   dataIndex: 'doctor',
-    //   key: 'doctor',
-    //   width: 320,
-    //   render: (doctor: { name: string; email: string; avatar: string, number: string }) => (
-    //     <AvatarCard2
-    //       number={doctor.number}
-    //       src={doctor.avatar}
-    //       name={doctor.name}
-    //       description={doctor.email}
-    //     />
-    //   ),
-    // },
+    {
+      title: <HeaderCell title="Appointment To" />,
+      onHeaderCell: () => onHeaderCellClick('doctor.name'),
+      dataIndex: 'doctor',
+      key: 'doctor',
+      width: 320,
+      render: (doctor: {
+        name: string;
+        email: string;
+        avatar: string;
+        number: string;
+      }) => (
+        <AvatarCard
+          number={doctor?.number}
+          src={doctor?.avatar}
+          name={doctor?.name}
+          description={doctor?.email}
+        />
+      ),
+    },
     {
       title: (
         <HeaderCell
-          title={<span className="whitespace-nowrap">APPOINT TYPE</span>}
+          title="APPOINTMENT TYPE"
           sortable
           ascending={
             sortConfig?.direction === 'asc' && sortConfig?.key === 'type'
@@ -139,22 +144,7 @@ export const GetColumns = ({
       dataIndex: 'appointStatus',
       key: 'appointStatus',
       width: 250,
-      render: (value: string) => (
-        <>
-          <p
-            className={`whitespace-nowrap font-medium ${value === 'Schedule' ? 'text-green-600' : value === 'Cancelled' ? 'text-red-600' : value === 'Waiting' ? 'text-yellow-600' : 'text-blue-600'}`}
-          >
-            {value}
-          </p>
-          {value === 'Schedule' || value === 'SCHEDULE' ? (
-            <p className={`whitespace-nowrap font-medium text-gray-700`}>
-              Reschedule From Previous Date
-            </p>
-          ) : (
-            <></>
-          )}
-        </>
-      ),
+      render: (value: string) => getScheduleStatusBadge(value),
     },
     {
       title: (
@@ -170,13 +160,7 @@ export const GetColumns = ({
       key: 'status',
       width: 260,
       onHeaderCell: () => onHeaderCellClick('status'),
-      render: (status: number | string) => (
-        <span
-          className={`${status === 'Paid' ? 'text-green-400' : status === 'Unpaid' ? 'text-red-400' : 'text-blue-400'}`}
-        >
-          {status == 1 ? 'Paid' : 'Unpaid'}
-        </span>
-      ),
+      render: (status: number | string) => getPaymentStatusBadge(status),
     },
     {
       title: <></>,
@@ -284,4 +268,73 @@ function RenderAction({
       />
     </div>
   );
+}
+
+function getPaymentStatusBadge(status: number | string) {
+  switch (status) {
+    case 'pending':
+      return (
+        <div className="flex items-center">
+          <Badge color="warning" renderAsDot />
+          <Text className="ms-2 font-medium text-orange-dark">{status}</Text>
+        </div>
+      );
+    case 1:
+      return (
+        <div className="flex items-center">
+          <Badge color="success" renderAsDot />
+          <Text className="ms-2 font-medium text-green-dark">Paid</Text>
+        </div>
+      );
+    case 0:
+      return (
+        <div className="flex items-center">
+          <Badge color="danger" renderAsDot />
+          <Text className="ms-2 font-medium text-red-dark">Unpaid</Text>
+        </div>
+      );
+    default:
+      return (
+        <div className="flex items-center">
+          <Badge renderAsDot className="bg-gray-400" />
+          <Text className="ms-2 font-medium text-gray-600">{status}</Text>
+        </div>
+      );
+  }
+}
+
+function getScheduleStatusBadge(status: number | string) {
+  switch (status) {
+    case 'Waiting':
+      return (
+        <div className="flex items-center">
+          <Badge color="warning" renderAsDot />
+          <Text className="ms-2 font-medium text-yellow-600">{status}</Text>
+        </div>
+      );
+    case 'Schedule':
+      return (
+        <div className="flex items-center">
+          <Badge color="success" renderAsDot />
+          <Text className="ms-2 font-medium text-green-dark">Paid</Text>
+          <p className={`whitespace-nowrap font-medium text-gray-700`}>
+            Reschedule From Previous Date
+          </p>
+        </div>
+      );
+    case 'Cancelled':
+      return (
+        <div className="flex items-center">
+          <Badge color="danger" renderAsDot />
+          <Text className="ms-2 font-medium text-red-dark">Unpaid</Text>
+        </div>
+      );
+    default:
+      return (
+        <div className="flex items-center">
+          <Badge renderAsDot className="bg-gray-400" />
+          <Text className="ms-2 font-medium text-blue-600">{status}</Text>
+        </div>
+      );
+  }
 }

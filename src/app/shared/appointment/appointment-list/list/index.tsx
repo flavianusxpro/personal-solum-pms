@@ -14,6 +14,8 @@ import { useColumn } from '@core/hooks/use-column';
 import cn from '@core/utils/class-names';
 import DateFiled from '@/app/shared/controlled-table/date-field';
 import StatusField from '@/app/shared/controlled-table/status-field';
+import { useGetAppointments } from '@/hooks/useAppointment';
+import FilterElement from './filter-element';
 
 const TableFooter = dynamic(() => import('@/app/shared/table-footer'), {
   ssr: false,
@@ -25,28 +27,18 @@ const filterState = {
   paymentMethod: '',
 };
 
-export const appointmentTypesOptions = Object.entries(appointmentTypes).map(
-  ([value, label]) => ({ label, value })
-);
-
-const statusOptions = [
-  {
-    value: 'Paid',
-    label: 'Paid',
-  },
-  {
-    value: 'Unpaid',
-    label: 'Unpaid',
-  },
-  {
-    value: 'Refunded',
-    label: 'Refunded',
-  },
-];
-
-export default function AppointmentListTable({ data = [] }: { data: any[] }) {
+export default function AppointmentListTable() {
   const [pageSize, setPageSize] = useState(10);
   const [_, setCheckedItems] = useState<string[]>([]);
+
+  const { data: dataAppointments } = useGetAppointments({
+    page: 1,
+    perPage: pageSize,
+  });
+  console.log(
+    '🚀 ~ AppointmentListTable ~ dataAppointments:',
+    dataAppointments
+  );
 
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
 
@@ -91,12 +83,12 @@ export default function AppointmentListTable({ data = [] }: { data: any[] }) {
     handleRowSelect,
     setSelectedRowKeys,
     selectedRowKeys,
-  } = useTable(data, pageSize, filterState);
+  } = useTable(dataAppointments ?? [], pageSize, filterState);
 
   const columns = useMemo(
     () =>
       GetColumns({
-        data: data,
+        data: dataAppointments,
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -156,89 +148,12 @@ export default function AppointmentListTable({ data = [] }: { data: any[] }) {
         }}
         className="rounded-md border border-muted text-sm shadow-sm [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:h-60 [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:justify-center [&_.rc-table-row:last-child_td.rc-table-cell]:border-b-0 [&_thead.rc-table-thead]:border-t-0"
         filterElement={
-          <div
-            className={cn(
-              'flex',
-              isMediumScreen ? 'flex-col gap-6' : 'flex-row items-center gap-3'
-            )}
-          >
-            {!isMediumScreen && (
-              <Title
-                as="h3"
-                className="rizzui-title-h3 pe-4 text-base font-semibold sm:text-lg"
-              >
-                All Appointment
-              </Title>
-            )}
-
-            <DateFiled
-              selected={getDateRangeStateValues(filters['date'][0])}
-              startDate={getDateRangeStateValues(filters['date'][0]) as Date}
-              endDate={getDateRangeStateValues(filters['date'][1]) as Date}
-              selectsRange
-              className="w-full"
-              dateFormat="dd MMM yyyy"
-              onChange={(dates: [Date | null, Date | null]) => {
-                updateFilter('date', dates);
-              }}
-              placeholderText="Select created date"
-              {...(isMediumScreen && {
-                inputProps: {
-                  label: 'Created Date',
-                  labelClassName: 'font-medium text-gray-700',
-                },
-              })}
-              maxDate={new Date()}
-            />
-            <StatusField
-              dropdownClassName="!z-10 h-auto"
-              className="w-full min-w-[170px] @[35rem]:w-auto"
-              placeholder="Select type"
-              options={appointmentTypesOptions}
-              value={filters['appointType']}
-              onChange={(value: string) => {
-                updateFilter('appointType', value);
-              }}
-              getOptionValue={(option: { value: any }) => option.value}
-              displayValue={(selected: string) =>
-                appointmentTypesOptions.find(
-                  (option) => option.label === selected
-                )?.label ?? ''
-              }
-              placement="bottom-start"
-              {...(isMediumScreen && {
-                label: 'APPOINT TYPE',
-                labelClassName: 'font-medium text-gray-700',
-              })}
-            />
-            <StatusField
-              dropdownClassName="!z-10 h-auto"
-              className="w-full @[35rem]:w-auto"
-              options={statusOptions}
-              value={filters['appointStatus']}
-              onChange={(value: string) => {
-                updateFilter('appointStatus', value);
-              }}
-              getOptionValue={(option: { value: any }) => option.value}
-              {...(isMediumScreen && {
-                label: 'APPOINT STATUS',
-                labelClassName: 'font-medium text-gray-700',
-              })}
-            />
-
-            {isFiltered ? (
-              <Button
-                size="sm"
-                onClick={() => {
-                  handleReset();
-                }}
-                className="h-8 bg-gray-200/70"
-                variant="flat"
-              >
-                <PiTrashDuotone className="me-1.5 h-[17px] w-[17px]" /> Clear
-              </Button>
-            ) : null}
-          </div>
+          <FilterElement
+            isFiltered={isFiltered}
+            filters={filters}
+            updateFilter={updateFilter}
+            handleReset={handleReset}
+          />
         }
         tableFooter={
           <TableFooter

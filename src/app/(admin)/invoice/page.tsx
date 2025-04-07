@@ -7,7 +7,7 @@ import { PiPlusBold } from 'react-icons/pi';
 import { invoiceData } from '@/data/invoice-data';
 import ExportButton from '@/app/shared/export-button';
 import { metaObject } from '@/config/site.config';
-import InvoiceList from './InvoiceList';
+import InvoiceList from '../../shared/invoice/invoice-list/InvoiceList';
 
 export const metadata = {
   ...metaObject('Invoices'),

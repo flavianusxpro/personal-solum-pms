@@ -61,7 +61,7 @@ const columns = [
         </Title>
         <Text
           as="p"
-          className=" max-w-[250px] overflow-hidden truncate text-sm text-gray-500"
+          className="max-w-[250px] overflow-hidden truncate text-sm text-gray-500"
         >
           {product.description}
         </Text>
@@ -189,7 +189,7 @@ export default function InvoiceDetails() {
             notes let us know!
           </Text>
         </div>
-        <div className=" w-full max-w-sm">
+        <div className="w-full max-w-sm">
           <Text className="flex items-center justify-between border-b border-muted pb-3.5 lg:pb-5">
             Subtotal:{' '}
             <Text as="span" className="font-semibold">

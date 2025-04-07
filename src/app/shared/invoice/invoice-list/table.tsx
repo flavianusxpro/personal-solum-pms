@@ -6,7 +6,7 @@ import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
 import { Button } from 'rizzui';
 import ControlledTable from '@/app/shared/controlled-table/index';
-import { getColumns } from '@/app/shared/invoice/invoice-list/columns';
+import { getColumns } from './columns';
 const FilterElement = dynamic(
   () => import('@/app/shared/invoice/invoice-list/filter-element'),
   { ssr: false }

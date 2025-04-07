@@ -6,6 +6,5 @@ export function useGetAppointments(params: IParamGetAppointments) {
   return useQuery({
     queryKey: ['getAppointments' + params.doctorId || params.patientId],
     queryFn: async () => getAppointmentList(params),
-    enabled: !!(params.doctorId || params.patientId),
   });
 }
