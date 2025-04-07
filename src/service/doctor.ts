@@ -8,6 +8,8 @@ import {
   IParamGetAllDoctor,
   IParamGetDoctorByClinicForPatient,
   IPayloadCreateEditDoctor,
+  IPayloadSettingBillingDoctor,
+  IPayloadSettingMeetingDoctor,
 } from '@/types/paramTypes';
 
 export async function getDoctorByClinicForPatient(
@@ -42,4 +44,21 @@ export async function postCreateDoctor(payload: IPayloadCreateEditDoctor) {
 
 export async function putCreateDoctor(payload: IPayloadCreateEditDoctor) {
   return await put<any>('/admin/doctor/' + payload.doctor_id, payload);
+}
+
+export async function putSettingMeetingDoctor(
+  payload: IPayloadSettingMeetingDoctor
+) {
+  return await put<any>(
+    '/admin/doctor/setting/meeting/' + payload.doctor_id,
+    payload
+  );
+}
+export async function putSettingBillingDoctor(
+  payload: IPayloadSettingBillingDoctor
+) {
+  return await put<any>(
+    '/admin/doctor/setting/billing/' + payload.doctor_id,
+    payload
+  );
 }

@@ -1,4 +1,4 @@
-import { Flex, Input, Switch } from 'rizzui';
+import { Flex, Grid, Input, Switch } from 'rizzui';
 import FormGroup from '../../form-group';
 import { Form } from '@/core/ui/form';
 import { Controller, SubmitHandler } from 'react-hook-form';
@@ -8,9 +8,70 @@ import {
 } from '@/validators/settings-doctor.schema';
 import FormFooter from '@/core/components/form-footer';
 import CNumberInput from '@/core/ui/number-input';
+import {
+  useUpdateSettingBillingDoctor,
+  useUpdateSettingMeetingDoctor,
+} from '@/hooks/useDoctor';
+import { useParams } from 'next/navigation';
+import {
+  IPayloadSettingBillingDoctor,
+  IPayloadSettingMeetingDoctor,
+} from '@/types/paramTypes';
+import toast from 'react-hot-toast';
 
 export default function TabSettings({ isView = false }: { isView?: boolean }) {
-  const onSubmit: SubmitHandler<SettingsDoctorSchema> = (data) => {};
+  const id = useParams().id as string;
+
+  const { mutate: mutateUpdateMeeting, isPending: isPendingUpdateMeeting } =
+    useUpdateSettingMeetingDoctor();
+  const { mutate: mutateUpdateBilling, isPending: isPendingUpdateBillig } =
+    useUpdateSettingBillingDoctor();
+
+  const onSubmit: SubmitHandler<SettingsDoctorSchema> = (data) => {
+    console.log('🚀 ~ TabSettings ~ data:', data);
+    const payloadSettingMeeting: IPayloadSettingMeetingDoctor = {
+      doctor_id: id,
+      microsoft_team_link: data.microsoft_team_link,
+      microsoft_team_id: data.microsoft_team_id,
+      microsoft_team_passcode: data.microsoft_team_passcode,
+      zoom_meeting_link: data.zoom_meeting_link,
+      zoom_meeting_id: data.zoom_meeting_id,
+      zoom_meeting_passcode: data.zoom_meeting_passcode,
+      // skype: data.skype,
+      // f2f: data.f2f ? 1 : 0,
+      // teleHealth: data.teleHealth ? 1 : 0,
+    };
+    const payloadSettingBilling: IPayloadSettingBillingDoctor = {
+      doctor_id: id,
+      fee: data.fee,
+      cancellation_fee: data.cancellation_fee,
+      initial_appointment_fee: data.initial_appointment_fee,
+      followup_appointment_fee: data.follow_up_appointment_fee,
+    };
+
+    mutateUpdateMeeting(payloadSettingMeeting, {
+      onSuccess: () => {
+        toast.success('Meeting settings updated successfully');
+      },
+      onError: (error: any) => {
+        toast.error(
+          'Error updating meeting settings: ' + error.response.data.message
+        );
+      },
+    });
+
+    mutateUpdateBilling(payloadSettingBilling, {
+      onSuccess: () => {
+        toast.success('Billing settings updated successfully');
+      },
+      onError: (error: any) => {
+        toast.error(
+          'Error updating billing settings: ' + error.response.data.message
+        );
+      },
+    });
+  };
+
   return (
     <div>
       <Form<SettingsDoctorSchema>
@@ -31,7 +92,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
         }) => {
           return (
             <>
-              <div className="flex flex-col gap-7">
+              <div className="mb-4 flex flex-col gap-7">
                 <FormGroup title="Settings" />
                 <FormGroup title="Meeting Type">
                   <Flex gap="4">
@@ -158,61 +219,67 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                 </FormGroup>
 
                 <FormGroup title="Cost Setup">
-                  <Controller
-                    name="fee"
-                    control={control}
-                    render={({ field }) => (
-                      <CNumberInput
-                        {...field}
-                        label="Fee"
-                        placeholder="Fee"
-                        error={errors.fee?.message}
-                        disabled={isView}
-                      />
-                    )}
-                  />
-                  <Controller
-                    name="cancellation_fee"
-                    control={control}
-                    render={({ field }) => (
-                      <CNumberInput
-                        {...field}
-                        label="Cancellation Fee"
-                        placeholder="Cancellation Fee"
-                        error={errors.cancellation_fee?.message}
-                        disabled={isView}
-                      />
-                    )}
-                  />
-                  <Controller
-                    name="initial_appointment_fee"
-                    control={control}
-                    render={({ field }) => (
-                      <CNumberInput
-                        {...field}
-                        label="Initial Appointment Fee"
-                        placeholder="Initial Appointment Fee"
-                        error={errors.initial_appointment_fee?.message}
-                        disabled={isView}
-                      />
-                    )}
-                  />
-                  <Controller
-                    name="follow_up_appointment_fee"
-                    control={control}
-                    render={({ field }) => (
-                      <CNumberInput
-                        {...field}
-                        label="Follow Up Appointment Fee"
-                        placeholder="Follow Up Appointment Fee"
-                        error={errors.follow_up_appointment_fee?.message}
-                        disabled={isView}
-                      />
-                    )}
-                  />
+                  <Grid columns="2">
+                    <Controller
+                      name="fee"
+                      control={control}
+                      render={({ field }) => (
+                        <CNumberInput
+                          {...field}
+                          label="Fee"
+                          placeholder="Fee"
+                          error={errors.fee?.message}
+                          disabled={isView}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="cancellation_fee"
+                      control={control}
+                      render={({ field }) => (
+                        <CNumberInput
+                          {...field}
+                          label="Cancellation Fee"
+                          placeholder="Cancellation Fee"
+                          error={errors.cancellation_fee?.message}
+                          disabled={isView}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="initial_appointment_fee"
+                      control={control}
+                      render={({ field }) => (
+                        <CNumberInput
+                          {...field}
+                          label="Initial Appointment Fee"
+                          placeholder="Initial Appointment Fee"
+                          error={errors.initial_appointment_fee?.message}
+                          disabled={isView}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="follow_up_appointment_fee"
+                      control={control}
+                      render={({ field }) => (
+                        <CNumberInput
+                          {...field}
+                          label="Follow Up Appointment Fee"
+                          placeholder="Follow Up Appointment Fee"
+                          error={errors.follow_up_appointment_fee?.message}
+                          disabled={isView}
+                        />
+                      )}
+                    />
+                  </Grid>
                 </FormGroup>
               </div>
-              <FormFooter altBtnText="Cancel" submitBtnText="Save" />
+              <FormFooter
+                isLoading={isPendingUpdateMeeting || isPendingUpdateBillig}
+                altBtnText="Cancel"
+                submitBtnText="Save"
+              />
             </>
           );
         }}

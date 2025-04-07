@@ -3,11 +3,15 @@ import {
   getDoctorList,
   postCreateDoctor,
   putCreateDoctor,
+  putSettingBillingDoctor,
+  putSettingMeetingDoctor,
 } from '@/service/doctor';
 
 import {
   IParamGetAllDoctor,
   IPayloadCreateEditDoctor,
+  IPayloadSettingBillingDoctor,
+  IPayloadSettingMeetingDoctor,
 } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -42,6 +46,22 @@ export function useUpdateDoctor() {
   return useMutation({
     mutationFn: async (payload: IPayloadCreateEditDoctor) => {
       return await putCreateDoctor(payload);
+    },
+  });
+}
+
+export function useUpdateSettingMeetingDoctor() {
+  return useMutation({
+    mutationFn: async (payload: IPayloadSettingMeetingDoctor) => {
+      return await putSettingMeetingDoctor(payload);
+    },
+  });
+}
+
+export function useUpdateSettingBillingDoctor() {
+  return useMutation({
+    mutationFn: async (payload: IPayloadSettingBillingDoctor) => {
+      return await putSettingBillingDoctor(payload);
     },
   });
 }

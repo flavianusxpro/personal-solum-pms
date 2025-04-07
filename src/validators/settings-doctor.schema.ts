@@ -16,10 +16,10 @@ export const settingsDoctorSchema = z.object({
   field3: z.string().optional(),
   field4: z.string().optional(),
 
-  fee: z.string().optional(),
-  cancellation_fee: z.string().optional(),
-  initial_appointment_fee: z.string().optional(),
-  follow_up_appointment_fee: z.string().optional(),
+  fee: z.number().optional(),
+  cancellation_fee: z.number().optional(),
+  initial_appointment_fee: z.number().optional(),
+  follow_up_appointment_fee: z.number().optional(),
 });
 
 export type SettingsDoctorSchema = z.infer<typeof settingsDoctorSchema>;

@@ -79,3 +79,21 @@ export interface IParamGetInvoices extends IParamGetDataWithPagination {
   doctorId?: number;
   patientId?: number;
 }
+
+export interface IPayloadSettingMeetingDoctor {
+  doctor_id: string;
+  microsoft_team_link?: string;
+  microsoft_team_id?: string;
+  microsoft_team_passcode?: string;
+  zoom_meeting_link?: string;
+  zoom_meeting_id?: string;
+  zoom_meeting_passcode?: string;
+}
+
+export interface IPayloadSettingBillingDoctor {
+  doctor_id: string;
+  fee?: number;
+  cancellation_fee?: number;
+  initial_appointment_fee?: number;
+  followup_appointment_fee?: number;
+}
