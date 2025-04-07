@@ -26,6 +26,8 @@ export function useGetPatientById(id: string) {
       return await getPatientById(id);
     },
     enabled: !!id,
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
   });
 }
 

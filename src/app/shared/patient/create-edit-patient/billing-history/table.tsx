@@ -9,15 +9,28 @@ import { exportToCSV } from '@core/utils/export-to-csv';
 import ControlledTable from '@/app/shared/controlled-table/index';
 import { billingHistoryData } from '@/data/billing-history';
 import { getColumns } from './columns';
+import { useGetInvoices } from '@/hooks/useInvoice';
+import { useGetPatientById } from '@/hooks/usePatient';
+import { useParams } from 'next/navigation';
 
 export default function BillingHistoryTable({
   className,
-  data,
 }: {
   className?: string;
-  data: typeof billingHistoryData;
 }) {
+  const id = useParams().id as string;
+
   const [pageSize, setPageSize] = useState(5);
+
+  const { data: dataPatient } = useGetPatientById(id);
+
+  const { data: dataInvoice, isLoading: isLoadingGetInvoices } = useGetInvoices(
+    {
+      patientId: dataPatient?.id,
+      page: 1,
+      perPage: pageSize,
+    }
+  );
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -38,12 +51,12 @@ export default function BillingHistoryTable({
     handleRowSelect,
     handleSelectAll,
     handleDelete,
-  } = useTable(data, pageSize, data);
+  } = useTable(dataInvoice ?? [], pageSize);
 
   const columns = useMemo(
     () =>
       getColumns({
-        data,
+        data: dataInvoice,
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -62,23 +75,23 @@ export default function BillingHistoryTable({
   );
   const { visibleColumns } = useColumn(columns);
 
-  const selectedData = data.filter((item) =>
-    selectedRowKeys.includes(item.id.toString())
-  );
-  function handleExportData() {
-    exportToCSV(
-      selectedData,
-      'Title,Amount,Date,Status,Shared',
-      `billing_history_${selectedData.length}`
-    );
-  }
+  // const selectedData = dataInvoice?.filter((item) =>
+  //   selectedRowKeys.includes(item.id.toString())
+  // );
+  // function handleExportData() {
+  //   exportToCSV(
+  //     selectedData,
+  //     'Title,Amount,Date,Status,Shared',
+  //     `billing_history_${selectedData.length}`
+  //   );
+  // }
 
   return (
     <div
       className={`w-full overflow-hidden rounded-lg bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800 ${className}`}
     >
       <ControlledTable
-        isLoading={isLoading}
+        isLoading={isLoading || isLoadingGetInvoices}
         data={tableData}
         // @ts-ignore
         columns={visibleColumns}
@@ -101,14 +114,14 @@ export default function BillingHistoryTable({
               handleDelete(ids);
             }}
           >
-            <Button
+            {/* <Button
               size="sm"
               onClick={() => handleExportData()}
               className="dark:bg-gray-300 dark:text-gray-800"
             >
               Download {selectedRowKeys.length}{' '}
               {selectedRowKeys.length > 1 ? 'Files' : 'File'}
-            </Button>
+            </Button> */}
           </TableFooter>
         }
       />

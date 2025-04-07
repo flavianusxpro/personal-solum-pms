@@ -75,3 +75,7 @@ export interface IParamGetAppointments extends IParamGetDataWithPagination {
   doctorId?: number;
   patientId?: number;
 }
+export interface IParamGetInvoices extends IParamGetDataWithPagination {
+  doctorId?: number;
+  patientId?: number;
+}

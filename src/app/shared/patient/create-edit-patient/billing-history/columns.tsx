@@ -24,7 +24,7 @@ function handleDownloadRowData(row: { [key: string]: any }) {
 }
 
 type Columns = {
-  data: typeof billingHistoryData;
+  data: any;
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
@@ -46,7 +46,7 @@ export const getColumns = ({
         <Checkbox
           title={'Select All'}
           onChange={handleSelectAll}
-          checked={checkedItems.length === data.length}
+          checked={checkedItems?.length === data?.length}
           className="cursor-pointer"
         />
       </div>
@@ -98,16 +98,7 @@ export const getColumns = ({
     onHeaderCell: () => onHeaderCellClick('status'),
     dataIndex: 'status',
     key: 'status',
-    render: (status: any) => (
-      <Badge
-        variant="flat"
-        rounded="pill"
-        className="w-[90px] font-medium"
-        color={statusColors[status]}
-      >
-        {status}
-      </Badge>
-    ),
+    render: (status: any) => getStatusBadge(status),
   },
   {
     title: <></>,
@@ -124,3 +115,36 @@ export const getColumns = ({
     ),
   },
 ];
+
+function getStatusBadge(status: number | string) {
+  switch (status) {
+    case 'pending':
+      return (
+        <div className="flex items-center">
+          <Badge color="warning" renderAsDot />
+          <Text className="ms-2 font-medium text-orange-dark">{status}</Text>
+        </div>
+      );
+    case 2:
+      return (
+        <div className="flex items-center">
+          <Badge color="success" renderAsDot />
+          <Text className="ms-2 font-medium text-green-dark">Active</Text>
+        </div>
+      );
+    case 1:
+      return (
+        <div className="flex items-center">
+          <Badge color="danger" renderAsDot />
+          <Text className="ms-2 font-medium text-red-dark">Inactive</Text>
+        </div>
+      );
+    default:
+      return (
+        <div className="flex items-center">
+          <Badge renderAsDot className="bg-gray-400" />
+          <Text className="ms-2 font-medium text-gray-600">{status}</Text>
+        </div>
+      );
+  }
+}
