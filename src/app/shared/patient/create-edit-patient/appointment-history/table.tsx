@@ -3,21 +3,29 @@
 import { useMemo, useState } from 'react';
 import { useColumn } from '@core/hooks/use-column';
 import { useTable } from '@core/hooks/use-table';
-import { Button } from 'rizzui';
 import TableFooter from '@/app/shared/table-footer';
-import { exportToCSV } from '@core/utils/export-to-csv';
 import ControlledTable from '@/app/shared/controlled-table/index';
-import { billingHistoryData } from '@/data/billing-history';
 import { getColumns } from './columns';
+import { useGetAppointments } from '@/hooks/useAppointment';
+import { useParams } from 'next/navigation';
+import { useGetPatientById } from '@/hooks/usePatient';
 
 export default function AppointmentHistoryTable({
   className,
-  data,
 }: {
   className?: string;
-  data: typeof billingHistoryData;
 }) {
+  const id = useParams().id as string;
   const [pageSize, setPageSize] = useState(5);
+
+  const { data: dataPatient } = useGetPatientById(id);
+
+  const { data: dataAppointment, isLoading: isLoadingGetAppointments } =
+    useGetAppointments({
+      patientId: dataPatient?.id,
+      page: 1,
+      perPage: pageSize,
+    });
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -38,12 +46,12 @@ export default function AppointmentHistoryTable({
     handleRowSelect,
     handleSelectAll,
     handleDelete,
-  } = useTable(data, pageSize, data);
+  } = useTable(dataAppointment ?? [], pageSize);
 
   const columns = useMemo(
     () =>
       getColumns({
-        data,
+        data: dataAppointment,
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -62,23 +70,23 @@ export default function AppointmentHistoryTable({
   );
   const { visibleColumns } = useColumn(columns);
 
-  const selectedData = data.filter((item) =>
+  const selectedData = dataAppointment?.filter((item) =>
     selectedRowKeys.includes(item.id.toString())
   );
-  function handleExportData() {
-    exportToCSV(
-      selectedData,
-      'Title,Amount,Date,Status,Shared',
-      `billing_history_${selectedData.length}`
-    );
-  }
+  // function handleExportData() {
+  //   exportToCSV(
+  //     selectedData,
+  //     'Title,Amount,Date,Status,Shared',
+  //     `billing_history_${selectedData.length}`
+  //   );
+  // }
 
   return (
     <div
       className={`w-full overflow-hidden rounded-lg bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800 ${className}`}
     >
       <ControlledTable
-        isLoading={isLoading}
+        isLoading={isLoading || isLoadingGetAppointments}
         data={tableData}
         // @ts-ignore
         columns={visibleColumns}
@@ -101,14 +109,14 @@ export default function AppointmentHistoryTable({
               handleDelete(ids);
             }}
           >
-            <Button
+            {/* <Button
               size="sm"
               onClick={() => handleExportData()}
               className="dark:bg-gray-300 dark:text-gray-800"
             >
               Download {selectedRowKeys.length}{' '}
               {selectedRowKeys.length > 1 ? 'Files' : 'File'}
-            </Button>
+            </Button> */}
           </TableFooter>
         }
       />

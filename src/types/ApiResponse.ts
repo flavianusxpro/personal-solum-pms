@@ -287,3 +287,25 @@ interface Clinic {
   created_at: string;
   updated_at: string;
 }
+
+export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    clinicId: number;
+    patientId: number;
+    doctorId: number;
+    date: string;
+    status: number;
+    type: string;
+    meeting_link: null;
+    meeting_id: null;
+    meeting_passcode: null;
+    patient_type: string;
+    patient_problem: string;
+    note: string;
+    sessionId: null;
+    paymentId: null;
+    created_at: string;
+    updated_at: string;
+  }[];
+}

@@ -6,24 +6,18 @@ import { HeaderCell } from '@/app/shared/table';
 import { Checkbox, Title, Text, Button, Badge } from 'rizzui';
 import { exportToCSV } from '@core/utils/export-to-csv';
 import { billingHistoryData } from '@/data/billing-history';
-
-const statusColors: any = {
-  'In Progress': 'info',
-  Paid: 'success',
-  Canceled: 'secondary',
-  'On hold': 'danger',
-};
+import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 
 function handleDownloadRowData(row: { [key: string]: any }) {
   exportToCSV(
     [row],
-    'Title,Amount,Date,Status,Shared',
-    `billing_history_${row.id}`
+    'Appointment Date,Doctor Name,Appointment Type,Status',
+    `Appointment_${row.id}`
   );
 }
 
 type Columns = {
-  data: typeof billingHistoryData;
+  data?: IGetAppointmentListResponse['data'];
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
@@ -45,7 +39,7 @@ export const getColumns = ({
         <Checkbox
           title={'Select All'}
           onChange={handleSelectAll}
-          checked={checkedItems.length === data.length}
+          checked={checkedItems?.length === data?.length}
           className="cursor-pointer"
         />
       </div>
@@ -74,16 +68,16 @@ export const getColumns = ({
   },
   {
     title: <HeaderCell title="Doctor Name" />,
-    dataIndex: 'title',
-    key: 'title',
+    dataIndex: 'doctorId',
+    key: 'doctorId',
     render: (value: string) => (
       <Text className="mb-1 text-gray-700">{value}</Text>
     ),
   },
   {
     title: <HeaderCell title="Appointment Type" />,
-    dataIndex: 'title',
-    key: 'title',
+    dataIndex: 'type',
+    key: 'type',
     render: (value: string) => (
       <Text className="mb-1 text-gray-700">{value}</Text>
     ),
@@ -101,16 +95,7 @@ export const getColumns = ({
     onHeaderCell: () => onHeaderCellClick('status'),
     dataIndex: 'status',
     key: 'status',
-    render: (status: any) => (
-      <Badge
-        variant="flat"
-        rounded="pill"
-        className="w-[90px] font-medium"
-        color={statusColors[status]}
-      >
-        {status}
-      </Badge>
-    ),
+    render: (status: any) => getStatusBadge(status),
   },
   {
     title: <></>,
@@ -127,3 +112,36 @@ export const getColumns = ({
     ),
   },
 ];
+
+function getStatusBadge(status: number | string) {
+  switch (status) {
+    case 'pending':
+      return (
+        <div className="flex items-center">
+          <Badge color="warning" renderAsDot />
+          <Text className="ms-2 font-medium text-orange-dark">{status}</Text>
+        </div>
+      );
+    case 2:
+      return (
+        <div className="flex items-center">
+          <Badge color="success" renderAsDot />
+          <Text className="ms-2 font-medium text-green-dark">Active</Text>
+        </div>
+      );
+    case 1:
+      return (
+        <div className="flex items-center">
+          <Badge color="danger" renderAsDot />
+          <Text className="ms-2 font-medium text-red-dark">Inactive</Text>
+        </div>
+      );
+    default:
+      return (
+        <div className="flex items-center">
+          <Badge renderAsDot className="bg-gray-400" />
+          <Text className="ms-2 font-medium text-gray-600">{status}</Text>
+        </div>
+      );
+  }
+}

@@ -71,3 +71,7 @@ export interface IPayloadCreateEditDoctor {
 
 export interface IParamGetAllPatient extends IParamGetDataWithPagination {}
 export interface IParamGetAllDoctor extends IParamGetDataWithPagination {}
+export interface IParamGetAppointments extends IParamGetDataWithPagination {
+  doctorId?: number;
+  patientId?: number;
+}

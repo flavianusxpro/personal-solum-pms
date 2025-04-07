@@ -1,17 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import { Button, Title, Text, RadioGroup, AdvancedRadio, Flex } from 'rizzui';
-import cn from '@core/utils/class-names';
-import { useModal } from '@/app/shared/modal-views/use-modal';
+import { Button, Flex } from 'rizzui';
 import {
-  PiCheckCircleFill,
   PiFire,
   PiLightning,
   PiPlusBold,
   PiStackSimple,
 } from 'react-icons/pi';
-import AddBillingCardModalView from '@/app/shared/account-settings/modal/add-billing-card';
 import MasterCardIcon from '@core/components/icons/mastercard';
 import VisaIcon from '@core/components/icons/visa';
 import ApplePayIcon from '@core/components/icons/apple-pay';
@@ -86,8 +81,13 @@ export default function TabBillingAppointments({
     <Flex direction="col" gap="7">
       <FormGroup title="Billing" className="" />
       <BillingHistoryTable data={billingHistoryData} />
-      <FormGroup title="Appointment" className="" />
-      <AppointmentHistoryTable data={billingHistoryData} />
+      <FormGroup title="Appointment" className="flex w-full justify-between">
+        <Button>
+          <PiPlusBold className="h-4 w-4" />
+          Create Appointment{' '}
+        </Button>
+      </FormGroup>
+      <AppointmentHistoryTable />
     </Flex>
   );
 }
