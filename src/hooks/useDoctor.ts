@@ -2,6 +2,7 @@ import {
   getDoctorById,
   getDoctorList,
   postCreateDoctor,
+  putCreateDoctor,
 } from '@/service/doctor';
 
 import {
@@ -37,10 +38,10 @@ export function useCreateDoctor() {
   });
 }
 
-// export function useUpdatePatient() {
-//   return useMutation({
-//     mutationFn: async (payload: IPayloadCreatePatient) => {
-//       return await putCreatePatient(payload);
-//     },
-//   });
-// }
+export function useUpdateDoctor() {
+  return useMutation({
+    mutationFn: async (payload: IPayloadCreateEditDoctor) => {
+      return await putCreateDoctor(payload);
+    },
+  });
+}

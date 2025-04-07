@@ -27,7 +27,7 @@ export const doctorDetailsFormSchema = z.object({
   doctorType: z.array(z.string()).optional(),
   specialistType: z.array(z.string()).optional(),
   medicalInterest: z.string().optional(),
-  language: z.string().optional(),
+  language: z.array(z.string()).optional(),
 });
 
 // generate form types from zod validation schema

@@ -11,9 +11,9 @@ import CSelect from '@/core/ui/select';
 import {
   doctorTypeOption,
   genderOption,
+  languageOption,
   stateOption,
 } from '@/config/constants';
-import { useUpdatePatient } from '@/hooks/usePatient';
 import { IPayloadCreateEditDoctor } from '@/types/paramTypes';
 import { useParams } from 'next/navigation';
 import dayjs from 'dayjs';
@@ -21,14 +21,23 @@ import {
   doctorDetailsFormSchema,
   DoctorDetailsFormTypes,
 } from '@/validators/doctor-details.schema';
-import { useGetDoctorById } from '@/hooks/useDoctor';
+import { useGetDoctorById, useUpdateDoctor } from '@/hooks/useDoctor';
 import dynamic from 'next/dynamic';
 import QuillLoader from '@/core/components/loader/quill-loader';
+import SelectLoader from '@/core/components/loader/select-loader';
 
 const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
   ssr: false,
   loading: () => <QuillLoader className="col-span-full h-[143px]" />,
 });
+
+const MultySelect = dynamic(
+  () => import('rizzui').then((mod) => mod.MultiSelect),
+  {
+    ssr: false,
+    loading: () => <SelectLoader />,
+  }
+);
 
 export default function DoctorDetails({
   nextTab,
@@ -40,7 +49,7 @@ export default function DoctorDetails({
   const id = useParams<{ id: string }>().id;
 
   const { data: dataDoctor } = useGetDoctorById(id);
-  // const { mutate: mutateUpdatePatient } = useUpdatePatient();
+  const { mutate: mutateUpdatePatient } = useUpdateDoctor();
 
   const onSubmit: SubmitHandler<DoctorDetailsFormTypes> = (data) => {
     const payload: IPayloadCreateEditDoctor = {
@@ -60,31 +69,19 @@ export default function DoctorDetails({
       timezone: data.timezone ?? 'Australia/Sydney',
     };
 
-    // if (id) {
-    //   return mutateUpdatePatient(payload, {
-    //     onSuccess: () => {
-    //       toast.success('Patient updated successfully');
-    //     },
-    //     onError: (error) => {
-    //       console.log('🚀 ~ PatientDetails ~ error:', error);
-    //       const errorMessage =
-    //         (error as any)?.response?.data?.message || 'An error occurred';
-    //       toast.error(errorMessage);
-    //     },
-    //   });
-    // }
-
-    // mutateCreatePatient(payload, {
-    //   onSuccess: () => {
-    //     toast.success('Patient created successfully');
-    //   },
-    //   onError: (error) => {
-    //     console.log('🚀 ~ PatientDetails ~ error:', error);
-    //     const errorMessage =
-    //       (error as any)?.response?.data?.message || 'An error occurred';
-    //     toast.error(errorMessage);
-    //   },
-    // });
+    if (id) {
+      return mutateUpdatePatient(payload, {
+        onSuccess: () => {
+          toast.success('Patient updated successfully');
+        },
+        onError: (error) => {
+          console.log('🚀 ~ PatientDetails ~ error:', error);
+          const errorMessage =
+            (error as any)?.response?.data?.message || 'An error occurred';
+          toast.error(errorMessage);
+        },
+      });
+    }
   };
 
   return (
@@ -339,6 +336,22 @@ export default function DoctorDetails({
                 />
               </FormGroup>
               <FormGroup title="Language">
+                <Controller
+                  name="language"
+                  control={control}
+                  render={({ field }) => (
+                    <MultySelect
+                      {...field}
+                      onClear={() => field.onChange([])}
+                      options={languageOption}
+                      clearable
+                      placeholder="Select Doctor"
+                      error={errors.language?.message}
+                      className="flex-grow"
+                      disabled={isView}
+                    />
+                  )}
+                />
                 <Input
                   placeholder="Language"
                   {...register('language')}
