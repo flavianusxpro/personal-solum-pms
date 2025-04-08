@@ -1,14 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { HeaderCell } from '@/app/shared/table';
+import { HeaderCell } from '@/app/shared/ui/table';
 import { Badge, Text, Tooltip, ActionIcon } from 'rizzui';
 import { routes } from '@/config/routes';
 import EyeIcon from '@core/components/icons/eye';
 import PencilIcon from '@core/components/icons/pencil';
 import TableAvatar from '@core/ui/avatar-card';
 import DateCell from '@core/ui/date-cell';
-import DeletePopover from '@/app/shared/delete-popover';
+import DeletePopover from '@/app/shared/ui/delete-popover';
 
 function getStatusBadge(status: string) {
   switch (status.toLowerCase()) {

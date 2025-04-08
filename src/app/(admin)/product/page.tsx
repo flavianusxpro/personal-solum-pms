@@ -1,5 +1,5 @@
-import ExportButton from '@/app/shared/export-button';
-import PageHeader from '@/app/shared/page-header';
+import ExportButton from '@/app/shared/ui/export-button';
+import PageHeader from '@/app/shared/ui/page-header';
 import ProductTable from '@/app/shared/tableDataProduct/table';
 import { routes } from '@/config/routes';
 import { metaObject } from '@/config/site.config';
@@ -35,10 +35,7 @@ export default function ProductPage() {
             fileName="order_data"
             header="Order ID,Name,Email,Avatar,Items,Price,Status,Created At,Updated At"
           />
-          <Link
-            href={routes.product.create}
-            className="w-full @lg:w-auto"
-          >
+          <Link href={routes.product.create} className="w-full @lg:w-auto">
             <Button as="span" className="w-full @lg:w-auto">
               <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
               Add Products

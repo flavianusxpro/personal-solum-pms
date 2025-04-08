@@ -1,5 +1,5 @@
 import { Flex, Grid, Input, Switch } from 'rizzui';
-import FormGroup from '../../form-group';
+import FormGroup from '../../ui/form-group';
 import { Form } from '@/core/ui/form';
 import { Controller, SubmitHandler } from 'react-hook-form';
 import {

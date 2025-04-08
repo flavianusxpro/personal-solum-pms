@@ -5,7 +5,7 @@ import { Button } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { PiArrowLineDownBold } from 'react-icons/pi';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-const FileUpload = dynamic(() => import('@/app/shared/file-upload'), {
+const FileUpload = dynamic(() => import('@/app/shared/ui/file-upload'), {
   ssr: false,
 });
 

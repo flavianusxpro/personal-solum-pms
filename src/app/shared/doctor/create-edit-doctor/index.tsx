@@ -1,6 +1,6 @@
 'use client';
 import { routes } from '@/config/routes';
-import PageHeader from '../../page-header';
+import PageHeader from '../../ui/page-header';
 import { TabButton } from '../../ui/tab-button';
 import { startTransition, useState } from 'react';
 import SimpleBar from 'simplebar-react';

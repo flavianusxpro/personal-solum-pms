@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { HeaderCell } from '@/app/shared/table';
+import { HeaderCell } from '@/app/shared/ui/table';
 import {
   Badge,
   Text,
@@ -16,7 +16,7 @@ import PencilIcon from '@core/components/icons/pencil';
 import AvatarCard from '@core/ui/avatar-card';
 import { ProductType } from '@/data/products-data';
 import { PiStarFill } from 'react-icons/pi';
-import DeletePopover from '@/app/shared/delete-popover';
+import DeletePopover from '@/app/shared/ui/delete-popover';
 
 // get status badge
 function getStatusBadge(status: string) {

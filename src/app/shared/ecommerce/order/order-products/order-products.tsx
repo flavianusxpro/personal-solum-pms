@@ -2,10 +2,10 @@
 
 import React from 'react';
 import Image from 'next/image';
-import Table, { HeaderCell } from '@/app/shared/table';
+import Table, { HeaderCell } from '@/app/shared/ui/table';
 import { Checkbox, Loader, Title, Text } from 'rizzui';
 import { useTable } from '@core/hooks/use-table';
-import DeletePopover from '@/app/shared/delete-popover';
+import DeletePopover from '@/app/shared/ui/delete-popover';
 
 const initialData = [
   {

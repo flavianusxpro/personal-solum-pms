@@ -1,6 +1,6 @@
 'use client';
 
-import PageHeader from '@/app/shared/page-header';
+import PageHeader from '@/app/shared/ui/page-header';
 import Navigation from '@/app/(admin)/setting/navigation';
 
 const pageHeader = {

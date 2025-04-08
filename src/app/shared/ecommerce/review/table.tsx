@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { useColumn } from '@core/hooks/use-column';
-import ControlledTable from '@/app/shared/controlled-table/index';
+import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { useCallback, useMemo, useState } from 'react';
 import { useTable } from '@core/hooks/use-table';
 import { getColumns } from '@/app/shared/ecommerce/review/columns';

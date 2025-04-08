@@ -6,7 +6,7 @@ import {
   useFieldArray,
   useForm,
 } from 'react-hook-form';
-import FormGroup from '@/app/shared/form-group';
+import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
 import {

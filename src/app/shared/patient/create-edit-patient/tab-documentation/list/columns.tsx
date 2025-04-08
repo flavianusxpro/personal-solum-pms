@@ -3,9 +3,9 @@
 import Image from 'next/image';
 import dayjs from 'dayjs';
 import { PiShareFat, PiTrashSimple } from 'react-icons/pi';
-import { HeaderCell } from '@/app/shared/table';
 import { Title, Text, Checkbox, ActionIcon, Tooltip } from 'rizzui';
-import Favorite from '@/app/shared/file/manager/favorite';
+import { HeaderCell } from '@/app/shared/ui/table';
+import Favorite from '@/app/shared/ui/file/favorite';
 
 type Columns = {
   data: any[];

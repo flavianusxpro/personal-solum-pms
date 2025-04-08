@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Input, Button } from 'rizzui';
 import cn from '@core/utils/class-names';
-import FormGroup from '@/app/shared/form-group';
+import FormGroup from '@/app/shared/ui/form-group';
 import { useFormContext } from 'react-hook-form';
 import { PiTagBold, PiXBold } from 'react-icons/pi';
 

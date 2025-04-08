@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 import { Input } from 'rizzui';
 import cn from '@core/utils/class-names';
-import FormGroup from '@/app/shared/form-group';
+import FormGroup from '@/app/shared/ui/form-group';
 
 export default function ProductSeo({ className }: { className?: string }) {
   const {

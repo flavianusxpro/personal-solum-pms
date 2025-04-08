@@ -5,8 +5,8 @@ import { getColumns } from '@/app/shared/account-settings/logged-in-devices/colu
 import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
 import { Button } from 'rizzui';
-import TableFooter from '@/app/shared/table-footer';
-import ControlledTable from '@/app/shared/controlled-table/index';
+import TableFooter from '@/app/shared/ui/table-footer';
+import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { exportToCSV } from '@core/utils/export-to-csv';
 
 export default function LoggedInDevices({

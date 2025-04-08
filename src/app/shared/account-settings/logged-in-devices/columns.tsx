@@ -1,11 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { HeaderCell } from '@/app/shared/table';
+import { HeaderCell } from '@/app/shared/ui/table';
 import { Checkbox, Title, Text, Tooltip, ActionIcon, Badge } from 'rizzui';
 import cn from '@core/utils/class-names';
 import PencilIcon from '@core/components/icons/pencil';
-import DeletePopover from '@/app/shared/delete-popover';
+import DeletePopover from '@/app/shared/ui/delete-popover';
 
 const statusColors = {
   Offline: '',

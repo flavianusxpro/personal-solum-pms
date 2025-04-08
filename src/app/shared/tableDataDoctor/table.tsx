@@ -1,6 +1,6 @@
 'use client';
 
-import ControlledTable from '@/app/shared/controlled-table/index';
+import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { getColumns } from '@/app/shared/tableDataDoctor/columns';
 import ExpandedOrderRow from '@/app/shared/tableDataDoctor/expanded-row';
 import { useGetAllDoctors } from '@/hooks/useDoctor';

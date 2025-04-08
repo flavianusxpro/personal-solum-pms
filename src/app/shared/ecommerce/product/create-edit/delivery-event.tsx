@@ -1,4 +1,4 @@
-import FormGroup from '@/app/shared/form-group';
+import FormGroup from '@/app/shared/ui/form-group';
 import { Checkbox, Input } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { DatePicker } from '@core/ui/datepicker';

@@ -4,14 +4,14 @@ import dynamic from 'next/dynamic';
 import { useCallback, useMemo, useState } from 'react';
 import { Button, Title } from 'rizzui';
 import { GetColumns } from '@/app/shared/appointment/appointment-list/list/columns';
-import ControlledTable from '@/app/shared/controlled-table/index';
+import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { useMedia } from '@core/hooks/use-media';
 import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
 import cn from '@core/utils/class-names';
 import { useGetAppointments } from '@/hooks/useAppointment';
 
-const TableFooter = dynamic(() => import('@/app/shared/table-footer'), {
+const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
 });
 const FilterElement = dynamic(

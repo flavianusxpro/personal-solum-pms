@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { SubmitHandler } from 'react-hook-form';
 import toast from 'react-hot-toast';
 // import { PiClock, PiEnvelopeSimple } from 'react-icons/pi';
-import FormGroup from '@/app/shared/form-group';
+import FormGroup from '@/app/shared/ui/form-group';
 import {
   defaultValues,
   personalInfoFormSchema,
@@ -95,7 +95,7 @@ export default function Setup() {
                     className="flex-grow"
                   />
                 </FormGroup>
-                <div className='w-max mt-3 px-4 py-3 text-white bg-blue-500 rounded-md active:scale-[0.98] hover:brightness-[94%] flex items-center justify-center'>
+                <div className="mt-3 flex w-max items-center justify-center rounded-md bg-blue-500 px-4 py-3 text-white hover:brightness-[94%] active:scale-[0.98]">
                   <p>Add number</p>
                 </div>
               </div>
@@ -141,7 +141,7 @@ export default function Setup() {
             <FormGroup
               title="Opening Hours"
               description="Update your photo and personal details here"
-              className="pt-7 @2xl:pt-9 border-t border-t-slate-300 mt-4 @3xl:grid-cols-12 @3xl:pt-11"
+              className="mt-4 border-t border-t-slate-300 pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
             />
 
             <div className="mb-10 grid grid-cols-2 gap-7 divide-y divide-dashed divide-gray-200 @2xl:gap-9 @3xl:gap-11">

@@ -17,10 +17,10 @@ import {
   statusOptions,
   renderOptionDisplayValue,
 } from '@/app/shared/invoice/form-utils';
-import PriceField from '@/app/shared/controlled-table/price-field';
-import DateFiled from '@/app/shared/controlled-table/date-field';
-import StatusField from '@/app/shared/controlled-table/status-field';
-import { FilterDrawerView } from '@/app/shared/controlled-table/table-filter';
+import PriceField from '@/app/shared/ui/controlled-table/price-field';
+import DateFiled from '@/app/shared/ui/controlled-table/date-field';
+import StatusField from '@/app/shared/ui/controlled-table/status-field';
+import { FilterDrawerView } from '@/app/shared/ui/controlled-table/table-filter';
 
 interface TableToolbarProps<T extends Record<string, any>> {
   table: ReactTableType<T>;

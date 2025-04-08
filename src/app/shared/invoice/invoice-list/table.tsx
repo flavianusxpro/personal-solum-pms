@@ -5,13 +5,13 @@ import dynamic from 'next/dynamic';
 import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
 import { Button } from 'rizzui';
-import ControlledTable from '@/app/shared/controlled-table/index';
+import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { getColumns } from './columns';
 const FilterElement = dynamic(
   () => import('@/app/shared/invoice/invoice-list/filter-element'),
   { ssr: false }
 );
-const TableFooter = dynamic(() => import('@/app/shared/table-footer'), {
+const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
 });
 

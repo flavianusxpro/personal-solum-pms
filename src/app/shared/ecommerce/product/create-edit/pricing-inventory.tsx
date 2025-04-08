@@ -1,4 +1,4 @@
-import FormGroup from '@/app/shared/form-group';
+import FormGroup from '@/app/shared/ui/form-group';
 import cn from '@core/utils/class-names';
 import ProductAvailability from '@/app/shared/ecommerce/product/create-edit/product-availability';
 import InventoryTracing from '@/app/shared/ecommerce/product/create-edit/inventory-tracking';

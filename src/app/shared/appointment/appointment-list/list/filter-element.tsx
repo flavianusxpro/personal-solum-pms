@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { PiTrashDuotone } from 'react-icons/pi';
-import DateFiled from '@/app/shared/controlled-table/date-field';
-import StatusField from '@/app/shared/controlled-table/status-field';
+import DateFiled from '@/app/shared/ui/controlled-table/date-field';
+import StatusField from '@/app/shared/ui/controlled-table/status-field';
 import { Badge, Text, Button, Title } from 'rizzui';
 import { getDateRangeStateValues } from '@core/utils/get-formatted-date';
 import { useMedia } from '@core/hooks/use-media';

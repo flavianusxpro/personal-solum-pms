@@ -6,7 +6,7 @@ import { SubmitHandler, Controller } from 'react-hook-form';
 // import { PiClock, PiEnvelopeSimple } from 'react-icons/pi';
 import { Form } from '@core/ui/form';
 import { Loader, Text, Input, Textarea } from 'rizzui';
-import FormGroup from '@/app/shared/form-group';
+import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import {
   defaultValues,
@@ -51,7 +51,7 @@ export default function CreateUser() {
     >
       {({ register, control, setValue, getValues, formState: { errors } }) => {
         return (
-          <div className='px-1 pr-6'>
+          <div className="px-1 pr-6">
             <FormGroup
               title="Add New Patient"
               description="Create new data patient"
@@ -357,19 +357,19 @@ export default function CreateUser() {
             </div>
 
             <div className="mb-10 grid grid-cols-2 gap-7 divide-y divide-dashed divide-gray-200 @2xl:gap-9 @3xl:gap-11">
-                <FormGroup
-                    title="Your Photo"
-                    className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
-                >
-                    <div className="flex flex-col gap-6 @container @3xl:col-span-2">
-                    <AvatarUpload
-                        name="avatar"
-                        setValue={setValue}
-                        getValues={getValues}
-                        error={errors?.avatar?.message as string}
-                    />
-                    </div>
-                </FormGroup>
+              <FormGroup
+                title="Your Photo"
+                className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+              >
+                <div className="flex flex-col gap-6 @container @3xl:col-span-2">
+                  <AvatarUpload
+                    name="avatar"
+                    setValue={setValue}
+                    getValues={getValues}
+                    error={errors?.avatar?.message as string}
+                  />
+                </div>
+              </FormGroup>
             </div>
 
             <FormFooter

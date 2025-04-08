@@ -1,5 +1,5 @@
 import CreateEditProduct from '@/app/shared/ecommerce/product/create-edit';
-import PageHeader from '@/app/shared/page-header';
+import PageHeader from '@/app/shared/ui/page-header';
 import { routes } from '@/config/routes';
 import { metaObject } from '@/config/site.config';
 
@@ -23,8 +23,10 @@ const pageHeader = {
 export default function CreateProductPage() {
   return (
     <>
-      <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
-      </PageHeader>
+      <PageHeader
+        title={pageHeader.title}
+        breadcrumb={pageHeader.breadcrumb}
+      ></PageHeader>
 
       <CreateEditProduct />
     </>

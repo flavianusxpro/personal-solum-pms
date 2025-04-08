@@ -8,7 +8,7 @@ import { useCart } from '@/store/quick-cart/cart.context';
 import { routes } from '@/config/routes';
 import cn from '@core/utils/class-names';
 import { DUMMY_ID } from '@/config/constants';
-import CartDrawerView from './ecommerce/cart/cart-drawer-view';
+import CartDrawerView from '../ecommerce/cart/cart-drawer-view';
 
 const Drawer = dynamic(() => import('rizzui').then((module) => module.Drawer), {
   ssr: false,

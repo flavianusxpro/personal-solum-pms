@@ -1,5 +1,5 @@
 import { routes } from '@/config/routes';
-import PageHeader from '@/app/shared/page-header';
+import PageHeader from '@/app/shared/ui/page-header';
 import ProductDetails from '@/app/shared/ecommerce/product/product-details';
 import { metaObject } from '@/config/site.config';
 

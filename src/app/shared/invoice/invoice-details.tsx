@@ -3,8 +3,8 @@
 import Image from 'next/image';
 import { QRCodeSVG } from 'qrcode.react';
 import { Badge, Title, Text } from 'rizzui';
-import Table from '@/app/shared/table';
 import { siteConfig } from '@/config/site.config';
+import Table from '../ui/table';
 
 const invoiceItems = [
   {

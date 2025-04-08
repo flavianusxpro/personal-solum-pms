@@ -2,7 +2,7 @@
 
 import { Flex } from 'rizzui';
 
-import FormGroup from '../../form-group';
+import FormGroup from '../../ui/form-group';
 import ReportBillingListStats from './stats';
 
 export default function TabBillingAppointments({

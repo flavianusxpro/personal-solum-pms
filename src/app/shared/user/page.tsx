@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import { routes } from '@/config/routes';
 import { Button } from 'rizzui';
-import PageHeader from '@/app/shared/page-header';
+import PageHeader from '@/app/shared/ui/page-header';
 import OrdersTable from '@/app/shared/ecommerce/order/order-list/table';
 import { PiPlusBold } from 'react-icons/pi';
 import { orderData } from '@/data/order-data';
 import { metaObject } from '@/config/site.config';
-import ExportButton from '@/app/shared/export-button';
+import ExportButton from '@/app/shared/ui/export-button';
 
 export const metadata = {
   ...metaObject('Users'),

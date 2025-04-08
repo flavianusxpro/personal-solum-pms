@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { Title } from 'rizzui';
 import CountdownTimer from '@/app/(other-pages)/coming-soon/countdown-timer';
-import SubscriptionForm from '@/app/shared/subscription-form';
+import SubscriptionForm from '@/app/shared/ui/subscription-form';
 import { PiPlusBold } from 'react-icons/pi';
 import ComingSoonImg from '@public/coming-soon.png';
 import ComingSoonTwoImg from '@public/coming-soon-2.png';
@@ -34,7 +34,7 @@ export default function ComingSoonPage() {
       <Image
         src={ComingSoonTwoImg}
         alt="coming soon"
-        className="fixed start-0 top-0 hidden w-28 3xl:inline-block 3xl:w-32 rtl:rotate-90 dark:invert"
+        className="fixed start-0 top-0 hidden w-28 dark:invert 3xl:inline-block 3xl:w-32 rtl:rotate-90"
       />
       <div className="end-10 top-1/2 lg:absolute lg:-translate-y-1/2 xl:end-[10%] 3xl:end-[15%]">
         <Image

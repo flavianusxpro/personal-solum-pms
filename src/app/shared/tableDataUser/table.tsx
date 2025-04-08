@@ -1,6 +1,6 @@
 'use client';
 
-import ControlledTable from '@/app/shared/controlled-table/index';
+import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { getColumns } from '@/app/shared/tableDataUser/columns';
 import { useColumn } from '@core/hooks/use-column';
 import { useTable } from '@core/hooks/use-table';
@@ -65,47 +65,47 @@ export default function UserTable({
   }, []);
 
   const {
-        isLoading,
-        isFiltered,
-        tableData,
-        currentPage,
-        totalItems,
-        handlePaginate,
-        filters,
-        updateFilter,
-        searchTerm,
-        handleSearch,
+    isLoading,
+    isFiltered,
+    tableData,
+    currentPage,
+    totalItems,
+    handlePaginate,
+    filters,
+    updateFilter,
+    searchTerm,
+    handleSearch,
+    sortConfig,
+    handleSort,
+    selectedRowKeys,
+    setSelectedRowKeys,
+    handleRowSelect,
+    handleSelectAll,
+    handleDelete,
+    handleReset,
+  } = useTable(data, pageSize, filterState);
+
+  const columns = React.useMemo(
+    () =>
+      getColumns({
+        data,
         sortConfig,
-        handleSort,
-        selectedRowKeys,
-        setSelectedRowKeys,
-        handleRowSelect,
+        checkedItems: selectedRowKeys,
+        onHeaderCellClick,
+        onDeleteItem,
+        onChecked: handleRowSelect,
         handleSelectAll,
-        handleDelete,
-        handleReset,
-      } = useTable(data, pageSize, filterState);
-    
-      const columns = React.useMemo(
-        () =>
-          getColumns({
-            data,
-            sortConfig,
-            checkedItems: selectedRowKeys,
-            onHeaderCellClick,
-            onDeleteItem,
-            onChecked: handleRowSelect,
-            handleSelectAll,
-          }),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [
-          selectedRowKeys,
-          onHeaderCellClick,
-          sortConfig.key,
-          sortConfig.direction,
-          onDeleteItem,
-          handleRowSelect,
-          handleSelectAll,
-        ]
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      selectedRowKeys,
+      onHeaderCellClick,
+      sortConfig.key,
+      sortConfig.direction,
+      onDeleteItem,
+      handleRowSelect,
+      handleSelectAll,
+    ]
   );
 
   const { visibleColumns, checkedColumns, setCheckedColumns } =

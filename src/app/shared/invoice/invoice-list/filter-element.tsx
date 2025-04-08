@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { PiTrashDuotone } from 'react-icons/pi';
-import DateFiled from '@/app/shared/controlled-table/date-field';
-import PriceField from '@/app/shared/controlled-table/price-field';
-import StatusField from '@/app/shared/controlled-table/status-field';
+import DateFiled from '@/app/shared/ui/controlled-table/date-field';
+import PriceField from '@/app/shared/ui/controlled-table/price-field';
+import StatusField from '@/app/shared/ui/controlled-table/status-field';
 import { Button } from 'rizzui';
 import { getDateRangeStateValues } from '@core/utils/get-formatted-date';
 import { useMedia } from '@core/hooks/use-media';

@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import { routes } from '@/config/routes';
 import { Button } from 'rizzui';
-import PageHeader from '@/app/shared/page-header';
+import PageHeader from '@/app/shared/ui/page-header';
 import UsersTable from '@/app/shared/tableDataUser/table';
 import { PiPlusBold } from 'react-icons/pi';
 import { orderData } from '@/data/order-data';
 import { metaObject } from '@/config/site.config';
-import ExportButton from '@/app/shared/export-button';
+import ExportButton from '@/app/shared/ui/export-button';
 import UserList from './UserList';
 
 export const metadata = {
@@ -36,10 +36,7 @@ export default function UsersPage() {
             fileName="order_data"
             header="Patient ID,Name,Email,Avatar,Items,Price,Status,Created At,Updated At"
           />
-          <Link
-            href={routes.user.create}
-            className="w-full @lg:w-auto"
-          >
+          <Link href={routes.user.create} className="w-full @lg:w-auto">
             <Button as="span" className="w-full @lg:w-auto">
               <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
               Add User

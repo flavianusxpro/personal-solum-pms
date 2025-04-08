@@ -8,7 +8,7 @@ import ApplePayIcon from '@core/components/icons/apple-pay';
 import { billingHistoryData } from '@/data/billing-history';
 import { exportToCSV } from '@core/utils/export-to-csv';
 import BillingHistoryTable from './billing-history/table';
-import FormGroup from '../../form-group';
+import FormGroup from '../../ui/form-group';
 import AppointmentHistoryTable from './appointment-history/table';
 
 export default function TabBillingAppointments({

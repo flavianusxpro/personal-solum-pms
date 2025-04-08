@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Title, Text } from 'rizzui';
-import SubscriptionForm from '@/app/shared/subscription-form';
+import SubscriptionForm from '@/app/shared/ui/subscription-form';
 import MaintananceImg from '@public/maintanance.png';
 
 export default function MaintenancePage() {

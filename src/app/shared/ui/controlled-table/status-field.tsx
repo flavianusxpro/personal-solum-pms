@@ -1,6 +1,6 @@
 import { Select, type SelectProps, type SelectOption } from 'rizzui';
 import cn from '@core/utils/class-names';
-import CSelect from '../ui/select';
+import CSelect from '../select';
 
 export default function StatusField({
   placeholder = 'Select status',

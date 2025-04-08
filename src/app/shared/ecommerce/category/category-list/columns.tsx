@@ -3,10 +3,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { routes } from '@/config/routes';
-import { HeaderCell } from '@/app/shared/table';
+import { HeaderCell } from '@/app/shared/ui/table';
 import { Checkbox, Title, Text, Tooltip, ActionIcon } from 'rizzui';
 import PencilIcon from '@core/components/icons/pencil';
-import DeletePopover from '@/app/shared/delete-popover';
+import DeletePopover from '@/app/shared/ui/delete-popover';
 
 type Columns = {
   sortConfig?: any;

@@ -3,8 +3,8 @@
 import { useMemo, useState } from 'react';
 import { useColumn } from '@core/hooks/use-column';
 import { useTable } from '@core/hooks/use-table';
-import TableFooter from '@/app/shared/table-footer';
-import ControlledTable from '@/app/shared/controlled-table/index';
+import TableFooter from '@/app/shared/ui/table-footer';
+import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { getColumns } from './columns';
 import { useGetAppointments } from '@/hooks/useAppointment';
 import { useParams } from 'next/navigation';

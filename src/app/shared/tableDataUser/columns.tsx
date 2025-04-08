@@ -1,14 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { HeaderCell } from '@/app/shared/table';
+import { HeaderCell } from '@/app/shared/ui/table';
 import { Badge, Text, Tooltip, ActionIcon, Checkbox } from 'rizzui';
 import { routes } from '@/config/routes';
 import EyeIcon from '@core/components/icons/eye';
 import PencilIcon from '@core/components/icons/pencil';
 import TableAvatar from '@core/ui/avatar-card';
 import DateCell from '@core/ui/date-cell';
-import DeletePopover from '@/app/shared/delete-popover';
+import DeletePopover from '@/app/shared/ui/delete-popover';
 
 function getStatusBadge(status: string) {
   switch (status.toLowerCase()) {
@@ -203,9 +203,10 @@ export const getColumns = ({
           placement="top"
           color="invert"
         >
-        <Link href={routes.forms.profileSettings}
+          <Link
+            href={routes.forms.profileSettings}
             onClick={() => {
-              localStorage.setItem('role', 'user')
+              localStorage.setItem('role', 'user');
             }}
           >
             <ActionIcon
@@ -258,9 +259,10 @@ export const getWidgetColumns = ({
     key: 'id',
     width: 90,
     render: (value: string, row: any) => (
-      <Link href={routes.forms.profileSettings}
+      <Link
+        href={routes.forms.profileSettings}
         onClick={() => {
-          localStorage.setItem('role', 'user')
+          localStorage.setItem('role', 'user');
         }}
         className="ps-4 hover:text-gray-900 hover:underline"
       >
@@ -356,17 +358,13 @@ export const getWidgetColumns = ({
     width: 130,
     render: (_: string, row: any) => (
       <div className="flex items-center justify-end gap-3 pe-4">
-        <Tooltip
-          size="sm"
-          content={'Edit User'}
-          placement="top"
-          color="invert"
-        >
-        <Link href={routes.forms.profileSettings}
-          onClick={() => {
-            localStorage.setItem('role', 'user')
-          }}
-        >
+        <Tooltip size="sm" content={'Edit User'} placement="top" color="invert">
+          <Link
+            href={routes.forms.profileSettings}
+            onClick={() => {
+              localStorage.setItem('role', 'user');
+            }}
+          >
             <ActionIcon
               as="span"
               size="sm"
@@ -378,12 +376,7 @@ export const getWidgetColumns = ({
             </ActionIcon>
           </Link>
         </Tooltip>
-        <Tooltip
-          size="sm"
-          content={'View User'}
-          placement="top"
-          color="invert"
-        >
+        <Tooltip size="sm" content={'View User'} placement="top" color="invert">
           <Link href={routes.user.userDetail(row.id)}>
             <ActionIcon
               as="span"

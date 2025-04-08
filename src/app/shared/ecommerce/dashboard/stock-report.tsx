@@ -1,6 +1,6 @@
 import { productsData } from '@/data/products-data';
 import { getColumns } from '@/app/shared/ecommerce/product/product-list/columns';
-import BasicTableWidget from '@/app/shared/controlled-table/basic-table-widget';
+import BasicTableWidget from '@/app/shared/ui/controlled-table/basic-table-widget';
 
 export default function StockReport({ className }: { className?: string }) {
   return (

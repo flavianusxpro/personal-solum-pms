@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
 import { PiCaretDownBold, PiCaretUpBold } from 'react-icons/pi';
-import ControlledTable from '@/app/shared/controlled-table/index';
+import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { ActionIcon } from 'rizzui';
 import cn from '@core/utils/class-names';
 import ExpandedOrderRow from '@/app/shared/patient/table/expanded-row';

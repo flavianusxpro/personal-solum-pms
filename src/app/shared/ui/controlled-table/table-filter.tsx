@@ -6,7 +6,7 @@ import { PiMagnifyingGlassBold, PiFunnel, PiXBold } from 'react-icons/pi';
 import { Button, ActionIcon, Input, Title } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { useMedia } from '@core/hooks/use-media';
-import { ToggleColumns } from '@/app/shared/table';
+import { ToggleColumns } from '@/app/shared/ui/table';
 const Drawer = dynamic(() => import('rizzui').then((module) => module.Drawer), {
   ssr: false,
 });

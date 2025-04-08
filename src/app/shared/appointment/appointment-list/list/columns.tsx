@@ -1,9 +1,9 @@
 'use client';
 
-import { HeaderCell } from '@/app/shared/table';
+import { HeaderCell } from '@/app/shared/ui/table';
 import { Text, Checkbox, ActionIcon, Tooltip, Select, Badge } from 'rizzui';
 import EyeIcon from '@core/components/icons/eye';
-import DeletePopover from '@/app/shared/delete-popover';
+import DeletePopover from '@/app/shared/ui/delete-popover';
 import DateCell from '@core/ui/date-cell';
 import { Type } from '@/data/appointment-data';
 import { useState } from 'react';

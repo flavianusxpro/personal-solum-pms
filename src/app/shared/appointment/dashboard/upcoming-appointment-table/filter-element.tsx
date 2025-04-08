@@ -1,5 +1,5 @@
 'use client';
-import StatusField from '@/app/shared/controlled-table/status-field';
+import StatusField from '@/app/shared/ui/controlled-table/status-field';
 import { Button } from 'rizzui';
 import { PiTrashDuotone } from 'react-icons/pi';
 import { appointmentTypes } from '@/data/appointment-data';

@@ -1,7 +1,7 @@
 'use client';
 
-import DeletePopover from '@/app/shared/delete-popover';
-import { HeaderCell } from '@/app/shared/table';
+import DeletePopover from '@/app/shared/ui/delete-popover';
+import { HeaderCell } from '@/app/shared/ui/table';
 import { routes } from '@/config/routes';
 import EyeIcon from '@core/components/icons/eye';
 import PencilIcon from '@core/components/icons/pencil';

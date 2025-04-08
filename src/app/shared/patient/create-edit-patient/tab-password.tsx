@@ -9,7 +9,7 @@ import {
   changePasswordSchema,
   ChangePasswordSchema,
 } from '@/validators/change-password.schema';
-import FormGroup from '../../form-group';
+import FormGroup from '../../ui/form-group';
 
 const initialValues = {
   email: '',

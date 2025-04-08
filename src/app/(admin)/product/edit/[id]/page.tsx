@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { PiPlusBold } from 'react-icons/pi';
 import { productData } from '@/app/shared/ecommerce/product/create-edit/form-utils';
 import CreateEditProduct from '@/app/shared/ecommerce/product/create-edit';
-import PageHeader from '@/app/shared/page-header';
+import PageHeader from '@/app/shared/ui/page-header';
 import { metaObject } from '@/config/site.config';
 import { Button } from 'rizzui';
 import { routes } from '@/config/routes';
@@ -44,8 +44,10 @@ export default function EditProductPage({
 }) {
   return (
     <>
-      <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
-      </PageHeader>
+      <PageHeader
+        title={pageHeader.title}
+        breadcrumb={pageHeader.breadcrumb}
+      ></PageHeader>
 
       <CreateEditProduct slug={params.slug} product={productData} />
     </>

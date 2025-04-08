@@ -7,7 +7,7 @@ import cn from '@core/utils/class-names';
 import UserCog from '@core/components/icons/user-cog';
 import { ROLES } from '@/config/constants';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import ModalButton from '@/app/shared/modal-button';
+import ModalButton from '@/app/shared/ui/modal-button';
 import EditRole from '@/app/shared/roles-permissions/edit-role';
 import CreateUser from '@/app/shared/roles-permissions/create-user';
 

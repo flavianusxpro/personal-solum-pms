@@ -1,7 +1,7 @@
 import { PiDownloadSimpleBold } from 'react-icons/pi';
 import InvoiceDetails from '@/app/shared/invoice/invoice-details';
-import PrintButton from '@/app/shared/print-button';
-import PageHeader from '@/app/shared/page-header';
+import PrintButton from '@/app/shared/ui/print-button';
+import PageHeader from '@/app/shared/ui/page-header';
 import { metaObject } from '@/config/site.config';
 import { Button } from 'rizzui';
 import { routes } from '@/config/routes';

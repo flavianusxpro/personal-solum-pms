@@ -1,6 +1,6 @@
 'use client';
 
-import { HeaderCell } from '@/app/shared/table';
+import { HeaderCell } from '@/app/shared/ui/table';
 import {
   Checkbox,
   Badge,

@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import Table, { HeaderCell } from '@/app/shared/table';
+import Table, { HeaderCell } from '@/app/shared/ui/table';
+
 import { useCart } from '@/store/quick-cart/cart.context';
 import { Title, Text } from 'rizzui';
 import { toCurrency } from '@core/utils/to-currency';

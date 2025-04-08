@@ -8,7 +8,7 @@ import cn from '@core/utils/class-names';
 import dynamic from 'next/dynamic';
 // import SelectLoader from '@core/components/loader/select-loader';
 import QuillLoader from '@core/components/loader/quill-loader';
-import FormGroupProduct from '@/app/shared/form-groupProduct';
+import FormGroupProduct from '@/app/shared/ui/form-groupProduct';
 // const Select = dynamic(() => import('rizzui').then((mod) => mod.Select), {
 //   ssr: false,
 //   loading: () => <SelectLoader />,
@@ -26,9 +26,7 @@ export default function ProductSummary({ className }: { className?: string }) {
   } = useFormContext();
 
   return (
-    <FormGroupProduct
-      className={cn(className)}
-    >
+    <FormGroupProduct className={cn(className)}>
       <Input
         label="Title"
         placeholder="Product title"

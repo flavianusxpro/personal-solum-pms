@@ -8,7 +8,7 @@ import { Title, Text, Button, EmptyProductBoxIcon } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { routes } from '@/config/routes';
 import { CartItem } from '@/types';
-import DrawerHeader from '@/app/shared/drawer-header';
+import DrawerHeader from '@/app/shared/ui/drawer-header';
 
 type CartDrawerViewProps = {
   items: CartItem[];

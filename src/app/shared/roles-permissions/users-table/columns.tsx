@@ -2,12 +2,12 @@
 
 import { STATUSES, type User } from '@/data/users-data';
 import { Text, Badge, Tooltip, Checkbox, ActionIcon } from 'rizzui';
-import { HeaderCell } from '@/app/shared/table';
+import { HeaderCell } from '@/app/shared/ui/table';
 import EyeIcon from '@core/components/icons/eye';
 import PencilIcon from '@core/components/icons/pencil';
 import AvatarCard from '@core/ui/avatar-card';
 import DateCell from '@core/ui/date-cell';
-import DeletePopover from '@/app/shared/delete-popover';
+import DeletePopover from '@/app/shared/ui/delete-popover';
 
 function getStatusBadge(status: number) {
   switch (status) {

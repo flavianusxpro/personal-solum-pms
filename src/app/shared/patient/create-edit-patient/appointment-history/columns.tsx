@@ -2,7 +2,7 @@
 
 import dayjs from 'dayjs';
 import { PiCloudArrowDown } from 'react-icons/pi';
-import { HeaderCell } from '@/app/shared/table';
+import { HeaderCell } from '@/app/shared/ui/table';
 import { Checkbox, Title, Text, Button, Badge } from 'rizzui';
 import { exportToCSV } from '@core/utils/export-to-csv';
 import { billingHistoryData } from '@/data/billing-history';

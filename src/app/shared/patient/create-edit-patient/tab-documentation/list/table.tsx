@@ -5,11 +5,11 @@ import dynamic from 'next/dynamic';
 import { useTable } from '@core/hooks/use-table';
 import { Button } from 'rizzui';
 import { useColumn } from '@core/hooks/use-column';
-import FileFilters from '@/app/shared/file/manager/file-filters';
-import ControlledTable from '@/app/shared/controlled-table/index';
+import FileFilters from '@/app/shared/ui/file/file-filters';
+import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { allFilesData } from '@/data/all-files';
 import { getColumns } from './columns';
-const TableFooter = dynamic(() => import('@/app/shared/table-footer'), {
+const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
 });
 

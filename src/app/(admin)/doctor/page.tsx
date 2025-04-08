@@ -1,8 +1,8 @@
 'use client';
 import { routes } from '@/config/routes';
 import { Button } from 'rizzui';
-import PageHeader from '@/app/shared/page-header';
-import ExportButton from '@/app/shared/export-button';
+import PageHeader from '@/app/shared/ui/page-header';
+import ExportButton from '@/app/shared/ui/export-button';
 import { doctorData } from '@/data/doctor-data';
 import { PiPlusBold } from 'react-icons/pi';
 import DoctorList from '../../shared/doctor/DoctorList';

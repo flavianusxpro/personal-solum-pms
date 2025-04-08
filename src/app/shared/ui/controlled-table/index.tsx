@@ -5,15 +5,15 @@ import dynamic from 'next/dynamic';
 import isEmpty from 'lodash/isEmpty';
 import { Title, Loader } from 'rizzui';
 import cn from '@core/utils/class-names';
-import type { TableFilterProps } from '@/app/shared/controlled-table/table-filter';
-import type { TablePaginationProps } from '@/app/shared/controlled-table/table-pagination';
+import type { TableFilterProps } from '@/app/shared/ui/controlled-table/table-filter';
+import type { TablePaginationProps } from '@/app/shared/ui/controlled-table/table-pagination';
 import Table, { TableProps } from '../table';
 const TableFilter = dynamic(
-  () => import('@/app/shared/controlled-table/table-filter'),
+  () => import('@/app/shared/ui/controlled-table/table-filter'),
   { ssr: false }
 );
 const TablePagination = dynamic(
-  () => import('@/app/shared/controlled-table/table-pagination'),
+  () => import('@/app/shared/ui/controlled-table/table-pagination'),
   { ssr: false }
 );
 

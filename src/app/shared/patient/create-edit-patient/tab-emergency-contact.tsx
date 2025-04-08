@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { Controller, SubmitHandler } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import FormGroup from '@/app/shared/form-group';
+import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
 import { Flex, Input, Loader, Text, Textarea } from 'rizzui';

@@ -4,10 +4,10 @@ import Link from 'next/link';
 // import { type Invoice } from '@/data/invoice-data';
 import { routes } from '@/config/routes';
 import { Text, Badge, Tooltip, Checkbox, ActionIcon } from 'rizzui';
-import { HeaderCell } from '@/app/shared/table';
+import { HeaderCell } from '@/app/shared/ui/table';
 import EyeIcon from '@core/components/icons/eye';
 import PencilIcon from '@core/components/icons/pencil';
-import DeletePopover from '@/app/shared/delete-popover';
+import DeletePopover from '@/app/shared/ui/delete-popover';
 import DateCell from '@core/ui/date-cell';
 import TableAvatar from '@core/ui/avatar-card';
 
