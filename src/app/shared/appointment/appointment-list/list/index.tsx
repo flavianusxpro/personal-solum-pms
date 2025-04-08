@@ -1,19 +1,14 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { PiTrashDuotone } from 'react-icons/pi';
 import { useCallback, useMemo, useState } from 'react';
 import { Button, Title } from 'rizzui';
 import { GetColumns } from '@/app/shared/appointment/appointment-list/list/columns';
 import ControlledTable from '@/app/shared/controlled-table/index';
 import { useMedia } from '@core/hooks/use-media';
 import { useTable } from '@core/hooks/use-table';
-import { getDateRangeStateValues } from '@core/utils/get-formatted-date';
-import { appointmentTypes } from '@/data/appointment-data';
 import { useColumn } from '@core/hooks/use-column';
 import cn from '@core/utils/class-names';
-import DateFiled from '@/app/shared/controlled-table/date-field';
-import StatusField from '@/app/shared/controlled-table/status-field';
 import { useGetAppointments } from '@/hooks/useAppointment';
 
 const TableFooter = dynamic(() => import('@/app/shared/table-footer'), {
@@ -25,9 +20,9 @@ const FilterElement = dynamic(
 );
 
 const filterState = {
-  date: [null, null],
-  status: '',
-  paymentMethod: '',
+  payment_status: '',
+  appointment_status: '',
+  by_reschedule: '',
 };
 
 export default function AppointmentListTable() {
@@ -39,10 +34,6 @@ export default function AppointmentListTable() {
       page: 1,
       perPage: pageSize,
     });
-  console.log(
-    '🚀 ~ AppointmentListTable ~ dataAppointments:',
-    dataAppointments
-  );
 
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
 

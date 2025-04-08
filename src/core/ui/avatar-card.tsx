@@ -1,6 +1,9 @@
 import { Text, Avatar, AvatarProps } from 'rizzui';
 import cn from '../utils/class-names';
 import { PiCopy } from 'react-icons/pi';
+import { useCopyToClipboard } from 'react-use';
+import { useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 interface AvatarCardProps {
   src: string;
@@ -9,7 +12,7 @@ interface AvatarCardProps {
   className?: string;
   nameClassName?: string;
   avatarProps?: AvatarProps;
-  description?: React.ReactNode;
+  description?: string | number;
 }
 
 export default function AvatarCard({
@@ -21,6 +24,20 @@ export default function AvatarCard({
   avatarProps,
   nameClassName,
 }: AvatarCardProps) {
+  const [state, copyToClipboard] = useCopyToClipboard();
+
+  const handleCopy = (text: string | number) => {
+    copyToClipboard(String(text));
+  };
+
+  useEffect(() => {
+    if (state.error) {
+      console.error('Failed to copy: ', state.error);
+    } else if (state.value) {
+      toast.success('Copied to clipboard');
+    }
+  }, [state]);
+
   return (
     <figure className={cn('flex items-center gap-3', className)}>
       <Avatar name={name} src={src} {...avatarProps} />
@@ -34,18 +51,27 @@ export default function AvatarCard({
           >
             {name}
           </Text>
-          <PiCopy className="cursor-pointer active:scale-[0.99]" />
+          <PiCopy
+            onClick={() => handleCopy(name)}
+            className="cursor-pointer active:scale-[0.99]"
+          />
         </div>
-        <div className="flex items-center gap-2">
-          {description && (
+        {description && (
+          <div className="flex items-center gap-2">
             <Text className="text-[13px] text-gray-500">{description}</Text>
-          )}
-          <PiCopy className="cursor-pointer active:scale-[0.99]" />
-        </div>
+            <PiCopy
+              onClick={() => handleCopy(description)}
+              className="cursor-pointer active:scale-[0.99]"
+            />
+          </div>
+        )}
         {number && (
           <div className="flex items-center gap-2">
             <Text className="text-[13px] text-gray-500">{number}</Text>
-            <PiCopy className="cursor-pointer active:scale-[0.99]" />
+            <PiCopy
+              onClick={() => handleCopy(number)}
+              className="cursor-pointer active:scale-[0.99]"
+            />
           </div>
         )}
       </figcaption>

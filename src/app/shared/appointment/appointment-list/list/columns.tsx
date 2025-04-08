@@ -13,6 +13,7 @@ import CreateUpdateAppointmentForm from '../appointment-form';
 import AppointmentDetails from './appointment-details';
 import AvatarCard from '@core/ui/avatar-card';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
+import dayjs from 'dayjs';
 
 const statusOptions = [
   { label: 'Waiting', value: 'Waiting' },
@@ -84,6 +85,7 @@ export const GetColumns = ({
           name={'Default Name'}
           // Removed the number property as it is not defined in AvatarCardProps
           description={'Default Email'}
+          number="00000"
         />
       ),
     },
@@ -92,7 +94,7 @@ export const GetColumns = ({
       dataIndex: 'date',
       key: 'date',
       width: 250,
-      render: (createdDate: Date) => <DateCell date={createdDate} />,
+      render: (createdDate: Date) => dayjs(createdDate).format('DD/MM/YYYY'),
     },
     {
       title: <HeaderCell title="Appointment To" />,
@@ -101,13 +103,12 @@ export const GetColumns = ({
       key: 'doctorId',
       width: 320,
       render: (doctorId: string) => (
-        <Text>{doctorId}</Text>
-        // <AvatarCard
-        //   number={doctorId}
-        //   src={'https://randomuser.me/api/portraits'}
-        //   name={doctorId}
-        //   description={doctorId}
-        // />
+        <AvatarCard
+          number="00090991"
+          src={'https://randomuser.me/api/portraits'}
+          name={'doctor1'}
+          description={'email'}
+        />
       ),
     },
     {

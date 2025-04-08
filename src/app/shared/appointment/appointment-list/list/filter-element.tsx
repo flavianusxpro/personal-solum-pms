@@ -59,7 +59,7 @@ export default function FilterElement({
         </Title>
       )}
 
-      <DateFiled
+      {/* <DateFiled
         selected={getDateRangeStateValues(filters['date'][0])}
         startDate={getDateRangeStateValues(filters['date'][0]) as Date}
         endDate={getDateRangeStateValues(filters['date'][1]) as Date}
@@ -77,24 +77,18 @@ export default function FilterElement({
           },
         })}
         maxDate={new Date()}
-      />
+      /> */}
       <StatusField
         dropdownClassName="!z-10 h-auto"
-        className="w-full min-w-[170px] @[35rem]:w-auto"
-        placeholder="Select type"
-        options={appointmentTypesOptions}
-        value={filters['appointType']}
+        className="w-full @[35rem]:w-auto"
+        options={statusOptions}
+        value={filters['appointment_status']}
         onChange={(value: string) => {
-          updateFilter('appointType', value);
+          updateFilter('appointment_status', value);
         }}
         getOptionValue={(option: { value: any }) => option.value}
-        displayValue={(selected: string) =>
-          appointmentTypesOptions.find((option) => option.label === selected)
-            ?.label ?? ''
-        }
-        placement="bottom-start"
         {...(isMediumScreen && {
-          label: 'APPOINT TYPE',
+          label: 'APPOINTMENT STATUS',
           labelClassName: 'font-medium text-gray-700',
         })}
       />
@@ -102,13 +96,27 @@ export default function FilterElement({
         dropdownClassName="!z-10 h-auto"
         className="w-full @[35rem]:w-auto"
         options={statusOptions}
-        value={filters['appointStatus']}
+        value={filters['payment_status']}
         onChange={(value: string) => {
-          updateFilter('appointStatus', value);
+          updateFilter('payment_status', value);
         }}
         getOptionValue={(option: { value: any }) => option.value}
         {...(isMediumScreen && {
-          label: 'APPOINT STATUS',
+          label: 'PAYMENT STATUS',
+          labelClassName: 'font-medium text-gray-700',
+        })}
+      />
+      <StatusField
+        dropdownClassName="!z-10 h-auto"
+        className="w-full @[35rem]:w-auto"
+        options={statusOptions}
+        value={filters['by_reschedule']}
+        onChange={(value: string) => {
+          updateFilter('by_reschedule', value);
+        }}
+        getOptionValue={(option: { value: any }) => option.value}
+        {...(isMediumScreen && {
+          label: 'BY RESCHEDULE',
           labelClassName: 'font-medium text-gray-700',
         })}
       />
