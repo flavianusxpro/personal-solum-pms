@@ -75,7 +75,7 @@ export default function CreatDoctorModal() {
                   title="Personal Info"
                   className="grid-cols-12 gap-4"
                 />
-                <FormGroup title="First Name">
+                <FormGroup title="First Name" isLabel>
                   <Input
                     placeholder="First Name"
                     {...register('first_name')}
@@ -83,7 +83,7 @@ export default function CreatDoctorModal() {
                     className="flex-grow"
                   />
                 </FormGroup>
-                <FormGroup title="Last Name">
+                <FormGroup title="Last Name" isLabel>
                   <Input
                     placeholder="Last Name"
                     {...register('last_name')}
@@ -91,7 +91,7 @@ export default function CreatDoctorModal() {
                     className="flex-grow"
                   />
                 </FormGroup>
-                <FormGroup title="Gender">
+                <FormGroup title="Gender" isLabel>
                   <Controller
                     name="gender"
                     control={control}
@@ -105,7 +105,7 @@ export default function CreatDoctorModal() {
                     )}
                   />
                 </FormGroup>
-                <FormGroup title="Birth of Date">
+                <FormGroup title="Birth of Date" isLabel>
                   <Input
                     placeholder="Birth of Dae"
                     type="date"
@@ -114,7 +114,7 @@ export default function CreatDoctorModal() {
                     className="flex-grow"
                   />
                 </FormGroup>
-                <FormGroup title="Phone Number">
+                <FormGroup title="Phone Number" isLabel>
                   <Input
                     placeholder="Phone Number"
                     {...register('mobile_number')}
@@ -123,7 +123,7 @@ export default function CreatDoctorModal() {
                   />
                 </FormGroup>
 
-                <FormGroup title="Email">
+                <FormGroup title="Email" isLabel>
                   <Input
                     placeholder="Email"
                     {...register('email')}
@@ -135,7 +135,7 @@ export default function CreatDoctorModal() {
 
               <div className="mb-10 flex flex-col gap-7">
                 <FormGroup title="Address" className="grid-cols-12" />
-                <FormGroup title="Country">
+                <FormGroup title="Country" isLabel>
                   <Input
                     placeholder="Country"
                     {...register('country')}
@@ -143,15 +143,31 @@ export default function CreatDoctorModal() {
                     className="flex-grow"
                   />
                 </FormGroup>
-                <FormGroup title="Street">
+                <FormGroup title="Street" isLabel>
                   <Input
                     placeholder="Street"
-                    {...register('street')}
-                    error={errors.street?.message}
+                    {...register('street_number')}
+                    error={errors.street_number?.message}
                     className="flex-grow"
                   />
                 </FormGroup>
-                <FormGroup title="Suburb">
+                <FormGroup title="Address Line 1" isLabel>
+                  <Input
+                    placeholder="Address Line 1"
+                    {...register('address_line_1')}
+                    error={errors.address_line_1?.message}
+                    className="flex-grow"
+                  />
+                </FormGroup>
+                <FormGroup title="Address Line 2" isLabel>
+                  <Input
+                    placeholder="Address Line 2"
+                    {...register('address_line_2')}
+                    error={errors.address_line_2?.message}
+                    className="flex-grow"
+                  />
+                </FormGroup>
+                <FormGroup title="Suburb" isLabel>
                   <Input
                     placeholder="Suburb"
                     {...register('suburb')}
@@ -172,7 +188,6 @@ export default function CreatDoctorModal() {
                           className="group relative z-0"
                           options={stateOption}
                           error={errors.state?.message as string}
-                          labelClassName="text-base font-medium"
                         />
                       )}
                     />
@@ -181,12 +196,11 @@ export default function CreatDoctorModal() {
                       placeholder="Post Code"
                       {...register('post_code')}
                       error={errors.post_code?.message}
-                      labelClassName="text-base font-bold"
                       className="flex-grow"
                     />
                   </Flex>
                 </FormGroup>
-                <FormGroup title="Password">
+                <FormGroup title="Password" isLabel>
                   <Input
                     placeholder="Password"
                     {...register('password')}

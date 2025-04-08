@@ -33,7 +33,7 @@ export function TabButton({
       <span className="whitespace-nowrap">{item.label}</span>
       <span
         className={cn(
-          'absolute -bottom-px left-0 h-1 w-full',
+          'absolute -bottom-px left-0 h-0.5 w-full',
           isActive ? 'bg-primary' : 'bg-transparent'
         )}
       />

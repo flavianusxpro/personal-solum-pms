@@ -12,7 +12,7 @@ import {
 } from '@/app/shared/appointment/appointment-list/appointment-form';
 import { PiXBold } from 'react-icons/pi';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import { appointmentTypesOptions } from '../list';
+import { appointmentTypesOptions } from '../list/filter-element';
 
 export const appointmentBookSchema = z.object({
   patient: z.string({ required_error: 'Patient is required' }),

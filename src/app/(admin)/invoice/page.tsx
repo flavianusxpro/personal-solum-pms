@@ -7,7 +7,7 @@ import { PiPlusBold } from 'react-icons/pi';
 import { invoiceData } from '@/data/invoice-data';
 import ExportButton from '@/app/shared/export-button';
 import { metaObject } from '@/config/site.config';
-import InvoiceList from '../../shared/invoice/invoice-list/InvoiceList';
+import InvoiceTableList from '@/app/shared/invoice/invoice-list/table';
 
 export const metadata = {
   ...metaObject('Invoices'),
@@ -45,7 +45,7 @@ export default function InvoiceListPage() {
         </div>
       </PageHeader>
 
-      <InvoiceList />
+      <InvoiceTableList />
     </>
   );
 }

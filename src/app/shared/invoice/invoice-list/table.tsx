@@ -22,7 +22,7 @@ const filterState = {
   status: '',
 };
 
-export default function InvoiceTable({ data = [] }: { data: any[] }) {
+export default function InvoiceTableList({ data = [] }: { data?: any[] }) {
   const [pageSize, setPageSize] = useState(10);
 
   const onHeaderCellClick = (value: string) => ({

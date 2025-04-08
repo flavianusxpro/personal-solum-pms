@@ -12,10 +12,12 @@ import {
 } from '@/app/shared/appointment/appointment-list/appointment-form';
 import { PiXBold } from 'react-icons/pi';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import { appointmentTypesOptions } from '../list';
+import { appointmentTypesOptions } from '../list/filter-element';
 
 export const appointmentBookSchema = z.object({
-  appointment_type: z.string({ required_error: 'Appointment type is required' }),
+  appointment_type: z.string({
+    required_error: 'Appointment type is required',
+  }),
   meeting_type: z.string({ required_error: 'Meeting type is required' }),
   notes: z.string().optional(),
 });

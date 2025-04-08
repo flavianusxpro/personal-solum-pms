@@ -101,11 +101,11 @@ export default function DoctorDetails({
           setValue('email', dataDoctor.email);
           setValue('mobile_number', dataDoctor.mobile_number);
           setValue('date_of_birth', dataDoctor.date_of_birth);
-          setValue('medicare_card', dataDoctor.medicare_card_number);
-          setValue(
-            'medicare_expiry',
-            dayjs(dataDoctor.medicare_expired_date).format('YYYY-MM-DD')
-          );
+          // setValue('medicare_card', dataDoctor.medicare_card_number);
+          // setValue(
+          //   'medicare_expiry',
+          //   dayjs(dataDoctor.medicare_expired_date).format('YYYY-MM-DD')
+          // );
           // setValue('position_of_card', dataDoctor.position_of_card);
           // setValue('country', dataDoctor.country);
           // setValue('street', dataDoctor.street);
@@ -117,13 +117,13 @@ export default function DoctorDetails({
 
         return (
           <>
-            <div className="mb-10 grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-7 border-b border-dashed pb-10 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
               <div className="flex flex-col gap-7">
                 <FormGroup
                   title="Personal Info"
                   className="grid-cols-12 gap-4"
                 />
-                <FormGroup title="First Name">
+                <FormGroup title="First Name" isLabel>
                   <Input
                     placeholder="First Name"
                     {...register('first_name')}
@@ -132,7 +132,7 @@ export default function DoctorDetails({
                     disabled={isView}
                   />
                 </FormGroup>
-                <FormGroup title="Last Name">
+                <FormGroup title="Last Name" isLabel>
                   <Input
                     placeholder="Last Name"
                     {...register('last_name')}
@@ -141,7 +141,7 @@ export default function DoctorDetails({
                     disabled={isView}
                   />
                 </FormGroup>
-                <FormGroup title="Gender">
+                <FormGroup title="Gender" isLabel>
                   <Controller
                     name="gender"
                     control={control}
@@ -156,7 +156,7 @@ export default function DoctorDetails({
                     )}
                   />
                 </FormGroup>
-                <FormGroup title="Birth of Date">
+                <FormGroup title="Birth of Date" isLabel>
                   <Input
                     placeholder="Birth of Dae"
                     type="date"
@@ -166,7 +166,7 @@ export default function DoctorDetails({
                     disabled={isView}
                   />
                 </FormGroup>
-                <FormGroup title="Phone Number">
+                <FormGroup title="Phone Number" isLabel>
                   <Input
                     placeholder="Phone Number"
                     {...register('mobile_number')}
@@ -176,7 +176,7 @@ export default function DoctorDetails({
                   />
                 </FormGroup>
 
-                <FormGroup title="Email">
+                <FormGroup title="Email" isLabel>
                   <Input
                     placeholder="Email"
                     {...register('email')}
@@ -185,44 +185,11 @@ export default function DoctorDetails({
                     disabled={isView}
                   />
                 </FormGroup>
-
-                <FormGroup title="Medicare Card">
-                  <Input
-                    placeholder="Medicare Card"
-                    {...register('medicare_card')}
-                    error={errors.medicare_card?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="">
-                  <Flex gap="4" justify="between" align="center">
-                    <Input
-                      label="Position of Card"
-                      placeholder="Position of Card"
-                      {...register('position_of_card')}
-                      error={errors.position_of_card?.message}
-                      labelClassName="text-base"
-                      className="flex-grow"
-                      disabled={isView}
-                    />
-                    <Input
-                      label="Expiry Date"
-                      type="date"
-                      placeholder="Expiry Date"
-                      {...register('medicare_expiry')}
-                      error={errors.medicare_expiry?.message}
-                      className="flex-grow"
-                      labelClassName="text-base"
-                      disabled={isView}
-                    />
-                  </Flex>
-                </FormGroup>
               </div>
 
               <div className="mb-10 flex flex-col gap-7">
                 <FormGroup title="Address" className="grid-cols-12" />
-                <FormGroup title="Country">
+                <FormGroup title="Country" isLabel>
                   <Input
                     placeholder="Country"
                     {...register('country')}
@@ -231,16 +198,34 @@ export default function DoctorDetails({
                     disabled={isView}
                   />
                 </FormGroup>
-                <FormGroup title="Street">
+                <FormGroup title="Street Number" isLabel>
                   <Input
                     placeholder="Street"
-                    {...register('street')}
-                    error={errors.street?.message}
+                    {...register('street_number')}
+                    error={errors.street_number?.message}
                     className="flex-grow"
                     disabled={isView}
                   />
                 </FormGroup>
-                <FormGroup title="Suburb">
+                <FormGroup title="Address Line 1" isLabel>
+                  <Input
+                    placeholder="Address Line 1"
+                    {...register('address_line_1')}
+                    error={errors.address_line_1?.message}
+                    className="flex-grow"
+                    disabled={isView}
+                  />
+                </FormGroup>
+                <FormGroup title="Address Line 2" isLabel>
+                  <Input
+                    placeholder="Address Line 2"
+                    {...register('address_line_2')}
+                    error={errors.address_line_2?.message}
+                    className="flex-grow"
+                    disabled={isView}
+                  />
+                </FormGroup>
+                <FormGroup title="Suburb" isLabel>
                   <Input
                     placeholder="Suburb"
                     {...register('suburb')}
@@ -262,7 +247,6 @@ export default function DoctorDetails({
                           className="group relative z-0"
                           options={stateOption}
                           error={errors.state?.message as string}
-                          labelClassName="text-base font-medium"
                           disabled={isView}
                         />
                         <Input
@@ -270,7 +254,6 @@ export default function DoctorDetails({
                           placeholder="Post Code"
                           {...register('post_code')}
                           error={errors.post_code?.message}
-                          labelClassName="text-base font-bold"
                           className="flex-grow"
                           disabled={isView}
                         />
@@ -281,24 +264,27 @@ export default function DoctorDetails({
               </div>
             </div>
 
-            <div className="mb-10 flex flex-col gap-7">
-              <FormGroup title="About Doctor" className="">
+            <div className="mb-10 mt-5 flex flex-col gap-7">
+              <FormGroup
+                title="Doctor Description"
+                description="Tell us a little about yourself and what makes you unique as a doctor"
+                className="grid-cols-12 gap-4"
+              />
+              <Controller
+                name="about"
+                control={control}
+                render={({ field }) => (
+                  <QuillEditor
+                    {...field}
+                    placeholder="About Doctor"
+                    error={errors.about?.message}
+                    className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[300px]"
+                  />
+                )}
+              />
+              <FormGroup title="Treatment Type" isLabel>
                 <Controller
-                  name="about"
-                  control={control}
-                  render={({ field }) => (
-                    <QuillEditor
-                      {...field}
-                      placeholder="About Doctor"
-                      error={errors.about?.message}
-                      className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
-                    />
-                  )}
-                />
-              </FormGroup>
-              <FormGroup title="Doctor Type">
-                <Controller
-                  name="doctorType"
+                  name="treatmentType"
                   control={control}
                   render={({ field }) => (
                     <CSelect
@@ -307,11 +293,12 @@ export default function DoctorDetails({
                       placeholder="Select Doctor Type"
                       options={doctorTypeOption}
                       disabled={isView}
+                      error={errors.treatmentType?.message}
                     />
                   )}
                 />
               </FormGroup>
-              <FormGroup title="Specialist Type">
+              <FormGroup title="Specialist Type" isLabel>
                 <Controller
                   name="specialistType"
                   control={control}
@@ -322,11 +309,12 @@ export default function DoctorDetails({
                       placeholder="Select Specialist Type"
                       options={doctorTypeOption}
                       disabled={isView}
+                      error={errors.specialistType?.message}
                     />
                   )}
                 />
               </FormGroup>
-              <FormGroup title="Medical Interest">
+              <FormGroup title="Medical Interest" isLabel>
                 <Input
                   placeholder="Medical Interest"
                   {...register('medicalInterest')}
@@ -335,7 +323,7 @@ export default function DoctorDetails({
                   disabled={isView}
                 />
               </FormGroup>
-              <FormGroup title="Language">
+              <FormGroup title="Language" isLabel>
                 <Controller
                   name="language"
                   control={control}
@@ -361,7 +349,7 @@ export default function DoctorDetails({
                 />
               </FormGroup>
 
-              <FormGroup title="Your Photo">
+              <FormGroup title="Your Photo" isLabel>
                 <div className="flex flex-col gap-6 @container @3xl:col-span-2">
                   <AvatarUpload
                     name="avatar"
