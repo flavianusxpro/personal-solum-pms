@@ -16,11 +16,14 @@ import {
 import {
   useCreatePatient,
   useGetPatientById,
+  useGetPatientProblem,
+  useGetPatientTypes,
   useUpdatePatient,
 } from '@/hooks/usePatient';
 import { IPayloadCreateEditPatient } from '@/types/paramTypes';
 import { useParams } from 'next/navigation';
 import dayjs from 'dayjs';
+import { useMemo, useState } from 'react';
 
 export default function PatientDetails({
   nextTab,
@@ -31,8 +34,36 @@ export default function PatientDetails({
 }) {
   const id = useParams<{ id: string }>().id;
 
+  const [searchPatientProblem, setSearchPatientProblem] = useState('');
+  const [searchPatientType, setSearchPatientType] = useState('');
+
   const { data: dataPatient } = useGetPatientById(id);
+  const { data: dataPatientProblem } = useGetPatientProblem({
+    search: searchPatientProblem,
+  });
+  const { data: dataPatientTypes } = useGetPatientTypes({
+    search: searchPatientType,
+  });
+
   const { mutate: mutateUpdatePatient } = useUpdatePatient();
+
+  const patientProblemOptions = useMemo(
+    () =>
+      dataPatientProblem?.map((item) => ({
+        label: item.name,
+        value: item.id,
+      })),
+    [dataPatientProblem]
+  );
+
+  const patientTypeOptions = useMemo(
+    () =>
+      dataPatientTypes?.map((item) => ({
+        label: item.name,
+        value: item.id,
+      })),
+    [dataPatientTypes]
+  );
 
   const onSubmit: SubmitHandler<PatientDetailsFormTypes> = (data) => {
     const payload: IPayloadCreateEditPatient = {
@@ -51,6 +82,8 @@ export default function PatientDetails({
       mobile_number: data.mobile_number as string,
       status: 1,
       timezone: data.timezone ?? 'Australia/Sydney',
+      // patient_problem: data.patient_problem,
+      // patient_type: data.patient_type,
     };
 
     if (id) {
@@ -90,6 +123,8 @@ export default function PatientDetails({
             'medicare_expiry',
             dayjs(dataPatient.medicare_expired_date).format('YYYY-MM-DD')
           );
+          // setValue('patient_problem', dataPatient.patient_problem);
+          // setValue('patient_type', dataPatient.patient_type);
           // setValue('position_of_card', dataPatient.position_of_card);
           // setValue('country', dataPatient.country);
           // setValue('street', dataPatient.street);
@@ -201,6 +236,40 @@ export default function PatientDetails({
                       labelClassName="text-base"
                     />
                   </Flex>
+                </FormGroup>
+
+                <FormGroup title="Patient Type">
+                  <Controller
+                    name="patient_type"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        label=""
+                        placeholder="Select Patient Type"
+                        options={patientTypeOptions ?? []}
+                        disabled={isView}
+                        error={errors.patient_type?.message as string}
+                      />
+                    )}
+                  />
+                </FormGroup>
+
+                <FormGroup title="Patient Problem">
+                  <Controller
+                    name="patient_problem"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        label=""
+                        placeholder="Select Patient Type"
+                        options={patientProblemOptions ?? []}
+                        disabled={isView}
+                        error={errors.patient_problem?.message as string}
+                      />
+                    )}
+                  />
                 </FormGroup>
 
                 <FormGroup title="Your Photo">

@@ -76,4 +76,6 @@ export const messages = {
   signatureIsRequired: 'Signature is required',
   dateIsRequired: 'Date is required',
   checkboxIsRequired: 'This Check is required',
+  patientTypeRequired: 'Patient Type is required',
+  patientProblemRequired: 'Patient Problem is required',
 };

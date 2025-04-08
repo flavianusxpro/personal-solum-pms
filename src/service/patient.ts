@@ -2,9 +2,13 @@ import { get, post, put } from '@/app/api/api';
 import {
   IGetAllPatientsResponse,
   IGetPatientByIdResponse,
+  IGetPatientProblemResponse,
+  IGetPatientTypeResponse,
 } from '@/types/ApiResponse';
 import {
   IParamGetAllPatient,
+  IParamGetPatientProblem,
+  IParamGetPatientTypes,
   IPayloadCreateEditPatient,
 } from '@/types/paramTypes';
 
@@ -29,4 +33,20 @@ export async function postCreatePatient(payload: IPayloadCreateEditPatient) {
 
 export async function putCreatePatient(payload: IPayloadCreateEditPatient) {
   return await put<any>('/admin/patient/' + payload.patient_id, payload);
+}
+
+export async function getPatientTypes(params: IParamGetPatientTypes) {
+  return await get<IGetPatientProblemResponse>('/admin/patient/type', {
+    params,
+  }).then((res) => {
+    return res.data;
+  });
+}
+
+export async function getPatientProblem(params: IParamGetPatientProblem) {
+  return await get<IGetPatientTypeResponse>('/admin/patient/problem', {
+    params,
+  }).then((res) => {
+    return res.data;
+  });
 }

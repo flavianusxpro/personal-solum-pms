@@ -309,3 +309,22 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
     updated_at: string;
   }[];
 }
+
+export interface IGetPatientProblemResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    name: string;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+  }[];
+}
+export interface IGetPatientTypeResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    name: string;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+  }[];
+}

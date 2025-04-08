@@ -97,3 +97,11 @@ export interface IPayloadSettingBillingDoctor {
   initial_appointment_fee?: number;
   followup_appointment_fee?: number;
 }
+
+export interface IParamGetPatientProblem {
+  search: string;
+}
+
+export interface IParamGetPatientTypes {
+  search: string;
+}

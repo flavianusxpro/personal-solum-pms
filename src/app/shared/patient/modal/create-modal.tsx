@@ -15,12 +15,44 @@ import {
   patientDetailsFormSchema,
   PatientDetailsFormTypes,
 } from '@/validators/patient-details.schema';
-import { useCreatePatient } from '@/hooks/usePatient';
+import {
+  useCreatePatient,
+  useGetPatientProblem,
+  useGetPatientTypes,
+} from '@/hooks/usePatient';
+import { useMemo, useState } from 'react';
 
 export default function CreatePatienModal() {
   const { closeModal } = useModal();
 
+  const [searchPatientProblem, setSearchPatientProblem] = useState('');
+  const [searchPatientType, setSearchPatientType] = useState('');
+
+  const { data: dataPatientProblem } = useGetPatientProblem({
+    search: searchPatientProblem,
+  });
+  const { data: dataPatientTypes } = useGetPatientTypes({
+    search: searchPatientType,
+  });
   const { mutate: mutateCreatePatient, isPending } = useCreatePatient();
+
+  const patientProblemOptions = useMemo(
+    () =>
+      dataPatientProblem?.map((item) => ({
+        label: item.name,
+        value: item.id,
+      })),
+    [dataPatientProblem]
+  );
+
+  const patientTypeOptions = useMemo(
+    () =>
+      dataPatientTypes?.map((item) => ({
+        label: item.name,
+        value: item.id,
+      })),
+    [dataPatientTypes]
+  );
 
   const onSubmit: SubmitHandler<PatientDetailsFormTypes> = (data) => {
     const payload: IPayloadCreateEditPatient = {
@@ -36,6 +68,8 @@ export default function CreatePatienModal() {
       timezone: data.timezone ?? 'Australia/Sydney',
       medicare_card_number: data.medicare_card as string,
       medicare_expired_date: data.medicare_expiry as string,
+      // setValue('patient_problem', dataPatient.patient_problem);
+      // setValue('patient_type', dataPatient.patient_type);
     };
 
     mutateCreatePatient(payload, {
@@ -162,6 +196,37 @@ export default function CreatePatienModal() {
                       labelClassName="text-base"
                     />
                   </Flex>
+                </FormGroup>
+                <FormGroup title="Patient Type">
+                  <Controller
+                    name="patient_type"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        label=""
+                        placeholder="Select Patient Type"
+                        options={patientTypeOptions ?? []}
+                        error={errors.patient_type?.message as string}
+                      />
+                    )}
+                  />
+                </FormGroup>
+
+                <FormGroup title="Patient Problem">
+                  <Controller
+                    name="patient_problem"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        label=""
+                        placeholder="Select Patient Type"
+                        options={patientProblemOptions ?? []}
+                        error={errors.patient_problem?.message as string}
+                      />
+                    )}
+                  />
                 </FormGroup>
               </div>
 
