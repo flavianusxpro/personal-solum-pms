@@ -63,7 +63,7 @@ export default function TabEmergencyContact({
             <Flex direction="col" className="" gap="7">
               <FormGroup title="Emergency Contact" className="" />
               <div className="mb-10 grid w-full grid-cols-2 gap-7">
-                <FormGroup title="First Name">
+                <FormGroup title="First Name" isLabel>
                   <Input
                     placeholder="First Name"
                     {...register('first_name')}
@@ -72,7 +72,7 @@ export default function TabEmergencyContact({
                     disabled={isView}
                   />
                 </FormGroup>
-                <FormGroup title="Email">
+                <FormGroup title="Email" isLabel>
                   <Input
                     placeholder="Email"
                     {...register('first_name')}
@@ -82,7 +82,7 @@ export default function TabEmergencyContact({
                   />
                 </FormGroup>
 
-                <FormGroup title="Last Name">
+                <FormGroup title="Last Name" isLabel>
                   <Input
                     placeholder="Last Name"
                     {...register('first_name')}
@@ -92,7 +92,7 @@ export default function TabEmergencyContact({
                   />
                 </FormGroup>
 
-                <FormGroup title="Relationship">
+                <FormGroup title="Relationship" isLabel>
                   <Controller
                     name="relationship"
                     control={control}
@@ -125,7 +125,7 @@ export default function TabEmergencyContact({
                   />
                 </FormGroup>
 
-                <FormGroup title="Phone Number">
+                <FormGroup title="Phone Number" isLabel>
                   <Input
                     placeholder="Phone Number"
                     {...register('first_name')}

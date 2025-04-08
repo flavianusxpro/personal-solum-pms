@@ -76,9 +76,9 @@ export default function CreateEditPatient({
   return (
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb} />
-      <div className="@container">
+      <div className="flex flex-col @container">
         <SimpleBar>
-          <nav className="-mb-7 flex w-full gap-3 overflow-x-auto scroll-smooth pb-7 md:gap-5 lg:gap-8">
+          <nav className="mb-7 flex items-center gap-5 border-b border-gray-300">
             {navItems.map((nav) => (
               <TabButton
                 item={nav}
@@ -91,21 +91,17 @@ export default function CreateEditPatient({
           </nav>
         </SimpleBar>
 
-        <div className={cn('relative z-[19] [&_label.block>span]:font-medium')}>
-          <div className="mb-10 grid gap-7 divide-y divide-dashed divide-gray-200 @2xl:gap-9 @3xl:gap-11">
-            {tab === 'patient' && (
-              <PatientDetails
-                nextTab={() => selectTab(navItems[1].value)}
-                isView={isView}
-              />
-            )}
-            {tab === 'password' && <TabPassword isView={isView} />}
-            {tab === 'emergency' && <TabEmergencyContact isView={isView} />}
-            {tab === 'billing' && <TabBillingAppointments isView={isView} />}
-            {tab === 'documentation' && <TabDocumentation isView={isView} />}
-            {tab === 'assign' && <TabAssignDoctor isView={isView} />}
-          </div>
-        </div>
+        {tab === 'patient' && (
+          <PatientDetails
+            nextTab={() => selectTab(navItems[1].value)}
+            isView={isView}
+          />
+        )}
+        {tab === 'password' && <TabPassword isView={isView} />}
+        {tab === 'emergency' && <TabEmergencyContact isView={isView} />}
+        {tab === 'billing' && <TabBillingAppointments isView={isView} />}
+        {tab === 'documentation' && <TabDocumentation isView={isView} />}
+        {tab === 'assign' && <TabAssignDoctor isView={isView} />}
       </div>
     </>
   );

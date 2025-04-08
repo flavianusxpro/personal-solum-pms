@@ -41,7 +41,7 @@ export default function TabPassword({ isView = false }: { isView?: boolean }) {
         {({ register, formState: { errors } }) => (
           <div className="mt-4">
             <div className="border-y border-dashed border-muted py-10">
-              <FormGroup title="Current Password">
+              <FormGroup title="Current Password" isLabel>
                 <Password
                   placeholder="Enter your current password"
                   size="lg"
@@ -54,7 +54,7 @@ export default function TabPassword({ isView = false }: { isView?: boolean }) {
               </FormGroup>
             </div>
             <div className="border-b border-dashed border-muted py-10">
-              <FormGroup title="New Password">
+              <FormGroup title="New Password" isLabel>
                 <Password
                   placeholder="Enter your new password"
                   size="lg"
@@ -67,7 +67,7 @@ export default function TabPassword({ isView = false }: { isView?: boolean }) {
               </FormGroup>
             </div>
             <div className="border-b border-dashed border-muted py-10">
-              <FormGroup title="Confirm New Password">
+              <FormGroup title="Confirm New Password" isLabel>
                 <Password
                   placeholder="Enter confirm new password"
                   size="lg"

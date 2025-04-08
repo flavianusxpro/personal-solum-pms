@@ -54,7 +54,7 @@ export default function TabAssignDoctor({
             <Flex direction="col" className="" gap="7">
               <FormGroup title="Assign Doctor" className="" />
               <div className="mb-10 grid w-full grid-cols-2 gap-7">
-                <FormGroup title="Doctors">
+                <FormGroup title="Doctors" isLabel>
                   <Controller
                     name="doctor"
                     control={control}

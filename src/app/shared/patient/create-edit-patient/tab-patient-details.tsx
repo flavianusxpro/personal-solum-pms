@@ -142,7 +142,7 @@ export default function PatientDetails({
                   title="Personal Info"
                   className="grid-cols-12 gap-4"
                 />
-                <FormGroup title="First Name">
+                <FormGroup title="First Name" isLabel>
                   <Input
                     placeholder="First Name"
                     {...register('first_name')}
@@ -151,7 +151,7 @@ export default function PatientDetails({
                     disabled={isView}
                   />
                 </FormGroup>
-                <FormGroup title="Last Name">
+                <FormGroup title="Last Name" isLabel>
                   <Input
                     placeholder="Last Name"
                     {...register('last_name')}
@@ -160,7 +160,7 @@ export default function PatientDetails({
                     disabled={isView}
                   />
                 </FormGroup>
-                <FormGroup title="Gender">
+                <FormGroup title="Gender" isLabel>
                   <Controller
                     name="gender"
                     control={control}
@@ -175,7 +175,7 @@ export default function PatientDetails({
                     )}
                   />
                 </FormGroup>
-                <FormGroup title="Birth of Date">
+                <FormGroup title="Birth of Date" isLabel>
                   <Input
                     placeholder="Birth of Dae"
                     type="date"
@@ -185,7 +185,7 @@ export default function PatientDetails({
                     className="flex-grow"
                   />
                 </FormGroup>
-                <FormGroup title="Phone Number">
+                <FormGroup title="Phone Number" isLabel>
                   <Input
                     placeholder="Phone Number"
                     {...register('mobile_number')}
@@ -195,7 +195,7 @@ export default function PatientDetails({
                   />
                 </FormGroup>
 
-                <FormGroup title="Email">
+                <FormGroup title="Email" isLabel>
                   <Input
                     placeholder="Email"
                     {...register('email')}
@@ -205,7 +205,7 @@ export default function PatientDetails({
                   />
                 </FormGroup>
 
-                <FormGroup title="Medicare Card">
+                <FormGroup title="Medicare Card" isLabel>
                   <Input
                     placeholder="Medicare Card"
                     {...register('medicare_card')}
@@ -221,7 +221,6 @@ export default function PatientDetails({
                       placeholder="Position of Card"
                       {...register('position_of_card')}
                       error={errors.position_of_card?.message}
-                      labelClassName="text-base"
                       disabled={isView}
                       className="flex-grow"
                     />
@@ -233,12 +232,11 @@ export default function PatientDetails({
                       error={errors.medicare_expiry?.message}
                       className="flex-grow"
                       disabled={isView}
-                      labelClassName="text-base"
                     />
                   </Flex>
                 </FormGroup>
 
-                <FormGroup title="Patient Type">
+                <FormGroup title="Patient Type" isLabel>
                   <Controller
                     name="patient_type"
                     control={control}
@@ -255,7 +253,7 @@ export default function PatientDetails({
                   />
                 </FormGroup>
 
-                <FormGroup title="Patient Problem">
+                <FormGroup title="Patient Problem" isLabel>
                   <Controller
                     name="patient_problem"
                     control={control}
@@ -272,7 +270,7 @@ export default function PatientDetails({
                   />
                 </FormGroup>
 
-                <FormGroup title="Your Photo">
+                <FormGroup title="Your Photo" isLabel>
                   <div className="flex flex-col gap-6 @container @3xl:col-span-2">
                     <AvatarUpload
                       name="avatar"
@@ -287,7 +285,7 @@ export default function PatientDetails({
 
               <div className="mb-10 flex flex-col gap-7">
                 <FormGroup title="Address" className="grid-cols-12" />
-                <FormGroup title="Country">
+                <FormGroup title="Country" isLabel>
                   <Input
                     placeholder="Country"
                     {...register('country')}
@@ -296,7 +294,7 @@ export default function PatientDetails({
                     className="flex-grow"
                   />
                 </FormGroup>
-                <FormGroup title="Street">
+                <FormGroup title="Street" isLabel>
                   <Input
                     placeholder="Street"
                     {...register('street')}
@@ -305,7 +303,7 @@ export default function PatientDetails({
                     className="flex-grow"
                   />
                 </FormGroup>
-                <FormGroup title="Suburb">
+                <FormGroup title="Suburb" isLabel>
                   <Input
                     placeholder="Suburb"
                     {...register('suburb')}
@@ -318,7 +316,7 @@ export default function PatientDetails({
                   name="state"
                   control={control}
                   render={({ field }) => (
-                    <FormGroup title="States">
+                    <FormGroup title="States" isLabel>
                       <Flex justify="between" align="center" gap="4">
                         <CSelect
                           {...field}
@@ -328,14 +326,12 @@ export default function PatientDetails({
                           options={stateOption}
                           error={errors.state?.message as string}
                           disabled={isView}
-                          labelClassName="text-base font-medium"
                         />
                         <Input
                           label="Post Code"
                           placeholder="Post Code"
                           {...register('post_code')}
                           error={errors.post_code?.message}
-                          labelClassName="text-base font-bold"
                           disabled={isView}
                           className="flex-grow"
                         />
