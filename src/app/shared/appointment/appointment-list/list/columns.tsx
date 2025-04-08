@@ -11,9 +11,8 @@ import { PiCheckCircleBold, PiClockBold, PiCopy } from 'react-icons/pi';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import CreateUpdateAppointmentForm from '../appointment-form';
 import AppointmentDetails from './appointment-details';
-import TableAvatar from '@core/ui/avatar-card';
-import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 import AvatarCard from '@core/ui/avatar-card';
+import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 
 const statusOptions = [
   { label: 'Waiting', value: 'Waiting' },
@@ -42,11 +41,11 @@ export const GetColumns = ({
   return [
     {
       title: (
-        <div className="ps-3.5">
+        <div className="ps-2">
           <Checkbox
             title={'Select All'}
             onChange={handleSelectAll}
-            checked={checkedItems.length === data?.length}
+            checked={checkedItems?.length === data?.length}
             className="cursor-pointer"
           />
         </div>
@@ -54,13 +53,13 @@ export const GetColumns = ({
       dataIndex: 'checked',
       key: 'checked',
       width: 30,
-      render: (_: any, row: any) => (
+      render: (_: any, row: IGetAppointmentListResponse['data'][number]) => (
         <div className="inline-flex ps-3.5">
           <Checkbox
             aria-label={'ID'}
             className="cursor-pointer"
-            checked={checkedItems.includes(row.id)}
-            {...(onChecked && { onChange: () => onChecked(row.id) })}
+            checked={checkedItems.includes(row.id.toString())}
+            {...(onChecked && { onChange: () => onChecked(row.id.toString()) })}
           />
         </div>
       ),
@@ -75,16 +74,16 @@ export const GetColumns = ({
     },
     {
       title: <HeaderCell title="PATIENT NAME" />,
-      onHeaderCell: () => onHeaderCellClick('patient.name'),
-      dataIndex: 'patient',
-      key: 'patient',
+      // onHeaderCell: () => onHeaderCellClick('patient.name'),
+      dataIndex: 'patientId',
+      key: 'patientId',
       width: 250,
-      render: (patient: { name: string; email: string }) => (
-        <TableAvatar
+      render: (patient: string) => (
+        <AvatarCard
           src={'https://randomuser.me/api/portraits'}
-          name={patient?.name ?? 'Default Name'}
+          name={'Default Name'}
           // Removed the number property as it is not defined in AvatarCardProps
-          description={patient?.email ?? 'Default Email'}
+          description={'Default Email'}
         />
       ),
     },
@@ -97,22 +96,18 @@ export const GetColumns = ({
     },
     {
       title: <HeaderCell title="Appointment To" />,
-      onHeaderCell: () => onHeaderCellClick('doctor.name'),
-      dataIndex: 'doctor',
-      key: 'doctor',
+      // onHeaderCell: () => onHeaderCellClick('doctor.name'),
+      dataIndex: 'doctorId',
+      key: 'doctorId',
       width: 320,
-      render: (doctor: {
-        name: string;
-        email: string;
-        avatar: string;
-        number: string;
-      }) => (
-        <AvatarCard
-          number={doctor?.number}
-          src={doctor?.avatar}
-          name={doctor?.name}
-          description={doctor?.email}
-        />
+      render: (doctorId: string) => (
+        <Text>{doctorId}</Text>
+        // <AvatarCard
+        //   number={doctorId}
+        //   src={'https://randomuser.me/api/portraits'}
+        //   name={doctorId}
+        //   description={doctorId}
+        // />
       ),
     },
     {
@@ -125,10 +120,10 @@ export const GetColumns = ({
           }
         />
       ),
-      dataIndex: 'appointType',
-      key: 'appointType',
+      dataIndex: 'patient_type',
+      key: 'patient_type',
       width: 180,
-      onHeaderCell: () => onHeaderCellClick('appointType'),
+      onHeaderCell: () => onHeaderCellClick('patient_type'),
       render: (type: Type) => (
         <>
           <p className="whitespace-nowrap font-medium text-gray-900">{type}</p>
@@ -140,9 +135,9 @@ export const GetColumns = ({
     },
     {
       title: <HeaderCell title="APPOINT STATUS" />,
-      onHeaderCell: () => onHeaderCellClick('appointStatus'),
-      dataIndex: 'appointStatus',
-      key: 'appointStatus',
+      onHeaderCell: () => onHeaderCellClick('status'),
+      dataIndex: 'status',
+      key: 'status',
       width: 250,
       render: (value: string) => getScheduleStatusBadge(value),
     },
@@ -173,48 +168,6 @@ export const GetColumns = ({
     },
   ];
 };
-
-function StatusSelect({ selectItem }: { selectItem?: string }) {
-  const selectItemValue = statusOptions.find(
-    (option) => option.label === selectItem
-  );
-  const [value, setValue] = useState(selectItemValue);
-  return (
-    <Select
-      dropdownClassName="!z-10 h-auto"
-      placeholder="Select Role"
-      options={statusOptions}
-      value={value}
-      onChange={setValue}
-      displayValue={(option: { value: any }) =>
-        renderOptionDisplayValue(option.value as string)
-      }
-    />
-  );
-}
-
-function renderOptionDisplayValue(value: string) {
-  switch (value) {
-    case 'Scheduled':
-      return (
-        <div className="flex items-center">
-          <PiClockBold className="shrink-0 fill-green-dark text-base" />
-          <Text className="ms-1.5 text-sm font-medium capitalize text-gray-700">
-            {value}
-          </Text>
-        </div>
-      );
-    default:
-      return (
-        <div className="flex items-center">
-          <PiCheckCircleBold className="shrink-0 fill-orange text-base" />
-          <Text className="ms-1.5 text-sm font-medium capitalize text-gray-700">
-            {value}
-          </Text>
-        </div>
-      );
-  }
-}
 
 function RenderAction({
   row,
@@ -279,14 +232,14 @@ function getPaymentStatusBadge(status: number | string) {
           <Text className="ms-2 font-medium text-orange-dark">{status}</Text>
         </div>
       );
-    case 1:
+    case 2:
       return (
         <div className="flex items-center">
           <Badge color="success" renderAsDot />
           <Text className="ms-2 font-medium text-green-dark">Paid</Text>
         </div>
       );
-    case 0:
+    case 1:
       return (
         <div className="flex items-center">
           <Badge color="danger" renderAsDot />
@@ -305,16 +258,16 @@ function getPaymentStatusBadge(status: number | string) {
 
 function getScheduleStatusBadge(status: number | string) {
   switch (status) {
-    case 'Waiting':
+    case 2:
       return (
         <div className="flex items-center">
           <Badge color="warning" renderAsDot />
           <Text className="ms-2 font-medium text-yellow-600">{status}</Text>
         </div>
       );
-    case 'Schedule':
+    case 3:
       return (
-        <div className="flex items-center">
+        <div className="items-center">
           <Badge color="success" renderAsDot />
           <Text className="ms-2 font-medium text-green-dark">Paid</Text>
           <p className={`whitespace-nowrap font-medium text-gray-700`}>

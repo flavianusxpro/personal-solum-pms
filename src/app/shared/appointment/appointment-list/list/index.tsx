@@ -15,11 +15,14 @@ import cn from '@core/utils/class-names';
 import DateFiled from '@/app/shared/controlled-table/date-field';
 import StatusField from '@/app/shared/controlled-table/status-field';
 import { useGetAppointments } from '@/hooks/useAppointment';
-import FilterElement from './filter-element';
 
 const TableFooter = dynamic(() => import('@/app/shared/table-footer'), {
   ssr: false,
 });
+const FilterElement = dynamic(
+  () => import('@/app/shared/appointment/appointment-list/list/filter-element'),
+  { ssr: false }
+);
 
 const filterState = {
   date: [null, null],
@@ -31,10 +34,11 @@ export default function AppointmentListTable() {
   const [pageSize, setPageSize] = useState(10);
   const [_, setCheckedItems] = useState<string[]>([]);
 
-  const { data: dataAppointments } = useGetAppointments({
-    page: 1,
-    perPage: pageSize,
-  });
+  const { data: dataAppointments, isLoading: isLoadingGetAppointments } =
+    useGetAppointments({
+      page: 1,
+      perPage: pageSize,
+    });
   console.log(
     '🚀 ~ AppointmentListTable ~ dataAppointments:',
     dataAppointments
@@ -118,7 +122,7 @@ export default function AppointmentListTable() {
     >
       <ControlledTable
         variant="modern"
-        isLoading={isLoading}
+        isLoading={isLoading || isLoadingGetAppointments}
         showLoadingText={true}
         data={tableData}
         scroll={{
