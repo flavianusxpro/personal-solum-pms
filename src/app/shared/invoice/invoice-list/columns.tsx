@@ -10,42 +10,36 @@ import PencilIcon from '@core/components/icons/pencil';
 import DeletePopover from '@/app/shared/ui/delete-popover';
 import DateCell from '@core/ui/date-cell';
 import TableAvatar from '@core/ui/avatar-card';
+import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 
-// function getStatusBadge(status: string) {
-//   switch (status.toLowerCase()) {
-//     case 'pending':
-//       return (
-//         <div className="flex items-center">
-//           <Badge color="warning" renderAsDot />
-//           <Text className="ms-2 font-medium text-orange-dark">{status}</Text>
-//         </div>
-//       );
-//     case 'paid':
-//       return (
-//         <div className="flex items-center">
-//           <Badge color="success" renderAsDot />
-//           <Text className="ms-2 font-medium text-green-dark">{status}</Text>
-//         </div>
-//       );
-//     case 'overdue':
-//       return (
-//         <div className="flex items-center">
-//           <Badge color="danger" renderAsDot />
-//           <Text className="ms-2 font-medium text-red-dark">{status}</Text>
-//         </div>
-//       );
-//     default:
-//       return (
-//         <div className="flex items-center">
-//           <Badge renderAsDot className="bg-gray-400" />
-//           <Text className="ms-2 font-medium text-gray-600">{status}</Text>
-//         </div>
-//       );
-//   }
-// }
+function getStatusBadge(status: number) {
+  switch (status) {
+    case 1:
+      return (
+        <div className="flex items-center">
+          <Badge color="warning" renderAsDot />
+          <Text className="ms-2 font-medium text-orange-dark">Unpaid</Text>
+        </div>
+      );
+    case 2:
+      return (
+        <div className="flex items-center">
+          <Badge color="success" renderAsDot />
+          <Text className="ms-2 font-medium text-green-dark">Paid</Text>
+        </div>
+      );
+    default:
+      return (
+        <div className="flex items-center">
+          <Badge renderAsDot className="bg-gray-400" />
+          <Text className="ms-2 font-medium text-gray-600">{status}</Text>
+        </div>
+      );
+  }
+}
 
 type Columns = {
-  data: any[];
+  data: IGetAppointmentListResponse['data'];
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
@@ -116,114 +110,32 @@ export const getColumns = ({
   },
   {
     title: <HeaderCell title="APPOINTMENT DATE" />,
-    dataIndex: 'email',
-    key: 'email',
+    dataIndex: 'date',
+    key: 'date',
     width: 250,
-    render: (email: string) => email,
+    render: (value: Date) => <DateCell date={value} />,
   },
   {
     title: <HeaderCell title="TOTAL" />,
-    dataIndex: 'total',
-    key: 'total',
+    dataIndex: 'amount',
+    key: 'amount',
     width: 250,
-    render: (total: string) => total,
+    render: (value: string) => value,
   },
   {
-    title: <HeaderCell title="STATUS" />,
+    title: <HeaderCell title="PAYMENT STATUS" />,
     dataIndex: 'status',
     key: 'status',
     width: 650,
-    render: (value: number | string) => (
-      <span
-        className={`${value === 'Paid' ? 'text-green-600' : value === 'Unpaid' ? 'text-yellow-600' : value === 'Cancelled' ? 'text-red-600' : 'text-blue-600'}`}
-      >
-        {value == 1
-          ? 'Draft'
-          : value == 2
-            ? 'Open'
-            : value == 3
-              ? 'Paid'
-              : value == 4
-                ? 'Void'
-                : '-'}
-      </span>
-    ),
+    render: (value: number) => getStatusBadge(value),
   },
   {
     title: <HeaderCell title="CREATED BY" />,
-    dataIndex: 'createdBy',
-    key: 'createdBy',
-    width: 800,
-    render: (createdBy: { role: string; name: string; date: Date }) => (
-      <>
-        <p className="w-max text-sm font-medium text-gray-900 dark:text-gray-700">
-          {createdBy?.role}#{createdBy?.name}
-        </p>
-        <p className="w-max text-[13px] text-gray-500">
-          <DateCell date={createdBy?.date} />
-        </p>
-      </>
-    ),
+    dataIndex: 'created_at',
+    key: 'created_at',
+    width: 600,
+    render: (created_at: Date) => <DateCell clock date={created_at} />,
   },
-  // {
-  //   title: (
-  //     <HeaderCell
-  //       title="Created"
-  //       sortable
-  //       ascending={
-  //         sortConfig?.direction === 'asc' && sortConfig?.key === 'createdAt'
-  //       }
-  //     />
-  //   ),
-  //   onHeaderCell: () => onHeaderCellClick('createdAt'),
-  //   dataIndex: 'createdAt',
-  //   key: 'createdAt',
-  //   width: 200,
-  //   render: (value: Date) => <DateCell date={value} />,
-  // },
-  // {
-  //   title: (
-  //     <HeaderCell
-  //       title="Due Date"
-  //       sortable
-  //       ascending={
-  //         sortConfig?.direction === 'asc' && sortConfig?.key === 'dueDate'
-  //       }
-  //     />
-  //   ),
-  //   onHeaderCell: () => onHeaderCellClick('dueDate'),
-  //   dataIndex: 'dueDate',
-  //   key: 'dueDate',
-  //   width: 200,
-  //   render: (value: Date) => <DateCell date={value} />,
-  // },
-  // {
-  //   title: (
-  //     <HeaderCell
-  //       title="Amount"
-  //       sortable
-  //       ascending={
-  //         sortConfig?.direction === 'asc' && sortConfig?.key === 'amount'
-  //       }
-  //     />
-  //   ),
-  //   onHeaderCell: () => onHeaderCellClick('amount'),
-  //   dataIndex: 'amount',
-  //   key: 'amount',
-  //   width: 200,
-  //   render: (value: string) => (
-  //     <Text className="font-medium text-gray-700 dark:text-gray-600">
-  //       ${value}
-  //     </Text>
-  //   ),
-  // },
-  // {
-  //   title: <HeaderCell title="Status" />,
-  //   dataIndex: 'status',
-  //   key: 'status',
-  //   width: 120,
-  //   render: (value: string) => getStatusBadge(value),
-  // },
   {
     title: <></>,
     dataIndex: 'action',

@@ -7,6 +7,7 @@ import { useColumn } from '@core/hooks/use-column';
 import { Button } from 'rizzui';
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { getColumns } from './columns';
+import { useGetInvoices } from '@/hooks/useInvoice';
 const FilterElement = dynamic(
   () => import('@/app/shared/invoice/invoice-list/filter-element'),
   { ssr: false }
@@ -16,14 +17,20 @@ const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
 });
 
 const filterState = {
-  amount: ['', ''],
   createdAt: [null, null],
   dueDate: [null, null],
   status: '',
 };
 
-export default function InvoiceTableList({ data = [] }: { data?: any[] }) {
+export default function InvoiceTableList() {
   const [pageSize, setPageSize] = useState(10);
+
+  const { data: dataInvoices, isLoading: isLoadingGetInvoices } =
+    useGetInvoices({
+      page: 1,
+      perPage: pageSize,
+    });
+  console.log('🚀 ~ InvoiceTableList ~ dataInvoices:', dataInvoices);
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -55,12 +62,12 @@ export default function InvoiceTableList({ data = [] }: { data?: any[] }) {
     handleSelectAll,
     handleDelete,
     handleReset,
-  } = useTable(data, pageSize, filterState);
+  } = useTable(dataInvoices ?? [], pageSize, filterState);
 
   const columns = React.useMemo(
     () =>
       getColumns({
-        data,
+        data: dataInvoices ?? [],
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -88,7 +95,7 @@ export default function InvoiceTableList({ data = [] }: { data?: any[] }) {
       <ControlledTable
         variant="modern"
         data={tableData}
-        isLoading={isLoading}
+        isLoading={isLoading || isLoadingGetInvoices}
         showLoadingText={true}
         // @ts-ignore
         columns={visibleColumns}

@@ -29,10 +29,10 @@ export default function FilterElement({
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
   return (
     <>
-      <PriceField
+      {/* <PriceField
         value={filters['amount']}
         onChange={(data) => updateFilter('amount', data)}
-      />
+      /> */}
       <DateFiled
         selectsRange
         dateFormat="dd MMM yyyy"
