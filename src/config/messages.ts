@@ -78,4 +78,5 @@ export const messages = {
   checkboxIsRequired: 'This Check is required',
   patientTypeRequired: 'Patient Type is required',
   patientProblemRequired: 'Patient Problem is required',
+  doctorIsRequired: 'Doctor is required',
 };

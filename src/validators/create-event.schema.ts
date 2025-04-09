@@ -3,6 +3,7 @@ import { messages } from '@/config/messages';
 
 export const eventFormSchema = z.object({
   id: z.string().optional(),
+  doctor: z.string().min(1, { message: messages.doctorIsRequired }),
   title: z.string().min(1, { message: messages.nameIsRequired }),
   description: z.string().optional(),
   location: z.string().optional(),

@@ -86,6 +86,7 @@ export type PosProduct = {
 };
 export interface CalendarEvent {
   id?: string;
+  doctor: string;
   start: Date;
   end: Date;
   allDay?: boolean;

@@ -21,6 +21,8 @@ export function useGetAllDoctors(params: IParamGetAllDoctor) {
     queryFn: async () => {
       return await getDoctorList(params);
     },
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 10, // 10 minutes
   });
 }
 

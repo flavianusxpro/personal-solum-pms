@@ -1,16 +1,28 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { CalendarEvent } from '@/types';
 import { PiMapPin, PiXBold } from 'react-icons/pi';
+import { FaUserDoctor } from 'react-icons/fa6';
 import { ActionIcon, Button, Text, Title } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { MdOutlineCalendarMonth } from 'react-icons/md';
 import useEventCalendar from '@core/hooks/use-event-calendar';
 import { formatDate } from '@core/utils/format-date';
 import EventForm from '@/app/shared/event-calendar/event-form';
+import { useGetAllDoctors } from '@/hooks/useDoctor';
 
 function DetailsEvents({ event }: { event: CalendarEvent }) {
+  console.log('🚀 ~ DetailsEvents ~ event:', event);
   const { deleteEvent } = useEventCalendar();
   const { openModal, closeModal } = useModal();
+
+  const { data: dataDoctor } = useGetAllDoctors({
+    page: 1,
+    perPage: 100,
+  });
+
+  const doctor = dataDoctor?.find(
+    (doc) => doc.id.toString() === event.doctor.toString()
+  );
 
   function handleEditModal() {
     closeModal(),
@@ -48,8 +60,14 @@ function DetailsEvents({ event }: { event: CalendarEvent }) {
         {event.description && (
           <Text className="mt-3 xl:leading-6">{event.description}</Text>
         )}
-
         <ul className="mt-7 flex flex-col gap-[18px] text-gray-600">
+          <li className="flex gap-2">
+            <FaUserDoctor className="h-5 w-5" />
+            <span>Doctor:</span>
+            <span className="font-medium text-gray-1000">
+              {doctor?.first_name} {doctor?.last_name}
+            </span>
+          </li>
           <li className="flex gap-2">
             <MdOutlineCalendarMonth className="h-5 w-5" />
             <span>Event Start:</span>

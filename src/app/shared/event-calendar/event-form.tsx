@@ -11,15 +11,14 @@ import {
 import { ActionIcon, Button, Flex, Input, Text, Textarea, Title } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import { Form } from '@core/ui/form';
 import toast from 'react-hot-toast';
 import { DatePicker } from '@core/ui/datepicker';
 import { CalendarEvent } from '@/types';
 import useEventCalendar from '@core/hooks/use-event-calendar';
-import {
-  EventFormInput,
-  eventFormSchema,
-} from '@/validators/create-event.schema';
+import { EventFormInput } from '@/validators/create-event.schema';
+import CSelect from '@/core/ui/select';
+import { useGetAllDoctors } from '@/hooks/useDoctor';
+import { useMemo } from 'react';
 
 interface CreateEventProps {
   startDate?: Date;
@@ -37,6 +36,11 @@ export default function EventForm({
 
   const isNewEvent = event?.id === '' || event?.id === undefined;
 
+  const { data: dataDoctor } = useGetAllDoctors({
+    page: 1,
+    perPage: 100,
+  });
+
   const {
     control,
     handleSubmit,
@@ -51,6 +55,7 @@ export default function EventForm({
       startDate: startDate ?? event?.start,
       endDate: endDate ?? event?.end,
       breakTimes: event?.breakTimes ?? [],
+      doctor: event?.doctor ?? '',
     },
   });
 
@@ -63,6 +68,15 @@ export default function EventForm({
 
   const startDateValue = watch('startDate');
   const endDateValue = watch('endDate');
+
+  const doctorOptions = useMemo(() => {
+    if (!dataDoctor) return [];
+
+    return dataDoctor?.map((doctor) => ({
+      label: doctor.first_name + ' ' + doctor.last_name,
+      value: doctor.id,
+    }));
+  }, [dataDoctor]);
 
   const onSubmit: SubmitHandler<EventFormInput> = (data) => {
     toast.success(
@@ -80,6 +94,7 @@ export default function EventForm({
         description: data.description,
         location: data.location,
         breakTimes: data.breakTimes,
+        doctor: data.doctor,
       });
     } else {
       updateEvent({
@@ -129,6 +144,23 @@ export default function EventForm({
           textareaClassName="h-20"
           className="col-span-full"
         />
+        <Controller
+          name="doctor"
+          control={control}
+          render={({ field: { value, onChange } }) => (
+            <CSelect
+              label="Doctor"
+              placeholder="Select a doctor"
+              options={doctorOptions}
+              value={value}
+              onChange={onChange}
+              error={errors.doctor?.message}
+              className="col-span-full"
+              searchable
+            />
+          )}
+        />
+
         <Input
           label="Event Location"
           placeholder="Enter your location"
