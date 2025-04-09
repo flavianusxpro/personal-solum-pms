@@ -174,19 +174,27 @@ export interface IGetPatientByIdResponse extends ApiResponse {
     email: string;
     mobile_number: string;
     status: number;
-    address: string;
+    title: null;
+    potition_on_card: null;
+    photo: null;
+    country: null;
+    unit_number: null;
+    street_name: null;
+    suburb: null;
+    state: null;
+    postcode: null;
     date_of_birth: string;
     gender: string;
     medicare_card_number: string;
     medicare_expired_date: string;
-    patient_type: null;
-    patient_problem: null;
+    patient_type: number;
+    patient_problem: number;
     emergency_first_name: null;
     emergency_last_name: null;
     emergency_mobile_number: null;
     emergency_email: null;
     emergency_relationship: null;
-    verification_token: null;
+    verification_token: string;
     timezone: string;
     created_at: string;
     updated_at: string;
@@ -294,6 +302,7 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
     clinicId: number;
     patientId: number;
     doctorId: number;
+    doctor: IDoctor;
     date: string;
     status: number;
     type: string;
@@ -304,10 +313,89 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
     patient_problem: string;
     note: string;
     sessionId: null;
-    paymentId: null;
+    patient: IPatient;
+    payment: IPayment;
     created_at: string;
     updated_at: string;
   }[];
+}
+
+export interface IDoctor {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  mobile_number: string;
+  password: string;
+  status: number;
+  date_of_birth: null;
+  gender: null;
+  photo: null;
+  description: null;
+  potition_on_card: null;
+  address_line_1: null;
+  address_line_2: null;
+  country: null;
+  unit_number: null;
+  street_name: null;
+  suburb: null;
+  state: null;
+  postcode: null;
+  specialist: null;
+  problem: null;
+  emergency_first_name: null;
+  emergency_last_name: null;
+  emergency_mobile_number: null;
+  emergency_email: null;
+  emergency_relationship: null;
+  timezone: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface IPayment {
+  id: number;
+  paymentId: string;
+  amount: string;
+  stripeId: string;
+  type: string;
+  status: number;
+  created_at: string;
+  updated_at: string;
+}
+
+interface IPatient {
+  id: number;
+  patient_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  mobile_number: string;
+  status: number;
+  title: null;
+  potition_on_card: string;
+  photo: null;
+  country: string;
+  unit_number: null;
+  street_name: string;
+  suburb: string;
+  state: string;
+  postcode: string;
+  date_of_birth: string;
+  gender: string;
+  medicare_card_number: string;
+  medicare_expired_date: string;
+  patient_type: null;
+  patient_problem: null;
+  emergency_first_name: string;
+  emergency_last_name: string;
+  emergency_mobile_number: string;
+  emergency_email: string;
+  emergency_relationship: string;
+  verification_token: string;
+  timezone: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface IGetPatientProblemResponse extends ApiResponseWithPagination {

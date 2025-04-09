@@ -7,9 +7,8 @@ export const emergencyContactSchema = z.object({
   first_name: z.string().min(1, { message: messages.firstNameRequired }),
   last_name: z.string().optional(),
   email: validateEmail,
-  phone: z.string().optional(),
+  phone_number: z.string().optional(),
   relationship: z.string().optional(),
-  specifyRelationship: z.string().optional(),
 });
 
 // generate form types from zod validation schema

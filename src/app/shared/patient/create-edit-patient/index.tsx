@@ -78,7 +78,7 @@ export default function CreateEditPatient({
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb} />
       <div className="flex flex-col @container">
         <SimpleBar>
-          <nav className="mb-7 flex items-center gap-5 border-b border-gray-300">
+          <nav className="mb-7 flex items-center gap-5 border-b border-gray-300 md:gap-7 lg:gap-10">
             {navItems.map((nav) => (
               <TabButton
                 item={nav}

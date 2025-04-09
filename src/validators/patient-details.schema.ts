@@ -16,17 +16,19 @@ export const patientDetailsFormSchema = z.object({
   country: z.string().optional(),
   suburb: z.string().optional(),
   street: z.string().optional(),
-  post_code: z.string().optional(),
+  post_code: z.string().max(4, {
+    message: messages.postCodeMaxLength,
+  }),
   medicare_card: z.string().optional(),
   medicare_expiry: z.string().optional(),
   position_of_card: z.string().optional(),
   avatar: fileSchema.optional(),
   password: z.string().optional(),
   timezone: z.string().optional(),
-  patient_type: z.string().min(1, {
+  patient_type: z.number().min(1, {
     message: messages.patientTypeRequired,
   }),
-  patient_problem: z.string().min(1, {
+  patient_problem: z.number().min(1, {
     message: messages.patientProblemRequired,
   }),
 });

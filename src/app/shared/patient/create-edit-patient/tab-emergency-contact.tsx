@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { Flex, Input, Loader, Text, Textarea } from 'rizzui';
+import { Flex, Grid, Input, Loader, Text, Textarea } from 'rizzui';
 // import UploadZone from '@core/ui/file-upload/upload-zone';
 import AvatarUpload from '@core/ui/file-upload/avatar-upload';
 import CSelect from '@/core/ui/select';
@@ -15,6 +15,9 @@ import {
   EmergencyContactTypes,
 } from '@/validators/emergency-contact.schema';
 import { relationshipOption } from '@/config/constants';
+import { IPayloadCreateEditPatient } from '@/types/paramTypes';
+import { useParams } from 'next/navigation';
+import { useGetPatientById, useUpdatePatient } from '@/hooks/usePatient';
 
 const Select = dynamic(() => import('rizzui').then((mod) => mod.Select), {
   ssr: false,
@@ -34,11 +37,38 @@ export default function TabEmergencyContact({
 }: {
   isView?: boolean;
 }) {
+  const id = useParams<{ id: string }>().id;
+
+  const { data: dataPatient, refetch: refetchGetDataPatient } =
+    useGetPatientById(id);
+
+  const { mutate: mutateUpdatePatient, isPending: isPendingUpdatePatient } =
+    useUpdatePatient();
+
   const onSubmit: SubmitHandler<EmergencyContactTypes> = (data) => {
-    toast.success(<Text as="b">Successfully added!</Text>);
-    console.log('Profile settings data ->', {
-      ...data,
-    });
+    const payload: IPayloadCreateEditPatient = {
+      patient_id: id ?? undefined,
+      emergency_first_name: data.first_name,
+      emergency_last_name: data.last_name,
+      emergency_mobile_number: data.phone_number,
+      emergency_email: data.email,
+      emergency_relationship: data.relationship,
+    };
+
+    if (id) {
+      return mutateUpdatePatient(payload, {
+        onSuccess: () => {
+          toast.success('Patient updated successfully');
+          refetchGetDataPatient();
+        },
+        onError: (error: any) => {
+          console.log('🚀 ~ PatientDetails ~ error:', error);
+          const errorMessage =
+            (error as any)?.response?.data?.message || 'An error occurred';
+          toast.error(errorMessage);
+        },
+      });
+    }
   };
 
   return (
@@ -49,6 +79,13 @@ export default function TabEmergencyContact({
       className="@container"
       useFormProps={{
         mode: 'onChange',
+        defaultValues: {
+          first_name: dataPatient?.emergency_first_name || '',
+          last_name: dataPatient?.emergency_last_name || '',
+          email: dataPatient?.emergency_email || '',
+          phone_number: dataPatient?.emergency_mobile_number || '',
+          relationship: dataPatient?.emergency_relationship || '',
+        },
       }}
     >
       {({ register, control, watch, formState: { errors } }) => {
@@ -63,82 +100,88 @@ export default function TabEmergencyContact({
             <Flex direction="col" className="" gap="7">
               <FormGroup title="Emergency Contact" className="" />
               <div className="mb-10 grid w-full grid-cols-2 gap-7">
-                <FormGroup title="First Name" isLabel>
-                  <Input
-                    placeholder="First Name"
-                    {...register('first_name')}
-                    error={errors.first_name?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Email" isLabel>
-                  <Input
-                    placeholder="Email"
-                    {...register('first_name')}
-                    error={errors.first_name?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
+                <Grid>
+                  <FormGroup title="First Name" isLabel>
+                    <Input
+                      placeholder="First Name"
+                      {...register('first_name')}
+                      error={errors.first_name?.message}
+                      className="flex-grow"
+                      disabled={isView}
+                    />
+                  </FormGroup>
 
-                <FormGroup title="Last Name" isLabel>
-                  <Input
-                    placeholder="Last Name"
-                    {...register('first_name')}
-                    error={errors.first_name?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
+                  <FormGroup title="Last Name" isLabel>
+                    <Input
+                      placeholder="Last Name"
+                      {...register('last_name')}
+                      error={errors.last_name?.message}
+                      className="flex-grow"
+                      disabled={isView}
+                    />
+                  </FormGroup>
 
-                <FormGroup title="Relationship" isLabel>
-                  <Controller
-                    name="relationship"
-                    control={control}
-                    render={({ field }) => (
-                      <>
-                        <CSelect
-                          {...field}
-                          value={
-                            relationshipOption.find(
-                              (option) => option.value === field.value
-                            )?.value ?? 'other'
-                          }
-                          options={relationshipOption}
-                          placeholder="Relationship"
-                          error={errors.relationship?.message}
-                          className="flex-grow"
-                          disabled={isView}
-                        />
-                        {isOther && (
-                          <Input
-                            placeholder="Specify Relationship"
-                            {...register('relationship')}
+                  <FormGroup title="Phone Number" isLabel>
+                    <Input
+                      placeholder="Phone Number"
+                      {...register('phone_number')}
+                      type="number"
+                      error={errors.phone_number?.message}
+                      className="flex-grow"
+                      disabled={isView}
+                    />
+                  </FormGroup>
+                </Grid>
+
+                <Flex direction="col" className="w-full" gap="4">
+                  <FormGroup title="Email" className="w-full" isLabel>
+                    <Input
+                      placeholder="Email"
+                      {...register('email')}
+                      error={errors.email?.message}
+                      className="flex-grow"
+                      disabled={isView}
+                    />
+                  </FormGroup>
+
+                  <FormGroup title="Relationship" className="w-full" isLabel>
+                    <Controller
+                      name="relationship"
+                      control={control}
+                      render={({ field }) => (
+                        <Flex direction="col" className="w-full" gap="4">
+                          <CSelect
+                            {...field}
+                            value={
+                              relationshipOption.find(
+                                (option) => option.value === field.value
+                              )?.value ?? 'other'
+                            }
+                            options={relationshipOption}
+                            placeholder="Relationship"
                             error={errors.relationship?.message}
-                            className="mt-2 flex-grow"
+                            className="flex-grow"
                             disabled={isView}
                           />
-                        )}
-                      </>
-                    )}
-                  />
-                </FormGroup>
-
-                <FormGroup title="Phone Number" isLabel>
-                  <Input
-                    placeholder="Phone Number"
-                    {...register('first_name')}
-                    error={errors.first_name?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
+                          {isOther && (
+                            <Input
+                              placeholder="Specify Relationship"
+                              {...register('relationship')}
+                              error={errors.relationship?.message}
+                              disabled={isView}
+                              className="w-full"
+                            />
+                          )}
+                        </Flex>
+                      )}
+                    />
+                  </FormGroup>
+                </Flex>
               </div>
             </Flex>
             {!isView && (
               <FormFooter
-                // isLoading={isLoading}
+                isLoading={isPendingUpdatePatient}
                 altBtnText="Cancel"
                 submitBtnText="Save"
               />

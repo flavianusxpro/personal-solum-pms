@@ -57,6 +57,7 @@ export function useGetPatientTypes(params: IParamGetPatientTypes) {
     queryFn: async () => {
       return await getPatientTypes(params);
     },
+    staleTime: 1000 * 60 * 10, // 10 minutes
   });
 }
 
@@ -66,5 +67,6 @@ export function useGetPatientProblem(params: IParamGetPatientProblem) {
     queryFn: async () => {
       return await getPatientProblem(params);
     },
+    staleTime: 1000 * 60 * 10, // 10 minutes
   });
 }

@@ -6,7 +6,7 @@ import { HeaderCell } from '@/app/shared/ui/table';
 import { Checkbox, Title, Text, Button, Badge } from 'rizzui';
 import { exportToCSV } from '@core/utils/export-to-csv';
 import { billingHistoryData } from '@/data/billing-history';
-import { IGetAppointmentListResponse } from '@/types/ApiResponse';
+import { IDoctor, IGetAppointmentListResponse } from '@/types/ApiResponse';
 
 function handleDownloadRowData(row: { [key: string]: any }) {
   exportToCSV(
@@ -68,10 +68,10 @@ export const getColumns = ({
   },
   {
     title: <HeaderCell title="Doctor Name" />,
-    dataIndex: 'doctorId',
-    key: 'doctorId',
-    render: (value: string) => (
-      <Text className="mb-1 text-gray-700">{value}</Text>
+    dataIndex: 'doctor',
+    key: 'doctor',
+    render: (value: IDoctor) => (
+      <Text className="mb-1 text-gray-700">{`${value.first_name} ${value.last_name}`}</Text>
     ),
   },
   {

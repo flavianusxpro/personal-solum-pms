@@ -28,7 +28,7 @@ export default function TabBillingAppointments({
     <Flex direction="col" gap="7">
       <FormGroup title="Billing" className="flex w-full justify-between">
         <Button>
-          <PiPlusBold className="h-4 w-4" />
+          <PiPlusBold className="mr-2 h-4 w-4" />
           Create Invoice{' '}
         </Button>
       </FormGroup>
@@ -36,7 +36,7 @@ export default function TabBillingAppointments({
 
       <FormGroup title="Appointment" className="flex w-full justify-between">
         <Button>
-          <PiPlusBold className="h-4 w-4" />
+          <PiPlusBold className="mr-2 h-4 w-4" />
           Create Appointment{' '}
         </Button>
       </FormGroup>

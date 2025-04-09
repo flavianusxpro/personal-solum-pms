@@ -39,18 +39,32 @@ export interface IPayloadPostPaymentMethod {
 
 export interface IPayloadCreateEditPatient {
   patient_id?: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  mobile_number: string;
-  status: number;
-  address: string;
-  date_of_birth: string;
-  gender: string;
-  medicare_card_number: string;
-  medicare_expired_date: string;
-  timezone: string;
+  first_name?: string;
+  last_name?: string;
+  email?: string;
   password?: string;
+  mobile_number?: string;
+  status?: number;
+  title?: string;
+  potition_on_card?: string;
+  country?: string;
+  unit_number?: string;
+  street_name?: string;
+  suburb?: string;
+  state?: string;
+  postcode?: string;
+  date_of_birth?: string;
+  gender?: string;
+  medicare_card_number?: string;
+  medicare_expired_date?: string;
+  timezone?: string;
+  emergency_first_name?: string;
+  emergency_last_name?: string;
+  emergency_mobile_number?: string;
+  emergency_email?: string;
+  emergency_relationship?: string;
+  patient_problem?: number;
+  patient_type?: number;
 }
 
 export interface IPayloadCreateEditDoctor {

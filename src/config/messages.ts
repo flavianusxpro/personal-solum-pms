@@ -79,4 +79,5 @@ export const messages = {
   patientTypeRequired: 'Patient Type is required',
   patientProblemRequired: 'Patient Problem is required',
   doctorIsRequired: 'Doctor is required',
+  postCodeMaxLength: 'Post code must be 4 characters',
 };

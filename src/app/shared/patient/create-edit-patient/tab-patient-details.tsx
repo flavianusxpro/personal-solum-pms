@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { Flex, Input } from 'rizzui';
+import { Flex, Input, Loader } from 'rizzui';
 import AvatarUpload from '@core/ui/file-upload/avatar-upload';
 import CSelect from '@/core/ui/select';
 import { genderOption, stateOption } from '@/config/constants';
@@ -37,7 +37,11 @@ export default function PatientDetails({
   const [searchPatientProblem, setSearchPatientProblem] = useState('');
   const [searchPatientType, setSearchPatientType] = useState('');
 
-  const { data: dataPatient } = useGetPatientById(id);
+  const {
+    data: dataPatient,
+    refetch: refetchGetDataPatient,
+    isLoading: isLoadingGetDataPatient,
+  } = useGetPatientById(id);
   const { data: dataPatientProblem } = useGetPatientProblem({
     search: searchPatientProblem,
   });
@@ -72,9 +76,8 @@ export default function PatientDetails({
       last_name: data.last_name as string,
       email: data.email,
       password: data.password as string,
-      address: '',
       date_of_birth: data.date_of_birth as string,
-      gender: data.date_of_birth as string,
+      gender: data.gender as string,
       medicare_card_number: data.medicare_card as string,
       medicare_expired_date: dayjs(data.medicare_expiry).format(
         'DD MMMM YYYY'
@@ -82,14 +85,21 @@ export default function PatientDetails({
       mobile_number: data.mobile_number as string,
       status: 1,
       timezone: data.timezone ?? 'Australia/Sydney',
-      // patient_problem: data.patient_problem,
-      // patient_type: data.patient_type,
+      country: data.country,
+      potition_on_card: data.position_of_card,
+      patient_problem: data.patient_problem,
+      patient_type: data.patient_type,
+      street_name: data.street,
+      state: data.state,
+      suburb: data.suburb,
+      postcode: data.post_code,
     };
 
     if (id) {
       return mutateUpdatePatient(payload, {
         onSuccess: () => {
           toast.success('Patient updated successfully');
+          refetchGetDataPatient();
         },
         onError: (error) => {
           console.log('🚀 ~ PatientDetails ~ error:', error);
@@ -101,6 +111,8 @@ export default function PatientDetails({
     }
   };
 
+  if (isLoadingGetDataPatient) return <Loader size="lg" />;
+
   return (
     <Form<PatientDetailsFormTypes>
       validationSchema={patientDetailsFormSchema}
@@ -108,32 +120,30 @@ export default function PatientDetails({
       onSubmit={onSubmit}
       className="@container"
       useFormProps={{
-        mode: 'onChange',
+        mode: 'all',
+        defaultValues: {
+          first_name: dataPatient?.first_name ?? '',
+          last_name: dataPatient?.last_name ?? '',
+          email: dataPatient?.email ?? '',
+          mobile_number: dataPatient?.mobile_number ?? '',
+          date_of_birth: dataPatient?.date_of_birth ?? '',
+          medicare_card: dataPatient?.medicare_card_number ?? '',
+          medicare_expiry: dataPatient?.medicare_expired_date
+            ? dayjs(dataPatient.medicare_expired_date).format('YYYY-MM-DD')
+            : '',
+          patient_problem: dataPatient?.patient_problem ?? 0,
+          patient_type: dataPatient?.patient_type ?? 0,
+          position_of_card: dataPatient?.potition_on_card ?? '',
+          country: dataPatient?.country ?? '',
+          street: dataPatient?.street_name ?? '',
+          suburb: dataPatient?.suburb ?? '',
+          state: dataPatient?.state ?? '',
+          post_code: dataPatient?.postcode ?? '',
+          // avatar: dataPatient?.avatar ?? '',
+        },
       }}
     >
       {({ register, control, setValue, getValues, formState: { errors } }) => {
-        if (dataPatient) {
-          setValue('first_name', dataPatient.first_name);
-          setValue('last_name', dataPatient.last_name);
-          setValue('email', dataPatient.email);
-          setValue('mobile_number', dataPatient.mobile_number);
-          setValue('date_of_birth', dataPatient.date_of_birth);
-          setValue('medicare_card', dataPatient.medicare_card_number);
-          setValue(
-            'medicare_expiry',
-            dayjs(dataPatient.medicare_expired_date).format('YYYY-MM-DD')
-          );
-          // setValue('patient_problem', dataPatient.patient_problem);
-          // setValue('patient_type', dataPatient.patient_type);
-          // setValue('position_of_card', dataPatient.position_of_card);
-          // setValue('country', dataPatient.country);
-          // setValue('street', dataPatient.street);
-          // setValue('suburb', dataPatient.suburb);
-          // setValue('state', dataPatient.state);
-          // setValue('post_code', dataPatient.post_code);
-          // setValue('avatar', dataPatient.avatar);
-        }
-
         return (
           <>
             <div className="mb-10 grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
@@ -312,12 +322,12 @@ export default function PatientDetails({
                     className="flex-grow"
                   />
                 </FormGroup>
-                <Controller
-                  name="state"
-                  control={control}
-                  render={({ field }) => (
-                    <FormGroup title="States" isLabel>
-                      <Flex justify="between" align="center" gap="4">
+                <FormGroup title="States" isLabel>
+                  <Flex justify="between" align="center" gap="4">
+                    <Controller
+                      name="state"
+                      control={control}
+                      render={({ field }) => (
                         <CSelect
                           {...field}
                           label="State"
@@ -327,18 +337,18 @@ export default function PatientDetails({
                           error={errors.state?.message as string}
                           disabled={isView}
                         />
-                        <Input
-                          label="Post Code"
-                          placeholder="Post Code"
-                          {...register('post_code')}
-                          error={errors.post_code?.message}
-                          disabled={isView}
-                          className="flex-grow"
-                        />
-                      </Flex>
-                    </FormGroup>
-                  )}
-                />
+                      )}
+                    />
+                    <Input
+                      label="Post Code"
+                      placeholder="Post Code"
+                      {...register('post_code')}
+                      error={errors.post_code?.message}
+                      disabled={isView}
+                      className="flex-grow"
+                    />
+                  </Flex>
+                </FormGroup>
               </div>
             </div>
             {!isView && (

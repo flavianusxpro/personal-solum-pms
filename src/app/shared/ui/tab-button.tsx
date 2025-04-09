@@ -22,7 +22,7 @@ export function TabButton({
   return (
     <button
       className={cn(
-        'relative flex items-center gap-2 py-2 text-sm outline-none',
+        'relative cursor-pointer whitespace-nowrap py-4 hover:text-gray-1000',
         isActive
           ? 'font-medium text-gray-900'
           : 'text-gray-500 hover:text-gray-800'
