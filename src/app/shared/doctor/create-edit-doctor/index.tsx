@@ -8,7 +8,7 @@ import DoctorDetails from './tab-doctor-details';
 import TabPassword from './tab-password';
 import TabEmergencyContact from './tab-emergency-contact';
 import TabBillingAppointments from './tab-report-billing';
-import TabConfiguration from './tab-configuration';
+import TabRequirement from './tab-requirement';
 import TabCalendar from './tab-calendar';
 import TabSettings from './tab-settings';
 import { useParams } from 'next/navigation';
@@ -32,8 +32,8 @@ export const navItems = [
     label: 'Report Billing',
   },
   {
-    value: 'configuration',
-    label: 'Configuration',
+    value: 'requirement',
+    label: 'Requirement',
   },
   {
     value: 'calendar',
@@ -103,7 +103,7 @@ export default function CreateEditDoctor({
         {tab === 'password' && <TabPassword isView={isView} />}
         {tab === 'emergency' && <TabEmergencyContact isView={isView} />}
         {tab === 'billing' && <TabBillingAppointments isView={isView} />}
-        {tab === 'configuration' && <TabConfiguration isView={isView} />}
+        {tab === 'requirement' && <TabRequirement isView={isView} />}
         {tab === 'calendar' && <TabCalendar isView={isView} />}
         {tab === 'settings' && <TabSettings isView={isView} />}
       </div>
