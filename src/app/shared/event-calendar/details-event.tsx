@@ -75,6 +75,19 @@ function DetailsEvents({ event }: { event: CalendarEvent }) {
               </span>
             </li>
           )}
+          {event.breakTimes && event.breakTimes.length > 0 && (
+            <li className="flex gap-2">
+              <PiMapPin className="h-5 w-5" />
+              <span>Break Times:</span>
+              {event.breakTimes.map((breakTime, index) => (
+                <span key={index} className="font-medium text-gray-1000">
+                  {formatDate(breakTime.start, 'h:mm A')} -{' '}
+                  {formatDate(breakTime.end, 'h:mm A')}
+                  {index < (event?.breakTimes?.length ?? 0) - 1 ? ', ' : ''}
+                </span>
+              ))}
+            </li>
+          )}
         </ul>
         <div className={cn('grid grid-cols-2 gap-4 pt-5')}>
           <Button

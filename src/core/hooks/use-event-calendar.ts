@@ -11,6 +11,12 @@ const event = [
     title: 'Meeting with Paige',
     description: 'About Planning',
     location: `At Paige's place`,
+    breatTimes: [
+      {
+        start: new Date(),
+        end: new Date(),
+      },
+    ],
   },
 ];
 

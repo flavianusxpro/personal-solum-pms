@@ -11,6 +11,7 @@ import useEventCalendar from '@core/hooks/use-event-calendar';
 import cn from '@core/utils/class-names';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import CSelect from '../ui/select';
+import { useGetAllDoctors } from '@/hooks/useDoctor';
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -26,6 +27,19 @@ export default function EventCalendarView() {
   const { colorPresetName } = useColorPresetName();
 
   const [selectDoctor, setSelectDoctor] = useState('');
+
+  const { data: dataDoctor } = useGetAllDoctors({
+    page: 1,
+    perPage: 100,
+  });
+
+  const doctorOptions = useMemo(() => {
+    if (!dataDoctor) return [];
+    return dataDoctor.map((doctor) => ({
+      label: doctor.first_name + ' ' + doctor.last_name,
+      value: doctor.id,
+    }));
+  }, [dataDoctor]);
 
   const handleSelectSlot = useCallback(
     ({ start, end }: { start: Date; end: Date }) => {
@@ -73,21 +87,9 @@ export default function EventCalendarView() {
     <div className="@container">
       <div className="mb-4 flex w-1/4">
         <CSelect
+          searchable
           label="Select Doctor"
-          options={[
-            {
-              label: 'All',
-              value: '',
-            },
-            {
-              label: 'Dr. John Doe',
-              value: 'Dr. John Doe',
-            },
-            {
-              label: 'Dr. Jane Doe',
-              value: 'Dr. Jane Doe',
-            },
-          ]}
+          options={doctorOptions}
           value={selectDoctor}
           onChange={(e: string) => setSelectDoctor(e)}
         />

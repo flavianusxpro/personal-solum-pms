@@ -36,7 +36,7 @@ export default function EventCalendarPage() {
             header="ID,Title,Description,Location,Start,end"
           />
           <ModalButton
-            label="Create Event"
+            label="Create Schedule"
             view={<EventForm />}
             customSize="900px"
             className="mt-0 w-full @lg:w-auto"
