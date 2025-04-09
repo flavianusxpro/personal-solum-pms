@@ -11,7 +11,6 @@ import EventForm from '@/app/shared/event-calendar/event-form';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
 
 function DetailsEvents({ event }: { event: CalendarEvent }) {
-  console.log('🚀 ~ DetailsEvents ~ event:', event);
   const { deleteEvent } = useEventCalendar();
   const { openModal, closeModal } = useModal();
 
