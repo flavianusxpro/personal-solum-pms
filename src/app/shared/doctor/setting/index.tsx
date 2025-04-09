@@ -4,48 +4,23 @@ import PageHeader from '../../ui/page-header';
 import { TabButton } from '../../ui/tab-button';
 import { startTransition, useState } from 'react';
 import SimpleBar from 'simplebar-react';
-import DoctorDetails from './tab-doctor-details';
-import TabPassword from './tab-password';
-import TabEmergencyContact from './tab-emergency-contact';
-import TabBillingAppointments from './tab-report-billing';
-import TabConfiguration from './tab-configuration';
-import TabCalendar from './tab-calendar';
-import TabSettings from './tab-settings';
 import { useParams } from 'next/navigation';
 import { useGetDoctorById } from '@/hooks/useDoctor';
+import TabTreatment from './tab-treatment';
+import TabSpecialist from './tab-specialist';
 
 export const navItems = [
   {
-    value: 'doctor',
-    label: 'Doctor Details',
+    value: 'specialist',
+    label: 'Specialist',
   },
   {
-    value: 'password',
-    label: 'Password',
-  },
-  {
-    value: 'emergency',
-    label: 'Emergency Contact',
-  },
-  {
-    value: 'billing',
-    label: 'Report Billing',
-  },
-  {
-    value: 'configuration',
-    label: 'Configuration',
-  },
-  {
-    value: 'calendar',
-    label: 'Calendar',
-  },
-  {
-    value: 'settings',
-    label: 'Settings',
+    value: 'treatment',
+    label: 'Treatment',
   },
 ];
 
-export default function CreateEditDoctor({
+export default function SettingDoctor({
   isView = false,
 }: {
   isView?: boolean;
@@ -94,18 +69,8 @@ export default function CreateEditDoctor({
           </nav>
         </SimpleBar>
 
-        {tab === 'doctor' && (
-          <DoctorDetails
-            nextTab={() => selectTab(navItems[1].value)}
-            isView={isView}
-          />
-        )}
-        {tab === 'password' && <TabPassword isView={isView} />}
-        {tab === 'emergency' && <TabEmergencyContact isView={isView} />}
-        {tab === 'billing' && <TabBillingAppointments isView={isView} />}
-        {tab === 'configuration' && <TabConfiguration isView={isView} />}
-        {tab === 'calendar' && <TabCalendar isView={isView} />}
-        {tab === 'settings' && <TabSettings isView={isView} />}
+        {tab === 'doctor' && <TabTreatment />}
+        {tab === 'settings' && <TabSpecialist />}
       </div>
     </>
   );

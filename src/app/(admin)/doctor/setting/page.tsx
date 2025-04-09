@@ -1,4 +1,4 @@
-import SettingDoctor from '@/app/shared/doctor/create-edit-doctor';
+import SettingDoctor from '@/app/shared/doctor/setting';
 
 export default function Page() {
   return <SettingDoctor />;

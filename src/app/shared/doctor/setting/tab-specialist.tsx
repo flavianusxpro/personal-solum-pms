@@ -19,7 +19,8 @@ import {
 } from '@/types/paramTypes';
 import toast from 'react-hot-toast';
 
-export default function TabSettings({ isView = false }: { isView?: boolean }) {
+export default function TabSpecialist({}: {}) {
+  const isView = false;
   const id = useParams().id as string;
 
   const { mutate: mutateUpdateMeeting, isPending: isPendingUpdateMeeting } =
