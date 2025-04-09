@@ -58,8 +58,20 @@ export const adminMenuItems = [
   },
   {
     name: 'Doctors',
-    href: routes.doctor.dashboard,
     icon: <PiUserFocus />,
+    href: routes.doctor.dashboard,
+    dropdownItems: [
+      {
+        name: 'Doctor List',
+        href: routes.doctor.dashboard,
+        icon: <PiUser />,
+      },
+      {
+        name: 'Setting',
+        href: routes.doctor.setting,
+        icon: <PiUser />,
+      },
+    ],
   },
   {
     name: 'Calendars',
@@ -72,9 +84,38 @@ export const adminMenuItems = [
     icon: <PiUser />,
   },
   {
-    name: 'Products',
-    href: routes.product.dashboard,
+    name: 'Management',
+    href: routes.management.dashboard,
     icon: <PiBoundingBox />,
+    dropdownItems: [
+      {
+        name: 'Products',
+        href: routes.product.dashboard,
+        icon: <PiBoundingBox />,
+      },
+    ],
+  },
+  {
+    name: 'Marketing',
+    href: routes.management.dashboard,
+    icon: <PiBoundingBox />,
+    dropdownItems: [
+      {
+        name: 'Coupon',
+        href: routes.product.dashboard,
+        icon: <PiBoundingBox />,
+      },
+      {
+        name: 'Email Marketing',
+        href: routes.product.dashboard,
+        icon: <PiBoundingBox />,
+      },
+      {
+        name: 'Sms Marketing',
+        href: routes.product.dashboard,
+        icon: <PiBoundingBox />,
+      },
+    ],
   },
   {
     name: 'Settings',
