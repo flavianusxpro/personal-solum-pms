@@ -4,12 +4,13 @@ import { useState } from 'react';
 import { Button, Text, Input, Password, Flex } from 'rizzui';
 import { SubmitHandler } from 'react-hook-form';
 import { Form } from '@core/ui/form';
-import { resetPasswordSchema } from '@/validators/reset-password.schema';
 import {
   changePasswordSchema,
   ChangePasswordSchema,
 } from '@/validators/change-password.schema';
 import FormGroup from '../../ui/form-group';
+import { useUpdatePassword } from '@/hooks/useProfile';
+import toast from 'react-hot-toast';
 
 const initialValues = {
   email: '',
@@ -20,8 +21,27 @@ const initialValues = {
 export default function TabPassword({ isView = false }: { isView?: boolean }) {
   const [reset, setReset] = useState({});
 
+  const { mutate } = useUpdatePassword();
+
   const onSubmit: SubmitHandler<ChangePasswordSchema> = (data) => {
-    console.log(data);
+    mutate(
+      {
+        oldPassword: data.currentPassword,
+        password: data.newPassword,
+      },
+      {
+        onSuccess: () => {
+          toast.success('Password updated successfully');
+          setReset(initialValues);
+        },
+        onError: (error: any) => {
+          console.error('Error updating password:', error);
+          toast.error(
+            'Failed to update password: ' + error.response?.data?.message
+          );
+        },
+      }
+    );
     setReset(initialValues);
   };
 
@@ -38,61 +58,63 @@ export default function TabPassword({ isView = false }: { isView?: boolean }) {
         }}
         className="pt-1.5"
       >
-        {({ register, formState: { errors } }) => (
-          <div className="mt-4">
-            <div className="border-y border-dashed border-muted py-10">
-              <FormGroup title="Current Password" isLabel>
-                <Password
-                  placeholder="Enter your current password"
-                  size="lg"
-                  className="[&>label>span]:font-medium"
-                  inputClassName="text-sm"
-                  {...register('currentPassword')}
-                  error={errors.currentPassword?.message}
-                  disabled={isView}
-                />
-              </FormGroup>
-            </div>
-            <div className="border-b border-dashed border-muted py-10">
-              <FormGroup title="New Password" isLabel>
-                <Password
-                  placeholder="Enter your new password"
-                  size="lg"
-                  className="[&>label>span]:font-medium"
-                  inputClassName="text-sm"
-                  {...register('newPassword')}
-                  error={errors.newPassword?.message}
-                  disabled={isView}
-                />
-              </FormGroup>
-            </div>
-            <div className="border-b border-dashed border-muted py-10">
-              <FormGroup title="Confirm New Password" isLabel>
-                <Password
-                  placeholder="Enter confirm new password"
-                  size="lg"
-                  className="[&>label>span]:font-medium"
-                  inputClassName="text-sm"
-                  {...register('confirmPassword')}
-                  error={errors.confirmPassword?.message}
-                  disabled={isView}
-                />
-              </FormGroup>
-            </div>
-            <div className="w-full">
-              <Flex gap="3" justify="end" className="mt-6">
-                <Button className="mt-2" variant="outline">
-                  Cancel
-                </Button>
-                {!isView && (
-                  <Button className="mt-2" type="submit">
-                    Reset Password
+        {({ register, formState: { errors } }) => {
+          return (
+            <div className="mt-4">
+              <div className="border-y border-dashed border-muted py-10">
+                <FormGroup title="Current Password" isLabel>
+                  <Password
+                    placeholder="Enter your current password"
+                    size="lg"
+                    className="[&>label>span]:font-medium"
+                    inputClassName="text-sm"
+                    {...register('currentPassword')}
+                    error={errors.currentPassword?.message}
+                    disabled={isView}
+                  />
+                </FormGroup>
+              </div>
+              <div className="border-b border-dashed border-muted py-10">
+                <FormGroup title="New Password" isLabel>
+                  <Password
+                    placeholder="Enter your new password"
+                    size="lg"
+                    className="[&>label>span]:font-medium"
+                    inputClassName="text-sm"
+                    {...register('newPassword')}
+                    error={errors.newPassword?.message}
+                    disabled={isView}
+                  />
+                </FormGroup>
+              </div>
+              <div className="border-b border-dashed border-muted py-10">
+                <FormGroup title="Confirm New Password" isLabel>
+                  <Password
+                    placeholder="Enter confirm new password"
+                    size="lg"
+                    className="[&>label>span]:font-medium"
+                    inputClassName="text-sm"
+                    {...register('confirmPassword')}
+                    error={errors.confirmPassword?.message}
+                    disabled={isView}
+                  />
+                </FormGroup>
+              </div>
+              <div className="w-full">
+                <Flex gap="3" justify="end" className="mt-6">
+                  <Button className="mt-2" variant="outline">
+                    Cancel
                   </Button>
-                )}
-              </Flex>
+                  {!isView && (
+                    <Button className="mt-2" type="submit">
+                      Reset Password
+                    </Button>
+                  )}
+                </Flex>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        }}
       </Form>
 
       <div className="mx-auto mt-10 w-full max-w-screen-2xl">

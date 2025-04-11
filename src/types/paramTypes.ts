@@ -119,3 +119,8 @@ export interface IParamGetPatientProblem {
 export interface IParamGetPatientTypes {
   search: string;
 }
+
+export interface IPayloadUpdatePassword {
+  oldPassword: string;
+  password: string;
+}

@@ -125,6 +125,7 @@ export default function PatientDetails({
           first_name: dataPatient?.first_name ?? '',
           last_name: dataPatient?.last_name ?? '',
           email: dataPatient?.email ?? '',
+          gender: dataPatient?.gender ?? '',
           mobile_number: dataPatient?.mobile_number ?? '',
           date_of_birth: dataPatient?.date_of_birth ?? '',
           medicare_card: dataPatient?.medicare_card_number ?? '',
