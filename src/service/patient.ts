@@ -16,7 +16,7 @@ export async function getPatientList(params: IParamGetAllPatient) {
   return await get<IGetAllPatientsResponse>('/admin/patient', {
     params,
   }).then((res) => {
-    return res.data;
+    return res;
   });
 }
 

@@ -46,10 +46,11 @@ const filterState = {
 
 export default function PatientTable({ className }: { className?: string }) {
   const [pageSize, setPageSize] = useState(10);
+  const [page, setPage] = useState(1);
   const [filterStateValue, setFilterStateValue] = useState(filterState);
 
   const { data, isLoading: isLoadingGetAllPatients } = useGetAllPatients({
-    page: 1,
+    page,
     perPage: pageSize,
   });
 
@@ -97,12 +98,12 @@ export default function PatientTable({ className }: { className?: string }) {
     handleSelectAll,
     handleDelete,
     // handleReset,
-  } = useTable(data ?? [], pageSize, filterStateValue);
+  } = useTable(data?.data ?? [], pageSize, filterStateValue);
 
   const columns = React.useMemo(
     () =>
       getColumns({
-        data: data ?? [],
+        data: data?.data ?? [],
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -143,9 +144,9 @@ export default function PatientTable({ className }: { className?: string }) {
         paginatorOptions={{
           pageSize,
           setPageSize,
-          total: totalItems,
-          current: currentPage,
-          onChange: (page: number) => handlePaginate(page),
+          total: data?.count,
+          current: page,
+          onChange: (page: number) => setPage(page),
         }}
         filterOptions={{
           searchTerm,

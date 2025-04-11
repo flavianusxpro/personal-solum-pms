@@ -16,10 +16,11 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 export function useGetAllPatients(params: IParamGetAllPatient) {
   return useQuery({
-    queryKey: ['patients'],
+    queryKey: ['patients', params],
     queryFn: async () => {
       return await getPatientList(params);
     },
+    enabled: !!params,
   });
 }
 
