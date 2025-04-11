@@ -4,7 +4,8 @@ import { messages } from '@/config/messages';
 export const fileSchema = z.object({
   name: z.string(),
   url: z.string(),
-  size: z.number(),
+  size: z.number().optional(),
+  type: z.string().optional(),
 });
 
 export type FileSchema = z.infer<typeof fileSchema>;

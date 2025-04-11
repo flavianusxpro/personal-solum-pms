@@ -10,7 +10,15 @@ export const requirementDoctorSchema = z.object({
     .array(
       z.object({
         file: fileSchema,
-        expirationDate: z.string(),
+        expiryDate: z.string(),
+      })
+    )
+    .optional(),
+  asic: z
+    .array(
+      z.object({
+        file: fileSchema,
+        expiryDate: z.string(),
       })
     )
     .optional(),

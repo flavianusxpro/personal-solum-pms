@@ -25,6 +25,7 @@ import { useGetDoctorById, useUpdateDoctor } from '@/hooks/useDoctor';
 import dynamic from 'next/dynamic';
 import QuillLoader from '@/core/components/loader/quill-loader';
 import SelectLoader from '@/core/components/loader/select-loader';
+import Divider from '@/app/shared/ui/divider';
 
 const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
   ssr: false,
@@ -117,8 +118,8 @@ export default function DoctorDetails({
 
         return (
           <>
-            <div className="grid grid-cols-1 gap-7 border-b border-dashed pb-10 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
-              <div className="flex flex-col gap-7">
+            <div className="grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
+              <div className="section-container">
                 <FormGroup
                   title="Personal Info"
                   className="grid-cols-12 gap-4"
@@ -187,7 +188,7 @@ export default function DoctorDetails({
                 </FormGroup>
               </div>
 
-              <div className="mb-10 flex flex-col gap-7">
+              <div className="section-container">
                 <FormGroup title="Address" className="grid-cols-12" />
                 <FormGroup title="Country" isLabel>
                   <Input
@@ -264,7 +265,9 @@ export default function DoctorDetails({
               </div>
             </div>
 
-            <div className="mb-10 mt-5 flex flex-col gap-7">
+            <Divider />
+
+            <div className="section-container">
               <FormGroup
                 title="Doctor Description"
                 description="Tell us a little about yourself and what makes you unique as a doctor"
@@ -282,6 +285,11 @@ export default function DoctorDetails({
                   />
                 )}
               />
+            </div>
+
+            <Divider />
+
+            <div className="section-container">
               <FormGroup title="Treatment Type" isLabel>
                 <Controller
                   name="treatmentType"
@@ -348,7 +356,10 @@ export default function DoctorDetails({
                   disabled={isView}
                 />
               </FormGroup>
+            </div>
 
+            <Divider />
+            <div className="section-container">
               <FormGroup title="Your Photo" isLabel>
                 <div className="flex flex-col gap-6 @container @3xl:col-span-2">
                   <AvatarUpload

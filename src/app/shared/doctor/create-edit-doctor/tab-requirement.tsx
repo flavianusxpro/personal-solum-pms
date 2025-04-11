@@ -12,20 +12,14 @@ import {
   RequirementDoctorTypes,
   requirementDoctorSchema,
 } from '@/validators/requirement-doctor.schema';
-import { Button, Flex, Grid, Input } from 'rizzui';
-import dynamic from 'next/dynamic';
-import SelectLoader from '@/core/components/loader/select-loader';
+import { ActionIcon, Button, Flex, Grid, Input, Text, Tooltip } from 'rizzui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import CardExpiry from '@/app/shared/ui/card-expiry';
 import UploadFile from '@/app/shared/ui/modal-button/modal-upload-file-button';
+import { PiPencil, PiTrashBold } from 'react-icons/pi';
+import Divider from '../../ui/divider';
+import FileItem from '../../ui/file/file-item';
 
-const MultySelect = dynamic(
-  () => import('rizzui').then((mod) => mod.MultiSelect),
-  {
-    ssr: false,
-    loading: () => <SelectLoader />,
-  }
-);
 export default function TabRequirement({
   nextTab,
   isView = false,
@@ -42,19 +36,63 @@ export default function TabRequirement({
     resolver: zodResolver(requirementDoctorSchema),
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields: fieldsCpr,
+    append: appendCpr,
+    remove: removeCpr,
+  } = useFieldArray({
     control,
     name: 'cpr',
+  });
+
+  const {
+    fields: fieldsAsic,
+    append: appendAsic,
+    remove: removeAsic,
+  } = useFieldArray({
+    control,
+    name: 'asic',
   });
 
   const onSubmit: SubmitHandler<RequirementDoctorTypes> = (data) => {
     console.log('🚀 ~ data:', data);
   };
 
+  const handleUploadAsic = async (files: File[], expiryDate?: string) => {
+    if (files.length > 0) {
+      const fileName = files[0].name;
+      const fileExpiryDate = expiryDate || 'No Expiry Date';
+      appendAsic({
+        file: {
+          name: fileName,
+          url: URL.createObjectURL(files[0]),
+          size: files[0].size,
+          type: files[0].type,
+        },
+        expiryDate: fileExpiryDate,
+      });
+    }
+  };
+  const handleUploadCpr = async (files: File[], expiryDate?: string) => {
+    if (files.length > 0) {
+      const fileName = files[0].name;
+      const fileExpiryDate = expiryDate || 'No Expiry Date';
+      appendCpr({
+        file: {
+          name: fileName,
+          url: URL.createObjectURL(files[0]),
+          size: files[0].size,
+          type: files[0].type,
+        },
+        expiryDate: fileExpiryDate,
+      });
+    }
+  };
+
   return (
     <form className="@container" onSubmit={handleSubmit(onSubmit)}>
-      <div className="grid grid-cols-1 gap-7 border-b border-dashed pb-10 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
-        <div className="flex flex-col gap-7">
+      <div className="grid grid-cols-1 gap-x-7 pb-10">
+        <div className="section-container">
           {/* Personal */}
           <FormGroup title="Personal" className="grid-cols-12 gap-4" />
           <FormGroup title="Driver Licence" className="grid-cols-12" isLabel>
@@ -68,28 +106,8 @@ export default function TabRequirement({
                   label="Driver Licence Number"
                   className="w-full"
                 />
-                <Controller
-                  name="driverLicenceNumber"
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <CardExpiry
-                      isMask
-                      formatType="custom"
-                      placeholder="MM/YY"
-                      mask={['M', 'M', 'Y', 'Y']}
-                      allowEmptyFormatting
-                      customInput={Input as React.ComponentType<unknown>}
-                      onChange={onChange}
-                      {...{
-                        label: 'Expiry Date',
-                        variant: 'outline',
-                        error: errors?.driverLicenceNumber?.message,
-                      }}
-                    />
-                  )}
-                />
               </Flex>
-              <UploadFile />
+              <UploadFile size="sm" />
             </Grid>
           </FormGroup>
           <FormGroup title="Photo ID" className="grid-cols-12" isLabel>
@@ -124,7 +142,7 @@ export default function TabRequirement({
                   )}
                 />
               </Flex>
-              <UploadFile />
+              <UploadFile size="sm" />
             </Grid>
           </FormGroup>
           <FormGroup
@@ -133,92 +151,77 @@ export default function TabRequirement({
             isLabel
           >
             <Grid gap="2">
-              <Flex gap="2" className="col-span-12">
-                <Input
-                  placeholder="File Name"
-                  {...register('driverLicenceNumber')}
-                  className="w-full"
-                  error={errors.driverLicenceNumber?.message}
-                  disabled={isView}
-                  label="File Name"
-                />
-              </Flex>
-              <UploadFile />
+              {fieldsAsic.map((data, idx) => {
+                return (
+                  <FileItem
+                    key={idx}
+                    file={{
+                      ...data.file,
+                      expiryDate: data.expiryDate,
+                    }}
+                    onDelete={() => removeAsic(idx)}
+                    onEdit={() => {}}
+                  />
+                );
+              })}
+              <UploadFile
+                size="sm"
+                handleUpload={handleUploadAsic}
+                useFileName
+              />
             </Grid>
           </FormGroup>
           <FormGroup title="Police Check" className="grid-cols-12" isLabel>
             <Grid gap="2">
-              <Flex gap="2" className="col-span-12">
-                <Input
-                  placeholder="File Name"
-                  {...register('driverLicenceNumber')}
-                  error={errors.driverLicenceNumber?.message}
-                  disabled={isView}
-                  label="File Name"
-                  className="w-full"
-                />
-                <Controller
-                  name="driverLicenceNumber"
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <CardExpiry
-                      isMask
-                      formatType="custom"
-                      placeholder="MM/YY"
-                      mask={['M', 'M', 'Y', 'Y']}
-                      allowEmptyFormatting
-                      customInput={Input as React.ComponentType<unknown>}
-                      onChange={onChange}
-                      {...{
-                        label: 'Expiry Date',
-                        variant: 'outline',
-                        error: errors?.driverLicenceNumber?.message,
-                      }}
-                    />
-                  )}
-                />
-              </Flex>
-              <UploadFile />
+              {fieldsAsic.map((data, idx) => {
+                return (
+                  <FileItem
+                    key={idx}
+                    file={{
+                      ...data.file,
+                      expiryDate: data.expiryDate,
+                    }}
+                    onDelete={() => removeAsic(idx)}
+                    onEdit={() => {}}
+                  />
+                );
+              })}
+              <UploadFile
+                size="sm"
+                handleUpload={handleUploadAsic}
+                useFileName
+                useExpireDate
+              />
             </Grid>
           </FormGroup>
         </div>
 
+        <Divider className="col-span-full" />
+
         {/* Bussines & Insurance */}
-        <div className="flex w-full flex-col gap-7">
+        <div className="section-container">
           <FormGroup title="Bussines & Insurance" className="grid-cols-12" />
           <FormGroup title="Asic Document" className="grid-cols-12" isLabel>
             <Grid gap="2">
-              <Flex gap="2" className="col-span-12">
-                <Input
-                  placeholder="Asic Document"
-                  {...register('driverLicenceNumber')}
-                  error={errors.driverLicenceNumber?.message}
-                  disabled={isView}
-                  label="Asic Document "
-                  className="w-full"
-                />
-                <Controller
-                  name="driverLicenceNumber"
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <CardExpiry
-                      isMask
-                      formatType="custom"
-                      placeholder="MM/YY"
-                      mask={['M', 'M', 'Y', 'Y']}
-                      allowEmptyFormatting
-                      customInput={Input as React.ComponentType<unknown>}
-                      onChange={onChange}
-                      {...{
-                        label: 'Expiry Date',
-                        variant: 'outline',
-                        error: errors?.driverLicenceNumber?.message,
-                      }}
-                    />
-                  )}
-                />
-              </Flex>
-              <UploadFile />
+              {fieldsAsic.map((data, idx) => {
+                return (
+                  <FileItem
+                    key={idx}
+                    file={{
+                      ...data.file,
+                      expiryDate: data.expiryDate,
+                    }}
+                    onDelete={() => removeAsic(idx)}
+                    onEdit={() => {}}
+                  />
+                );
+              })}
+              <UploadFile
+                size="sm"
+                handleUpload={handleUploadAsic}
+                useExpireDate
+                useFileName
+              />
             </Grid>
           </FormGroup>
           <FormGroup
@@ -255,40 +258,31 @@ export default function TabRequirement({
             isLabel
           >
             <Grid gap="2">
-              <Flex gap="2" className="col-span-12">
-                <Input
-                  placeholder="File Name"
-                  {...register('driverLicenceNumber')}
-                  error={errors.driverLicenceNumber?.message}
-                  disabled={isView}
-                  label="File Name"
-                />
-                <Controller
-                  name="driverLicenceNumber"
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <CardExpiry
-                      isMask
-                      formatType="custom"
-                      placeholder="MM/YY"
-                      mask={['M', 'M', 'Y', 'Y']}
-                      allowEmptyFormatting
-                      customInput={Input as React.ComponentType<unknown>}
-                      onChange={onChange}
-                      {...{
-                        label: 'Expiry Date',
-                        variant: 'outline',
-                        error: errors?.driverLicenceNumber?.message,
-                      }}
-                    />
-                  )}
-                />
-              </Flex>
-              <UploadFile useFileName={true} />
+              {fieldsAsic.map((data, idx) => {
+                return (
+                  <FileItem
+                    key={idx}
+                    file={{
+                      ...data.file,
+                      expiryDate: data.expiryDate,
+                    }}
+                    onDelete={() => removeAsic(idx)}
+                    onEdit={() => {}}
+                  />
+                );
+              })}
+              <UploadFile
+                size="sm"
+                handleUpload={handleUploadAsic}
+                useExpireDate
+              />
             </Grid>
           </FormGroup>
         </div>
-        <div className="flex w-full flex-col gap-7">
+
+        <Divider className="col-span-full" />
+
+        <div className="section-container">
           <FormGroup title="Regulation" className="grid-cols-12" />
           <FormGroup title="Aphra Registration" isLabel>
             <Input
@@ -300,29 +294,24 @@ export default function TabRequirement({
           </FormGroup>
           <FormGroup title="WWCC" className="grid-cols-12" isLabel>
             <Grid gap="2">
-              <Flex gap="2" className="col-span-12">
-                <Controller
-                  name="driverLicenceNumber"
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <CardExpiry
-                      isMask
-                      formatType="custom"
-                      placeholder="MM/YY"
-                      mask={['M', 'M', 'Y', 'Y']}
-                      allowEmptyFormatting
-                      customInput={Input as React.ComponentType<unknown>}
-                      onChange={onChange}
-                      {...{
-                        label: 'Expiry Date',
-                        variant: 'outline',
-                        error: errors?.driverLicenceNumber?.message,
-                      }}
-                    />
-                  )}
-                />
-              </Flex>
-              <UploadFile />
+              {fieldsAsic.map((data, idx) => {
+                return (
+                  <FileItem
+                    key={idx}
+                    file={{
+                      ...data.file,
+                      expiryDate: data.expiryDate,
+                    }}
+                    onDelete={() => removeAsic(idx)}
+                    onEdit={() => {}}
+                  />
+                );
+              })}
+              <UploadFile
+                size="sm"
+                handleUpload={handleUploadAsic}
+                useExpireDate
+              />
             </Grid>
           </FormGroup>
           <FormGroup
@@ -331,35 +320,24 @@ export default function TabRequirement({
             isLabel
           >
             <Grid gap="2">
-              <Flex gap="2" className="col-span-12">
-                {fields.map((data, idx) => {
-                  return (
-                    <div key={idx} className="w-full">
-                      <Controller
-                        name="driverLicenceNumber"
-                        control={control}
-                        render={({ field: { onChange, value } }) => (
-                          <CardExpiry
-                            isMask
-                            formatType="custom"
-                            placeholder="MM/YY"
-                            mask={['M', 'M', 'Y', 'Y']}
-                            allowEmptyFormatting
-                            customInput={Input as React.ComponentType<unknown>}
-                            onChange={onChange}
-                            {...{
-                              label: 'Expiry Date',
-                              variant: 'outline',
-                              error: errors?.driverLicenceNumber?.message,
-                            }}
-                          />
-                        )}
-                      />
-                    </div>
-                  );
-                })}
-              </Flex>
-              <UploadFile multiple />
+              {fieldsCpr.map((data, idx) => {
+                return (
+                  <FileItem
+                    key={idx}
+                    file={{
+                      ...data.file,
+                      expiryDate: data.expiryDate,
+                    }}
+                    onDelete={() => removeCpr(idx)}
+                    onEdit={() => {}}
+                  />
+                );
+              })}
+              <UploadFile
+                size="sm"
+                handleUpload={handleUploadCpr}
+                useExpireDate
+              />
             </Grid>
           </FormGroup>
           <FormGroup title="IHI Number">
@@ -370,6 +348,33 @@ export default function TabRequirement({
               disabled={isView}
             />
           </FormGroup>
+        </div>
+
+        <Divider className="col-span-full" />
+
+        <div className="section-container">
+          <FormGroup title="Contract" className="grid-cols-12" />
+          <Grid gap="2">
+            {fieldsAsic.map((data, idx) => {
+              return (
+                <FileItem
+                  key={idx}
+                  file={{
+                    ...data.file,
+                    expiryDate: data.expiryDate,
+                  }}
+                  onDelete={() => removeAsic(idx)}
+                  onEdit={() => {}}
+                />
+              );
+            })}
+            <UploadFile
+              size="sm"
+              handleUpload={handleUploadAsic}
+              useExpireDate
+              useFileName
+            />
+          </Grid>
         </div>
       </div>
       <FormFooter

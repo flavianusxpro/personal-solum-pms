@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { ChangeEvent, useRef, useState } from 'react';
 import Image from 'next/image';
 import {
   PiArrowLineDownBold,
@@ -19,6 +19,7 @@ import Upload from '@core/ui/upload';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import SimpleBar from '@core/ui/simplebar';
 import { toast } from 'react-hot-toast';
+import CardExpiry from './card-expiry';
 
 type AcceptedFiles = 'img' | 'pdf' | 'csv' | 'imgAndPdf' | 'all';
 
@@ -30,6 +31,7 @@ export default function FileUpload({
   accept = 'all',
   useFileName,
   handleUpload,
+  useExpireDate = false,
 }: {
   label?: string;
   fieldLabel?: string;
@@ -37,7 +39,8 @@ export default function FileUpload({
   multiple?: boolean;
   accept?: AcceptedFiles;
   useFileName?: boolean;
-  handleUpload?: (files: File[]) => Promise<void>;
+  useExpireDate?: boolean;
+  handleUpload?: (files: File[], expiryDate?: string) => Promise<void>;
 }) {
   const { closeModal } = useModal();
 
@@ -64,6 +67,7 @@ export default function FileUpload({
         label={fieldLabel}
         btnLabel={btnLabel}
         useFileName={useFileName}
+        useExpireDate={useExpireDate}
       />
     </div>
   );
@@ -86,6 +90,7 @@ export const FileInput = ({
   accept = 'img',
   className,
   useFileName = false,
+  useExpireDate = false,
   handleUpload,
 }: {
   className?: string;
@@ -94,10 +99,12 @@ export const FileInput = ({
   btnLabel?: string;
   accept?: AcceptedFiles;
   useFileName?: boolean;
-  handleUpload?: (files: File[]) => Promise<void>;
+  useExpireDate?: boolean;
+  handleUpload?: (files: File[], expiryDate?: string) => Promise<void>;
 }) => {
   const { closeModal } = useModal();
   const [files, setFiles] = useState<Array<File>>([]);
+  const [expiryDate, setExpiryDate] = useState<string>();
   const imageRef = useRef<HTMLInputElement>(null);
 
   function handleFileDrop(event: React.ChangeEvent<HTMLInputElement>) {
@@ -119,10 +126,8 @@ export const FileInput = ({
   async function handleFileUpload() {
     if (files.length) {
       try {
-        console.log('uploaded files:', files);
+        await handleUpload?.(files, expiryDate);
         toast.success(<Text as="b">File successfully added</Text>);
-
-        await handleUpload?.(files);
         setTimeout(() => {
           closeModal();
         }, 200);
@@ -132,6 +137,11 @@ export const FileInput = ({
     } else {
       toast.error(<Text as="b">Please drop your file</Text>);
     }
+  }
+
+  function onChangeExpiryDate(value: ChangeEvent<HTMLInputElement>) {
+    setExpiryDate(value.target.value);
+    console.log('Expiry Date:', value.target.value);
   }
 
   return (
@@ -162,6 +172,7 @@ export const FileInput = ({
               >
                 {useFileName && (
                   <Input
+                    label="File Name"
                     value={file.name}
                     onChange={(e) => {
                       const updatedFiles = [...files];
@@ -175,6 +186,23 @@ export const FileInput = ({
                     }}
                     className="w-full"
                     placeholder="File name"
+                  />
+                )}
+                {useExpireDate && (
+                  <CardExpiry
+                    isMask
+                    formatType="custom"
+                    placeholder="MM/YY"
+                    mask={['M', 'M', 'Y', 'Y']}
+                    allowEmptyFormatting
+                    customInput={Input as React.ComponentType<unknown>}
+                    onChange={onChangeExpiryDate}
+                    value={expiryDate}
+                    {...{
+                      label: 'Expiry Date',
+                      variant: 'outline',
+                      required: true,
+                    }}
                   />
                 )}
                 <div className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border border-muted bg-gray-50 object-cover px-2 py-1.5 dark:bg-transparent">

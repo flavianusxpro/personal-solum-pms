@@ -2,17 +2,21 @@
 
 import { PiArrowLineDownBold } from 'react-icons/pi';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import { Button } from 'rizzui';
+import { Button, ButtonProps } from 'rizzui';
 
-type ExportButtonProps = {
+type ExportButtonProps = ButtonProps & {
   modalView: React.ReactNode;
 };
 
-export default function UploadButton({ modalView }: ExportButtonProps) {
+export default function UploadButton({
+  modalView,
+  ...rest
+}: ExportButtonProps) {
   const { openModal } = useModal();
   return (
     <Button
-      className="mt-4 w-full @lg:mt-0 @lg:w-auto"
+      {...rest}
+      className="mt-4"
       onClick={() =>
         openModal({
           view: modalView,

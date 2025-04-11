@@ -1,5 +1,12 @@
 import React, { ComponentType } from 'react';
-import { Select, SelectOption, SelectProps, Text } from 'rizzui';
+import { SelectOption, SelectProps, Text } from 'rizzui';
+import SelectLoader from '../components/loader/select-loader';
+import dynamic from 'next/dynamic';
+
+const Select = dynamic(() => import('rizzui').then((mod) => mod.Select), {
+  ssr: false,
+  loading: () => <SelectLoader />,
+});
 
 const CSelect: ComponentType<SelectProps<SelectOption>> = ({
   options,
