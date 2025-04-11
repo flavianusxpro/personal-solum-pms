@@ -16,7 +16,8 @@ import { Button, Flex, Grid, Input } from 'rizzui';
 import dynamic from 'next/dynamic';
 import SelectLoader from '@/core/components/loader/select-loader';
 import { zodResolver } from '@hookform/resolvers/zod';
-import CardExpiry from '../../ui/card-expiry';
+import CardExpiry from '@/app/shared/ui/card-expiry';
+import UploadFile from '@/app/shared/ui/modal-button/modal-upload-file-button';
 
 const MultySelect = dynamic(
   () => import('rizzui').then((mod) => mod.MultiSelect),
@@ -41,6 +42,11 @@ export default function TabRequirement({
     resolver: zodResolver(requirementDoctorSchema),
   });
 
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'cpr',
+  });
+
   const onSubmit: SubmitHandler<RequirementDoctorTypes> = (data) => {
     console.log('🚀 ~ data:', data);
   };
@@ -60,6 +66,7 @@ export default function TabRequirement({
                   error={errors.driverLicenceNumber?.message}
                   disabled={isView}
                   label="Driver Licence Number"
+                  className="w-full"
                 />
                 <Controller
                   name="driverLicenceNumber"
@@ -82,7 +89,7 @@ export default function TabRequirement({
                   )}
                 />
               </Flex>
-              <Button>Upload</Button>
+              <UploadFile />
             </Grid>
           </FormGroup>
           <FormGroup title="Photo ID" className="grid-cols-12" isLabel>
@@ -94,6 +101,7 @@ export default function TabRequirement({
                   error={errors.driverLicenceNumber?.message}
                   disabled={isView}
                   label="ID Number"
+                  className="w-full"
                 />
                 <Controller
                   name="driverLicenceNumber"
@@ -116,7 +124,7 @@ export default function TabRequirement({
                   )}
                 />
               </Flex>
-              <Button>Upload</Button>
+              <UploadFile />
             </Grid>
           </FormGroup>
           <FormGroup
@@ -129,12 +137,13 @@ export default function TabRequirement({
                 <Input
                   placeholder="File Name"
                   {...register('driverLicenceNumber')}
+                  className="w-full"
                   error={errors.driverLicenceNumber?.message}
                   disabled={isView}
                   label="File Name"
                 />
               </Flex>
-              <Button>Upload</Button>
+              <UploadFile />
             </Grid>
           </FormGroup>
           <FormGroup title="Police Check" className="grid-cols-12" isLabel>
@@ -146,6 +155,7 @@ export default function TabRequirement({
                   error={errors.driverLicenceNumber?.message}
                   disabled={isView}
                   label="File Name"
+                  className="w-full"
                 />
                 <Controller
                   name="driverLicenceNumber"
@@ -168,7 +178,7 @@ export default function TabRequirement({
                   )}
                 />
               </Flex>
-              <Button>Upload</Button>
+              <UploadFile />
             </Grid>
           </FormGroup>
         </div>
@@ -185,6 +195,7 @@ export default function TabRequirement({
                   error={errors.driverLicenceNumber?.message}
                   disabled={isView}
                   label="Asic Document "
+                  className="w-full"
                 />
                 <Controller
                   name="driverLicenceNumber"
@@ -207,7 +218,7 @@ export default function TabRequirement({
                   )}
                 />
               </Flex>
-              <Button>Upload</Button>
+              <UploadFile />
             </Grid>
           </FormGroup>
           <FormGroup
@@ -273,8 +284,91 @@ export default function TabRequirement({
                   )}
                 />
               </Flex>
-              <Button>Upload</Button>
+              <UploadFile useFileName={true} />
             </Grid>
+          </FormGroup>
+        </div>
+        <div className="flex w-full flex-col gap-7">
+          <FormGroup title="Regulation" className="grid-cols-12" />
+          <FormGroup title="Aphra Registration" isLabel>
+            <Input
+              placeholder="Aphra Registration"
+              {...register('driverLicenceNumber')}
+              error={errors.driverLicenceNumber?.message}
+              disabled={isView}
+            />
+          </FormGroup>
+          <FormGroup title="WWCC" className="grid-cols-12" isLabel>
+            <Grid gap="2">
+              <Flex gap="2" className="col-span-12">
+                <Controller
+                  name="driverLicenceNumber"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <CardExpiry
+                      isMask
+                      formatType="custom"
+                      placeholder="MM/YY"
+                      mask={['M', 'M', 'Y', 'Y']}
+                      allowEmptyFormatting
+                      customInput={Input as React.ComponentType<unknown>}
+                      onChange={onChange}
+                      {...{
+                        label: 'Expiry Date',
+                        variant: 'outline',
+                        error: errors?.driverLicenceNumber?.message,
+                      }}
+                    />
+                  )}
+                />
+              </Flex>
+              <UploadFile />
+            </Grid>
+          </FormGroup>
+          <FormGroup
+            title="CPR/BLS/ALS Certificate"
+            className="grid-cols-12"
+            isLabel
+          >
+            <Grid gap="2">
+              <Flex gap="2" className="col-span-12">
+                {fields.map((data, idx) => {
+                  return (
+                    <div key={idx} className="w-full">
+                      <Controller
+                        name="driverLicenceNumber"
+                        control={control}
+                        render={({ field: { onChange, value } }) => (
+                          <CardExpiry
+                            isMask
+                            formatType="custom"
+                            placeholder="MM/YY"
+                            mask={['M', 'M', 'Y', 'Y']}
+                            allowEmptyFormatting
+                            customInput={Input as React.ComponentType<unknown>}
+                            onChange={onChange}
+                            {...{
+                              label: 'Expiry Date',
+                              variant: 'outline',
+                              error: errors?.driverLicenceNumber?.message,
+                            }}
+                          />
+                        )}
+                      />
+                    </div>
+                  );
+                })}
+              </Flex>
+              <UploadFile multiple />
+            </Grid>
+          </FormGroup>
+          <FormGroup title="IHI Number">
+            <Input
+              placeholder="IHI Number"
+              {...register('driverLicenceNumber')}
+              error={errors.driverLicenceNumber?.message}
+              disabled={isView}
+            />
           </FormGroup>
         </div>
       </div>

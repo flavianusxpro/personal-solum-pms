@@ -1,6 +1,6 @@
 import { usersData } from '@/data/users-data';
 import PageHeader from '@/app/shared/ui/page-header';
-import ModalButton from '@/app/shared/ui/modal-button';
+import ModalButton from '@/app/shared/ui/modal-button/modal-button';
 import RolesGrid from '@/app/shared/roles-permissions/roles-grid';
 import UsersTable from '@/app/shared/roles-permissions/users-table';
 import CreateRole from '@/app/shared/roles-permissions/create-role';

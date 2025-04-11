@@ -13,7 +13,7 @@ import {
   PiTrashBold,
   PiXBold,
 } from 'react-icons/pi';
-import { ActionIcon, Title, Text, Button } from 'rizzui';
+import { ActionIcon, Title, Text, Button, Input } from 'rizzui';
 import cn from '@core/utils/class-names';
 import Upload from '@core/ui/upload';
 import { useModal } from '@/app/shared/modal-views/use-modal';
@@ -26,14 +26,18 @@ export default function FileUpload({
   label = 'Upload Files',
   btnLabel = 'Upload',
   fieldLabel,
-  multiple = true,
+  multiple = false,
   accept = 'all',
+  useFileName,
+  handleUpload,
 }: {
   label?: string;
   fieldLabel?: string;
   btnLabel?: string;
   multiple?: boolean;
   accept?: AcceptedFiles;
+  useFileName?: boolean;
+  handleUpload?: (files: File[]) => Promise<void>;
 }) {
   const { closeModal } = useModal();
 
@@ -54,10 +58,12 @@ export default function FileUpload({
       </div>
 
       <FileInput
+        handleUpload={handleUpload}
         accept={accept}
         multiple={multiple}
         label={fieldLabel}
         btnLabel={btnLabel}
+        useFileName={useFileName}
       />
     </div>
   );
@@ -76,15 +82,19 @@ const fileType = {
 export const FileInput = ({
   label,
   btnLabel = 'Upload',
-  multiple = true,
+  multiple = false,
   accept = 'img',
   className,
+  useFileName = false,
+  handleUpload,
 }: {
   className?: string;
   label?: React.ReactNode;
   multiple?: boolean;
   btnLabel?: string;
   accept?: AcceptedFiles;
+  useFileName?: boolean;
+  handleUpload?: (files: File[]) => Promise<void>;
 }) => {
   const { closeModal } = useModal();
   const [files, setFiles] = useState<Array<File>>([]);
@@ -106,14 +116,19 @@ export const FileInput = ({
     (imageRef.current as HTMLInputElement).value = '';
   }
 
-  function handleFileUpload() {
+  async function handleFileUpload() {
     if (files.length) {
-      console.log('uploaded files:', files);
-      toast.success(<Text as="b">File successfully added</Text>);
+      try {
+        console.log('uploaded files:', files);
+        toast.success(<Text as="b">File successfully added</Text>);
 
-      setTimeout(() => {
-        closeModal();
-      }, 200);
+        await handleUpload?.(files);
+        setTimeout(() => {
+          closeModal();
+        }, 200);
+      } catch (error) {
+        toast.error(<Text as="b">File upload failed</Text>);
+      }
     } else {
       toast.error(<Text as="b">Please drop your file</Text>);
     }
@@ -139,9 +154,29 @@ export const FileInput = ({
           <div className="grid grid-cols-1 gap-4">
             {files?.map((file: File, index: number) => (
               <div
-                className="flex min-h-[58px] w-full items-center rounded-xl border border-muted px-3 dark:border-gray-300"
+                className={cn(
+                  'min-h-[58px flex w-full items-center gap-2 rounded-xl px-3 dark:border-gray-300'
+                  // !useFileName && 'border border-muted'
+                )}
                 key={file.name}
               >
+                {useFileName && (
+                  <Input
+                    value={file.name}
+                    onChange={(e) => {
+                      const updatedFiles = [...files];
+                      const updatedFile = new File(
+                        [updatedFiles[index]],
+                        e.target.value,
+                        { type: updatedFiles[index].type }
+                      );
+                      updatedFiles[index] = updatedFile;
+                      setFiles(updatedFiles);
+                    }}
+                    className="w-full"
+                    placeholder="File name"
+                  />
+                )}
                 <div className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border border-muted bg-gray-50 object-cover px-2 py-1.5 dark:bg-transparent">
                   {file.type.includes('image') ? (
                     <Image
@@ -156,7 +191,9 @@ export const FileInput = ({
                     <>{fileType[file.type]}</>
                   )}
                 </div>
-                <div className="truncate px-2.5">{file.name}</div>
+                {!useFileName && (
+                  <div className="truncate px-2.5">{file.name}</div>
+                )}
                 <ActionIcon
                   onClick={() => handleImageDelete(index)}
                   size="sm"
