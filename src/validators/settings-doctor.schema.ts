@@ -4,10 +4,18 @@ export const settingsDoctorSchema = z.object({
   microsoft_team_link: z.string().optional(),
   microsoft_team_id: z.string().optional(),
   microsoft_team_passcode: z.string().optional(),
+  microsoft_team_status: z.boolean().optional(),
+
   zoom_meeting_link: z.string().optional(),
   zoom_meeting_id: z.string().optional(),
   zoom_meeting_passcode: z.string().optional(),
-  skype: z.string().optional(),
+  zoom_meeting_status: z.boolean().optional(),
+
+  skype_link: z.string().optional(),
+  skype_meeting_id: z.string().optional(),
+  skype_meeting_passcode: z.string().optional(),
+  skype_meeting_status: z.boolean().optional(),
+
   f2f: z.boolean().optional(),
   teleHealth: z.boolean().optional(),
 
@@ -20,6 +28,10 @@ export const settingsDoctorSchema = z.object({
   cancellation_fee: z.number().optional(),
   initial_appointment_fee: z.number().optional(),
   follow_up_appointment_fee: z.number().optional(),
+
+  doctor_timezone: z.string().optional(),
+  initial_appointment_duration: z.number().optional(),
+  follow_up_appointment_duration: z.number().optional(),
 });
 
 export type SettingsDoctorSchema = z.infer<typeof settingsDoctorSchema>;

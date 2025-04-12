@@ -162,3 +162,15 @@ export const languageOption = [
   { label: 'Russian', value: 'ru' },
   { label: 'Italian', value: 'it' },
 ];
+
+export const timeZoneOption = [
+  { label: 'UTC-12:00', value: 'Etc/GMT+12' },
+  { label: 'UTC-11:00', value: 'Etc/GMT+11' },
+  { label: 'UTC-10:00', value: 'Etc/GMT+10' },
+  { label: 'UTC-09:00', value: 'Etc/GMT+9' },
+  { label: 'UTC-08:00', value: 'Etc/GMT+8' },
+  { label: 'UTC-07:00', value: 'Etc/GMT+7' },
+  { label: 'UTC-06:00', value: 'Etc/GMT+6' },
+  { label: 'UTC-05:00', value: 'Etc/GMT+5' },
+  { label: 'UTC-04:00', value: 'Etc/GMT+4' },
+];

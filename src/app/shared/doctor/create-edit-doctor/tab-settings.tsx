@@ -1,4 +1,4 @@
-import { Flex, Grid, Input, Switch } from 'rizzui';
+import { Accordion, cn, Flex, Grid, Input, Switch, Text, Title } from 'rizzui';
 import FormGroup from '../../ui/form-group';
 import { Form } from '@/core/ui/form';
 import { Controller, SubmitHandler } from 'react-hook-form';
@@ -18,6 +18,11 @@ import {
   IPayloadSettingMeetingDoctor,
 } from '@/types/paramTypes';
 import toast from 'react-hot-toast';
+import CSelect from '../../ui/select';
+import { timeZoneOption } from '@/config/constants';
+import { IoChevronDownCircleOutline } from 'react-icons/io5';
+import TeamsIcon from '@core/components/icons/teams';
+import Divider from '../../ui/divider';
 
 export default function TabSettings({ isView = false }: { isView?: boolean }) {
   const id = useParams().id as string;
@@ -37,9 +42,14 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
       zoom_meeting_link: data.zoom_meeting_link,
       zoom_meeting_id: data.zoom_meeting_id,
       zoom_meeting_passcode: data.zoom_meeting_passcode,
-      // skype: data.skype,
+      skype_meeting_link: data.skype_link,
+      skype_meeting_id: data.skype_meeting_id,
+      skype_meeting_passcode: data.skype_meeting_passcode,
       // f2f: data.f2f ? 1 : 0,
       // teleHealth: data.teleHealth ? 1 : 0,
+      initial_appointment_time: data.initial_appointment_duration,
+      follow_up_appointment_time: data.follow_up_appointment_duration,
+      timeZone: data.doctor_timezone,
     };
     const payloadSettingBilling: IPayloadSettingBillingDoctor = {
       doctor_id: id,
@@ -83,18 +93,20 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
           mode: 'onChange',
         }}
       >
-        {({
-          register,
-          control,
-          setValue,
-          getValues,
-          formState: { errors },
-        }) => {
+        {({ register, control, setValue, watch, formState: { errors } }) => {
           return (
             <>
-              <div className="mb-4 flex flex-col gap-7">
+              <div className="section-container mb-4">
                 <FormGroup title="Settings" />
-                <FormGroup title="Meeting Type">
+                <MeetingCard
+                  icon={<TeamsIcon />}
+                  meetName="Microsoft Teams"
+                  content="Microsoft Teams Meeting Link"
+                  switchValue={watch('microsoft_team_status')}
+                  onSwitchChange={(checked) => {
+                    setValue('microsoft_team_status', checked);
+                  }}
+                >
                   <Flex gap="4">
                     <Input
                       {...register('microsoft_team_link')}
@@ -122,7 +134,17 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                       disabled={isView}
                     />
                   </Flex>
+                </MeetingCard>
 
+                <MeetingCard
+                  icon={<IoChevronDownCircleOutline />}
+                  meetName="Zoom"
+                  content="Zoom Meeting Link"
+                  switchValue={watch('zoom_meeting_status')}
+                  onSwitchChange={(checked) => {
+                    setValue('zoom_meeting_status', checked);
+                  }}
+                >
                   <Flex gap="4">
                     <Input
                       {...register('zoom_meeting_link')}
@@ -150,38 +172,73 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                       disabled={isView}
                     />
                   </Flex>
-                  <Input
-                    {...register('skype')}
-                    label="Skype"
-                    placeholder="Skype"
-                    error={errors.skype?.message}
-                    className="w-full"
-                    type="url"
-                    disabled={isView}
-                  />
-                  <Switch
-                    label="Face to Face"
-                    {...register('f2f')}
-                    checked={getValues('f2f')}
-                    onChange={(e) => {
-                      setValue('f2f', e.target.checked);
-                    }}
-                    error={errors.f2f?.message}
-                    className="w-full"
-                    disabled={isView}
-                  />
-                  <Switch
-                    label="Tele Health"
-                    {...register('teleHealth')}
-                    checked={getValues('teleHealth')}
-                    onChange={(e) => {
-                      setValue('teleHealth', e.target.checked);
-                    }}
-                    error={errors.teleHealth?.message}
-                    className="w-full"
-                    disabled={isView}
-                  />
-                </FormGroup>
+                </MeetingCard>
+
+                <MeetingCard
+                  icon={<IoChevronDownCircleOutline />}
+                  meetName="Skype"
+                  content="Skype Meeting Link"
+                  switchValue={watch('skype_meeting_status')}
+                  onSwitchChange={(checked) => {
+                    setValue('skype_meeting_status', checked);
+                  }}
+                >
+                  <Flex gap="4">
+                    <Input
+                      {...register('skype_link')}
+                      label="Skype Link"
+                      placeholder="Skype Link"
+                      error={errors.skype_link?.message}
+                      className="w-full"
+                      type="url"
+                      disabled={isView}
+                    />
+                    <Input
+                      {...register('skype_meeting_id')}
+                      label="Skype ID"
+                      placeholder="Skype ID"
+                      error={errors.skype_meeting_id?.message}
+                      className="w-full"
+                      disabled={isView}
+                    />
+                    <Input
+                      {...register('skype_meeting_passcode')}
+                      label="Skype Passcode"
+                      placeholder="Skype Passcode"
+                      error={errors.skype_meeting_passcode?.message}
+                      className="w-full"
+                      disabled={isView}
+                    />
+                  </Flex>
+                </MeetingCard>
+
+                <MeetingCard
+                  icon={<IoChevronDownCircleOutline />}
+                  meetName="Face to Face"
+                  content="Face to Face"
+                  useConfigure={false}
+                  onSwitchChange={(checked) => {
+                    setValue('f2f', checked);
+                  }}
+                  switchValue={watch('f2f')}
+                >
+                  <></>
+                </MeetingCard>
+
+                <MeetingCard
+                  icon={<IoChevronDownCircleOutline />}
+                  meetName="Tele Health"
+                  content="Tele Health"
+                  useConfigure={false}
+                  onSwitchChange={(checked) => {
+                    setValue('teleHealth', checked);
+                  }}
+                  switchValue={watch('teleHealth')}
+                >
+                  <></>
+                </MeetingCard>
+
+                <Divider className="" />
 
                 <FormGroup title="Qualification">
                   <Input
@@ -217,6 +274,8 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                     disabled={isView}
                   />
                 </FormGroup>
+
+                <Divider className="" />
 
                 <FormGroup title="Cost Setup">
                   <Grid columns="2">
@@ -274,6 +333,65 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                     />
                   </Grid>
                 </FormGroup>
+
+                <Divider className="" />
+
+                <FormGroup title="Time">
+                  <Grid columns="2">
+                    <Controller
+                      name="doctor_timezone"
+                      control={control}
+                      render={({ field }) => (
+                        <CSelect
+                          {...field}
+                          label="Time Zone"
+                          placeholder="Select Time Zone"
+                          error={errors.doctor_timezone?.message}
+                          disabled={isView}
+                          options={timeZoneOption}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="initial_appointment_duration"
+                      control={control}
+                      render={({ field }) => (
+                        <CSelect
+                          {...field}
+                          label="Initial Appointment Duration"
+                          placeholder="Select Initial Appointment Duration"
+                          error={errors.initial_appointment_duration?.message}
+                          disabled={isView}
+                          options={[
+                            { label: '15 minutes', value: 15 },
+                            { label: '30 minutes', value: 30 },
+                            { label: '45 minutes', value: 45 },
+                            { label: '60 minutes', value: 60 },
+                          ]}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="follow_up_appointment_duration"
+                      control={control}
+                      render={({ field }) => (
+                        <CSelect
+                          {...field}
+                          label="Follow Up Appointment Duration"
+                          placeholder="Select Follow Up Appointment Duration"
+                          error={errors.follow_up_appointment_duration?.message}
+                          disabled={isView}
+                          options={[
+                            { label: '15 minutes', value: 15 },
+                            { label: '30 minutes', value: 30 },
+                            { label: '45 minutes', value: 45 },
+                            { label: '60 minutes', value: 60 },
+                          ]}
+                        />
+                      )}
+                    />
+                  </Grid>
+                </FormGroup>
               </div>
               <FormFooter
                 isLoading={isPendingUpdateMeeting || isPendingUpdateBillig}
@@ -284,6 +402,63 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
           );
         }}
       </Form>
+    </div>
+  );
+}
+
+interface IMeetingCard {
+  icon: React.ReactNode;
+  meetName: string;
+  content: string;
+  children: React.ReactNode;
+  useConfigure?: boolean;
+  onSwitchChange?: (checked: boolean) => void;
+  switchValue?: boolean;
+}
+function MeetingCard(props: IMeetingCard) {
+  const {
+    icon,
+    meetName,
+    content,
+    children,
+    useConfigure = true,
+    onSwitchChange,
+    switchValue = false,
+  } = props;
+
+  return (
+    <div className="col-span-2 flex gap-3 rounded-lg border border-muted p-6">
+      <div className="relative flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden">
+        {icon}
+      </div>
+      <div className="flex flex-grow flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <Title as="h3" className="mb-1 text-base font-semibold">
+            {meetName}
+          </Title>
+          <Text className="text-sm text-gray-500 transition-colors">
+            {content}
+          </Text>
+          <Accordion>
+            {useConfigure && (
+              <Accordion.Header className="text-left" type="button">
+                {({ open }) => (
+                  <span className="mt-3 inline-block w-auto flex-shrink-0 justify-start p-0 text-xs font-medium capitalize text-gray-900">
+                    Configure
+                  </span>
+                )}
+              </Accordion.Header>
+            )}
+
+            <Accordion.Body className="pt-7">{children}</Accordion.Body>
+          </Accordion>
+        </div>
+      </div>
+      <Switch
+        checked={switchValue}
+        onChange={(e) => onSwitchChange?.(e.target.checked)}
+        variant="flat"
+      />
     </div>
   );
 }

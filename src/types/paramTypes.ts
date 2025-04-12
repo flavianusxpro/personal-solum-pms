@@ -107,6 +107,12 @@ export interface IPayloadSettingMeetingDoctor {
   zoom_meeting_link?: string;
   zoom_meeting_id?: string;
   zoom_meeting_passcode?: string;
+  skype_meeting_link?: string;
+  skype_meeting_id?: string;
+  skype_meeting_passcode?: string;
+  initial_appointment_time?: number;
+  follow_up_appointment_time?: number;
+  timeZone?: string;
 }
 
 export interface IPayloadSettingBillingDoctor {
