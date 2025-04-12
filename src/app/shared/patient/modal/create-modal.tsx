@@ -237,11 +237,19 @@ export default function CreatePatienModal() {
                     className="flex-grow"
                   />
                 </FormGroup>
+                <FormGroup title="Unit Number" isLabel>
+                  <Input
+                    placeholder="Unit Number"
+                    {...register('unit_number')}
+                    error={errors.unit_number?.message}
+                    className="flex-grow"
+                  />
+                </FormGroup>
                 <FormGroup title="Street" isLabel>
                   <Input
                     placeholder="Street"
-                    {...register('street')}
-                    error={errors.street?.message}
+                    {...register('street_name')}
+                    error={errors.street_name?.message}
                     className="flex-grow"
                   />
                 </FormGroup>
@@ -277,6 +285,14 @@ export default function CreatePatienModal() {
                       className="flex-grow"
                     />
                   </Flex>
+                </FormGroup>
+                <FormGroup title="Description" isLabel>
+                  <Input
+                    placeholder="Description"
+                    {...register('description')}
+                    error={errors.description?.message}
+                    className="flex-grow"
+                  />
                 </FormGroup>
                 <FormGroup title="Password" isLabel>
                   <Input

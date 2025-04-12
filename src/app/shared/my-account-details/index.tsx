@@ -89,12 +89,6 @@ export default function MyAccountDetails() {
             {({ register, control, formState: { errors } }) => (
               <Grid columns="2" gap="2">
                 <Password
-                  label="Current Password"
-                  placeholder="Current Password"
-                  {...register('currentPassword')}
-                  error={errors.currentPassword?.message as string}
-                />
-                <Password
                   label="New Password"
                   placeholder="Enter your new password"
                   {...register('newPassword')}

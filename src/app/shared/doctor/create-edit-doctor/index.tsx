@@ -94,12 +94,7 @@ export default function CreateEditDoctor({
           </nav>
         </SimpleBar>
 
-        {tab === 'doctor' && (
-          <DoctorDetails
-            nextTab={() => selectTab(navItems[1].value)}
-            isView={isView}
-          />
-        )}
+        {tab === 'doctor' && <DoctorDetails isView={isView} />}
         {tab === 'password' && <TabPassword isView={isView} />}
         {tab === 'emergency' && <TabEmergencyContact isView={isView} />}
         {tab === 'billing' && <TabBillingAppointments isView={isView} />}

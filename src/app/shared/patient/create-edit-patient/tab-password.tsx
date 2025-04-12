@@ -11,28 +11,25 @@ import {
 import FormGroup from '../../ui/form-group';
 import { useUpdatePassword } from '@/hooks/useProfile';
 import toast from 'react-hot-toast';
-
-const initialValues = {
-  email: '',
-  password: '',
-  confirmPassword: '',
-};
+import { useGetPatientById } from '@/hooks/usePatient';
+import { useParams } from 'next/navigation';
 
 export default function TabPassword({ isView = false }: { isView?: boolean }) {
-  const [reset, setReset] = useState({});
+  const id = useParams<{ id: string }>().id;
+
+  const { data: dataPatient } = useGetPatientById(id);
 
   const { mutate } = useUpdatePassword();
 
   const onSubmit: SubmitHandler<ChangePasswordSchema> = (data) => {
     mutate(
       {
-        oldPassword: data.currentPassword,
+        oldPassword: '',
         password: data.newPassword,
       },
       {
         onSuccess: () => {
           toast.success('Password updated successfully');
-          setReset(initialValues);
         },
         onError: (error: any) => {
           console.error('Error updating password:', error);
@@ -42,7 +39,6 @@ export default function TabPassword({ isView = false }: { isView?: boolean }) {
         },
       }
     );
-    setReset(initialValues);
   };
 
   return (
@@ -50,11 +46,12 @@ export default function TabPassword({ isView = false }: { isView?: boolean }) {
       <FormGroup title="Password" className="" />
       <Form<ChangePasswordSchema>
         validationSchema={changePasswordSchema}
-        resetValues={reset}
         onSubmit={onSubmit}
         useFormProps={{
           mode: 'onChange',
-          defaultValues: initialValues,
+          defaultValues: {
+            email: dataPatient?.email,
+          },
         }}
         className="pt-1.5"
       >
@@ -62,15 +59,14 @@ export default function TabPassword({ isView = false }: { isView?: boolean }) {
           return (
             <div className="mt-4">
               <div className="border-y border-dashed border-muted py-10">
-                <FormGroup title="Current Password" isLabel>
+                <FormGroup title="Email" isLabel>
                   <Password
-                    placeholder="Enter your current password"
                     size="lg"
                     className="[&>label>span]:font-medium"
                     inputClassName="text-sm"
-                    {...register('currentPassword')}
-                    error={errors.currentPassword?.message}
-                    disabled={isView}
+                    {...register('email')}
+                    error={errors.email?.message}
+                    disabled={true}
                   />
                 </FormGroup>
               </div>

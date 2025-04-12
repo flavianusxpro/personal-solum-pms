@@ -14,7 +14,6 @@ import {
   PatientDetailsFormTypes,
 } from '@/validators/patient-details.schema';
 import {
-  useCreatePatient,
   useGetPatientById,
   useGetPatientProblem,
   useGetPatientTypes,
