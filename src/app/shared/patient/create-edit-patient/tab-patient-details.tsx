@@ -89,7 +89,7 @@ export default function PatientDetails({
       potition_on_card: data.position_of_card,
       patient_problem: data.patient_problem,
       patient_type: data.patient_type,
-      street_name: data.street,
+      street_name: data.street_name,
       state: data.state,
       suburb: data.suburb,
       postcode: data.post_code,
@@ -136,7 +136,9 @@ export default function PatientDetails({
           patient_type: dataPatient?.patient_type ?? 0,
           position_of_card: dataPatient?.potition_on_card ?? '',
           country: dataPatient?.country ?? '',
-          street: dataPatient?.street_name ?? '',
+          unit_number: dataPatient?.unit_number ?? '',
+          street_name: dataPatient?.street_name ?? '',
+          // description: dataPatient?.description ?? '',
           suburb: dataPatient?.suburb ?? '',
           state: dataPatient?.state ?? '',
           post_code: dataPatient?.postcode ?? '',
@@ -305,11 +307,20 @@ export default function PatientDetails({
                     className="flex-grow"
                   />
                 </FormGroup>
+                <FormGroup title="Unit Number" isLabel>
+                  <Input
+                    placeholder="Unit Number"
+                    {...register('unit_number')}
+                    error={errors.unit_number?.message}
+                    disabled={isView}
+                    className="flex-grow"
+                  />
+                </FormGroup>
                 <FormGroup title="Street" isLabel>
                   <Input
                     placeholder="Street"
-                    {...register('street')}
-                    error={errors.street?.message}
+                    {...register('street_name')}
+                    error={errors.street_name?.message}
                     disabled={isView}
                     className="flex-grow"
                   />
@@ -349,6 +360,15 @@ export default function PatientDetails({
                       className="flex-grow"
                     />
                   </Flex>
+                </FormGroup>
+                <FormGroup title="Description" isLabel>
+                  <Input
+                    placeholder="Description"
+                    {...register('description')}
+                    error={errors.description?.message}
+                    disabled={isView}
+                    className="flex-grow"
+                  />
                 </FormGroup>
               </div>
             </div>
