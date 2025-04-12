@@ -5,12 +5,14 @@ import {
   getPatientTypes,
   postCreatePatient,
   putCreatePatient,
+  putUpdateAssignDoctor,
 } from '@/service/patient';
 import {
   IParamGetAllPatient,
   IParamGetPatientProblem,
   IParamGetPatientTypes,
   IPayloadCreateEditPatient,
+  IPayloadUpdateAssignDoctor,
 } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -69,5 +71,13 @@ export function useGetPatientProblem(params: IParamGetPatientProblem) {
       return await getPatientProblem(params);
     },
     staleTime: 1000 * 60 * 10, // 10 minutes
+  });
+}
+
+export function useUpdateAssignDoctor() {
+  return useMutation({
+    mutationFn: async (payload: IPayloadUpdateAssignDoctor) => {
+      return await putUpdateAssignDoctor(payload);
+    },
   });
 }

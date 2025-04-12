@@ -4,7 +4,7 @@ import { fileSchema, validateEmail } from './common-rules';
 
 // form zod validation schema
 export const assignDoctorSchema = z.object({
-  doctor: z.array(z.string()).optional(),
+  doctor: z.array(z.string()).min(1, messages.doctorIsRequired),
   generalPractice: z.string().optional(),
 });
 

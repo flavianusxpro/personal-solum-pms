@@ -124,3 +124,8 @@ export interface IPayloadUpdatePassword {
   oldPassword: string;
   password: string;
 }
+
+export interface IPayloadUpdateAssignDoctor {
+  patient_id: string;
+  doctor_ids: number[];
+}

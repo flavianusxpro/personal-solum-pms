@@ -38,7 +38,7 @@ export default function EventForm({
 
   const { data: dataDoctor } = useGetAllDoctors({
     page: 1,
-    perPage: 100,
+    perPage: 50,
   });
 
   const {

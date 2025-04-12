@@ -7,13 +7,14 @@ import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
 import { Flex, Input, Loader, Text, Textarea } from 'rizzui';
-// import UploadZone from '@core/ui/file-upload/upload-zone';
-import CSelect from '@/core/ui/select';
-import { doctorsOption, relationshipOption } from '@/config/constants';
 import {
   assignDoctorSchema,
   AssignDoctorTypes,
 } from '@/validators/assign-doctor.schema';
+import { useGetPatientById, useUpdateAssignDoctor } from '@/hooks/usePatient';
+import { useParams } from 'next/navigation';
+import { useGetAllDoctors } from '@/hooks/useDoctor';
+import { useMemo } from 'react';
 
 const MultySelect = dynamic(
   () => import('rizzui').then((mod) => mod.MultiSelect),
@@ -32,11 +33,46 @@ export default function TabAssignDoctor({
 }: {
   isView?: boolean;
 }) {
+  const id = useParams().id as string;
+
+  const {
+    data: dataPatient,
+    refetch: refetchGetDataPatient,
+    isLoading: isLoadingGetDataPatient,
+  } = useGetPatientById(id);
+
+  const { data: dataDoctor } = useGetAllDoctors({
+    page: 1,
+    perPage: 50,
+  });
+
+  const { mutate } = useUpdateAssignDoctor();
+
+  const doctorOptions = useMemo(() => {
+    if (!dataDoctor) return [];
+
+    return dataDoctor?.map((doctor) => ({
+      label: doctor.first_name + ' ' + doctor.last_name,
+      value: doctor.id.toString(),
+    }));
+  }, [dataDoctor]);
+
   const onSubmit: SubmitHandler<AssignDoctorTypes> = (data) => {
-    toast.success(<Text as="b">Successfully added!</Text>);
-    console.log('Profile settings data ->', {
-      ...data,
-    });
+    const doctor_ids = data.doctor.map((doctor) => parseInt(doctor));
+    mutate(
+      {
+        patient_id: id,
+        doctor_ids,
+      },
+      {
+        onSuccess: (data) => {
+          toast.success(data.message);
+        },
+        onError: (error) => {
+          toast.error(error.message);
+        },
+      }
+    );
   };
 
   return (
@@ -45,7 +81,12 @@ export default function TabAssignDoctor({
       onSubmit={onSubmit}
       className="@container"
       useFormProps={{
-        mode: 'onChange',
+        mode: 'all',
+        defaultValues: {
+          doctor: dataPatient?.doctors
+            ? dataPatient?.doctors.map((doctor) => doctor.id.toString())
+            : [],
+        },
       }}
     >
       {({ register, control, watch, formState: { errors } }) => {
@@ -62,7 +103,7 @@ export default function TabAssignDoctor({
                       <MultySelect
                         {...field}
                         onClear={() => field.onChange([])}
-                        options={doctorsOption}
+                        options={doctorOptions}
                         clearable
                         placeholder="Select Doctor"
                         error={errors.doctor?.message}

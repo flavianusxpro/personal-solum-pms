@@ -198,6 +198,7 @@ export interface IGetPatientByIdResponse extends ApiResponse {
     timezone: string;
     created_at: string;
     updated_at: string;
+    doctors: IDoctor[];
   };
 }
 
@@ -415,4 +416,9 @@ export interface IGetPatientTypeResponse extends ApiResponseWithPagination {
     created_at: string;
     updated_at: string;
   }[];
+}
+
+export interface IUpdateDoctorAssignResponse extends ApiResponse {
+  success: boolean;
+  message: string;
 }

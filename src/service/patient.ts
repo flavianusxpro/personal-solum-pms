@@ -4,12 +4,14 @@ import {
   IGetPatientByIdResponse,
   IGetPatientProblemResponse,
   IGetPatientTypeResponse,
+  IUpdateDoctorAssignResponse,
 } from '@/types/ApiResponse';
 import {
   IParamGetAllPatient,
   IParamGetPatientProblem,
   IParamGetPatientTypes,
   IPayloadCreateEditPatient,
+  IPayloadUpdateAssignDoctor,
 } from '@/types/paramTypes';
 
 export async function getPatientList(params: IParamGetAllPatient) {
@@ -49,4 +51,13 @@ export async function getPatientProblem(params: IParamGetPatientProblem) {
   }).then((res) => {
     return res.data;
   });
+}
+
+export async function putUpdateAssignDoctor(
+  params: IPayloadUpdateAssignDoctor
+) {
+  return await put<IUpdateDoctorAssignResponse>(
+    `/admin/patient/${params.patient_id}/assign-doctor/`,
+    params
+  );
 }
