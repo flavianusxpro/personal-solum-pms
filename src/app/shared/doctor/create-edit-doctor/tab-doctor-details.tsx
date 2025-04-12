@@ -336,19 +336,12 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
                       onClear={() => field.onChange([])}
                       options={languageOption}
                       clearable
-                      placeholder="Select Doctor"
+                      placeholder="Select Language"
                       error={errors.language?.message}
                       className="flex-grow"
                       disabled={isView}
                     />
                   )}
-                />
-                <Input
-                  placeholder="Language"
-                  {...register('language')}
-                  error={errors.language?.message}
-                  className="flex-grow"
-                  disabled={isView}
                 />
               </FormGroup>
             </div>

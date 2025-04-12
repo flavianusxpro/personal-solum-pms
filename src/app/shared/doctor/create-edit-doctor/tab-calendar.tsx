@@ -1,40 +1,23 @@
 'use client';
 
-import { Button, Title, Tooltip } from 'rizzui';
 import cn from '@core/utils/class-names';
-import { PiPlusLight } from 'react-icons/pi';
-import Calendar from 'react-calendar';
-import { useState } from 'react';
+import { Calendar, dayjsLocalizer } from 'react-big-calendar';
+import dayjs from 'dayjs';
+import { useCallback, useMemo } from 'react';
+import { CalendarEvent } from '@/core/types';
+import { useModal } from '../../modal-views/use-modal';
+import DetailsEvents from '../../event-calendar/details-event';
+import EventForm from '../../event-calendar/event-form';
+import { useColorPresetName } from '@/layouts/settings/use-theme-color';
+import useEventCalendar from '@/core/hooks/use-event-calendar';
 
-function calculatePercentage(total: number, value: number) {
-  const percentage = (value / total) * 100;
-  return percentage.toFixed(2);
-}
+const localizer = dayjsLocalizer(dayjs);
 
-const data = [
-  {
-    title: 'Appointment',
-    value: 380,
-    total: 580,
-    color: '#2B7F75',
-  },
-  {
-    title: 'Meeting',
-    value: 523,
-    total: 923,
-    color: '#176B87',
-  },
-  {
-    title: 'Surgery',
-    value: 180,
-    total: 456,
-    color: '#FFD66B',
-  },
-];
+const calendarToolbarClassName =
+  '[&_.rbc-toolbar_.rbc-toolbar-label]:whitespace-nowrap [&_.rbc-toolbar_.rbc-toolbar-label]:my-2 [&_.rbc-toolbar]:flex [&_.rbc-toolbar]:flex-col [&_.rbc-toolbar]:items-center @[56rem]:[&_.rbc-toolbar]:flex-row [&_.rbc-btn-group_button:hover]:bg-gray-300 [&_.rbc-btn-group_button]:duration-200 [&_.rbc-btn-group_button.rbc-active:hover]:bg-gray-600 dark:[&_.rbc-btn-group_button.rbc-active:hover]:bg-gray-300 [&_.rbc-btn-group_button.rbc-active:hover]:text-gray-50 dark:[&_.rbc-btn-group_button.rbc-active:hover]:text-gray-900 [@media(max-width:375px)]:[&_.rbc-btn-group:last-child_button]:!px-2.5 [&_.rbc-toolbar_>_*:last-child_>_button:focus]:!bg-primary [&_.rbc-toolbar_>_*:last-child_>_button:focus]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button:focus]:!text-gray-900 [&_.rbc-toolbar_>_*:last-child_>_button:hover]:!text-gray-900 dark:[&_.rbc-toolbar_>_*:last-child_>_button:hover]:!bg-gray-300 [&_.rbc-toolbar_>_*:last-child_>_button:hover]:!bg-gray-300 [&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!bg-primary-dark [&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-900';
 
-type ValuePiece = Date | null;
-
-type Value = ValuePiece | [ValuePiece, ValuePiece];
+const rtcEventClassName =
+  '[&_.rbc-event]:!text-gray-0 dark:[&_.rbc-event]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:focus]:!text-gray-0';
 
 export default function TabCalendar({
   className,
@@ -43,94 +26,72 @@ export default function TabCalendar({
   className?: string;
   isView?: boolean;
 }) {
-  const [value, onChange] = useState<Value>(new Date());
-  return (
-    <div
-      className={cn(
-        'flex flex-col overflow-hidden rounded-lg border border-muted bg-gray-0 @lg:flex-row dark:bg-gray-50',
-        className
-      )}
-    >
-      <div className="grow p-5 @lg:w-3/5 lg:p-7">
-        <Title
-          as="h3"
-          className="pb-4 font-inter text-base font-semibold text-gray-800 sm:text-lg"
-        >
-          Schedule list
-        </Title>
-        <Calendar
-          onChange={onChange}
-          value={value}
-          prev2Label={false}
-          next2Label={false}
-          className="!w-full !border-0 !bg-transparent !font-inter !text-base"
-        />
-      </div>
-      <div className="flex flex-col justify-between bg-gray-50 px-5 py-7 @lg:w-2/5 dark:bg-gray-100">
-        <div className="mb-10 space-y-6 @lg:pt-2">
-          {data.map((item) => (
-            <Slider
-              key={item.title}
-              title={item.title}
-              total={item.total}
-              value={item.value}
-              color={item.color}
-            />
-          ))}
-        </div>
-        <Button
-          variant="outline"
-          rounded="lg"
-          className="fill-gray-900 text-gray-900"
-        >
-          <PiPlusLight className="me-1.5 h-4 w-4" /> Add New
-        </Button>
-      </div>
-    </div>
-  );
-}
+  const { openModal } = useModal();
+  const { colorPresetName } = useColorPresetName();
+  const { events } = useEventCalendar();
 
-function Slider({
-  title,
-  total,
-  value,
-  color,
-}: {
-  title: string;
-  total: number;
-  value: number;
-  color: string;
-}) {
-  const percentage = calculatePercentage(total, value);
+  const { views, scrollToTime, formats } = useMemo(
+    () => ({
+      views: {
+        month: true,
+        week: true,
+        day: true,
+        agenda: true,
+      },
+      scrollToTime: new Date(2023, 10, 27, 6),
+      formats: {
+        dateFormat: 'D',
+        weekdayFormat: (date: Date, culture: any, localizer: any) =>
+          localizer.format(date, 'ddd', culture),
+        dayFormat: (date: Date, culture: any, localizer: any) =>
+          localizer.format(date, 'ddd M/D', culture),
+        timeGutterFormat: (date: Date, culture: any, localizer: any) =>
+          localizer.format(date, 'hh A', culture),
+      },
+    }),
+    []
+  );
+
+  const handleSelectEvent = useCallback(
+    (event: CalendarEvent) => {
+      openModal({
+        view: <DetailsEvents event={event} />,
+        customSize: '500px',
+      });
+    },
+    [openModal]
+  );
+
+  const handleSelectSlot = useCallback(
+    ({ start, end }: { start: Date; end: Date }) => {
+      openModal({
+        view: <EventForm startDate={start} endDate={end} />,
+        customSize: '650px',
+      });
+    },
+    [openModal]
+  );
+
   return (
-    <div className="group">
-      <div className="mb-2.5 flex items-center justify-between">
-        <p className="font-medium text-gray-700">{title}</p>
-        <div className="flex items-center">
-          <span className="font-medium text-gray-700">{value}</span> &nbsp;
-          <span>/ {total}</span>
-        </div>
-      </div>
-      <div className="relative h-2.5 w-full rounded-lg bg-gray-100 dark:bg-gray-200">
-        <div
-          style={{ width: `${percentage}%`, backgroundColor: color }}
-          className="h-full rounded-lg"
-        />
-        <div className="absolute left-0 top-1/2 flex h-0 w-full -translate-y-1/2 items-center bg-black/50">
-          <div className="max-auto relative w-full">
-            <Tooltip
-              className="dark:bg-gray-200 dark:text-gray-900"
-              placement="top"
-              content={<span>{percentage}%</span>}
-            >
-              <span
-                style={{ left: `${percentage}%`, backgroundColor: color }}
-                className="absolute top-1/2 block h-5 w-5 -translate-x-1/2 -translate-y-1/2 scale-75 cursor-pointer rounded-full border-[5.5px] border-gray-0 opacity-0 shadow-md duration-100 group-hover:scale-100 group-hover:opacity-100 dark:border-muted"
-              />
-            </Tooltip>
-          </div>
-        </div>
-      </div>
+    <div className="@container">
+      <Calendar
+        localizer={localizer}
+        events={events}
+        views={views}
+        formats={formats}
+        startAccessor="start"
+        endAccessor="end"
+        dayLayoutAlgorithm="no-overlap"
+        onSelectEvent={handleSelectEvent}
+        onSelectSlot={handleSelectSlot}
+        selectable
+        scrollToTime={scrollToTime}
+        className={cn(
+          'h-[650px] md:h-[1000px]',
+          calendarToolbarClassName,
+          colorPresetName === 'black' && rtcEventClassName
+        )}
+      />
     </div>
   );
 }
