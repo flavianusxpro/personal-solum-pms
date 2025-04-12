@@ -19,23 +19,23 @@ type FileStatsType = {
 const filesStatData = [
   {
     id: 1,
-    title: 'Total Storage',
+    title: 'Concent Form',
     metric: '94 GB',
-    icon: <DriveIcon className="h-12 w-10" />,
+    icon: <DocIcon className="h-10 w-10" />,
     fill: '#4c5c75',
     percentage: 94,
   },
   {
     id: 2,
-    title: 'Images',
+    title: 'Support Document',
     metric: '26 GB',
-    icon: <ImageIcon className="h-10 w-10" />,
+    icon: <DocIcon className="h-10 w-10" />,
     fill: '#f3962d',
     percentage: 26,
   },
   {
     id: 3,
-    title: 'Documents',
+    title: 'Referal Document',
     metric: '38 GB',
     icon: <DocIcon className="h-10 w-10" />,
     fill: '#6d98ff',
@@ -43,19 +43,11 @@ const filesStatData = [
   },
   {
     id: 4,
-    title: 'Audios',
+    title: 'Other Document',
     metric: '54 GB',
-    icon: <MusicIcon className="h-10 w-10" />,
+    icon: <DocIcon className="h-10 w-10" />,
     fill: '#fbc13b',
     percentage: 54,
-  },
-  {
-    id: 5,
-    title: 'Videos',
-    metric: '67 GB',
-    icon: <VideoIcon className="h-10 w-10" />,
-    fill: '#e16244',
-    percentage: 67,
   },
 ];
 // @md:grid-cols-2 @2xl:grid-cols-3 @3xl:grid-cols-4 @7xl:grid-cols-5

@@ -9,6 +9,7 @@ import FileFilters from '@/app/shared/ui/file/file-filters';
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { allFilesData } from '@/data/all-files';
 import { getColumns } from './columns';
+import UploadFile from '@/app/shared/ui/modal-button/modal-upload-file-button';
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
 });
@@ -78,6 +79,7 @@ export default function ListTable({ className }: { className?: string }) {
         onSearch={handleSearch}
         searchTerm={searchTerm}
       />
+      <UploadFile />
       <ControlledTable
         isLoading={isLoading}
         showLoadingText={true}
