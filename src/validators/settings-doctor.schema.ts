@@ -30,8 +30,8 @@ export const settingsDoctorSchema = z.object({
   follow_up_appointment_fee: z.number().optional(),
 
   doctor_timezone: z.string().optional(),
-  initial_appointment_duration: z.number().optional(),
-  follow_up_appointment_duration: z.number().optional(),
+  initial_appointment_time: z.number().optional(),
+  follow_up_appointment_time: z.number().optional(),
 });
 
 export type SettingsDoctorSchema = z.infer<typeof settingsDoctorSchema>;

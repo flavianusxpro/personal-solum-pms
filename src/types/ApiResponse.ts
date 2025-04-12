@@ -313,28 +313,6 @@ interface Clinic {
   updated_at: string;
 }
 
-interface Setting {
-  id: number;
-  doctorId: number;
-  microsoft_team_link: null;
-  microsoft_team_id: null;
-  microsoft_team_passcode: null;
-  zoom_meeting_link: null;
-  zoom_meeting_id: null;
-  zoom_meeting_passcode: null;
-  fee: number;
-  cancellation_fee: number;
-  practice_open_schedule_days: null;
-  practice_open_schedule_clock: string;
-  practice_close_schedule_clock: string;
-  initial_appointment_time: number;
-  followup_appointment_time: number;
-  initial_appointment_fee: string;
-  followup_appointment_fee: string;
-  created_at: string;
-  updated_at: string;
-}
-
 interface Clinic {
   id: number;
   name: string;
