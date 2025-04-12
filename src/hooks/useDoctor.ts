@@ -32,6 +32,8 @@ export function useGetDoctorById(id: string) {
     queryFn: async () => {
       return await getDoctorById(id);
     },
+    staleTime: 1000 * 60 * 10, // 10 minutes
+    refetchOnWindowFocus: false,
     enabled: !!id,
   });
 }

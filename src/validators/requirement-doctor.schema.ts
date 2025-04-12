@@ -22,6 +22,7 @@ export const requirementDoctorSchema = z.object({
       })
     )
     .optional(),
+  contract: fileSchema.optional(),
 });
 
 export type RequirementDoctorTypes = z.infer<typeof requirementDoctorSchema>;

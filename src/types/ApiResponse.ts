@@ -240,13 +240,19 @@ export interface IGetDoctorByIdResponse extends ApiResponse {
     mobile_number: string;
     password: string;
     status: number;
-    address: string;
-    date_of_birth: string;
+    date_of_birth: null;
     gender: null;
-    url_photo: null;
+    photo: null;
     description: null;
-    medicare_card_number: string;
-    medicare_expired_date: string;
+    potition_on_card: null;
+    address_line_1: null;
+    address_line_2: null;
+    country: null;
+    unit_number: null;
+    street_name: null;
+    suburb: null;
+    state: null;
+    postcode: null;
     specialist: null;
     problem: null;
     emergency_first_name: null;
@@ -260,6 +266,51 @@ export interface IGetDoctorByIdResponse extends ApiResponse {
     clinics: Clinic[];
     setting: Setting;
   };
+}
+
+interface Setting {
+  id: number;
+  doctorId: number;
+  microsoft_team_link: null;
+  microsoft_team_id: null;
+  microsoft_team_passcode: null;
+  zoom_meeting_link: null;
+  zoom_meeting_id: null;
+  zoom_meeting_passcode: null;
+  skype_meeting_link: null;
+  skype_meeting_id: null;
+  skype_meeting_passcode: null;
+  f2f_meeting_link: null;
+  f2f_meeting_id: null;
+  f2f_meeting_passcode: null;
+  telehealth_meeting_link: null;
+  telehealth_meeting_id: null;
+  telehealth_meeting_passcode: null;
+  fee: number;
+  cancellation_fee: number;
+  practice_open_schedule_days: null;
+  practice_open_schedule_clock: string;
+  practice_close_schedule_clock: string;
+  initial_appointment_time: number;
+  followup_appointment_time: number;
+  initial_appointment_fee: string;
+  followup_appointment_fee: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Clinic {
+  id: number;
+  name: string;
+  email: string;
+  mobile_number: string;
+  address: string;
+  logo: string;
+  default: boolean;
+  status: number;
+  description: null;
+  created_at: string;
+  updated_at: string;
 }
 
 interface Setting {

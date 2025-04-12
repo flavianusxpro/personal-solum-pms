@@ -1,14 +1,11 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { Controller, SubmitHandler } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
 import { Flex, Grid, Input, Loader, Text, Textarea } from 'rizzui';
-// import UploadZone from '@core/ui/file-upload/upload-zone';
-import AvatarUpload from '@core/ui/file-upload/avatar-upload';
 import CSelect from '@/core/ui/select';
 import {
   emergencyContactSchema,
@@ -18,19 +15,6 @@ import { relationshipOption } from '@/config/constants';
 import { IPayloadCreateEditPatient } from '@/types/paramTypes';
 import { useParams } from 'next/navigation';
 import { useGetPatientById, useUpdatePatient } from '@/hooks/usePatient';
-
-const Select = dynamic(() => import('rizzui').then((mod) => mod.Select), {
-  ssr: false,
-  loading: () => (
-    <div className="grid h-10 place-content-center">
-      <Loader variant="spinner" />
-    </div>
-  ),
-});
-
-const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
-  ssr: false,
-});
 
 export default function TabEmergencyContact({
   isView = false,
@@ -100,7 +84,7 @@ export default function TabEmergencyContact({
             <Flex direction="col" className="" gap="7">
               <FormGroup title="Emergency Contact" className="" />
               <div className="mb-10 grid w-full grid-cols-2 gap-7">
-                <Grid>
+                <Grid gap="7">
                   <FormGroup title="First Name" isLabel>
                     <Input
                       placeholder="First Name"
@@ -133,7 +117,7 @@ export default function TabEmergencyContact({
                   </FormGroup>
                 </Grid>
 
-                <Flex direction="col" className="w-full" gap="4">
+                <Flex direction="col" className="w-full" gap="7">
                   <FormGroup title="Email" className="w-full" isLabel>
                     <Input
                       placeholder="Email"

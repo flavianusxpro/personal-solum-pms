@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { Flex, Input } from 'rizzui';
+import { Flex, Input, Loader } from 'rizzui';
 import AvatarUpload from '@core/ui/file-upload/avatar-upload';
 import CSelect from '@/core/ui/select';
 import {
@@ -40,16 +40,14 @@ const MultySelect = dynamic(
   }
 );
 
-export default function DoctorDetails({
-  nextTab,
-  isView,
-}: {
-  nextTab: () => void;
-  isView?: boolean;
-}) {
+export default function DoctorDetails({ isView }: { isView?: boolean }) {
   const id = useParams<{ id: string }>().id;
 
-  const { data: dataDoctor } = useGetDoctorById(id);
+  const {
+    data: dataDoctor,
+    refetch: refetchDataDoctor,
+    isLoading: isLoadingGetDataDoctor,
+  } = useGetDoctorById(id);
   const { mutate: mutateUpdatePatient } = useUpdateDoctor();
 
   const onSubmit: SubmitHandler<DoctorDetailsFormTypes> = (data) => {
@@ -60,7 +58,7 @@ export default function DoctorDetails({
       email: data.email,
       address: '',
       date_of_birth: data.date_of_birth as string,
-      gender: data.date_of_birth as string,
+      gender: data.gender as string,
       medicare_card_number: data.medicare_card as string,
       medicare_expired_date: dayjs(data.medicare_expiry).format(
         'DD MMMM YYYY'
@@ -74,6 +72,7 @@ export default function DoctorDetails({
       return mutateUpdatePatient(payload, {
         onSuccess: () => {
           toast.success('Patient updated successfully');
+          refetchDataDoctor();
         },
         onError: (error) => {
           console.log('🚀 ~ PatientDetails ~ error:', error);
@@ -85,6 +84,8 @@ export default function DoctorDetails({
     }
   };
 
+  if (isLoadingGetDataDoctor) return <Loader size="lg" />;
+
   return (
     <Form<DoctorDetailsFormTypes>
       validationSchema={doctorDetailsFormSchema}
@@ -92,30 +93,24 @@ export default function DoctorDetails({
       onSubmit={onSubmit}
       className="@container"
       useFormProps={{
-        mode: 'onChange',
+        mode: 'all',
+        defaultValues: {
+          first_name: dataDoctor?.first_name ?? '',
+          last_name: dataDoctor?.last_name ?? '',
+          email: dataDoctor?.email ?? '',
+          gender: dataDoctor?.gender ?? '',
+          mobile_number: dataDoctor?.mobile_number ?? '',
+          date_of_birth: dataDoctor?.date_of_birth ?? '',
+          country: dataDoctor?.country ?? '',
+          street_number: dataDoctor?.street_name ?? '',
+          suburb: dataDoctor?.suburb ?? '',
+          state: dataDoctor?.state ?? '',
+          post_code: dataDoctor?.postcode ?? '',
+          // avatar: dataPatient?.avatar ?? '',
+        },
       }}
     >
       {({ register, control, setValue, getValues, formState: { errors } }) => {
-        if (dataDoctor) {
-          setValue('first_name', dataDoctor.first_name);
-          setValue('last_name', dataDoctor.last_name);
-          setValue('email', dataDoctor.email);
-          setValue('mobile_number', dataDoctor.mobile_number);
-          setValue('date_of_birth', dataDoctor.date_of_birth);
-          // setValue('medicare_card', dataDoctor.medicare_card_number);
-          // setValue(
-          //   'medicare_expiry',
-          //   dayjs(dataDoctor.medicare_expired_date).format('YYYY-MM-DD')
-          // );
-          // setValue('position_of_card', dataDoctor.position_of_card);
-          // setValue('country', dataDoctor.country);
-          // setValue('street', dataDoctor.street);
-          // setValue('suburb', dataDoctor.suburb);
-          // setValue('state', dataDoctor.state);
-          // setValue('post_code', dataDoctor.post_code);
-          // setValue('avatar', dataDoctor.avatar);
-        }
-
         return (
           <>
             <div className="grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">

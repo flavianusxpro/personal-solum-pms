@@ -69,18 +69,23 @@ export interface IPayloadCreateEditPatient {
 
 export interface IPayloadCreateEditDoctor {
   doctor_id?: string;
-  first_name: string;
+  first_name?: string;
   password?: string;
-  last_name: string;
-  email: string;
-  mobile_number: string;
-  status: number;
-  address: string;
-  date_of_birth: string;
-  gender: string;
+  last_name?: string;
+  email?: string;
+  mobile_number?: string;
+  status?: number;
+  address?: string;
+  date_of_birth?: string;
+  gender?: string;
   medicare_card_number?: string;
   medicare_expired_date?: string;
-  timezone: string;
+  timezone?: string;
+  emergency_first_name?: string;
+  emergency_last_name?: string;
+  emergency_mobile_number?: string;
+  emergency_email?: string;
+  emergency_relationship?: string;
 }
 
 export interface IParamGetAllPatient extends IParamGetDataWithPagination {}

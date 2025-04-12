@@ -16,7 +16,7 @@ export default function UploadButton({
   return (
     <Button
       {...rest}
-      className="mt-4"
+      className="w-fit"
       onClick={() =>
         openModal({
           view: modalView,
