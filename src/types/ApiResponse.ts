@@ -451,3 +451,17 @@ export interface IUpdateDoctorAssignResponse extends ApiResponse {
   success: boolean;
   message: string;
 }
+
+export interface IGetListScheduleResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    doctorId: number;
+    title: string;
+    description: string;
+    start_date: string;
+    end_date: string;
+    break_times: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+}

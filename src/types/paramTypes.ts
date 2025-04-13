@@ -1,5 +1,4 @@
 import { RegisterSchema } from '@/validators/register.schema';
-
 interface IParamGetDataWithPagination {
   page: number;
   perPage: number;
@@ -139,4 +138,23 @@ export interface IPayloadUpdatePassword {
 export interface IPayloadUpdateAssignDoctor {
   patient_id: string;
   doctor_ids: number[];
+}
+
+export interface IParamGetListSchedule extends IParamGetDataWithPagination {
+  doctorId?: number;
+}
+
+export interface IPayloadPostCreateSchedule {
+  id?: string;
+  doctorId: number;
+  title: string;
+  description: string;
+  start_date: string;
+  end_date: string;
+  break_times?: Breaktime[];
+}
+
+interface Breaktime {
+  start_date: string;
+  end_date: string;
 }

@@ -151,15 +151,7 @@ export default function TabSpecialist({}: {}) {
                       disabled={isView}
                     />
                   </Flex>
-                  <Input
-                    {...register('skype')}
-                    label="Skype"
-                    placeholder="Skype"
-                    error={errors.skype?.message}
-                    className="w-full"
-                    type="url"
-                    disabled={isView}
-                  />
+
                   <Switch
                     label="Face to Face"
                     {...register('f2f')}

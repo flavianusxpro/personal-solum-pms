@@ -19,6 +19,12 @@ import { EventFormInput } from '@/validators/create-event.schema';
 import CSelect from '@/core/ui/select';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
 import { useMemo } from 'react';
+import {
+  useGetListSchedule,
+  usePostCreateSchedule,
+  usePutUpdateSchedule,
+} from '@/hooks/useSchedule';
+import dayjs from 'dayjs';
 
 interface CreateEventProps {
   startDate?: Date;
@@ -41,6 +47,16 @@ export default function EventForm({
     perPage: 50,
   });
 
+  const { refetch } = useGetListSchedule({
+    page: 1,
+    perPage: 100,
+  });
+
+  const { mutate: mutateCreateSchedule, isPending: isPendingCreateSchedule } =
+    usePostCreateSchedule();
+  const { mutate: mutateUpdateSchedule, isPending: isPendingUpdateSchedule } =
+    usePutUpdateSchedule();
+
   const {
     control,
     handleSubmit,
@@ -49,13 +65,13 @@ export default function EventForm({
     formState: { errors },
   } = useForm<EventFormInput>({
     defaultValues: {
-      title: event?.title ?? '',
-      description: event?.description ?? '',
-      location: event?.location ?? '',
-      startDate: startDate ?? event?.start,
-      endDate: endDate ?? event?.end,
-      breakTimes: event?.breakTimes ?? [],
-      doctor: event?.doctor ?? '',
+      title: isNewEvent ? '' : (event?.title ?? ''),
+      description: isNewEvent ? '' : (event?.description ?? ''),
+      location: isNewEvent ? '' : (event?.location ?? ''),
+      startDate: isNewEvent ? startDate : event?.start,
+      endDate: isNewEvent ? endDate : event?.end,
+      breakTimes: isNewEvent ? [] : (event?.breakTimes ?? []),
+      doctor: isNewEvent ? undefined : (event?.doctor ?? undefined),
     },
   });
 
@@ -74,7 +90,7 @@ export default function EventForm({
 
     return dataDoctor?.map((doctor) => ({
       label: doctor.first_name + ' ' + doctor.last_name,
-      value: doctor.id,
+      value: doctor.id.toString(),
     }));
   }, [dataDoctor]);
 
@@ -86,26 +102,59 @@ export default function EventForm({
     );
 
     if (isNewEvent) {
-      createEvent({
-        id: uniqueId(),
-        start: data.startDate ?? startDate,
-        end: data.endDate ?? endDate,
-        title: data.title,
-        description: data.description,
-        location: data.location,
-        breakTimes: data.breakTimes,
-        doctor: data.doctor,
-      });
+      mutateCreateSchedule(
+        {
+          title: data.title,
+          description: data.description ?? '',
+          start_date: dayjs(data.startDate).format('YYYY-MM-DD HH:mm'),
+          end_date: dayjs(data.endDate).format('YYYY-MM-DD HH:mm'),
+          doctorId: Number(data.doctor),
+          break_times: data.breakTimes?.map((date) => ({
+            start_date: dayjs(date.start).format('YYYY-MM-DD HH:mm'),
+            end_date: dayjs(date.end).format('YYYY-MM-DD HH:mm'),
+          })),
+        },
+        {
+          onSuccess: () => {
+            toast.success('Event Created Successfully');
+            refetch();
+            closeModal();
+          },
+          onError: (error: any) => {
+            toast.error(
+              error?.response?.data?.message ?? 'Something went wrong'
+            );
+          },
+        }
+      );
     } else {
-      updateEvent({
-        ...data,
-        id: event?.id,
-        start: data.startDate,
-        end: data.endDate,
-        breakTimes: data.breakTimes,
-      });
+      mutateUpdateSchedule(
+        {
+          id: event?.id,
+          title: data.title,
+          description: data.description ?? '',
+          start_date: dayjs(data.startDate).format('YYYY-MM-DD HH:mm'),
+          end_date: dayjs(data.endDate).format('YYYY-MM-DD HH:mm'),
+          doctorId: Number(data.doctor),
+          break_times: data.breakTimes?.map((date) => ({
+            start_date: dayjs(date.start).format('YYYY-MM-DD HH:mm'),
+            end_date: dayjs(date.end).format('YYYY-MM-DD HH:mm'),
+          })),
+        },
+        {
+          onSuccess: () => {
+            toast.success('Event Updated Successfully');
+            refetch();
+            closeModal();
+          },
+          onError: (error: any) => {
+            toast.error(
+              error?.response?.data?.message ?? 'Something went wrong'
+            );
+          },
+        }
+      );
     }
-    closeModal();
   };
 
   return (
@@ -159,14 +208,6 @@ export default function EventForm({
               searchable
             />
           )}
-        />
-
-        <Input
-          label="Event Location"
-          placeholder="Enter your location"
-          {...register('location')}
-          error={errors.location?.message}
-          className="col-span-full"
         />
         <Controller
           name="startDate"
@@ -269,7 +310,11 @@ export default function EventForm({
           >
             Cancel
           </Button>
-          <Button type="submit" className="hover:gray-700 w-full @xl:w-auto">
+          <Button
+            type="submit"
+            isLoading={isPendingUpdateSchedule || isPendingCreateSchedule}
+            className="hover:gray-700 w-full @xl:w-auto"
+          >
             Save
           </Button>
         </div>

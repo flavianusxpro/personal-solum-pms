@@ -12,6 +12,7 @@ import cn from '@core/utils/class-names';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import CSelect from '../ui/select';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
+import { useGetListSchedule } from '@/hooks/useSchedule';
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -22,16 +23,34 @@ const rtcEventClassName =
   '[&_.rbc-event]:!text-gray-0 dark:[&_.rbc-event]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:focus]:!text-gray-0';
 
 export default function EventCalendarView() {
-  const { events } = useEventCalendar();
   const { openModal } = useModal();
   const { colorPresetName } = useColorPresetName();
 
   const [selectDoctor, setSelectDoctor] = useState('');
+  const [perPage, setPerPage] = useState(10);
 
   const { data: dataDoctor } = useGetAllDoctors({
     page: 1,
     perPage: 100,
   });
+
+  const { data: dataSchedule } = useGetListSchedule({
+    page: 1,
+    perPage: 100,
+  });
+
+  const events: CalendarEvent[] = useMemo(() => {
+    if (!dataSchedule) return [];
+    return dataSchedule.map((schedule) => ({
+      id: schedule.id.toString(),
+      title: schedule.title,
+      start: new Date(schedule.start_date),
+      end: new Date(schedule.end_date),
+      allDay: false,
+      description: schedule.description,
+      doctor: schedule.doctorId.toString(),
+    }));
+  }, [dataSchedule]);
 
   const doctorOptions = useMemo(() => {
     if (!dataDoctor) return [];
