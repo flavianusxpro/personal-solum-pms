@@ -1,6 +1,5 @@
 import { Toaster } from 'react-hot-toast';
 import { getServerSession } from 'next-auth/next';
-import { QueryClient } from '@tanstack/react-query';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import AuthProvider, {
   ProtectedLayout,

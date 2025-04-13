@@ -9,13 +9,18 @@ import ExistingPatient from './existing-patient';
 import { ExistingPatientSchema } from '@/validators/existing-patient.schema';
 import { PiPlusBold, PiUserBold } from 'react-icons/pi';
 import { useState } from 'react';
+import { useAtom } from 'jotai';
+import bookAppointmentAtom from '@/store/book-appointment';
 
 export default function PatientSelection() {
   const { openModal } = useModal();
+  const [bookAppointmentValue] = useAtom(bookAppointmentAtom);
 
   const { data: dataProfile, isLoading: isLoadingProfile } = useProfile();
 
   const [showAddPatient, setShowAddPatient] = useState(false);
+
+  const isNewPatient = bookAppointmentValue.step2 === 'new patient';
 
   const onSubmitPatient = async () => {
     return openModal({
@@ -40,28 +45,30 @@ export default function PatientSelection() {
         below, or select &quot;Add Patient&quot; and fill in their details.
       </p>
 
-      <div className="mt-4 flex flex-col gap-4">
-        <Flex justify="between" align="center">
-          <Text className="text-lg font-semibold">Existing Patient</Text>
-        </Flex>
-        <AdvancedCheckbox onClick={onSubmitPatient} className="w-fit">
-          <Flex className="gap-2" align="center">
-            <PiUserBold className="h-4 w-4 text-gray-500" />
-            <Text>{`${dataProfile?.first_name} ${dataProfile?.last_name}`}</Text>
+      {!isNewPatient && (
+        <div className="mt-4 flex flex-col gap-4">
+          <Flex justify="between" align="center">
+            <Text className="text-lg font-semibold">Existing Patient</Text>
           </Flex>
-        </AdvancedCheckbox>
-        <Button
-          onClick={() => setShowAddPatient(true)}
-          className="flex w-fit items-center gap-2"
-          variant="flat"
-        >
-          <PiPlusBold className="h-4 w-4 text-gray-500" />
-          <Text>Add Patient</Text>
-        </Button>
-      </div>
+          <AdvancedCheckbox onClick={onSubmitPatient} className="w-fit">
+            <Flex className="gap-2" align="center">
+              <PiUserBold className="h-4 w-4 text-gray-500" />
+              <Text>{`${dataProfile?.first_name} ${dataProfile?.last_name}`}</Text>
+            </Flex>
+          </AdvancedCheckbox>
+          <Button
+            onClick={() => setShowAddPatient(true)}
+            className="flex w-fit items-center gap-2"
+            variant="flat"
+          >
+            <PiPlusBold className="h-4 w-4 text-gray-500" />
+            <Text>Add Patient</Text>
+          </Button>
+        </div>
+      )}
 
       <div className="p-6">
-        {!isLoadingProfile && showAddPatient && (
+        {!isLoadingProfile && showAddPatient && isNewPatient && (
           <PatientForm
             onSubmitPatient={onSubmitPatient}
             // dataProfile={dataProfile}
