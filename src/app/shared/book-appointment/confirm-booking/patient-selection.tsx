@@ -18,9 +18,9 @@ export default function PatientSelection() {
 
   const { data: dataProfile, isLoading: isLoadingProfile } = useProfile();
 
-  const [showAddPatient, setShowAddPatient] = useState(false);
-
-  const isNewPatient = bookAppointmentValue.step2 === 'new patient';
+  const [showAddPatient, setShowAddPatient] = useState(
+    bookAppointmentValue.step2 === 'new patient'
+  );
 
   const onSubmitPatient = async () => {
     return openModal({
@@ -45,7 +45,7 @@ export default function PatientSelection() {
         below, or select &quot;Add Patient&quot; and fill in their details.
       </p>
 
-      {!isNewPatient && (
+      {!showAddPatient && (
         <div className="mt-4 flex flex-col gap-4">
           <Flex justify="between" align="center">
             <Text className="text-lg font-semibold">Existing Patient</Text>
@@ -68,7 +68,7 @@ export default function PatientSelection() {
       )}
 
       <div className="p-6">
-        {!isLoadingProfile && showAddPatient && isNewPatient && (
+        {!isLoadingProfile && showAddPatient && showAddPatient && (
           <PatientForm
             onSubmitPatient={onSubmitPatient}
             // dataProfile={dataProfile}
