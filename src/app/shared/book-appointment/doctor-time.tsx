@@ -110,6 +110,7 @@ const DoctorScheduleList = ({
   const { openModal } = useModal();
   const [bookAppointmentValue, setBookAppointment] =
     useAtom(bookAppointmentAtom);
+
   const [currentOpen, setCurrentOpen] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [timeZone, setTimeZone] = useState(timeZoneOptions[0].value);
@@ -187,7 +188,7 @@ const DoctorScheduleList = ({
                     onClick={() => openDoctorDetailsModal(doctor)}
                     className="cursor-pointer text-lg font-bold hover:underline"
                   >
-                    {doctor.first_name} {doctor.last_name}
+                    dr. {doctor.first_name} {doctor.last_name}
                   </h3>
 
                   <p
@@ -263,6 +264,19 @@ function DoctorTime({
   const [startHours, startMinutes] = practices_open.split(':').map(Number);
   const [endHours, endMinutes] = practices_close.split(':').map(Number);
 
+  const appointmentType = useMemo(
+    () => bookAppointmentValue?.step3?.includes('Follow up'),
+    [bookAppointmentValue?.step3]
+  );
+
+  const interval = useMemo(
+    () =>
+      appointmentType
+        ? doctor.appointment_duration.followup
+        : doctor.appointment_duration.initial,
+    [appointmentType, doctor.appointment_duration]
+  );
+
   const bookedTimes: string[] = useMemo(() => {
     return (
       doctor.booked_times.find(
@@ -290,11 +304,11 @@ function DoctorTime({
         times.push(timeString);
       }
 
-      start.setMinutes(start.getMinutes() + 15);
+      start.setMinutes(start.getMinutes() + interval);
     }
 
     return times;
-  }, [startHours, startMinutes, endHours, endMinutes, bookedTimes]);
+  }, [startHours, startMinutes, endHours, endMinutes, bookedTimes, interval]);
 
   return (
     <div className="px-4 pb-4">

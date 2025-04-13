@@ -11,13 +11,5 @@ export default function StripeCheckout({
 }: {
   onSuccess: () => void;
 }) {
-  return (
-    <CardMinimal0 onSuccess={onSuccess} />
-    // <Elements
-    //   stripe={stripePromise}
-    //   options={{ mode: 'payment', amount: 10000, currency: 'aud' }}
-    // >
-    //   <StripeCheckoutForm amount={10000} />
-    // </Elements>
-  );
+  return <CardMinimal0 onSuccess={onSuccess} />;
 }

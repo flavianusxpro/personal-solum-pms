@@ -24,8 +24,6 @@ import {
 import bookAppointmentAtom from '@/store/book-appointment';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/navigation';
-import { routes } from '@/config/routes';
-import { step3Button } from '@/config/constants';
 
 function CheckoutForm({
   elements,
@@ -53,7 +51,7 @@ function CheckoutForm({
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     // Block native form submission.
-    const appointmentType = step3Button.includes('Follow up');
+    const appointmentType = bookAppointmentValue?.step3?.includes('Follow up');
     event.preventDefault();
 
     if (!stripe || !elements) {
