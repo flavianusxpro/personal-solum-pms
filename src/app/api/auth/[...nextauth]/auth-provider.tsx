@@ -20,7 +20,15 @@ export function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const whitelist = useMemo(() => [routes.signIn, routes.bookAppointment], []);
+  const whitelist = useMemo(
+    () => [
+      routes.signIn,
+      routes.bookAppointment,
+      routes.auth.signUp,
+      routes.auth.forgotPassword,
+    ],
+    []
+  );
 
   useEffect(() => {
     if (status === 'unauthenticated' && !whitelist.includes(pathname)) {

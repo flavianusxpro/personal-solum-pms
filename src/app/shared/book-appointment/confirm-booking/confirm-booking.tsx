@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Text } from 'rizzui';
+import { Button, Flex, Text } from 'rizzui';
 import { useModal } from '../../modal-views/use-modal';
 import { useSession } from 'next-auth/react';
 import StepBackButton from '../step-back-button';
@@ -36,10 +36,10 @@ const ConfirmBooking = ({ onPrevStep }: { onPrevStep: () => void }) => {
   return (
     <div className="flex min-h-full min-w-full flex-col items-center">
       <div className="w-full max-w-6xl rounded-lg bg-white p-6 shadow-lg">
-        <div className="relative mt-6 flex flex-col justify-center gap-4 text-center sm:flex-row sm:gap-0">
-          <div className="sm:absolute sm:left-5">
-            <StepBackButton backButton={onPrevStep} />
-          </div>
+        <Flex justify="center" className="">
+          <StepBackButton backButton={onPrevStep} />
+        </Flex>
+        <div className="relative mt-4 flex flex-col justify-center gap-4 text-center sm:flex-row sm:gap-0">
           <h2 className="text-2xl font-semibold">Confirm My Booking</h2>
         </div>
         <div className="sm:flex">

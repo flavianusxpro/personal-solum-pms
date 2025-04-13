@@ -15,6 +15,8 @@ export function useGetAllClinicsForPatient(
   return useQuery({
     queryKey: ['all-clinics-patient'],
     queryFn: async () => getAllClinicsForPatient(params),
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 10, // 10 minutes
   });
 }
 

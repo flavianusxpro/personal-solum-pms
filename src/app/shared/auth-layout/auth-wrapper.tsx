@@ -39,7 +39,7 @@ function AuthNavLink({
   );
 }
 
-export default function AuthWrapperFour({
+export default function AuthWrapper({
   children,
   title,
   isSocialLoginActive = false,
@@ -65,15 +65,15 @@ export default function AuthWrapperFour({
         >
           <div className="flex flex-col items-center">
             <Link href={'/'} className="mb-7 inline-block max-w-[64px] lg:mb-9">
-              <Logo className='w-[180px]' />
-            </Link >
+              <Logo className="w-[180px]" />
+            </Link>
             <Title
               as="h2"
               className="mb-7 text-center text-[28px] font-bold leading-snug md:text-3xl md:!leading-normal lg:mb-10 lg:text-4xl"
             >
               {title}
             </Title>
-          </div >
+          </div>
           {/* {isSocialLoginActive && (
             <>
               <div className="flex flex-col gap-4 pb-6 md:flex-row md:gap-6 xl:pb-7">
@@ -95,11 +95,11 @@ export default function AuthWrapperFour({
           )} */}
 
           {children}
-        </div >
-      </div >
+        </div>
+      </div>
 
       <AuthFooter />
-    </div >
+    </div>
   );
 }
 
@@ -107,15 +107,15 @@ function AuthHeader() {
   return (
     <header className="flex items-center justify-between p-4 lg:px-16 lg:py-6 2xl:px-24">
       <Link href={'/'}>
-        <Logo className='w-[180px]' />
-      </Link >
+        <Logo className="w-[180px]" />
+      </Link>
       <div className="flex items-center space-x-2 md:space-x-4">
-        <AuthNavLink href={routes.auth.signIn4}>
+        <AuthNavLink href={routes.auth.signIn}>
           <PiArrowLineRight className="h-4 w-4" />
           <span>Login</span>
         </AuthNavLink>
-      </div >
-    </header >
+      </div>
+    </header>
   );
 }
 
@@ -138,7 +138,8 @@ function AuthFooter() {
   return (
     <footer className="flex flex-col-reverse items-center justify-between px-4 py-5 lg:flex-row lg:px-16 lg:py-6 2xl:px-24 2xl:py-10">
       <div className="w-max text-center text-[12px] leading-relaxed text-gray-500 lg:text-start">
-        © Copyright 2025 by Solum Clinic Pty Ltd, all rights reserved. Develop by Xpro Group Pty Ltd.
+        © Copyright 2025 by Solum Clinic Pty Ltd, all rights reserved. Develop
+        by Xpro Group Pty Ltd.
       </div>
       <div className="-mx-2.5 flex items-center justify-end pb-3 font-medium text-gray-700 lg:w-1/2 lg:pb-0">
         {footerMenu.map((item) => (

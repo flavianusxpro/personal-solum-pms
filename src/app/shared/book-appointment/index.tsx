@@ -1,43 +1,27 @@
 'use client';
 
 import React, { useState } from 'react';
-import { BiChevronRight, BiMenu } from 'react-icons/bi';
-import {
-  ActionIcon,
-  Button,
-  Drawer,
-  Flex,
-  Loader,
-  Stepper,
-  Text,
-  Title,
-} from 'rizzui';
+import { Stepper } from 'rizzui';
 import DoctorTime from './doctor-time';
 import ConfirmBooking from './confirm-booking/confirm-booking';
-import ModalSelectDate from './modal/modal-select-date';
 import { useAtom } from 'jotai';
 import bookAppointmentAtom from '@/store/book-appointment';
-import ModalCentreDetails from './modal/modal-centre-details';
 import StandartConsult from './standart-consult';
-import { useModal } from '../modal-views/use-modal';
 import dayjs from 'dayjs';
-import { useGetAllClinicsForPatient } from '@/hooks/useClinic';
 import PatientHeader from '../../../layouts/patient/patient-header';
-import patientDrawerAtom from '@/store/drawer';
 import SelectClinicDate from './select-clinic-date';
 
 const BookAppointment = () => {
-  const { openModal } = useModal();
   const [bookAppointmentValue] = useAtom(bookAppointmentAtom);
 
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const nextStep = () => {
     setCurrentStep((prev) => prev + 1);
   };
 
   const onPrevStep = () => {
-    if (currentStep === 1) return;
+    if (currentStep === 0) return;
     setCurrentStep((prev) => prev - 1);
   };
 
@@ -48,16 +32,6 @@ const BookAppointment = () => {
         currentIndex={currentStep}
         className="mt-4 w-full max-w-6xl flex-wrap p-4"
       >
-        <Stepper.Step
-          title={
-            bookAppointmentValue.clinic
-              ? 'Standard Consult'
-              : 'Standard Consult'
-          }
-          description="Type of Consult"
-          className="basis-min-content cursor-pointer"
-          onClick={() => setCurrentStep(1)}
-        />
         <Stepper.Step
           size="lg"
           title={
@@ -74,6 +48,18 @@ const BookAppointment = () => {
           status={bookAppointmentValue.clinic?.name ? '' : 'incomplete'}
           onClick={() => setCurrentStep(1)}
         />
+
+        <Stepper.Step
+          title={
+            bookAppointmentValue.clinic
+              ? 'Standard Consult'
+              : 'Standard Consult'
+          }
+          description="Type of Consult"
+          className="basis-min-content cursor-pointer"
+          onClick={() => setCurrentStep(1)}
+        />
+
         <Stepper.Step
           title={
             bookAppointmentValue.appointmentDate
@@ -101,10 +87,20 @@ const BookAppointment = () => {
         />
       </Stepper>
       <div className="flex w-full justify-center bg-white">
-        {currentStep == 1 ? (
+        {currentStep == 0 ? (
+          <SelectClinicDate
+            currentStep={currentStep}
+            onPrevStep={onPrevStep}
+            nextStep={nextStep}
+          />
+        ) : currentStep == 1 ? (
           <StandartConsult onPrevStep={onPrevStep} onNextStep={nextStep} />
         ) : currentStep == 2 ? (
-          <SelectClinicDate onPrevStep={onPrevStep} nextStep={nextStep} />
+          <SelectClinicDate
+            currentStep={currentStep}
+            onPrevStep={onPrevStep}
+            nextStep={nextStep}
+          />
         ) : currentStep == 3 ? (
           <DoctorTime onPrevStep={onPrevStep} onNextStep={nextStep} />
         ) : currentStep == 4 ? (

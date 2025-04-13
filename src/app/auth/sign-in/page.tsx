@@ -1,14 +1,14 @@
-import AuthWrapperFour from '@/app/shared/auth-layout/auth-wrapper-four';
-import SignInForm from './sign-in-form';
+import AuthWrapper from '@/app/shared/auth-layout/auth-wrapper';
+import SignInForm from '@/app/shared/signin/sign-in-form';
 import { metaObject } from '@/config/site.config';
 
 export const metadata = {
-  ...metaObject('Sign In 4'),
+  ...metaObject('Sign In'),
 };
 
 export default function SignInPage() {
   return (
-    <AuthWrapperFour
+    <AuthWrapper
       title={
         <>
           Welcome Back! <br /> Sign in with your credentials.
@@ -18,6 +18,6 @@ export default function SignInPage() {
       isSocialLoginActive={true}
     >
       <SignInForm />
-    </AuthWrapperFour>
+    </AuthWrapper>
   );
 }

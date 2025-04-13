@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Controller, SubmitHandler } from 'react-hook-form';
+import { SubmitHandler } from 'react-hook-form';
 import { Password, Checkbox, Button, Input, Text } from 'rizzui';
 import { useMedia } from '@core/hooks/use-media';
 import { Form } from '@core/ui/form';
@@ -74,26 +74,6 @@ export default function SignInForm() {
               {...register('password')}
               error={errors.password?.message}
             />
-            {/* <Controller
-              name="role"
-              control={control}
-              render={({ field }) => (
-                <CSelect
-                  label="Role"
-                  size={isMedium ? 'lg' : 'xl'}
-                  className="[&>label>span]:font-medium"
-                  options={[
-                    { label: 'Admin', value: 'admin' },
-                    {
-                      label: 'Patient',
-                      value: 'patient',
-                    },
-                  ]}
-                  error={errors.role?.message}
-                  {...field}
-                />
-              )}
-            /> */}
             <div className="flex items-center justify-between pb-1">
               {/* <Checkbox
                 {...register('rememberMe')}
@@ -101,7 +81,7 @@ export default function SignInForm() {
                 className="[&>label>span]:font-medium"
               /> */}
               <Link
-                href={routes.auth.forgotPassword4}
+                href={routes.auth.forgotPassword}
                 className="h-auto p-0 text-sm font-semibold text-gray-700 underline transition-colors hover:text-primary hover:no-underline"
               >
                 Forgot Password?
@@ -121,7 +101,7 @@ export default function SignInForm() {
       <Text className="mt-6 text-center text-[15px] leading-loose text-gray-500 md:mt-7 lg:mt-9 lg:text-base">
         Don’t have an account?{' '}
         <Link
-          href={routes.auth.signUp4}
+          href={routes.auth.signUp}
           className="font-semibold text-gray-700 transition-colors hover:text-primary"
         >
           Sign Up

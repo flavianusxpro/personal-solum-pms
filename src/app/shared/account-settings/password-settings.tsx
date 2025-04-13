@@ -1,9 +1,7 @@
 'use client';
 
-import ForgetPasswordForm from '@/app/auth/(forgot-password)/forgot-password-1/forget-password-form';
-import {
-  PasswordFormTypes
-} from '@/validators/password-settings.schema';
+import ForgetPasswordForm from '@/app/auth/forgot-password/page';
+import { PasswordFormTypes } from '@/validators/password-settings.schema';
 import { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 
@@ -29,7 +27,7 @@ export default function PasswordSettingsView({
   };
 
   return (
-    <div className='relativve my-8 ml-2 w-1/2'>
+    <div className="relativve my-8 ml-2 w-1/2">
       <ForgetPasswordForm />
     </div>
   );

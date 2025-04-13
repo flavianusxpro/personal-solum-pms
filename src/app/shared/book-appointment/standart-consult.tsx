@@ -51,8 +51,8 @@ const StandartConsult = ({
 
   return (
     <div className="mx-auto flex w-full flex-col items-center justify-center p-6 text-center">
-      <div className="flex flex-col items-center justify-center">
-        {step > 1 && <StepBackButton backButton={backButton} />}
+      <div className="flex flex-col items-center justify-center gap-4">
+        <StepBackButton backButton={backButton} />
         {step == 1 ? (
           <>
             <Title as="h2" className="font-semibold">

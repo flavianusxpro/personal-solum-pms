@@ -9,13 +9,19 @@ import ModalSelectDate from './modal/modal-select-date';
 import ModalCentreDetails from './modal/modal-centre-details';
 import dayjs from 'dayjs';
 import StepBackButton from './step-back-button';
+import { IGetAllClinicForPatientResponse } from '@/types/ApiResponse';
 
 interface IProps {
   nextStep: () => void;
   onPrevStep: () => void;
+  currentStep?: number;
 }
 
-export default function SelectClinicDate({ nextStep, onPrevStep }: IProps) {
+export default function SelectClinicDate({
+  nextStep,
+  onPrevStep,
+  currentStep,
+}: IProps) {
   const { openModal } = useModal();
 
   const [bookAppointmentValue, setBookAppointment] =
@@ -40,11 +46,26 @@ export default function SelectClinicDate({ nextStep, onPrevStep }: IProps) {
     });
   };
 
+  function onSelectClinic(
+    clinic: IGetAllClinicForPatientResponse['data'][number]
+  ) {
+    setBookAppointment((p) => ({
+      ...p,
+      clinic,
+    }));
+    setShowClinicOptions(false);
+    if (currentStep === 0) {
+      nextStep();
+    }
+  }
+
   return (
     <aside className="relative p-6 sm:w-1/3">
-      <Flex justify="center">
-        <StepBackButton backButton={onPrevStep} />
-      </Flex>
+      {currentStep !== 0 && (
+        <Flex justify="center" className="mb-4">
+          <StepBackButton backButton={onPrevStep} />
+        </Flex>
+      )}
       <h2 className="text-xl font-semibold text-green-700">
         Select Clinic Center
       </h2>
@@ -67,13 +88,7 @@ export default function SelectClinicDate({ nextStep, onPrevStep }: IProps) {
           {dataClinics?.data.map((clinic, idx) => (
             <div
               key={clinic.id}
-              onClick={() => {
-                setBookAppointment((p) => ({
-                  ...p,
-                  clinic,
-                }));
-                setShowClinicOptions(false);
-              }}
+              onClick={() => onSelectClinic(clinic)}
               className="mt-2 flex cursor-pointer items-center justify-between transition-all hover:bg-green-200"
             >
               <div className="flex items-center p-3">
@@ -85,7 +100,7 @@ export default function SelectClinicDate({ nextStep, onPrevStep }: IProps) {
           ))}
         </div>
       )}
-      {bookAppointmentValue.clinic ? (
+      {bookAppointmentValue.clinic && (currentStep ?? 0) > 0 ? (
         <div className="mt-4 grid grid-cols-1 gap-4">
           <div className="">
             <Title as="h3">{bookAppointmentValue.clinic.name}</Title>

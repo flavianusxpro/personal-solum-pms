@@ -6,6 +6,8 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { Button, Input, Password } from 'rizzui';
+import Link from 'next/link';
+import { routes } from '@/config/routes';
 
 interface IProps {
   setCurrentStep: (step: number) => void;
@@ -32,7 +34,7 @@ export default function LoginForm({ setCurrentStep }: IProps) {
   return (
     <div className="w-2/3 border-r p-6">
       <h3 className="text-lg font-semibold">Complete Your Booking</h3>
-      <p className="text-sm text-gray-500">
+      <p className="mb-2 text-sm text-gray-500">
         Don’t have an account?{' '}
         <a
           href="#"
@@ -66,6 +68,12 @@ export default function LoginForm({ setCurrentStep }: IProps) {
               {...register('password')}
               error={errors.password?.message}
             />
+            <Link
+              href={routes.auth.forgotPassword}
+              className="h-auto p-0 text-sm font-semibold text-gray-700 underline transition-colors hover:text-primary hover:no-underline"
+            >
+              Forgot Password?
+            </Link>
             <div className="col-span-full">
               <Button
                 isLoading={loading}
