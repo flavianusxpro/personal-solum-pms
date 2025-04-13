@@ -1,7 +1,5 @@
 'use client';
 
-import Link from 'next/link';
-import { useState } from 'react';
 import { Button, Text, Input, Password } from 'rizzui';
 import { SubmitHandler } from 'react-hook-form';
 import { Form } from '@core/ui/form';
@@ -11,6 +9,8 @@ import {
   ResetPasswordSchema,
 } from '@/validators/reset-password.schema';
 import AuthWrapper from '@/app/shared/auth-layout/auth-wrapper';
+import { useForgotPassword } from '@/hooks/useAuth';
+import toast from 'react-hot-toast';
 
 const initialValues = {
   email: '',
@@ -19,11 +19,23 @@ const initialValues = {
 };
 
 export default function ForgetPasswordForm() {
-  const [reset, setReset] = useState({});
+  const { mutate } = useForgotPassword();
 
   const onSubmit: SubmitHandler<ResetPasswordSchema> = (data) => {
-    console.log(data);
-    setReset(initialValues);
+    mutate(
+      { ...data },
+      {
+        onSuccess: (res) => {
+          toast.success(res.message, {
+            duration: 10000,
+          });
+        },
+        onError: (error: any) => {
+          toast.error(error.response.data.message);
+          console.error('Reset password error:', error);
+        },
+      }
+    );
   };
 
   return (
@@ -38,7 +50,6 @@ export default function ForgetPasswordForm() {
       <div className="px-2">
         <Form<ResetPasswordSchema>
           validationSchema={resetPasswordSchema}
-          resetValues={reset}
           onSubmit={onSubmit}
           useFormProps={{
             mode: 'onChange',
@@ -52,31 +63,11 @@ export default function ForgetPasswordForm() {
                 type="email"
                 size="lg"
                 label="Email"
-                disabled={true}
-                value={'account123@klinik.com'}
                 placeholder="Enter your email"
                 className="[&>label>span]:font-medium"
                 inputClassName="text-sm"
                 {...register('email')}
                 error={errors.email?.message}
-              />
-              <Password
-                label="Password"
-                placeholder="Enter your password"
-                size="lg"
-                className="[&>label>span]:font-medium"
-                inputClassName="text-sm"
-                {...register('password')}
-                error={errors.password?.message}
-              />
-              <Password
-                label="Confirm Password"
-                placeholder="Enter confirm password"
-                size="lg"
-                className="[&>label>span]:font-medium"
-                inputClassName="text-sm"
-                {...register('confirmPassword')}
-                error={errors.confirmPassword?.message}
               />
               <Button className="mt-2 w-full" type="submit" size="lg">
                 Reset Password

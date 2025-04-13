@@ -1,8 +1,4 @@
-// This example shows you how to set up React Stripe.js and use Elements.
-// Learn how to accept a payment using the official Stripe docs.
-// https://stripe.com/docs/payments/accept-a-payment#web
-
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   loadStripe,
   StripeError,
@@ -23,7 +19,6 @@ import {
 } from '@/hooks/useBookAppoinment';
 import bookAppointmentAtom from '@/store/book-appointment';
 import { useAtom } from 'jotai';
-import { useRouter } from 'next/navigation';
 
 function CheckoutForm({
   elements,
@@ -34,7 +29,6 @@ function CheckoutForm({
   stripe: Stripe | null;
   onSuccess: () => void;
 }) {
-  const router = useRouter();
   const [error, setError] = useState<StripeError | null>(null);
   const [bookAppointmentValue] = useAtom(bookAppointmentAtom);
 
@@ -132,6 +126,7 @@ function CheckoutForm({
           },
         }}
       />
+      {error && <div style={{ color: 'red' }}>{error?.message}</div>}
       <div className="mt-4 w-full text-center">
         <Button
           isLoading={isPendingBookAppoinment || isPendingOneTimePayment}
@@ -141,7 +136,6 @@ function CheckoutForm({
           Pay Now
         </Button>
       </div>
-      {error && <div style={{ color: 'red' }}>{error?.message}</div>}
     </form>
   );
 }
@@ -151,9 +145,6 @@ function InjectedCheckoutForm({ onSuccess }: { onSuccess: () => void }) {
     <ElementsConsumer>
       {({ elements, stripe }) => (
         <>
-          <Text fontWeight="bold" className="text-xl">
-            Payment
-          </Text>
           <CheckoutForm
             onSuccess={onSuccess}
             elements={elements}

@@ -96,7 +96,8 @@ const ConfirmBooking = ({ onPrevStep }: { onPrevStep: () => void }) => {
               </Text>
             </div>
             <Button
-              className="mt-4 block w-full bg-red-600 text-white"
+              className="mt-4 block w-full text-white"
+              color="danger"
               onClick={() => {
                 window.location.href = '/book-appointment';
               }}

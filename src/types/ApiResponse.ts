@@ -465,3 +465,8 @@ export interface IGetListScheduleResponse extends ApiResponseWithPagination {
     updated_at: string;
   }[];
 }
+
+export interface ApiResponseWithMessage {
+  success: boolean;
+  message: string;
+}

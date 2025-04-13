@@ -158,3 +158,7 @@ interface Breaktime {
   start_date: string;
   end_date: string;
 }
+
+export interface IPayloadPostForgotPassword {
+  email: string;
+}

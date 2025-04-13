@@ -30,9 +30,26 @@ export function ProtectedLayout({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const patientPages = useMemo(
+    () => [
+      routes.consentForm,
+      routes.myAccountDetails,
+      routes.myAppointment,
+      routes.myDashboard,
+      routes.myFamily,
+      routes.paymentMethods,
+    ],
+    []
+  );
+
   useEffect(() => {
     if (status === 'unauthenticated' && !whitelist.includes(pathname)) {
       const isSignInPage = pathname.includes(routes.signIn);
+
+      // if from patient pages
+      if (patientPages.includes(pathname)) {
+        return router.push(routes.bookAppointment);
+      }
 
       const url = !isSignInPage
         ? `${routes.signIn}?callbackUrl=${pathname}`
@@ -40,7 +57,7 @@ export function ProtectedLayout({ children }: { children: React.ReactNode }) {
 
       router.push(url);
     }
-  }, [status, router, pathname, whitelist]);
+  }, [status, router, pathname, whitelist, patientPages]);
 
   if (status === 'loading') return <p>Loading...</p>;
 

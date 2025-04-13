@@ -106,20 +106,15 @@ const ModalEstimationCost = () => {
               details.
             </Text>
           </div>
-          <div className="flex flex-col gap-2">
-            <Button
-              className="bg-green-600"
-              onClick={() => setStep(STEP.PAYMENT)}
-            >
-              Pay Now
-            </Button>
+          <div className="flex w-full flex-col gap-2">
+            <StripeCheckout onSuccess={() => setStep(STEP.CONFIRM)} />
             <Button variant="text" onClick={closeModal}>
               Cancel
             </Button>
           </div>
         </div>
       )}
-      {step == STEP.PAYMENT && (
+      {/* {step == STEP.PAYMENT && (
         <div className="grid grid-cols-1 items-center gap-4">
           <StripeCheckout onSuccess={() => setStep(STEP.CONFIRM)} />
           <div className="flex flex-col gap-2">
@@ -128,7 +123,7 @@ const ModalEstimationCost = () => {
             </Button>
           </div>
         </div>
-      )}
+      )} */}
       {step == STEP.CONFIRM && (
         <div className="flex flex-col items-center justify-center gap-4 text-center">
           <CheckCircleIcon className="w-2h-28 h-28 text-green-600" />
