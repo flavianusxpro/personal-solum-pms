@@ -89,8 +89,8 @@ export const getColumns = ({
   },
   {
     title: <HeaderCell title="PATIENT ID" />,
-    dataIndex: 'patient_id',
-    key: 'patient_id',
+    dataIndex: 'id',
+    key: 'id',
     width: 120,
     render: (value: string) => <Text>#{value}</Text>,
   },

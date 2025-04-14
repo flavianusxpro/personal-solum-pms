@@ -11,7 +11,8 @@ import cn from '@core/utils/class-names';
 import ExpandedOrderRow from '@/app/shared/patient/table/expanded-row';
 import { getColumns } from './columns';
 import { useGetAllPatients } from '@/hooks/usePatient';
-// dynamic import
+import debounce from 'lodash/debounce';
+
 const FilterElement = dynamic(
   () => import('@/app/shared/patient/table/filter-element'),
   { ssr: false }
@@ -42,16 +43,19 @@ const filterState = {
   updatedAt: [null, null],
   status: '',
   condition: '',
+  search: '',
 };
 
 export default function PatientTable({ className }: { className?: string }) {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [filterStateValue, setFilterStateValue] = useState(filterState);
+  console.log('🚀 ~ PatientTable ~ filterStateValue:', filterStateValue);
 
   const { data, isLoading: isLoadingGetAllPatients } = useGetAllPatients({
     page,
     perPage: pageSize,
+    search: filterStateValue?.search,
   });
 
   const onHeaderCellClick = (value: string) => ({
@@ -78,6 +82,13 @@ export default function PatientTable({ className }: { className?: string }) {
   const handleReset = useCallback(() => {
     setFilterStateValue(filterState);
   }, []);
+
+  // const handleSearch = debounce((value: string) => {
+  //   setFilterStateValue((prevState) => ({
+  //     ...prevState,
+  //     search: value,
+  //   }));
+  // }, 500);
 
   const {
     isLoading,

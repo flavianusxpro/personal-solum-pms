@@ -2,6 +2,8 @@ import { RegisterSchema } from '@/validators/register.schema';
 interface IParamGetDataWithPagination {
   page: number;
   perPage: number;
+  sort?: 'ASC' | 'DESC';
+  search?: string;
 }
 export interface IParamGetAllClinicForPatient
   extends IParamGetDataWithPagination {}
