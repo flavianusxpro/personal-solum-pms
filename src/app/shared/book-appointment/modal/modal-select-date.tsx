@@ -12,7 +12,13 @@ interface IProps {
   onSelectDate: () => void;
 }
 
-const disabledDate = [1, 4, 7];
+const disabledDate = [
+  dayjs('2025-04-21').date(),
+  dayjs('2025-04-22').date(),
+  dayjs('2025-04-23').date(),
+  dayjs('2025-04-24').date(),
+  dayjs('2025-04-25').date(),
+];
 
 export default function ModalSelectDate({ onSelectDate }: IProps) {
   const { closeModal } = useModal();
@@ -65,8 +71,13 @@ export default function ModalSelectDate({ onSelectDate }: IProps) {
               if (['year', 'decade', 'century'].includes(view)) {
                 return false;
               }
-              // return disabledDate.includes(date.getDate());
-              return false;
+              return !disabledDate.includes(date.getDate());
+            }}
+            tileClassName={({ date, view }) => {
+              if (view === 'month') {
+                const isDisabled = disabledDate.includes(date.getDate());
+                return isDisabled ? 'bg-green-100 hover:bg-green-200' : '';
+              }
             }}
             className="!w-full !border-0 !bg-transparent px-4 pb-4 pt-2.5 !font-inter !text-base md:px-5 md:pb-5"
           />

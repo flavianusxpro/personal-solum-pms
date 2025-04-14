@@ -52,7 +52,7 @@ export const routes = {
   },
   paymentMethods: '/payment-methods',
   myAccountDetails: '/my-account-details',
-  bookAppointment: '/book-appointment',
+  bookAppointment: '/bookings',
   consentForm: '/form/consent-form',
   consentFormConfirmation: '/form/consent-form/confirmation',
 
