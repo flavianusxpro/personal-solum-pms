@@ -7,6 +7,14 @@ import { useGetClinicByIdForPatient } from '@/hooks/useClinic';
 import { useAtom } from 'jotai';
 import bookAppointmentAtom from '@/store/book-appointment';
 
+const openHours = [
+  { day: 'Monday', hours: '9am - 5pm' },
+  { day: 'Tuesday', hours: '9am - 5pm' },
+  { day: 'Wednesday', hours: '9am - 5pm' },
+  { day: 'Thursday', hours: '9am - 5pm' },
+  { day: 'Friday', hours: '9am - 5pm' },
+];
+
 interface IProps {}
 
 export default function ModalCentreDetails() {
@@ -53,28 +61,26 @@ export default function ModalCentreDetails() {
         <div className="">
           <Text className="font-bold">Opening Hours</Text>
           <div className="flex flex-col gap-1">
-            {/* {openHours.map((item, index) => (
+            {openHours.map((item, index) => (
               <Flex key={index} justify="between">
                 <Text className="font-semibold">{item.day}:</Text>
                 <Text className="font-semibold">{item.hours}</Text>
               </Flex>
-              ))} */}
-            <Flex justify="between">
-              <Text className="font-semibold">-:</Text>
-              <Text className="font-semibold">-</Text>
-            </Flex>
+            ))}
           </div>
         </div>
 
         <div className="">
           <Text className="font-bold">Fee Information</Text>
-          <Text className="font-semibold">-</Text>
+          <Text className="font-semibold">
+            Private fees - Paid at time of appointment
+          </Text>
         </div>
 
         <div className="">
-          <Text className="font-semibold">
-            Initial Consult: - Follow up appt: - Script renewal: -
-          </Text>
+          <Text className="font-semibold">Initial Consult: $75</Text>
+          <Text className="font-semibold">Follow up appt: $50</Text>
+          <Text className="font-semibold">Script renewal: $30</Text>
         </div>
 
         <div className="">

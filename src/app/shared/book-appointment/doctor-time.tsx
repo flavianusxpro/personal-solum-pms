@@ -15,80 +15,6 @@ import { IGetDoctorByClinicForPatientResponse } from '@/types/ApiResponse';
 import StepBackButton from './step-back-button';
 import cn from '@core/utils/class-names';
 
-const doctors = [
-  {
-    id: 1,
-    name: 'Dr Hermanus Bosman',
-    clinic: 'Solum Clinic',
-    image:
-      'https://solumclinic.zedmed-appointments.systems/images/doctor_default.png',
-    times: [
-      '5:15am',
-      '5:30am',
-      '6:00am',
-      '6:15am',
-      '6:30am',
-      '6:45am',
-      '7:00am',
-      '7:15am',
-      '7:30am',
-      '7:45am',
-      '8:00am',
-      '8:15am',
-      '8:30am',
-      '8:45am',
-      '9:00am',
-      '9:15am',
-      '9:30am',
-      '9:45am',
-      '10:00am',
-      '10:15am',
-      '10:30am',
-      '10:45am',
-    ],
-  },
-  {
-    id: 2,
-    name: 'Dr Geoffrey Cutter',
-    clinic: 'Solum Clinic',
-    image:
-      'https://solumclinic.zedmed-appointments.systems/images/doctor_default.png',
-    nextAvailable: 'Please contact centre',
-    times: [
-      '5:15am',
-      '5:30am',
-      '6:00am',
-      '6:15am',
-      '6:30am',
-      '6:45am',
-      '7:00am',
-      '7:15am',
-      '7:30am',
-      '7:45am',
-      '8:00am',
-      '8:15am',
-      '8:30am',
-      '8:45am',
-      '9:00am',
-      '9:15am',
-      '9:30am',
-      '9:45am',
-      '10:00am',
-      '10:15am',
-      '10:30am',
-      '10:45am',
-    ],
-  },
-  {
-    id: 3,
-    name: 'Dr Sathya Gandhidasan',
-    clinic: 'Solum Clinic',
-    image:
-      'https://solumclinic.zedmed-appointments.systems/images/doctor_default.png',
-    nextAvailable: 'Please contact centre',
-  },
-];
-
 const timeZoneOptions = [
   {
     value: 'practice-time-sydney',
@@ -188,7 +114,7 @@ const DoctorScheduleList = ({
                     onClick={() => openDoctorDetailsModal(doctor)}
                     className="cursor-pointer text-lg font-bold hover:underline"
                   >
-                    dr. {doctor.first_name} {doctor.last_name}
+                    Dr. {doctor.first_name} {doctor.last_name}
                   </h3>
 
                   <p

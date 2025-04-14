@@ -12,8 +12,8 @@ import toast from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const initialValues: LoginSchema = {
-  email: 'rizalhidayat180499@gmail.com',
-  password: '12345678',
+  email: '',
+  password: '',
   role: 'admin',
   // rememberMe: true,
 };

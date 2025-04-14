@@ -35,7 +35,7 @@ export function ConsentFormConfirmation() {
 
         <Text>You will redirect to the consent form in {second} second...</Text>
 
-        <div className="flex flex-col justify-center gap-2">
+        <div className="flex justify-center gap-2">
           <Button
             className="w-fit"
             onClick={() => router.replace('https://solumclinic.au/')}

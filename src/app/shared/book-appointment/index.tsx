@@ -25,6 +25,16 @@ const BookAppointment = () => {
     setCurrentStep((prev) => prev - 1);
   };
 
+  const currentStepStatus = (validation: boolean, statusIndex: number) => {
+    if (currentStep === statusIndex) {
+      return 'incomplete';
+    }
+    if (currentStep > statusIndex) {
+      return validation ? 'completed' : 'waiting';
+    }
+    return 'waiting';
+  };
+
   return (
     <div className="flex w-full flex-col items-center bg-white">
       <PatientHeader />
@@ -32,55 +42,83 @@ const BookAppointment = () => {
         currentIndex={currentStep}
         className="mt-4 w-full max-w-6xl flex-wrap p-4"
       >
-        <Stepper.Step
-          size="lg"
-          title={
-            bookAppointmentValue.clinic
-              ? bookAppointmentValue.clinic.name
-              : 'Select Location'
-          }
-          description={
-            bookAppointmentValue.clinic
-              ? bookAppointmentValue.clinic.address
-              : ''
-          }
-          className="basis-min-content cursor-pointer"
-          status={bookAppointmentValue.clinic?.name ? '' : 'incomplete'}
-          onClick={() => setCurrentStep(1)}
-        />
+        <button type="button" onClick={() => setCurrentStep(0)}>
+          <Stepper.Step
+            size="lg"
+            title={
+              bookAppointmentValue.clinic
+                ? bookAppointmentValue.clinic.name
+                : 'Select Location'
+            }
+            description={
+              bookAppointmentValue.clinic
+                ? bookAppointmentValue.clinic.address
+                : 'select clinic'
+            }
+            className="basis-min-content flex cursor-pointer items-center"
+            descriptionClassName="text-left"
+            status={currentStepStatus(!!bookAppointmentValue.clinic?.id, 0)}
+          />
+        </button>
 
-        <Stepper.Step
-          title={
-            bookAppointmentValue.clinic
-              ? 'Standard Consult'
-              : 'Standard Consult'
-          }
-          description="Type of Consult"
-          className="basis-min-content cursor-pointer"
-          onClick={() => setCurrentStep(1)}
-        />
+        <button type="button" onClick={() => setCurrentStep(1)}>
+          <Stepper.Step
+            icon="2"
+            title={
+              bookAppointmentValue.clinic
+                ? 'Standard Consult'
+                : 'Standard Consult'
+            }
+            description="Type of Consult"
+            className="basis-min-content flex cursor-pointer items-center"
+            descriptionClassName="text-left"
+            status={currentStepStatus(!!bookAppointmentValue.step3, 1)}
+          />
+        </button>
 
-        <Stepper.Step
-          title={
-            bookAppointmentValue.appointmentDate
-              ? dayjs(bookAppointmentValue.appointmentDate).format(
-                  'MMM DD, YYYY'
-                )
-              : 'Select Date'
-          }
-          description="Date of appointment"
-          className="basis-min-content cursor-pointer"
-          onClick={() => setCurrentStep(1)}
-        />
+        <button type="button" onClick={() => setCurrentStep(2)}>
+          <Stepper.Step
+            icon="3"
+            title={
+              bookAppointmentValue.appointmentDate
+                ? dayjs(bookAppointmentValue.appointmentDate).format(
+                    'MMM DD, YYYY'
+                  )
+                : 'Select Date'
+            }
+            description="Date of appointment"
+            className="basis-min-content flex cursor-pointer items-center"
+            titleClassName="text-left"
+            descriptionClassName="text-left"
+            status={currentStepStatus(
+              !!bookAppointmentValue.appointmentDate,
+              2
+            )}
+          />
+        </button>
 
-        <Stepper.Step
-          title={
-            bookAppointmentValue.doctor?.first_name
-              ? `${bookAppointmentValue.doctor?.first_name} ${bookAppointmentValue.doctor?.last_name} & ${bookAppointmentValue.doctor?.doctorTime}`
-              : 'Doctor & Time'
-          }
-          className="basis-min-content cursor-pointer"
-        />
+        <button type="button" onClick={() => setCurrentStep(3)}>
+          <Stepper.Step
+            icon="4"
+            title={
+              bookAppointmentValue.doctor?.first_name
+                ? `${bookAppointmentValue.doctor?.first_name} ${bookAppointmentValue.doctor?.last_name}`
+                : 'Doctor & Time'
+            }
+            description={
+              bookAppointmentValue.doctor?.doctorTime
+                ? bookAppointmentValue.doctor?.doctorTime
+                : 'Select Time'
+            }
+            className="basis-min-content flex cursor-pointer items-center"
+            descriptionClassName="text-left"
+            status={currentStepStatus(
+              !!bookAppointmentValue.doctor?.doctorTime,
+              3
+            )}
+          />
+        </button>
+
         <Stepper.Step
           title={'Confirm My Booking'}
           className="basis-min-content cursor-pointer"
