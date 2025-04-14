@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from 'rizzui';
+import { Button, Loader } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { useScrollableSlider } from '@core/hooks/use-scrollable-slider';
 import { IconType } from 'react-icons/lib';
@@ -14,45 +14,12 @@ import {
   PiArrowDownRight,
   PiArrowUpRight,
 } from 'react-icons/pi';
+import { useMemo } from 'react';
+import { useGetSummaryAppointments } from '@/hooks/useAppointment';
 
 type AppointmentStatsType = {
   className?: string;
 };
-
-const statData: StatType[] = [
-  {
-    title: 'Upcoming Appointment',
-    amount: '55',
-    increased: true,
-    percentage: '32.40',
-    icon: PiCalendarCheck,
-    iconWrapperFill: '#F5A623',
-  },
-  {
-    title: 'Today Appointment',
-    amount: '44',
-    increased: true,
-    percentage: '32.40',
-    icon: PiCheckCircle,
-    iconWrapperFill: '#11843C',
-  },
-  {
-    title: 'Finished Appointment',
-    amount: '33',
-    increased: false,
-    percentage: '32.40',
-    icon: PiClock,
-    iconWrapperFill: '#8A63D2',
-  },
-  {
-    title: 'Cancelled Appointment',
-    amount: '22',
-    increased: true,
-    percentage: '32.40',
-    icon: PiPhoneSlash,
-    iconWrapperFill: '#C50000',
-  },
-];
 
 export type StatType = {
   icon: IconType;
@@ -73,6 +40,7 @@ function StatCard({ className, transaction }: StatCardProps) {
   const { icon, title, amount, increased, percentage, iconWrapperFill } =
     transaction;
   const Icon = icon;
+
   return (
     <div
       className={cn(
@@ -130,10 +98,10 @@ function StatCard({ className, transaction }: StatCardProps) {
   );
 }
 
-export function StatGrid() {
+export function StatGrid({ data }: { data: StatType[] }) {
   return (
     <>
-      {statData.map((stat: StatType, index: number) => {
+      {data.map((stat: StatType, index: number) => {
         return (
           <StatCard
             key={'stat-card-' + index}
@@ -157,6 +125,51 @@ export default function AppointmentListStats({
     scrollToTheLeft,
   } = useScrollableSlider();
 
+  const { data, isLoading } = useGetSummaryAppointments();
+
+  const statData: StatType[] = useMemo(
+    () => [
+      {
+        title: 'Upcoming Appointment',
+        increased: true,
+        amount: data?.upcoming_appointment.toString() || '0',
+        icon: PiCalendarCheck,
+        iconWrapperFill: '#F5A623',
+        percentage: '0',
+      },
+      {
+        title: 'Today Appointment',
+        increased: true,
+        amount: data?.today_appointment.toString() || '0',
+        icon: PiCheckCircle,
+        percentage: '0',
+        iconWrapperFill: '#11843C',
+      },
+      {
+        title: 'Finished Appointment',
+        increased: false,
+        amount: data?.finished_appointment.toString() || '0',
+        icon: PiClock,
+        percentage: '0',
+        iconWrapperFill: '#8A63D2',
+      },
+      {
+        title: 'Cancelled Appointment',
+        increased: true,
+        amount: data?.cancelled_appointment.toString() || '0',
+        icon: PiPhoneSlash,
+        percentage: '0',
+        iconWrapperFill: '#C50000',
+      },
+    ],
+    [
+      data?.cancelled_appointment,
+      data?.finished_appointment,
+      data?.today_appointment,
+      data?.upcoming_appointment,
+    ]
+  );
+
   return (
     <div
       className={cn(
@@ -178,7 +191,7 @@ export default function AppointmentListStats({
           ref={sliderEl}
           className="custom-scrollbar-x grid grid-flow-col gap-5 overflow-x-auto scroll-smooth 2xl:gap-6"
         >
-          <StatGrid />
+          {isLoading ? <Loader className="" /> : <StatGrid data={statData} />}
         </div>
       </div>
       <Button

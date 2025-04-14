@@ -332,7 +332,6 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
     clinicId: number;
     patientId: number;
     doctorId: number;
-    doctor: IDoctor;
     date: string;
     status: number;
     type: string;
@@ -341,15 +340,25 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
     meeting_passcode: null;
     patient_type: string;
     patient_problem: string;
-    note: string;
+    note: null;
     sessionId: null;
-    patient: IPatient;
-    payment: IPayment;
+    paymentId: number;
     created_at: string;
     updated_at: string;
+    payment: IPayment;
+    patient: IPatient;
+    doctor: IDoctor;
   }[];
 }
 
+export interface IGetAppointmentSummaryResponse extends ApiResponse {
+  data: {
+    upcoming_appointment: number;
+    today_appointment: number;
+    finished_appointment: number;
+    cancelled_appointment: number;
+  };
+}
 export interface IDoctor {
   id: number;
   first_name: string;

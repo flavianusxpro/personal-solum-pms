@@ -1,13 +1,10 @@
 'use client';
 
 import { HeaderCell } from '@/app/shared/ui/table';
-import { Text, Checkbox, ActionIcon, Tooltip, Select, Badge } from 'rizzui';
+import { Text, Checkbox, ActionIcon, Tooltip, Badge, Flex } from 'rizzui';
 import EyeIcon from '@core/components/icons/eye';
 import DeletePopover from '@/app/shared/ui/delete-popover';
-import DateCell from '@core/ui/date-cell';
 import { Type } from '@/data/appointment-data';
-import { useState } from 'react';
-import { PiCheckCircleBold, PiClockBold, PiCopy } from 'react-icons/pi';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import CreateUpdateAppointmentForm from '../appointment-form';
 import AppointmentDetails from './appointment-details';
@@ -15,10 +12,7 @@ import AvatarCard from '@core/ui/avatar-card';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 import dayjs from 'dayjs';
 
-const statusOptions = [
-  { label: 'Waiting', value: 'Waiting' },
-  { label: 'Scheduled', value: 'Scheduled' },
-];
+type RowValue = IGetAppointmentListResponse['data'][number];
 
 type Columns = {
   data?: IGetAppointmentListResponse['data'];
@@ -76,16 +70,15 @@ export const GetColumns = ({
     {
       title: <HeaderCell title="PATIENT NAME" />,
       // onHeaderCell: () => onHeaderCellClick('patient.name'),
-      dataIndex: 'patientId',
-      key: 'patientId',
-      width: 250,
-      render: (patient: string) => (
+      dataIndex: 'patient',
+      key: 'patient',
+      width: 320,
+      render: (_: any, row: RowValue) => (
         <AvatarCard
-          src={'https://randomuser.me/api/portraits'}
-          name={'Default Name'}
-          // Removed the number property as it is not defined in AvatarCardProps
-          description={'Default Email'}
-          number="00000"
+          src={row.patient.photo ?? ''}
+          name={`${row.patient.first_name} ${row.patient.last_name}`}
+          description={row.patient.email}
+          number={row.patient.mobile_number}
         />
       ),
     },
@@ -99,15 +92,15 @@ export const GetColumns = ({
     {
       title: <HeaderCell title="Appointment To" />,
       // onHeaderCell: () => onHeaderCellClick('doctor.name'),
-      dataIndex: 'doctorId',
-      key: 'doctorId',
+      dataIndex: 'doctor',
+      key: 'doctor',
       width: 320,
-      render: (doctorId: string) => (
+      render: (doctorId: string, row: RowValue) => (
         <AvatarCard
-          number="00090991"
-          src={'https://randomuser.me/api/portraits'}
-          name={'doctor1'}
-          description={'email'}
+          number={row.doctor.mobile_number}
+          src={row.doctor.photo ?? ''}
+          name={`${row.doctor.first_name} ${row.doctor.last_name}`}
+          description={row.doctor.email}
         />
       ),
     },
@@ -226,32 +219,32 @@ function RenderAction({
 
 function getPaymentStatusBadge(status: number | string) {
   switch (status) {
-    case 'pending':
+    case 3:
       return (
-        <div className="flex items-center">
+        <Flex gap="1" align="center">
           <Badge color="warning" renderAsDot />
-          <Text className="ms-2 font-medium text-orange-dark">{status}</Text>
-        </div>
+          <Text className="font-medium text-orange-dark">Cancelled</Text>
+        </Flex>
       );
     case 2:
       return (
-        <div className="flex items-center">
+        <Flex gap="1" align="center">
           <Badge color="success" renderAsDot />
-          <Text className="ms-2 font-medium text-green-dark">Paid</Text>
-        </div>
+          <Text className="font-medium text-green-dark">Pending</Text>
+        </Flex>
       );
     case 1:
       return (
-        <div className="flex items-center">
+        <Flex gap="1" align="center">
           <Badge color="danger" renderAsDot />
-          <Text className="ms-2 font-medium text-red-dark">Unpaid</Text>
-        </div>
+          <Text className="font-medium text-red-dark">Draft</Text>
+        </Flex>
       );
     default:
       return (
         <div className="flex items-center">
           <Badge renderAsDot className="bg-gray-400" />
-          <Text className="ms-2 font-medium text-gray-600">{status}</Text>
+          <Text className="font-medium text-gray-600">{status}</Text>
         </div>
       );
   }
@@ -259,35 +252,46 @@ function getPaymentStatusBadge(status: number | string) {
 
 function getScheduleStatusBadge(status: number | string) {
   switch (status) {
-    case 2:
+    case 5:
       return (
-        <div className="flex items-center">
-          <Badge color="warning" renderAsDot />
-          <Text className="ms-2 font-medium text-yellow-600">{status}</Text>
-        </div>
+        <Flex gap="1" align="center">
+          <Badge color="danger" renderAsDot />
+          <Text className="font-medium text-red">Canceled</Text>
+        </Flex>
+      );
+    case 4:
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="success" renderAsDot />
+          <Text className="font-medium text-green-dark">Finished</Text>
+        </Flex>
       );
     case 3:
       return (
-        <div className="items-center">
-          <Badge color="success" renderAsDot />
-          <Text className="ms-2 font-medium text-green-dark">Paid</Text>
-          <p className={`whitespace-nowrap font-medium text-gray-700`}>
-            Reschedule From Previous Date
-          </p>
-        </div>
+        <Flex gap="1" align="center">
+          <Badge color="info" renderAsDot />
+          <Text className="font-medium text-blue-500">Confirmed</Text>
+        </Flex>
       );
-    case 'Cancelled':
+    case 2:
       return (
-        <div className="flex items-center">
+        <Flex gap="1" align="center">
+          <Badge color="warning" renderAsDot />
+          <Text className="font-medium text-yellow-600">Pending</Text>
+        </Flex>
+      );
+    case 1:
+      return (
+        <Flex gap="1" align="center">
           <Badge color="danger" renderAsDot />
-          <Text className="ms-2 font-medium text-red-dark">Unpaid</Text>
-        </div>
+          <Text className="font-medium text-red-dark">Draft</Text>
+        </Flex>
       );
     default:
       return (
         <div className="flex items-center">
           <Badge renderAsDot className="bg-gray-400" />
-          <Text className="ms-2 font-medium text-blue-600">{status}</Text>
+          <Text className="font-medium text-blue-600">{status}</Text>
         </div>
       );
   }
