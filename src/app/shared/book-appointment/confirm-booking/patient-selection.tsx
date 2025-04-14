@@ -15,12 +15,11 @@ import bookAppointmentAtom from '@/store/book-appointment';
 export default function PatientSelection() {
   const { openModal } = useModal();
   const [bookAppointmentValue] = useAtom(bookAppointmentAtom);
+  const isNewPatient = bookAppointmentValue.step2 === 'new patient';
 
   const { data: dataProfile, isLoading: isLoadingProfile } = useProfile();
 
-  const [showAddPatient, setShowAddPatient] = useState(
-    bookAppointmentValue.step2 === 'new patient'
-  );
+  const [showAddPatient, setShowAddPatient] = useState(isNewPatient);
 
   const onSubmitPatient = async () => {
     return openModal({
@@ -45,7 +44,7 @@ export default function PatientSelection() {
         below, or select &quot;Add Patient&quot; and fill in their details.
       </p>
 
-      {!showAddPatient && (
+      {!isNewPatient && (
         <div className="mt-4 flex flex-col gap-4">
           <Flex justify="between" align="center">
             <Text className="text-lg font-semibold">Existing Patient</Text>

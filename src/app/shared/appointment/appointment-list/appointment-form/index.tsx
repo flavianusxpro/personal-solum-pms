@@ -1,7 +1,16 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useAtom } from 'jotai';
+import { atom, useAtom } from 'jotai';
+const SelectClinic = dynamic(
+  () =>
+    import(
+      '@/app/shared/appointment/appointment-list/appointment-form/select-clinic'
+    ),
+  {
+    ssr: false,
+  }
+);
 const InitialStep = dynamic(
   () =>
     import(
@@ -41,6 +50,9 @@ const StepThree = dynamic(
 import { atomWithReset, atomWithStorage, useResetAtom } from 'jotai/utils';
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { ActionIcon, Title } from 'rizzui';
+import { PiXBold } from 'react-icons/pi';
+import { useModal } from '@/app/shared/modal-views/use-modal';
 
 type FormDataType = {
   patient: string;
@@ -72,10 +84,7 @@ export const initialFormData = {
   notes: '',
 };
 
-export const formDataAtom = atomWithStorage<FormDataType>(
-  'appointmentStepFormStore',
-  initialFormData
-);
+export const formDataAtom = atom<FormDataType>(initialFormData);
 
 enum Step {
   InitialStep,
@@ -122,10 +131,13 @@ export const stepAppointmentTotalSteps = Object.keys(
 export default function CreateUpdateAppointmentForm() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { closeModal } = useModal();
+
   const [step] = useAtom(stepperAtomAppointment);
   const [_, setFormData] = useAtom(formDataAtom);
   const Component = MAP_STEP_TO_COMPONENT[step];
   const resetLocation = useResetAtom(stepperAtomAppointment);
+
   useEffect(() => {
     resetLocation();
     setFormData(initialFormData);
@@ -135,6 +147,19 @@ export default function CreateUpdateAppointmentForm() {
   return (
     <div className="relative flex justify-center md:items-center">
       <div className="w-full">
+        <div className="flex items-center justify-between border-b border-gray-200 p-5 md:p-7">
+          <Title as="h2" className="font-lexend text-lg font-semibold">
+            Book an appointment
+          </Title>
+          <ActionIcon
+            size="sm"
+            variant="text"
+            onClick={() => closeModal()}
+            className="p-0 text-gray-500 hover:!text-gray-900"
+          >
+            <PiXBold className="h-5 w-5" />
+          </ActionIcon>
+        </div>
         <Component />
       </div>
     </div>

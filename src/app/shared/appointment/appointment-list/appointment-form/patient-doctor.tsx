@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { useAtom } from 'jotai';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { ActionIcon, Select, Title } from 'rizzui';
+import { ActionIcon, Loader, Title } from 'rizzui';
 import Footer from './footer';
 import {
   formDataAtom,
@@ -13,10 +13,20 @@ import {
 import { PiXBold } from 'react-icons/pi';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { appointmentTypesOptions } from '../list/filter-element';
+import dynamic from 'next/dynamic';
 
 export const appointmentBookSchema = z.object({
   patient: z.string({ required_error: 'Patient is required' }),
   doctor: z.string({ required_error: 'Doctor is required' }),
+});
+
+const Select = dynamic(() => import('rizzui').then((mod) => mod.Select), {
+  ssr: false,
+  loading: () => (
+    <div className="grid h-10 place-content-center">
+      <Loader variant="spinner" />
+    </div>
+  ),
 });
 
 const appointmentPatientOptions = [

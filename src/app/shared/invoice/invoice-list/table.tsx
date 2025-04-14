@@ -30,7 +30,6 @@ export default function InvoiceTableList() {
       page: 1,
       perPage: pageSize,
     });
-  console.log('🚀 ~ InvoiceTableList ~ dataInvoices:', dataInvoices);
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
