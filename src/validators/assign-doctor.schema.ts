@@ -3,8 +3,8 @@ import { messages } from '@/config/messages';
 
 // form zod validation schema
 export const assignSchema = z.object({
-  doctor: z.array(z.string()).min(1, messages.doctorIsRequired),
   clinic: z.array(z.string({ required_error: messages.clinicIsRequired })),
+  doctor: z.array(z.string()).min(1, messages.doctorIsRequired),
   generalPractice: z.string().optional(),
 });
 

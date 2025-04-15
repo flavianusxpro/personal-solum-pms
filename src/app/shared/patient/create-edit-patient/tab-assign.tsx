@@ -94,6 +94,7 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
       }}
     >
       {({ register, control, watch, formState: { errors } }) => {
+        const { clinic } = watch();
         return (
           <>
             <Flex direction="col" className="" gap="7">
@@ -130,7 +131,7 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
                         placeholder="Select Doctor"
                         error={errors.doctor?.message}
                         className="flex-grow"
-                        disabled={isView}
+                        disabled={isView || !clinic || clinic?.length === 0}
                       />
                     )}
                   />
