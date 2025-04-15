@@ -51,7 +51,6 @@ export default function TabTreatment() {
       first_name: data.first_name,
       last_name: data.last_name as string,
       email: data.email,
-      address: '',
       date_of_birth: data.date_of_birth as string,
       gender: data.date_of_birth as string,
       medicare_card_number: data.medicare_card as string,
