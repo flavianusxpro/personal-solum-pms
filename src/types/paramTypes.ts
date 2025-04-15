@@ -78,7 +78,6 @@ export interface IPayloadCreateEditDoctor {
   email?: string;
   mobile_number?: string;
   status?: number;
-  address?: string;
   date_of_birth?: string;
   gender?: string;
   medicare_card_number?: string;
@@ -89,6 +88,10 @@ export interface IPayloadCreateEditDoctor {
   emergency_mobile_number?: string;
   emergency_email?: string;
   emergency_relationship?: string;
+  description?: string;
+  address_line_1?: string;
+  address_line_2?: string;
+  street_number?: string;
 }
 
 export interface IParamGetAllPatient extends IParamGetDataWithPagination {}

@@ -56,7 +56,6 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
       first_name: data.first_name,
       last_name: data.last_name as string,
       email: data.email,
-      address: '',
       date_of_birth: data.date_of_birth as string,
       gender: data.gender as string,
       medicare_card_number: data.medicare_card as string,
@@ -66,6 +65,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
       mobile_number: data.mobile_number as string,
       status: 1,
       timezone: data.timezone ?? 'Australia/Sydney',
+      description: data.about,
     };
 
     if (id) {
@@ -106,11 +106,16 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
           suburb: dataDoctor?.suburb ?? '',
           state: dataDoctor?.state ?? '',
           post_code: dataDoctor?.postcode ?? '',
+          address_line_1: dataDoctor?.address_line_1 ?? '',
+          address_line_2: dataDoctor?.address_line_2 ?? '',
+          about: dataDoctor?.description ?? '',
           // avatar: dataPatient?.avatar ?? '',
         },
       }}
     >
       {({ register, control, setValue, getValues, formState: { errors } }) => {
+        console.log('🚀 ~ DoctorDetails ~ errors:', errors);
+
         return (
           <>
             <div className="grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
@@ -290,10 +295,10 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
                   name="treatmentType"
                   control={control}
                   render={({ field }) => (
-                    <CSelect
+                    <MultySelect
                       searchable
                       {...field}
-                      placeholder="Select Doctor Type"
+                      placeholder="Select Treatment Type"
                       options={doctorTypeOption}
                       disabled={isView}
                       error={errors.treatmentType?.message}
@@ -306,7 +311,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
                   name="specialistType"
                   control={control}
                   render={({ field }) => (
-                    <CSelect
+                    <MultySelect
                       searchable
                       {...field}
                       placeholder="Select Specialist Type"
@@ -347,7 +352,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
             </div>
 
             <Divider />
-            <div className="section-container">
+            <div className="section-container mb-10">
               <FormGroup title="Your Photo" isLabel>
                 <div className="flex flex-col gap-6 @container @3xl:col-span-2">
                   <AvatarUpload
