@@ -1,15 +1,15 @@
 import { z } from 'zod';
 import { messages } from '@/config/messages';
-import { fileSchema, validateEmail } from './common-rules';
 
 // form zod validation schema
-export const assignDoctorSchema = z.object({
+export const assignSchema = z.object({
   doctor: z.array(z.string()).min(1, messages.doctorIsRequired),
+  clinic: z.array(z.string({ required_error: messages.clinicIsRequired })),
   generalPractice: z.string().optional(),
 });
 
 // generate form types from zod validation schema
-export type AssignDoctorTypes = z.infer<typeof assignDoctorSchema>;
+export type AssignTypes = z.infer<typeof assignSchema>;
 
 export const defaultValues = {
   first_name: '',

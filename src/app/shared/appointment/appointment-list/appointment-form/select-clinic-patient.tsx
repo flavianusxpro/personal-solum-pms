@@ -10,6 +10,7 @@ import { useMemo } from 'react';
 import { useGetAllClinics } from '@/hooks/useClinic';
 import { z } from 'zod';
 import { Text } from 'rizzui';
+import { ROLES } from '@/config/constants';
 
 const FormSchema = appointmentBookSchema['selectPatientAndClinic'];
 

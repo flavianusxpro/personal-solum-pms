@@ -7,14 +7,12 @@ import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
 import { Flex, Input, Loader, Text, Textarea } from 'rizzui';
-import {
-  assignDoctorSchema,
-  AssignDoctorTypes,
-} from '@/validators/assign-doctor.schema';
+import { assignSchema, AssignTypes } from '@/validators/assign-doctor.schema';
 import { useGetPatientById, useUpdateAssignDoctor } from '@/hooks/usePatient';
 import { useParams } from 'next/navigation';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
 import { useMemo } from 'react';
+import { useGetAllClinics } from '@/hooks/useClinic';
 
 const MultySelect = dynamic(
   () => import('rizzui').then((mod) => mod.MultiSelect),
@@ -28,18 +26,16 @@ const MultySelect = dynamic(
   }
 );
 
-export default function TabAssignDoctor({
-  isView = false,
-}: {
-  isView?: boolean;
-}) {
+export default function TabAssign({ isView = false }: { isView?: boolean }) {
   const id = useParams().id as string;
 
-  const {
-    data: dataPatient,
-    refetch: refetchGetDataPatient,
-    isLoading: isLoadingGetDataPatient,
-  } = useGetPatientById(id);
+  const { data: dataPatient } = useGetPatientById(id);
+
+  const { data: dataClinics } = useGetAllClinics({
+    page: 1,
+    perPage: 50,
+    role: 'admin',
+  });
 
   const { data: dataDoctor } = useGetAllDoctors({
     page: 1,
@@ -47,6 +43,14 @@ export default function TabAssignDoctor({
   });
 
   const { mutate } = useUpdateAssignDoctor();
+
+  const clinicsOptions = useMemo(() => {
+    if (!dataClinics) return [];
+    return dataClinics.data.map((clinic) => ({
+      label: clinic.name,
+      value: clinic.id.toString(),
+    }));
+  }, [dataClinics]);
 
   const doctorOptions = useMemo(() => {
     if (!dataDoctor) return [];
@@ -57,7 +61,7 @@ export default function TabAssignDoctor({
     }));
   }, [dataDoctor]);
 
-  const onSubmit: SubmitHandler<AssignDoctorTypes> = (data) => {
+  const onSubmit: SubmitHandler<AssignTypes> = (data) => {
     const doctor_ids = data.doctor.map((doctor) => parseInt(doctor));
     mutate(
       {
@@ -76,8 +80,8 @@ export default function TabAssignDoctor({
   };
 
   return (
-    <Form<AssignDoctorTypes>
-      validationSchema={assignDoctorSchema}
+    <Form<AssignTypes>
+      validationSchema={assignSchema}
       onSubmit={onSubmit}
       className="@container"
       useFormProps={{
@@ -93,8 +97,26 @@ export default function TabAssignDoctor({
         return (
           <>
             <Flex direction="col" className="" gap="7">
-              <FormGroup title="Assign Doctor" className="" />
-              <div className="mb-10 grid w-full grid-cols-2 gap-7">
+              <FormGroup title="Assign" className="" />
+              <div className="mb-10 grid w-full grid-cols-1 gap-7">
+                <FormGroup title="Clinic" isLabel>
+                  <Controller
+                    name="clinic"
+                    control={control}
+                    render={({ field }) => (
+                      <MultySelect
+                        {...field}
+                        onClear={() => field.onChange([])}
+                        options={clinicsOptions}
+                        clearable
+                        placeholder="Select Clinic"
+                        error={errors.clinic?.message}
+                        className="flex-grow"
+                        disabled={isView}
+                      />
+                    )}
+                  />
+                </FormGroup>
                 <FormGroup title="Doctors" isLabel>
                   <Controller
                     name="doctor"

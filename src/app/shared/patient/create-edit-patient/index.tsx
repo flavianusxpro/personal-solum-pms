@@ -4,13 +4,12 @@ import PageHeader from '../../ui/page-header';
 import { TabButton } from '../../ui/tab-button';
 import { startTransition, useState } from 'react';
 import SimpleBar from 'simplebar-react';
-import cn from '@/core/utils/class-names';
 import PatientDetails from './tab-patient-details';
 import TabPassword from './tab-password';
 import TabEmergencyContact from './tab-emergency-contact';
 import TabBillingAppointments from './tab-billing-appointment';
 import TabDocumentation from './tab-documentation';
-import TabAssignDoctor from './tab-assign-doctor';
+import TabAssign from './tab-assign';
 import { useParams } from 'next/navigation';
 import { useGetPatientById } from '@/hooks/usePatient';
 
@@ -37,7 +36,7 @@ export const navItems = [
   },
   {
     value: 'assign',
-    label: 'Assign Doctor',
+    label: 'Assign',
   },
 ];
 
@@ -101,7 +100,7 @@ export default function CreateEditPatient({
         {tab === 'emergency' && <TabEmergencyContact isView={isView} />}
         {tab === 'billing' && <TabBillingAppointments isView={isView} />}
         {tab === 'documentation' && <TabDocumentation isView={isView} />}
-        {tab === 'assign' && <TabAssignDoctor isView={isView} />}
+        {tab === 'assign' && <TabAssign isView={isView} />}
       </div>
     </>
   );
