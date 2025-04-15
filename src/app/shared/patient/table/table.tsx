@@ -50,7 +50,6 @@ export default function PatientTable({ className }: { className?: string }) {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [filterStateValue, setFilterStateValue] = useState(filterState);
-  console.log('🚀 ~ PatientTable ~ filterStateValue:', filterStateValue);
 
   const { data, isLoading: isLoadingGetAllPatients } = useGetAllPatients({
     page,

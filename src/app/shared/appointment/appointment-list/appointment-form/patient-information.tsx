@@ -13,7 +13,7 @@ import {
 import { PiXBold } from 'react-icons/pi';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import toast from 'react-hot-toast';
-import {  useState } from 'react';
+import { useState } from 'react';
 
 export const appointmentPatientInfoSchema = z.object({
   name: z.string().min(1, { message: 'This field is required' }),
@@ -40,15 +40,9 @@ export default function PatientInformation() {
     handleSubmit,
   } = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-    },
   });
 
   const onSubmit: SubmitHandler<FormSchemaType> = (data) => {
-    console.log('data', data);
     setTimeout(() => {
       setLoading(true);
       setFormData((prev) => ({

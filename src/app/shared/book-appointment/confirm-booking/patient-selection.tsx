@@ -23,17 +23,8 @@ export default function PatientSelection() {
 
   const onSubmitPatient = async () => {
     return openModal({
-      view: <ModalEstimationCost />,
+      view: <ModalEstimationCost className="w-full rounded-md p-6" />,
     });
-  };
-
-  const onSubmitExistingPatient: SubmitHandler<ExistingPatientSchema> = async (
-    data
-  ) => {
-    console.log(
-      '🚀 ~ constonSubmitExistingPatient:SubmitHandler<ExistingPatientSchema>= ~ data:',
-      data
-    );
   };
 
   return (

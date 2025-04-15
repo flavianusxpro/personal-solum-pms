@@ -1,20 +1,15 @@
+import { getAllClinics, getClinicByIdForPatient } from '@/service/clinic';
+import { getDoctorByClinic } from '@/service/doctor';
 import {
-  getAllClinicsForPatient,
-  getClinicByIdForPatient,
-} from '@/service/clinic';
-import { getDoctorByClinicForPatient } from '@/service/doctor';
-import {
-  IParamGetAllClinicForPatient,
-  IParamGetDoctorByClinicForPatient,
+  IParamGetAllClinic,
+  IParamGetDoctorByClinic,
 } from '@/types/paramTypes';
 import { useQuery } from '@tanstack/react-query';
 
-export function useGetAllClinicsForPatient(
-  params: IParamGetAllClinicForPatient
-) {
+export function useGetAllClinics(params: IParamGetAllClinic) {
   return useQuery({
-    queryKey: ['all-clinics-patient'],
-    queryFn: async () => getAllClinicsForPatient(params),
+    queryKey: ['all-clinics' + params],
+    queryFn: async () => getAllClinics(params),
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 10, // 10 minutes
   });
@@ -28,12 +23,10 @@ export function useGetClinicByIdForPatient(id: string) {
   });
 }
 
-export function useGetDoctorByClinicForPatient(
-  params: IParamGetDoctorByClinicForPatient
-) {
+export function useGetDoctorByClinic(params: IParamGetDoctorByClinic) {
   return useQuery({
     queryKey: ['clinic-by-clinic-for-patient' + params.id],
-    queryFn: async () => getDoctorByClinicForPatient(params),
+    queryFn: async () => getDoctorByClinic(params),
     enabled: !!params.id,
   });
 }

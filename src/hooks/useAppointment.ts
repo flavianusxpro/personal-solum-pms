@@ -1,9 +1,10 @@
 import {
   getAppointmentList,
   getSummaryAppointments,
+  postCreateAppointment,
 } from '@/service/appointment';
 import { IParamGetAppointments } from '@/types/paramTypes';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 export function useGetAppointments(params: IParamGetAppointments) {
   return useQuery({
@@ -16,5 +17,11 @@ export function useGetSummaryAppointments() {
   return useQuery({
     queryKey: ['getSummaryAppointments'],
     queryFn: async () => getSummaryAppointments(),
+  });
+}
+
+export function usePostCreateAppointment() {
+  return useMutation({
+    mutationFn: postCreateAppointment,
   });
 }

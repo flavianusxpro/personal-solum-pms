@@ -19,7 +19,7 @@ export default function Footer({ className }: FooterProps) {
       )}
     >
       <div className="flex shrink-0 gap-1.5">
-        {Array.from([0, 1, 2, 3], (x) => (
+        {Array.from([0, 1, 2, 3, 4], (x) => (
           <Button
             key={`step-${x}`}
             variant="text"
@@ -32,7 +32,7 @@ export default function Footer({ className }: FooterProps) {
       </div>
 
       <div className="flex gap-3">
-        {step > 0 && step < 4 && (
+        {step > 0 && step <= 4 && (
           <Button
             onClick={gotoPrevStep}
             variant="outline"
@@ -42,9 +42,11 @@ export default function Footer({ className }: FooterProps) {
             Back
           </Button>
         )}
-        <Button className="!w-auto" type="submit" rounded="lg">
-          {step === 3 ? 'Submit' : 'Next'}
-        </Button>
+        {step !== 4 && (
+          <Button className="!w-auto" type="submit" rounded="lg">
+            {step === 3 ? 'Payment' : 'Next'}
+          </Button>
+        )}
       </div>
     </footer>
   );

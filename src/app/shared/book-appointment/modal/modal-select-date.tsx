@@ -35,7 +35,6 @@ export default function ModalSelectDate({ onSelectDate }: IProps) {
     }));
     onSelectDate();
     closeModal();
-    9;
   };
 
   return (

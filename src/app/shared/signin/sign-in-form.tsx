@@ -10,6 +10,7 @@ import { loginSchema, LoginSchema } from '@/validators/login.schema';
 import { signIn } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 
 const initialValues: LoginSchema = {
   email: '',
@@ -22,9 +23,12 @@ export default function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get('callbackUrl');
-
   const isMedium = useMedia('(max-width: 1200px)', false);
+
+  const [isLoading, setIsloading] = useState(false);
+
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
+    setIsloading(true);
     const res = await signIn('credentials', {
       ...data,
       role: 'admin',
@@ -42,6 +46,7 @@ export default function SignInForm() {
 
     if (res?.error) {
       toast.error(res.error || 'Invalid credentials');
+      setIsloading(false);
     }
   };
 
@@ -92,6 +97,7 @@ export default function SignInForm() {
               className="w-full"
               type="submit"
               size={isMedium ? 'lg' : 'xl'}
+              isLoading={isLoading}
             >
               Sign In
             </Button>

@@ -3,13 +3,17 @@ import CheckCircleIcon from '@core/components/icons/check-circle';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { ActionIcon, Button, Flex, Input, Text, Title } from 'rizzui';
-import StripeCheckout from '../../stripe-checkout/stripe-checkout';
 import { routes } from '@/config/routes';
 import cn from '@/core/utils/class-names';
-import { useBookAppoinment } from '@/hooks/useBookAppoinment';
-import { useAtom } from 'jotai';
-import bookAppointmentAtom from '@/store/book-appointment';
+import StripeCheckout from '@/app/shared/stripe-checkout/stripe-checkout';
+import { usePostCreateAppointment } from '@/hooks/useAppointment';
 import toast from 'react-hot-toast';
+import { useTimeout } from 'react-use';
+import { IPayloadPostAppoinment } from '@/types/paramTypes';
+import { useAtom } from 'jotai';
+import { formDataAtom } from '.';
+import dayjs from 'dayjs';
+import { useQueryClient } from '@tanstack/react-query';
 
 const STEP = {
   ESTIMATE_COST: 'estimate-cost',
@@ -17,7 +21,7 @@ const STEP = {
   CONFIRM: 'confirm',
 };
 
-const ModalEstimationCost = ({
+const PriceEstimationCost = ({
   className,
   showCancelButton = true,
 }: {
@@ -26,57 +30,37 @@ const ModalEstimationCost = ({
 }) => {
   const { closeModal } = useModal();
   const router = useRouter();
-  const intervalRef = React.useRef(0);
+  const queryClient = useQueryClient();
 
-  const [bookAppointmentValue] = useAtom(bookAppointmentAtom);
+  const [formData] = useAtom(formDataAtom);
   const [step, setStep] = React.useState(STEP.ESTIMATE_COST);
-  const [second, setSecond] = React.useState(5);
 
-  const { mutate: mutateBookAppointment, isPending: isPendingBookAppoinment } =
-    useBookAppoinment();
-
-  const appointmentType = bookAppointmentValue?.step3?.includes('Follow up');
+  const { mutate } = usePostCreateAppointment();
 
   const successPayment = (paymentId: string) => {
-    mutateBookAppointment(
-      {
-        doctorId: bookAppointmentValue.doctor?.id as number,
-        patient_problem: bookAppointmentValue.step3 as string,
-        patient_type: bookAppointmentValue.step1 as string,
-        additional_information: {},
-        date: `${bookAppointmentValue.appointmentDate} ${bookAppointmentValue.doctor?.doctorTime?.split(' ')[0]}`,
-        payment_id: paymentId,
-        clinicId: bookAppointmentValue.clinic?.id as number,
-        appointment_type: appointmentType ? 'FOLLOWUP' : 'INITIAL',
+    const payload: IPayloadPostAppoinment = {
+      appointment_type: formData.appointment_type,
+      clinicId: formData.clinicId as number,
+      doctorId: formData.doctorId as number,
+      date: `${dayjs(formData.date).format('YYYY-MM-DD')} ${formData.doctorTime}`,
+      note: formData.note,
+      patient_problem: formData.patient_problem,
+      patient_type: formData.patient_type,
+      payment_id: paymentId,
+      meeting_preference: 'ZOOM',
+      patient_id: formData.patient_id ? String(formData.patient_id) : '',
+    };
+
+    mutate(payload, {
+      onSuccess: () => {
+        setStep(STEP.CONFIRM);
+        queryClient.invalidateQueries({ queryKey: ['getAppointments'] });
       },
-      {
-        onSuccess: () => {
-          toast.success('Booking successful');
-          setStep(STEP.CONFIRM);
-        },
-        onError: (error: any) => {
-          toast.error('Booking failed: ' + error.response.data.message);
-        },
-      }
-    );
+      onError: (error: any) => {
+        toast.error('Booking failed: ' + error.response.data.message);
+      },
+    });
   };
-
-  const startCountDown = () => {
-    intervalRef.current = window.setInterval(() => {
-      setSecond((prev) => (prev ? prev - 1 : 0));
-    }, 1000);
-  };
-
-  useEffect(() => {
-    if (step == STEP.CONFIRM) {
-      startCountDown();
-      setTimeout(() => {
-        router.push(routes.consentForm);
-      }, 5000);
-    }
-
-    return () => clearInterval(intervalRef.current);
-  }, [closeModal, router, step]);
 
   return (
     <div className={cn(className)}>
@@ -147,16 +131,6 @@ const ModalEstimationCost = ({
           </div>
         </div>
       )}
-      {/* {step == STEP.PAYMENT && (
-        <div className="grid grid-cols-1 items-center gap-4">
-          <StripeCheckout onSuccess={() => setStep(STEP.CONFIRM)} />
-          <div className="flex flex-col gap-2">
-            <Button variant="text" onClick={() => setStep(STEP.ESTIMATE_COST)}>
-              Cancel
-            </Button>
-          </div>
-        </div>
-      )} */}
       {step == STEP.CONFIRM && (
         <div className="flex flex-col items-center justify-center gap-4 text-center">
           <CheckCircleIcon className="w-2h-28 h-28 text-green-600" />
@@ -166,14 +140,12 @@ const ModalEstimationCost = ({
             </Title>
           </div>
 
-          <Text>
-            You will redirect to the consent form in {second} second...
-          </Text>
-
           <div className="flex flex-col gap-2">
             <Button
               className="bg-green-600"
-              onClick={() => router.push(routes.consentForm)}
+              onClick={() => {
+                closeModal();
+              }}
             >
               OK
             </Button>
@@ -184,4 +156,4 @@ const ModalEstimationCost = ({
   );
 };
 
-export default ModalEstimationCost;
+export default PriceEstimationCost;

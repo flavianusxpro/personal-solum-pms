@@ -87,7 +87,8 @@ export const GetColumns = ({
       dataIndex: 'date',
       key: 'date',
       width: 250,
-      render: (createdDate: Date) => dayjs(createdDate).format('DD/MM/YYYY'),
+      render: (createdDate: Date) =>
+        dayjs(createdDate).format('DD/MM/YYYY HH:mm'),
     },
     {
       title: <HeaderCell title="Appointment To" />,
@@ -222,7 +223,7 @@ function getPaymentStatusBadge(status: number | string) {
     case 3:
       return (
         <Flex gap="1" align="center">
-          <Badge color="warning" renderAsDot />
+          <Badge color="danger" renderAsDot />
           <Text className="font-medium text-orange-dark">Cancelled</Text>
         </Flex>
       );
@@ -230,14 +231,14 @@ function getPaymentStatusBadge(status: number | string) {
       return (
         <Flex gap="1" align="center">
           <Badge color="success" renderAsDot />
-          <Text className="font-medium text-green-dark">Pending</Text>
+          <Text className="font-medium text-green-dark">Paid</Text>
         </Flex>
       );
     case 1:
       return (
         <Flex gap="1" align="center">
           <Badge color="danger" renderAsDot />
-          <Text className="font-medium text-red-dark">Draft</Text>
+          <Text className="font-medium text-red-dark">Pending</Text>
         </Flex>
       );
     default:

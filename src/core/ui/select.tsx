@@ -8,9 +8,14 @@ const Select = dynamic(() => import('rizzui').then((mod) => mod.Select), {
   loading: () => <SelectLoader />,
 });
 
-const CSelect: ComponentType<SelectProps<SelectOption>> = ({
+interface CSelectProps extends SelectProps<SelectOption> {
+  isLoading?: boolean;
+}
+
+const CSelect: ComponentType<CSelectProps> = ({
   options,
   dropdownClassName = 'h-auto',
+  isLoading = false,
   ...field
 }) => {
   return (
@@ -18,6 +23,9 @@ const CSelect: ComponentType<SelectProps<SelectOption>> = ({
       {...field}
       displayValue={(option) => {
         const selectedOption = options.find((o) => o.value === option);
+        if (isLoading) {
+          return <SelectLoader />;
+        }
         return (
           <div className="flex items-center gap-2">
             <Text>{selectedOption?.label}</Text>

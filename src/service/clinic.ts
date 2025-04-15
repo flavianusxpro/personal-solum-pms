@@ -3,12 +3,11 @@ import {
   IGetAllClinicForPatientResponse,
   IGetClinicByIdForPatientResponse,
 } from '@/types/ApiResponse';
-import { IParamGetAllClinicForPatient } from '@/types/paramTypes';
+import { IParamGetAllClinic } from '@/types/paramTypes';
 
-export async function getAllClinicsForPatient(
-  params: IParamGetAllClinicForPatient
-) {
-  return await get<IGetAllClinicForPatientResponse>('/patient/clinic', {
+export async function getAllClinics(params: IParamGetAllClinic) {
+  const url = `${params.role}/clinic`;
+  return await get<IGetAllClinicForPatientResponse>(url, {
     params,
   });
 }

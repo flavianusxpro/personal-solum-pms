@@ -1,21 +1,19 @@
 import { get, post, put } from '@/app/api/api';
 import {
   IGetAllDoctorsResponse,
-  IGetDoctorByClinicForPatientResponse,
+  IGetDoctorByClinicResponse,
   IGetDoctorByIdResponse,
 } from '@/types/ApiResponse';
 import {
   IParamGetAllDoctor,
-  IParamGetDoctorByClinicForPatient,
+  IParamGetDoctorByClinic,
   IPayloadCreateEditDoctor,
   IPayloadSettingBillingDoctor,
   IPayloadSettingMeetingDoctor,
 } from '@/types/paramTypes';
 
-export async function getDoctorByClinicForPatient(
-  params: IParamGetDoctorByClinicForPatient
-) {
-  return await get<IGetDoctorByClinicForPatientResponse>(
+export async function getDoctorByClinic(params: IParamGetDoctorByClinic) {
+  return await get<IGetDoctorByClinicResponse>(
     '/patient/clinic/' + params.id + '/doctor',
     {
       params,

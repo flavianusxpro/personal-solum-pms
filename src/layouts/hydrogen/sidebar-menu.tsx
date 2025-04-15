@@ -19,8 +19,7 @@ export function SidebarMenu() {
   const { data } = useSession();
   const role = data?.user.role;
 
-  const menuItems =
-    role === ROLES.Administrator ? adminMenuItems : patientMenuItems;
+  const menuItems = role === ROLES.Admin ? adminMenuItems : patientMenuItems;
 
   const handleSignOut = async () => {
     await signOut({ redirect: false }); // Prevent automatic re-render

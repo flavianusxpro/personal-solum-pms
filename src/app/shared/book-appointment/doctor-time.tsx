@@ -9,9 +9,9 @@ import ModalDoctorDetails from './modal/modal-doctor-detail';
 import ModalCentreDetails from './modal/modal-centre-details';
 import { useModal } from '../modal-views/use-modal';
 import CSelect from '../ui/select';
-import { useGetDoctorByClinicForPatient } from '@/hooks/useClinic';
-import { IParamGetDoctorByClinicForPatient } from '@/types/paramTypes';
-import { IGetDoctorByClinicForPatientResponse } from '@/types/ApiResponse';
+import { useGetDoctorByClinic } from '@/hooks/useClinic';
+import { IParamGetDoctorByClinic } from '@/types/paramTypes';
+import { IGetDoctorByClinicResponse } from '@/types/ApiResponse';
 import StepBackButton from './step-back-button';
 import cn from '@core/utils/class-names';
 
@@ -40,14 +40,13 @@ const DoctorScheduleList = ({
   const [currentOpen, setCurrentOpen] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [timeZone, setTimeZone] = useState(timeZoneOptions[0].value);
-  const [params, setParams] = useState<IParamGetDoctorByClinicForPatient>({
+  const [params, setParams] = useState<IParamGetDoctorByClinic>({
     id: bookAppointmentValue?.clinic?.id.toString() as string,
     page: 1,
     perPage: 10,
   });
 
-  const { data: dataDoctor, isLoading } =
-    useGetDoctorByClinicForPatient(params);
+  const { data: dataDoctor, isLoading } = useGetDoctorByClinic(params);
 
   const nextStep = () => {
     setModalOpen(false);
@@ -55,7 +54,7 @@ const DoctorScheduleList = ({
   };
 
   const openDoctorDetailsModal = (
-    doctor: IGetDoctorByClinicForPatientResponse['data'][number]
+    doctor: IGetDoctorByClinicResponse['data'][number]
   ) => {
     setBookAppointment((p) => ({
       ...p,
@@ -177,7 +176,7 @@ function DoctorTime({
   currentOpen,
   setModalOpen,
 }: {
-  doctor: IGetDoctorByClinicForPatientResponse['data'][number];
+  doctor: IGetDoctorByClinicResponse['data'][number];
   currentOpen: number | null;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {

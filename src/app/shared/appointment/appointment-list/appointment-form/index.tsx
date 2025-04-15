@@ -5,43 +5,43 @@ import { atom, useAtom } from 'jotai';
 const SelectClinic = dynamic(
   () =>
     import(
-      '@/app/shared/appointment/appointment-list/appointment-form/select-clinic'
+      '@/app/shared/appointment/appointment-list/appointment-form/select-clinic-patient'
     ),
   {
     ssr: false,
   }
 );
-const InitialStep = dynamic(
+const SelectDoctorTime = dynamic(
   () =>
     import(
-      '@/app/shared/appointment/appointment-list/appointment-form/patient-doctor'
+      '@/app/shared/appointment/appointment-list/appointment-form/doctor-time'
     ),
   {
     ssr: false,
   }
 );
-const StepOne = dynamic(
+const SelectDate = dynamic(
   () =>
     import(
-      '@/app/shared/appointment/appointment-list/appointment-form/data-time'
+      '@/app/shared/appointment/appointment-list/appointment-form/select-date'
     ),
   {
     ssr: false,
   }
 );
-const StepTwo = dynamic(
+const SelectService = dynamic(
   () =>
     import(
-      '@/app/shared/appointment/appointment-list/appointment-form/services'
+      '@/app/shared/appointment/appointment-list/appointment-form/select-services'
     ),
   {
     ssr: false,
   }
 );
-const StepThree = dynamic(
+const Payment = dynamic(
   () =>
     import(
-      '@/app/shared/appointment/appointment-list/appointment-form/payment'
+      '@/app/shared/appointment/appointment-list/appointment-form/select-payment'
     ),
   {
     ssr: false,
@@ -55,45 +55,42 @@ import { PiXBold } from 'react-icons/pi';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 
 type FormDataType = {
-  patient: string;
-  doctor: string;
-  date: Date;
-  time: string;
-  category: string;
-  service: string;
-  name: string;
-  email: string;
-  phone: string | undefined;
+  clinicId?: number;
+  patient_id?: string;
+  doctorId?: number;
+  doctorTime: string;
+  date: string;
+  note: string;
   appointment_type: string;
-  meeting_type: string;
-  notes: string;
+  patient_type: string;
+  patient_problem: string;
+  meeting_preference: string;
 };
 
 export const initialFormData = {
-  patient: '',
-  doctor: '',
-  date: new Date(),
-  time: '',
-  category: '',
-  service: '',
-  name: '',
-  email: '',
-  phone: '',
+  clinicId: undefined,
+  patient_id: undefined,
+  doctorId: undefined,
+  doctorTime: '',
+  date: '',
+  note: '',
   appointment_type: '',
-  meeting_type: '',
-  notes: '',
+  patient_type: '',
+  patient_problem: '',
+  meeting_preference: '',
 };
 
 export const formDataAtom = atom<FormDataType>(initialFormData);
 
 enum Step {
-  InitialStep,
-  StepOne,
-  StepTwo,
-  StepThree,
+  SelectClinic,
+  SelectService,
+  SelectDate,
+  SelectDoctorTime,
+  Payment,
 }
 
-const firstStep = Step.InitialStep;
+const firstStep = Step.SelectClinic;
 export const stepperAtomAppointment = atomWithReset<Step>(firstStep);
 
 export function useStepperAppointment() {
@@ -118,10 +115,11 @@ export function useStepperAppointment() {
 }
 
 const MAP_STEP_TO_COMPONENT = {
-  [Step.InitialStep]: InitialStep,
-  [Step.StepOne]: StepOne,
-  [Step.StepTwo]: StepTwo,
-  [Step.StepThree]: StepThree,
+  [Step.SelectClinic]: SelectClinic,
+  [Step.SelectDate]: SelectDate,
+  [Step.SelectDoctorTime]: SelectDoctorTime,
+  [Step.SelectService]: SelectService,
+  [Step.Payment]: Payment,
 };
 
 export const stepAppointmentTotalSteps = Object.keys(

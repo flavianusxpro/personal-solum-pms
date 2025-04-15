@@ -1,16 +1,18 @@
 import { RegisterSchema } from '@/validators/register.schema';
+import { RoleType } from './constansTypes';
 interface IParamGetDataWithPagination {
   page: number;
   perPage: number;
   sort?: 'ASC' | 'DESC';
   search?: string;
 }
-export interface IParamGetAllClinicForPatient
-  extends IParamGetDataWithPagination {}
+export interface IParamGetAllClinic extends IParamGetDataWithPagination {
+  role: RoleType;
+}
 
-export interface IParamGetDoctorByClinicForPatient
-  extends IParamGetDataWithPagination {
+export interface IParamGetDoctorByClinic extends IParamGetDataWithPagination {
   id: string;
+  role?: RoleType;
 }
 
 export interface IPayloadRegisterForPatient extends RegisterSchema {}
@@ -163,4 +165,17 @@ interface Breaktime {
 
 export interface IPayloadPostForgotPassword {
   email: string;
+}
+
+export interface IPayloadPostAppoinment {
+  clinicId: number;
+  patient_id: string;
+  doctorId: number;
+  date: string;
+  note?: string;
+  appointment_type: string;
+  patient_type: string;
+  patient_problem: string;
+  payment_id: string;
+  meeting_preference: string;
 }

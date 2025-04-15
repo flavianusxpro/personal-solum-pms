@@ -1,4 +1,4 @@
-import { useGetAllClinicsForPatient } from '@/hooks/useClinic';
+import { useGetAllClinics } from '@/hooks/useClinic';
 import bookAppointmentAtom from '@/store/book-appointment';
 import { useAtom } from 'jotai';
 import { useState } from 'react';
@@ -28,11 +28,11 @@ export default function SelectClinicDate({
     useAtom(bookAppointmentAtom);
   const [showClinicOptions, setShowClinicOptions] = useState(false);
 
-  const { data: dataClinics, isLoading: isLoadingClinics } =
-    useGetAllClinicsForPatient({
-      page: 1,
-      perPage: 10,
-    });
+  const { data: dataClinics, isLoading: isLoadingClinics } = useGetAllClinics({
+    page: 1,
+    perPage: 10,
+    role: 'patient',
+  });
 
   const openSelectDateModal = () => {
     return openModal({

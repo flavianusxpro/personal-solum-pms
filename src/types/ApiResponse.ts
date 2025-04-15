@@ -66,7 +66,7 @@ export interface IGetClinicByIdForPatientResponse extends ApiResponse {
   };
 }
 
-export interface IGetDoctorByClinicForPatientResponse extends ApiResponse {
+export interface IGetDoctorByClinicResponse extends ApiResponse {
   data: {
     id: number;
     first_name: string;
