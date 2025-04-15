@@ -10,7 +10,6 @@ import {
   formDataAtom,
   useStepperAppointment,
 } from '@/app/shared/appointment/appointment-list/appointment-form';
-import { useModal } from '@/app/shared/modal-views/use-modal';
 import dynamic from 'next/dynamic';
 import { useGetPatientProblem, useGetPatientTypes } from '@/hooks/usePatient';
 import { useMemo } from 'react';

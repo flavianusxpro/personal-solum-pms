@@ -13,7 +13,6 @@ import { IPayloadPostAppoinment } from '@/types/paramTypes';
 import { useAtom } from 'jotai';
 import { formDataAtom } from '.';
 import dayjs from 'dayjs';
-import { useQueryClient } from '@tanstack/react-query';
 
 const STEP = {
   ESTIMATE_COST: 'estimate-cost',
@@ -29,8 +28,6 @@ const PriceEstimationCost = ({
   showCancelButton?: boolean;
 }) => {
   const { closeModal } = useModal();
-  const router = useRouter();
-  const queryClient = useQueryClient();
 
   const [formData] = useAtom(formDataAtom);
   const [step, setStep] = React.useState(STEP.ESTIMATE_COST);
@@ -54,7 +51,6 @@ const PriceEstimationCost = ({
     mutate(payload, {
       onSuccess: () => {
         setStep(STEP.CONFIRM);
-        queryClient.invalidateQueries({ queryKey: ['getAppointments'] });
       },
       onError: (error: any) => {
         toast.error('Booking failed: ' + error.response.data.message);

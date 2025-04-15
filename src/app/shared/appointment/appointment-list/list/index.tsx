@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Title } from 'rizzui';
 import { GetColumns } from '@/app/shared/appointment/appointment-list/list/columns';
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
@@ -10,6 +10,7 @@ import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
 import cn from '@core/utils/class-names';
 import { useGetAppointments } from '@/hooks/useAppointment';
+import { useModal } from '@/app/shared/modal-views/use-modal';
 
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
@@ -28,12 +29,16 @@ const filterState = {
 export default function AppointmentListTable() {
   const [pageSize, setPageSize] = useState(10);
   const [_, setCheckedItems] = useState<string[]>([]);
+  const { isOpen } = useModal();
 
-  const { data: dataAppointments, isLoading: isLoadingGetAppointments } =
-    useGetAppointments({
-      page: 1,
-      perPage: pageSize,
-    });
+  const {
+    data: dataAppointments,
+    isLoading: isLoadingGetAppointments,
+    refetch,
+  } = useGetAppointments({
+    page: 1,
+    perPage: pageSize,
+  });
 
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
 
@@ -103,6 +108,12 @@ export default function AppointmentListTable() {
 
   const { visibleColumns, checkedColumns, setCheckedColumns } =
     useColumn(columns);
+
+  useEffect(() => {
+    if (isOpen === false) {
+      refetch();
+    }
+  }, [isOpen, refetch]);
 
   return (
     <div
