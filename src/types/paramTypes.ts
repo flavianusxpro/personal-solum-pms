@@ -148,7 +148,7 @@ export interface IPayloadUpdateAssignDoctor {
 }
 
 export interface IParamGetListSchedule extends IParamGetDataWithPagination {
-  doctorId?: number;
+  doctorId?: number | string;
 }
 
 export interface IPayloadPostCreateSchedule {

@@ -30,26 +30,27 @@ interface CreateEventProps {
   startDate?: Date;
   endDate?: Date;
   event?: CalendarEvent;
+  doctorId?: string;
 }
 
 export default function EventForm({
   startDate,
   endDate,
   event,
+  doctorId,
 }: CreateEventProps) {
   const { closeModal } = useModal();
-  const { createEvent, updateEvent } = useEventCalendar();
 
   const isNewEvent = event?.id === '' || event?.id === undefined;
-
-  const { data: dataDoctor } = useGetAllDoctors({
-    page: 1,
-    perPage: 50,
-  });
 
   const { refetch } = useGetListSchedule({
     page: 1,
     perPage: 100,
+  });
+
+  const { data: dataDoctor } = useGetAllDoctors({
+    page: 1,
+    perPage: 50,
   });
 
   const { mutate: mutateCreateSchedule, isPending: isPendingCreateSchedule } =
@@ -65,12 +66,18 @@ export default function EventForm({
     formState: { errors },
   } = useForm<EventFormInput>({
     defaultValues: {
-      title: isNewEvent ? '' : (event?.title ?? ''),
       description: isNewEvent ? '' : (event?.description ?? ''),
       location: isNewEvent ? '' : (event?.location ?? ''),
       startDate: isNewEvent ? startDate : event?.start,
       endDate: isNewEvent ? endDate : event?.end,
-      breakTimes: isNewEvent ? [] : (event?.breakTimes ?? []),
+      breakTimes: isNewEvent
+        ? []
+        : event?.breakTimes
+          ? (JSON.parse(event?.breakTimes as any) as {
+              start: Date;
+              end: Date;
+            }[])
+          : [],
       doctor: isNewEvent ? undefined : (event?.doctor ?? undefined),
     },
   });
@@ -177,13 +184,24 @@ export default function EventForm({
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-1 gap-5 @container md:grid-cols-2 [&_label]:font-medium"
       >
-        <Input
-          label="Event Name"
-          placeholder="Enter a name of event"
-          {...register('title')}
-          className="col-span-full"
-          error={errors.title?.message}
-        />
+        {isNewEvent && (
+          <Controller
+            name="doctor"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <CSelect
+                label="Doctor"
+                placeholder="Select a doctor"
+                options={doctorOptions}
+                value={value}
+                onChange={onChange}
+                error={errors.doctor?.message}
+                className="col-span-full"
+                searchable
+              />
+            )}
+          />
+        )}
 
         <Textarea
           label="Event Description"
@@ -192,22 +210,6 @@ export default function EventForm({
           error={errors.description?.message}
           textareaClassName="h-20"
           className="col-span-full"
-        />
-        <Controller
-          name="doctor"
-          control={control}
-          render={({ field: { value, onChange } }) => (
-            <CSelect
-              label="Doctor"
-              placeholder="Select a doctor"
-              options={doctorOptions}
-              value={value}
-              onChange={onChange}
-              error={errors.doctor?.message}
-              className="col-span-full"
-              searchable
-            />
-          )}
         />
         <Controller
           name="startDate"

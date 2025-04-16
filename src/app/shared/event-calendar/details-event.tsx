@@ -1,7 +1,7 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { CalendarEvent } from '@/types';
 import { PiMapPin, PiXBold } from 'react-icons/pi';
-import { FaUserDoctor } from 'react-icons/fa6';
+import { FaPencil, FaUserDoctor } from 'react-icons/fa6';
 import { ActionIcon, Button, Text, Title } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { MdOutlineCalendarMonth } from 'react-icons/md';
@@ -53,18 +53,19 @@ function DetailsEvents({ event }: { event: CalendarEvent }) {
       </div>
 
       <div>
-        <Title as="h4" className="text-lg font-medium xl:text-xl xl:leading-7">
-          {event.title}
-        </Title>
-        {event.description && (
-          <Text className="mt-3 xl:leading-6">{event.description}</Text>
-        )}
         <ul className="mt-7 flex flex-col gap-[18px] text-gray-600">
           <li className="flex gap-2">
             <FaUserDoctor className="h-5 w-5" />
             <span>Doctor:</span>
             <span className="font-medium text-gray-1000">
               {doctor?.first_name} {doctor?.last_name}
+            </span>
+          </li>
+          <li className="flex gap-2">
+            <FaPencil className="h-5 w-5" />
+            <span>Description:</span>
+            <span className="font-medium text-gray-1000">
+              {event.description}
             </span>
           </li>
           <li className="flex gap-2">

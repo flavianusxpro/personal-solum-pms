@@ -168,3 +168,26 @@ export const timeZoneOption = [
   { label: 'UTC-05:00', value: 'Etc/GMT+5' },
   { label: 'UTC-04:00', value: 'Etc/GMT+4' },
 ];
+
+export const weekIntervalOption = [
+  {
+    label: 'Every Week',
+    value: 'every-week',
+  },
+  {
+    label: '1 Week',
+    value: '1 week',
+  },
+  {
+    label: '2 Weeks',
+    value: '2 weeks',
+  },
+  {
+    label: '3 Weeks',
+    value: '3 weeks',
+  },
+  {
+    label: '4 Weeks',
+    value: '4 weeks',
+  },
+];

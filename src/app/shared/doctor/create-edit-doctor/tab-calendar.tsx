@@ -9,7 +9,11 @@ import { useModal } from '../../modal-views/use-modal';
 import DetailsEvents from '../../event-calendar/details-event';
 import EventForm from '../../event-calendar/event-form';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
-import useEventCalendar from '@/core/hooks/use-event-calendar';
+import { useGetListSchedule } from '@/hooks/useSchedule';
+import { useParams } from 'next/navigation';
+import ModalButton from '../../ui/modal-button/modal-button';
+import ScheduleForm from '../../event-calendar/schedule-form';
+import { Flex } from 'rizzui';
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -26,9 +30,28 @@ export default function TabCalendar({
   className?: string;
   isView?: boolean;
 }) {
+  const id = useParams<{ id: string }>().id;
   const { openModal } = useModal();
   const { colorPresetName } = useColorPresetName();
-  const { events } = useEventCalendar();
+
+  const { data: dataSchedule } = useGetListSchedule({
+    doctorId: id,
+    page: 1,
+    perPage: 100,
+  });
+
+  const events: CalendarEvent[] = useMemo(() => {
+    if (!dataSchedule) return [];
+    return dataSchedule.map((schedule) => ({
+      id: schedule.id.toString(),
+      title: schedule.title,
+      start: new Date(schedule.start_date),
+      end: new Date(schedule.end_date),
+      allDay: false,
+      description: schedule.description,
+      doctor: schedule.doctorId.toString(),
+    }));
+  }, [dataSchedule]);
 
   const { views, scrollToTime, formats } = useMemo(
     () => ({
@@ -38,7 +61,7 @@ export default function TabCalendar({
         day: true,
         agenda: true,
       },
-      scrollToTime: new Date(2023, 10, 27, 6),
+      scrollToTime: new Date(),
       formats: {
         dateFormat: 'D',
         weekdayFormat: (date: Date, culture: any, localizer: any) =>
@@ -65,15 +88,23 @@ export default function TabCalendar({
   const handleSelectSlot = useCallback(
     ({ start, end }: { start: Date; end: Date }) => {
       openModal({
-        view: <EventForm startDate={start} endDate={end} />,
+        view: <EventForm doctorId={id} startDate={start} endDate={end} />,
         customSize: '650px',
       });
     },
-    [openModal]
+    [id, openModal]
   );
 
   return (
     <div className="@container">
+      <Flex className="flex w-full items-center justify-end">
+        <ModalButton
+          label="Create Schedule"
+          view={<ScheduleForm />}
+          customSize="600px"
+          className="mb-5 mt-0"
+        />
+      </Flex>
       <Calendar
         localizer={localizer}
         events={events}
