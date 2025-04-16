@@ -182,3 +182,8 @@ export interface IPayloadPostAppoinment {
   payment_id: string;
   meeting_preference: string;
 }
+
+export interface IPayloadUploadImage {
+  image: File;
+  path_name: string;
+}

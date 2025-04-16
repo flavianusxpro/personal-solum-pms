@@ -479,3 +479,9 @@ export interface ApiResponseWithMessage {
   success: boolean;
   message: string;
 }
+
+export interface IPostUploadImageResponse extends ApiResponse {
+  data: {
+    public_url: string;
+  };
+}

@@ -58,6 +58,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'example.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn.alarmexpert.com.au',
+      },
     ],
   },
   reactStrictMode: false,

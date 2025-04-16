@@ -356,6 +356,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
               <FormGroup title="Your Photo" isLabel>
                 <div className="flex flex-col gap-6 @container @3xl:col-span-2">
                   <AvatarUpload
+                    path_name="doctor"
                     name="avatar"
                     setValue={setValue}
                     getValues={getValues}
