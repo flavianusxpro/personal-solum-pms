@@ -2,7 +2,16 @@
 
 import { Button } from 'rizzui';
 import cn from '@core/utils/class-names';
-import { useStepperAppointment } from '@/app/shared/appointment/appointment-list/appointment-form';
+import {
+  formDataAtom,
+  useStepperAppointment,
+} from '@/app/shared/appointment/appointment-list/appointment-form';
+import { useAtom } from 'jotai';
+import { usePostCreateAppointment } from '@/hooks/useAppointment';
+import { IPayloadPostAppoinment } from '@/types/paramTypes';
+import dayjs from 'dayjs';
+import toast from 'react-hot-toast';
+import { useModal } from '@/app/shared/modal-views/use-modal';
 
 interface FooterProps {
   className?: string;
@@ -10,6 +19,34 @@ interface FooterProps {
 
 export default function Footer({ className }: FooterProps) {
   const { step, gotoPrevStep } = useStepperAppointment();
+  const { closeModal } = useModal();
+
+  const [formData] = useAtom(formDataAtom);
+  const { mutate } = usePostCreateAppointment();
+
+  const createAppoinment = () => {
+    const payload: IPayloadPostAppoinment = {
+      appointment_type: formData.appointment_type,
+      clinicId: formData.clinicId as number,
+      doctorId: formData.doctorId as number,
+      date: `${dayjs(formData.date).format('YYYY-MM-DD')} ${formData.doctorTime}`,
+      note: formData.note,
+      patient_problem: formData.patient_problem,
+      patient_type: formData.patient_type,
+      meeting_preference: 'ZOOM',
+      patient_id: formData.patient_id ? String(formData.patient_id) : '',
+    };
+
+    mutate(payload, {
+      onSuccess: () => {
+        closeModal();
+        toast.success('Booking successful!');
+      },
+      onError: (error: any) => {
+        toast.error('Booking failed: ' + error.response.data.message);
+      },
+    });
+  };
 
   return (
     <footer
@@ -40,6 +77,16 @@ export default function Footer({ className }: FooterProps) {
             rounded="lg"
           >
             Back
+          </Button>
+        )}
+        {step === 4 && (
+          <Button
+            className="!w-auto"
+            type="button"
+            onClick={createAppoinment}
+            rounded="lg"
+          >
+            Save
           </Button>
         )}
         {step !== 4 && (

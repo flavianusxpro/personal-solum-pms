@@ -52,7 +52,7 @@ export default function SelectClinic() {
     if (!dataPatients) return [];
     return dataPatients.data.map((patient) => ({
       label: `${patient.first_name} ${patient.last_name}`,
-      value: patient.patient_id,
+      value: patient.id,
     }));
   }, [dataPatients]);
 

@@ -340,7 +340,7 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
     meeting_passcode: null;
     patient_type: string;
     patient_problem: string;
-    note: null;
+    note: string | null;
     sessionId: null;
     paymentId: number;
     created_at: string;

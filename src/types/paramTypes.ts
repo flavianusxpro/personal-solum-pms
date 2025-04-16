@@ -179,7 +179,7 @@ export interface IPayloadPostAppoinment {
   appointment_type: string;
   patient_type: string;
   patient_problem: string;
-  payment_id: string;
+  payment_id?: string;
   meeting_preference: string;
 }
 

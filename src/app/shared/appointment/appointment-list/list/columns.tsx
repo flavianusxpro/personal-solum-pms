@@ -11,6 +11,8 @@ import AppointmentDetails from './appointment-details';
 import AvatarCard from '@core/ui/avatar-card';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 import dayjs from 'dayjs';
+import ActionTooltipButton from '@/app/shared/ui/action-tooltip-button';
+import PencilIcon from '@/core/components/icons/pencil';
 
 type RowValue = IGetAppointmentListResponse['data'][number];
 
@@ -168,7 +170,7 @@ function RenderAction({
   row,
   onDeleteItem,
 }: {
-  row: any;
+  row: RowValue;
   onDeleteItem: (id: string) => void;
 }) {
   const { openModal, closeModal } = useModal();
@@ -179,8 +181,23 @@ function RenderAction({
         customSize: '700px',
       });
   }
+  function handleEditModal(row: RowValue) {
+    closeModal(),
+      openModal({
+        view: <CreateUpdateAppointmentForm data={row} />,
+        customSize: '700px',
+      });
+  }
   return (
     <div className="flex items-center justify-end gap-3 pe-3">
+      <ActionTooltipButton
+        tooltipContent="Edit Appointment"
+        variant="outline"
+        onClick={() => handleEditModal(row)}
+      >
+        <PencilIcon className="h-4 w-4" />
+      </ActionTooltipButton>
+
       <Tooltip
         size="sm"
         content={'View Appointment'}
@@ -198,7 +215,7 @@ function RenderAction({
               view: (
                 <AppointmentDetails
                   data={row}
-                  onDelete={() => onDeleteItem(row.id)}
+                  onDelete={() => onDeleteItem(row.id.toString())}
                   onEdit={handleCreateModal}
                 />
               ),
@@ -212,13 +229,13 @@ function RenderAction({
       <DeletePopover
         title={`Delete the appointment`}
         description={`Are you sure you want to delete this #${row.id} appointment?`}
-        onDelete={() => onDeleteItem(row.id)}
+        onDelete={() => onDeleteItem(row.id.toString())}
       />
     </div>
   );
 }
 
-function getPaymentStatusBadge(status: number | string) {
+export function getPaymentStatusBadge(status: number | string) {
   switch (status) {
     case 3:
       return (

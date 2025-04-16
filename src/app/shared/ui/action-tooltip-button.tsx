@@ -8,14 +8,25 @@ export default function ActionTooltipButton({
   tooltipContent,
   onClick,
   variant,
-  size = 'md',
+  buttonSize = 'sm',
+  tooltipSize = 'sm',
+  tootlipColor = 'invert',
 }: {
   className?: string;
   children?: React.ReactNode;
   tooltipContent: string;
   onClick?: () => void;
   variant?: 'text' | 'solid' | 'flat' | 'outline';
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  buttonSize?: 'sm' | 'md' | 'lg' | 'xl';
+  tooltipSize?: 'sm' | 'md' | 'lg' | 'xl';
+  tootlipColor?:
+    | 'invert'
+    | 'primary'
+    | 'secondary'
+    | 'danger'
+    | 'info'
+    | 'success'
+    | 'warning';
 }) {
   const { colorPresetName } = useColorPresetName();
 
@@ -23,14 +34,19 @@ export default function ActionTooltipButton({
     <ActionIcon
       variant={variant}
       onClick={onClick}
-      size={size}
+      size={buttonSize}
       className={cn(
-        'flex items-center justify-center rounded-full border-2 border-transparent bg-white p-2 shadow-sm transition-all duration-200 ease-in-out hover:border-primary hover:bg-primary/10',
+        (className = 'hover:!border-gray-900 hover:text-gray-700'),
         colorPresetName === 'dark' && 'bg-slate-800',
         className
       )}
     >
-      <Tooltip content={tooltipContent} placement="top">
+      <Tooltip
+        size={tooltipSize}
+        color={tootlipColor}
+        content={tooltipContent}
+        placement="top"
+      >
         <span>{children}</span>
       </Tooltip>
     </ActionIcon>

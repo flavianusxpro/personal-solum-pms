@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const appointmentBookSchema = {
   selectPatientAndClinic: z.object({
-    patient_id: z.string().min(1, { message: 'Patient is required' }),
+    patient_id: z.number().min(1, { message: 'Patient is required' }),
     clinicId: z.number().min(1, { message: 'Clinic is required' }),
   }),
   appointmentDate: z.object({

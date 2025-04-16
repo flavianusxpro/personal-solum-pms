@@ -51,6 +51,7 @@ const PriceEstimationCost = ({
     mutate(payload, {
       onSuccess: () => {
         setStep(STEP.CONFIRM);
+        toast.success('Booking successful!');
       },
       onError: (error: any) => {
         toast.error('Booking failed: ' + error.response.data.message);

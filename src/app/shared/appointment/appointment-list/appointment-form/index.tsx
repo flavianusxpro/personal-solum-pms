@@ -53,10 +53,12 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { ActionIcon, Title } from 'rizzui';
 import { PiXBold } from 'react-icons/pi';
 import { useModal } from '@/app/shared/modal-views/use-modal';
+import { IGetAppointmentListResponse } from '@/types/ApiResponse';
+import dayjs from 'dayjs';
 
 type FormDataType = {
   clinicId?: number;
-  patient_id?: string;
+  patient_id?: number;
   doctorId?: number;
   doctorTime: string;
   date: string;
@@ -126,7 +128,11 @@ export const stepAppointmentTotalSteps = Object.keys(
   MAP_STEP_TO_COMPONENT
 ).length;
 
-export default function CreateUpdateAppointmentForm() {
+export default function CreateUpdateAppointmentForm({
+  data,
+}: {
+  data?: IGetAppointmentListResponse['data'][number];
+}) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { closeModal } = useModal();
@@ -138,7 +144,22 @@ export default function CreateUpdateAppointmentForm() {
 
   useEffect(() => {
     resetLocation();
-    setFormData(initialFormData);
+    if (data) {
+      setFormData({
+        appointment_type: data?.type,
+        clinicId: data?.clinicId,
+        date: data?.date,
+        doctorId: data?.doctor?.id,
+        doctorTime: dayjs(data?.date).format('HH:mm'),
+        meeting_preference: '',
+        note: data?.note || '',
+        patient_id: data?.patientId,
+        patient_problem: data?.patient_problem,
+        patient_type: data?.patient_type,
+      });
+    } else {
+      setFormData(initialFormData);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, searchParams]);
 
