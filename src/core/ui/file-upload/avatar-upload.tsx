@@ -19,7 +19,7 @@ interface UploadZoneProps {
   className?: string;
   error?: string;
   disabled?: boolean;
-  path_name: 'patient' | 'doctor';
+  path_name?: 'patient' | 'doctor';
 }
 
 export default function AvatarUpload({
