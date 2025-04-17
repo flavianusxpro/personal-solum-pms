@@ -51,12 +51,12 @@ export default function BillingHistoryTable({
     handleRowSelect,
     handleSelectAll,
     handleDelete,
-  } = useTable(dataInvoice ?? [], pageSize);
+  } = useTable(dataInvoice?.data ?? [], pageSize);
 
   const columns = useMemo(
     () =>
       getColumns({
-        data: dataInvoice,
+        data: dataInvoice?.data,
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
