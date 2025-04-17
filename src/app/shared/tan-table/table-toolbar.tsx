@@ -183,9 +183,11 @@ function FilterElements<T extends Record<string, any>>({
         onChange={(e) => table.getColumn('status')?.setFilterValue(e)}
         getOptionValue={(option: { value: any }) => option.value}
         getOptionDisplayValue={(option: { value: any }) =>
-          renderOptionDisplayValue(option.value as string)
+          renderOptionDisplayValue(option.value)
         }
-        displayValue={(selected: string) => renderOptionDisplayValue(selected)}
+        displayValue={(selected: string) =>
+          renderOptionDisplayValue(selected as any)
+        }
         dropdownClassName="!z-20 h-auto"
         className={'w-auto'}
       />
