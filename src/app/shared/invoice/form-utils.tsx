@@ -56,49 +56,58 @@ export type InvoiceFormTypes = z.infer<typeof invoiceFormSchema>;
 // invoice status options
 export const statusOptions = [
   {
-    value: 'Paid',
+    value: 4,
+    label: 'Void',
+  },
+  {
+    value: 3,
     label: 'Paid',
   },
   {
-    value: 'pending',
-    label: 'Pending',
+    value: 2,
+    label: 'Open',
   },
   {
-    value: 'overdue',
-    label: 'Overdue',
-  },
-  {
-    value: 'draft',
+    value: 1,
     label: 'Draft',
   },
 ];
 
-export function renderOptionDisplayValue(value: string) {
-  switch (value.toLowerCase()) {
-    case 'pending':
+export function renderOptionDisplayValue(value: number) {
+  switch (value) {
+    case 4:
       return (
         <div className="flex items-center">
           <Badge color="warning" renderAsDot />
           <Text className="ms-2 font-medium capitalize text-orange-dark">
-            {value}
+            Void
           </Text>
         </div>
       );
-    case 'paid':
+    case 2:
+      return (
+        <div className="flex items-center">
+          <Badge color="info" renderAsDot />
+          <Text className="text-gray-dark ms-2 font-medium capitalize">
+            Open
+          </Text>
+        </div>
+      );
+    case 3:
       return (
         <div className="flex items-center">
           <Badge color="success" renderAsDot />
           <Text className="ms-2 font-medium capitalize text-green-dark">
-            {value}
+            Paid
           </Text>
         </div>
       );
-    case 'overdue':
+    case 1:
       return (
         <div className="flex items-center">
-          <Badge color="danger" renderAsDot />
-          <Text className="ms-2 font-medium capitalize text-red-dark">
-            {value}
+          <Badge color="secondary" renderAsDot />
+          <Text className="ms-2 font-medium capitalize text-gray-400">
+            Draft
           </Text>
         </div>
       );

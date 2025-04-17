@@ -12,20 +12,36 @@ import DateCell from '@core/ui/date-cell';
 import TableAvatar from '@core/ui/avatar-card';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 
-function getStatusBadge(status: number) {
+type IRowType = IGetAppointmentListResponse['data'][number];
+
+function getPaymentStatusBadge(status: number) {
   switch (status) {
     case 1:
       return (
         <div className="flex items-center">
-          <Badge color="warning" renderAsDot />
-          <Text className="ms-2 font-medium text-orange-dark">Unpaid</Text>
+          <Badge color="secondary" renderAsDot />
+          <Text className="ms-2 font-medium text-orange-dark">Draft</Text>
         </div>
       );
     case 2:
       return (
         <div className="flex items-center">
+          <Badge color="info" renderAsDot />
+          <Text className="text-gray-dark ms-2 font-medium">Open</Text>
+        </div>
+      );
+    case 3:
+      return (
+        <div className="flex items-center">
           <Badge color="success" renderAsDot />
           <Text className="ms-2 font-medium text-green-dark">Paid</Text>
+        </div>
+      );
+    case 4:
+      return (
+        <div className="flex items-center">
+          <Badge color="warning" renderAsDot />
+          <Text className="text-gray-dark ms-2 font-medium">Void</Text>
         </div>
       );
     default:
@@ -90,30 +106,15 @@ export const getColumns = ({
   },
   {
     title: <HeaderCell title="PATIENT NAME" />,
-    dataIndex: 'patientName',
-    key: 'patientName',
-    render: (patientName: string) => (
+    dataIndex: 'patien',
+    key: 'patien',
+    render: (_: string, row: IRowType) => (
       <TableAvatar
-        src={'https://randomuser.me/api/portraits'}
-        name={patientName ?? 'Default Name'}
-        // number={982120218} // Removed as it is not part of AvatarCardProps
-        description={'email@email.com'}
+        src={row?.patient?.photo || ''}
+        name={`${row?.patient?.first_name} ${row?.patient?.last_name}`}
+        description={row.patient?.email}
       />
     ),
-  },
-  {
-    title: <HeaderCell title="APPOINT TO" />,
-    dataIndex: 'email',
-    key: 'email',
-    width: 250,
-    render: (email: string) => email,
-  },
-  {
-    title: <HeaderCell title="APPOINTMENT DATE" />,
-    dataIndex: 'date',
-    key: 'date',
-    width: 250,
-    render: (value: Date) => <DateCell date={value} />,
   },
   {
     title: <HeaderCell title="TOTAL" />,
@@ -127,7 +128,7 @@ export const getColumns = ({
     dataIndex: 'status',
     key: 'status',
     width: 650,
-    render: (value: number) => getStatusBadge(value),
+    render: (value: number) => getPaymentStatusBadge(value),
   },
   {
     title: <HeaderCell title="CREATED BY" />,

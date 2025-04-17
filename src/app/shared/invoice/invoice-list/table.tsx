@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
@@ -8,6 +8,7 @@ import { Button } from 'rizzui';
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { getColumns } from './columns';
 import { useGetInvoices } from '@/hooks/useInvoice';
+import dayjs from 'dayjs';
 const FilterElement = dynamic(
   () => import('@/app/shared/invoice/invoice-list/filter-element'),
   { ssr: false }
@@ -18,18 +19,26 @@ const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
 
 const filterState = {
   createdAt: [null, null],
-  dueDate: [null, null],
-  status: '',
+  // dueDate: [null, null],
+  status: null,
 };
 
 export default function InvoiceTableList() {
   const [pageSize, setPageSize] = useState(10);
+  const [page, setPage] = useState(1);
+  const [filterStateValue, setFilterStateValue] = useState(filterState);
 
-  const { data: dataInvoices, isLoading: isLoadingGetInvoices } =
-    useGetInvoices({
-      page: 1,
-      perPage: pageSize,
-    });
+  const {
+    data: dataInvoices,
+    isLoading: isLoadingGetInvoices,
+    refetch,
+  } = useGetInvoices({
+    page: 1,
+    perPage: pageSize,
+    from: filterStateValue?.createdAt[0] || undefined,
+    to: filterStateValue?.createdAt[1] || undefined,
+    status: filterStateValue?.status || undefined,
+  });
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -42,6 +51,20 @@ export default function InvoiceTableList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const updateFilter = useCallback(
+    (columnId: string, filterValue: string | number | any[] | null) => {
+      setFilterStateValue((prevState) => ({
+        ...prevState,
+        [columnId]: filterValue,
+      }));
+    },
+    []
+  );
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, filterStateValue]);
+
   const {
     isLoading,
     isFiltered,
@@ -50,7 +73,7 @@ export default function InvoiceTableList() {
     totalItems,
     handlePaginate,
     filters,
-    updateFilter,
+    // updateFilter,
     searchTerm,
     handleSearch,
     sortConfig,
@@ -61,12 +84,12 @@ export default function InvoiceTableList() {
     handleSelectAll,
     handleDelete,
     handleReset,
-  } = useTable(dataInvoices ?? [], pageSize, filterState);
+  } = useTable(dataInvoices?.data ?? [], pageSize, filterStateValue);
 
   const columns = React.useMemo(
     () =>
       getColumns({
-        data: dataInvoices ?? [],
+        data: dataInvoices?.data ?? [],
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -93,7 +116,7 @@ export default function InvoiceTableList() {
     <>
       <ControlledTable
         variant="modern"
-        data={tableData}
+        data={tableData ?? []}
         isLoading={isLoading || isLoadingGetInvoices}
         showLoadingText={true}
         // @ts-ignore
@@ -101,9 +124,9 @@ export default function InvoiceTableList() {
         paginatorOptions={{
           pageSize,
           setPageSize,
-          total: totalItems,
-          current: currentPage,
-          onChange: (page: number) => handlePaginate(page),
+          total: dataInvoices?.count,
+          current: page,
+          onChange: (page: number) => setPage(page),
         }}
         filterOptions={{
           searchTerm,

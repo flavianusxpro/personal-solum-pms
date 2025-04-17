@@ -5,7 +5,5 @@ import { IParamGetInvoices } from '@/types/paramTypes';
 export async function getInvoiceList(params: IParamGetInvoices) {
   return await get<IGetAppointmentListResponse>('/admin/invoice/', {
     params,
-  }).then((res) => {
-    return res.data;
   });
 }

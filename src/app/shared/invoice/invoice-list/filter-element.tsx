@@ -3,7 +3,6 @@
 import React from 'react';
 import { PiTrashDuotone } from 'react-icons/pi';
 import DateFiled from '@/app/shared/ui/controlled-table/date-field';
-import PriceField from '@/app/shared/ui/controlled-table/price-field';
 import StatusField from '@/app/shared/ui/controlled-table/status-field';
 import { Button } from 'rizzui';
 import { getDateRangeStateValues } from '@core/utils/get-formatted-date';
@@ -16,7 +15,7 @@ import {
 type FilterElementProps = {
   isFiltered: boolean;
   filters: { [key: string]: any };
-  updateFilter: (columnId: string, filterValue: string | any[]) => void;
+  updateFilter: (columnId: string, filterValue: number | any[] | null) => void;
   handleReset: () => void;
 };
 
@@ -37,6 +36,10 @@ export default function FilterElement({
         selectsRange
         dateFormat="dd MMM yyyy"
         className="w-full"
+        isClearable
+        onClear={() => {
+          updateFilter('createdAt', [null, null]);
+        }}
         selected={getDateRangeStateValues(filters['createdAt'][0])}
         startDate={getDateRangeStateValues(filters['createdAt'][0]) as Date}
         endDate={getDateRangeStateValues(filters['createdAt'][1]) as Date}
@@ -51,7 +54,7 @@ export default function FilterElement({
           },
         })}
       />
-      <DateFiled
+      {/* <DateFiled
         selectsRange
         dateFormat="dd MMM yyyy"
         className="w-full"
@@ -68,18 +71,23 @@ export default function FilterElement({
             labelClassName: 'font-medium text-gray-700',
           },
         })}
-      />
+      /> */}
       <StatusField
         options={statusOptions}
         value={filters['status']}
-        onChange={(value: string) => {
+        onChange={(value: number) => {
           updateFilter('status', value);
         }}
-        getOptionValue={(option: { value: any }) => option.value}
-        getOptionDisplayValue={(option: { value: any }) =>
-          renderOptionDisplayValue(option.value as string)
+        placeholder="Select status"
+        getOptionValue={(option) => option.value}
+        getOptionDisplayValue={(option) =>
+          renderOptionDisplayValue(option.value as number)
         }
-        displayValue={(selected: string) => renderOptionDisplayValue(selected)}
+        clearable
+        onClear={() => {
+          updateFilter('status', null);
+        }}
+        displayValue={(selected: number) => renderOptionDisplayValue(selected)}
         dropdownClassName="!z-10 h-auto"
         className={'w-auto'}
         {...(isMediumScreen && {
