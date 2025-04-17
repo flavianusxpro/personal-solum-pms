@@ -308,7 +308,7 @@ export default function ScheduleForm({ event, doctorId }: CreateScheduleProps) {
                   onClick={() => deleteday(index)}
                   tooltipContent="Unavailable all day"
                   variant="outline"
-                  size="sm"
+                  buttonSize="sm"
                 >
                   <PiXBold className="h-[18px] w-[18px]" />
                 </ActionTooltipButton>
@@ -317,7 +317,7 @@ export default function ScheduleForm({ event, doctorId }: CreateScheduleProps) {
                 <ActionTooltipButton
                   tooltipContent="Unavailable all day"
                   variant="outline"
-                  size="sm"
+                  buttonSize="sm"
                   onClick={() => handleAddDay(index)}
                 >
                   <PiPlusBold className="h-[18px] w-[18px]" />
@@ -328,7 +328,7 @@ export default function ScheduleForm({ event, doctorId }: CreateScheduleProps) {
                   onClick={() => handleCopyTimeToAllDays(index)}
                   tooltipContent="Copy time to all days"
                   variant="outline"
-                  size="sm"
+                  buttonSize="sm"
                 >
                   <PiClipboardBold className="h-[18px] w-[18px]" />
                 </ActionTooltipButton>

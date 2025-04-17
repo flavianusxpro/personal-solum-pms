@@ -190,3 +190,22 @@ export interface IPayloadUploadImage {
   image: File;
   path_name: string;
 }
+
+export interface IPayloadCreateInvoice {
+  patientId: number;
+  invoice_date: string;
+  due_date: string;
+  note: string;
+  amount: number;
+  fee: number;
+  total_amount: number;
+  items: Item[];
+}
+interface Item {
+  code: string;
+  name: string;
+  description?: string;
+  amount: number;
+  qty: number;
+  total_amount: number;
+}

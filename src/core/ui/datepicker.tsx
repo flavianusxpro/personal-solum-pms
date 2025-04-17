@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Input, InputProps } from 'rizzui';
+import { FieldError, Input, InputProps } from 'rizzui';
 import cn from '../utils/class-names';
 import { PiCalendarBlank, PiCaretDownBold } from 'react-icons/pi';
 import ReactDatePicker, {
@@ -37,6 +37,7 @@ const popperClasses = {
 
 export type DatePickerProps = ReactDatePickerProps & {
   inputProps?: InputProps;
+  error?: string;
 };
 
 export const DatePicker = ({
@@ -48,6 +49,7 @@ export const DatePicker = ({
   calendarClassName,
   dateFormat = 'd MMMM yyyy',
   showPopperArrow = false,
+  error,
   ...props
 }: DatePickerProps) => {
   const [isCalenderOpen, setIsCalenderOpen] = useState(false);
@@ -56,7 +58,7 @@ export const DatePicker = ({
   return (
     <div
       className={cn(
-        'flex [&_.react-datepicker-wrapper]:flex [&_.react-datepicker-wrapper]:w-full',
+        'flex flex-col [&_.react-datepicker-wrapper]:flex [&_.react-datepicker-wrapper]:w-full',
         props?.className
       )}
     >
@@ -96,6 +98,7 @@ export const DatePicker = ({
         showPopperArrow={showPopperArrow}
         {...props}
       />
+      <FieldError error={error} />
     </div>
   );
 };

@@ -77,8 +77,13 @@ export const messages = {
   dateIsRequired: 'Date is required',
   checkboxIsRequired: 'This Check is required',
   patientTypeRequired: 'Patient Type is required',
+  patientRequired: 'Patient is required',
   patientProblemRequired: 'Patient Problem is required',
   doctorIsRequired: 'Doctor is required',
   postCodeMaxLength: 'Post code must be 4 characters',
   clinicIsRequired: 'Clinic is required',
+  invoiceDateRequired: 'Invoice date is required',
+  nonNegative: 'Value must be non-negative',
+  itemCodeRequired: 'Item code is required',
+  itemIsRequired: 'At least one item is required',
 };

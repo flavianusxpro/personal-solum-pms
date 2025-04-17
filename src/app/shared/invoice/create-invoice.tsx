@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { SubmitHandler, Controller } from 'react-hook-form';
 import { Form } from '@core/ui/form';
 import { Text, Input, Select, Textarea } from 'rizzui';
@@ -18,222 +18,227 @@ import {
   InvoiceFormInput,
   invoiceFormSchema,
 } from '@/validators/create-invoice.schema';
+import CSelect from '../ui/select';
+import { useGetAllPatients } from '@/hooks/usePatient';
+import dayjs from 'dayjs';
+import { usePostCreateInvoice } from '@/hooks/useInvoice';
 
-const invoiceItems = [
-  { item: '', description: '', quantity: 1, price: undefined },
-];
-
-export default function CreateInvoice({
-  id,
-  record,
-}: {
-  id?: string;
-  record?: InvoiceFormInput;
-}) {
-  const [reset, setReset] = useState({});
+export default function CreateInvoice({ id }: { id?: string }) {
   const [isLoading, setLoading] = useState(false);
 
-  const onSubmit: SubmitHandler<InvoiceFormInput> = (data) => {
-    toast.success(
-      <Text as="b">Invoice successfully {id ? 'updated' : 'created'}</Text>
-    );
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      console.log('createInvoice data ->', data);
-      setReset({
-        fromName: '',
-        fromAddress: '',
-        fromPhone: '',
-        toName: '',
-        toAddress: '',
-        toPhone: '',
-        shipping: '',
-        discount: '',
-        taxes: '',
-        createDate: new Date(),
-        status: 'draft',
-        items: invoiceItems,
-      });
-    }, 600);
-  };
+  const { data: dataPatients, isLoading: isLoadingGetPatients } =
+    useGetAllPatients({
+      page: 1,
+      perPage: 100,
+    });
 
-  const newItems = record?.items
-    ? record.items.map((item) => ({
-        ...item,
-      }))
-    : invoiceItems;
+  const { mutate: mutateCreate } = usePostCreateInvoice();
+
+  const patientOptions = useMemo(() => {
+    if (!dataPatients?.data) return [];
+    return dataPatients?.data.map((item) => ({
+      label: `${item.first_name} ${item.last_name}`,
+      value: item.id,
+    }));
+  }, [dataPatients]);
+
+  const onSubmit: SubmitHandler<InvoiceFormInput> = (data) => {
+    setLoading(true);
+    const totalItemAmount = (data.items || []).reduce(
+      (acc: number, item: any) => {
+        const itemTotal = Number(item.amount) * Number(item.qty);
+        return acc + itemTotal;
+      },
+      0
+    );
+    const totalAmount =
+      (totalItemAmount || 0) -
+      (Number(data.taxFee) || 0) -
+      (Number(data.otherFee) || 0);
+
+    mutateCreate(
+      {
+        invoice_date: dayjs(data.invoice_date).format('YYYY-MM-DD'),
+        due_date: dayjs(data.due_date).format('YYYY-MM-DD'),
+        items: (data.items || []).map((item) => ({
+          ...item,
+          code: item.item.split(' - ')[0],
+          name: item.item.split(' - ')[1],
+          amount: Number(item.amount),
+          qty: Number(item.qty),
+          total_amount: Number(item.amount) * Number(item.qty),
+        })),
+        amount: Number(data.total_amount),
+        fee: Number(data.fee),
+        total_amount: totalAmount,
+        note: data.note || '',
+        patientId: Number(data.patientId),
+      },
+      {
+        onSuccess: () => {
+          toast.success('Invoice created successfully');
+        },
+        onError: (err: any) => {
+          toast.error(err?.response?.data?.message || 'Something went wrong');
+        },
+        onSettled: () => {
+          setLoading(false);
+        },
+      }
+    );
+  };
 
   return (
     <Form<InvoiceFormInput>
       validationSchema={invoiceFormSchema}
-      resetValues={reset}
       onSubmit={onSubmit}
-      useFormProps={{
-        defaultValues: {
-          ...record,
-          invoiceNumber: 'INV-0071',
-          createDate: new Date(),
-          // status: 'draft',
-          items: newItems,
-        },
-      }}
+      useFormProps={{}}
       className="flex flex-grow flex-col @container [&_label]:font-medium"
     >
-      {({ register, control, watch, formState: { errors } }) => (
-        <>
-          <div className="flex-grow pb-10">
-            <div className="grid grid-cols-1 gap-8 divide-y divide-dashed divide-gray-200 @2xl:gap-10 @3xl:gap-12">
-              <FormBlockWrapper
-                title={'From:'}
-                description={'From he who sending this invoice'}
-              >
-                <Input
-                  label="Name"
-                  placeholder="Enter your name"
-                  {...register('fromName')}
-                  error={errors.fromName?.message}
-                />
-                <Controller
-                  name="fromPhone"
-                  control={control}
-                  render={({ field: { value, onChange } }) => (
-                    <PhoneNumber
-                      label="Phone Number"
-                      country="us"
-                      value={value}
-                      onChange={onChange}
-                    />
-                  )}
-                />
-                <Textarea
-                  label="Address"
-                  placeholder="Enter your address"
-                  {...register('fromAddress')}
-                  error={errors.fromAddress?.message}
-                  textareaClassName="h-20"
-                  className="col-span-2"
-                />
-              </FormBlockWrapper>
+      {({ register, setValue, control, watch, formState: { errors } }) => {
+        console.log('🚀 ~ CreateInvoice ~ errors:', errors);
 
-              <FormBlockWrapper
-                title={'To:'}
-                description={'To he who will receive this invoice'}
-                className="pt-7 @2xl:pt-9 @3xl:pt-11"
-              >
-                <Input
-                  label="Name"
-                  placeholder="Enter your name"
-                  {...register('toName')}
-                  error={errors.toName?.message}
-                />
-                <Controller
-                  name="toPhone"
-                  control={control}
-                  render={({ field: { value, onChange } }) => (
-                    <PhoneNumber
-                      label="Phone Number"
-                      country="us"
-                      value={value}
-                      onChange={onChange}
-                    />
-                  )}
-                />
-                <Textarea
-                  label="Address"
-                  placeholder="Enter your address"
-                  {...register('toAddress')}
-                  error={errors.toAddress?.message}
-                  textareaClassName="h-20"
-                  className="col-span-2"
-                />
-              </FormBlockWrapper>
+        const totalItemAmount = watch('items')
+          ? (watch('items') || []).reduce((acc: number, item: any) => {
+              const itemTotal = Number(item.amount) * Number(item.qty);
+              return acc + itemTotal;
+            }, 0)
+          : 0;
+        const totalAmount =
+          (totalItemAmount || 0) -
+          (Number(watch('taxFee')) || 0) -
+          (Number(watch('otherFee')) || 0);
 
-              <FormBlockWrapper
-                title={'Schedule:'}
-                description={'To he who will receive this invoice'}
-                className="pt-7 @2xl:pt-9 @3xl:pt-11"
-              >
-                <div className="col-span-2 grid grid-cols-1 items-baseline gap-5 @lg:grid-cols-2 @5xl:grid-cols-4">
-                  <Input
-                    label="Invoice Number"
-                    placeholder="Enter invoice number"
-                    {...register('invoiceNumber')}
-                    readOnly
-                    error={errors.invoiceNumber?.message}
-                  />
-                  <div className="[&>.react-datepicker-wrapper]:w-full">
-                    <Controller
-                      name="createDate"
-                      control={control}
-                      render={({ field: { value, onChange } }) => (
-                        <DatePicker
-                          inputProps={{ label: 'Date Create' }}
-                          placeholderText="Select Date"
-                          selected={value}
-                          onChange={onChange}
-                        />
-                      )}
-                    />
-                  </div>
-                  <div className="[&>.react-datepicker-wrapper]:w-full">
-                    <Controller
-                      name="dueDate"
-                      control={control}
-                      render={({ field: { value, onChange } }) => (
-                        <DatePicker
-                          inputProps={{
-                            label: 'Due Date',
-                            error: errors?.dueDate?.message,
-                          }}
-                          placeholderText="Select Date"
-                          selected={value}
-                          onChange={onChange}
-                        />
-                      )}
-                    />
-                  </div>
+        return (
+          <>
+            <div className="flex-grow pb-10">
+              <div className="grid grid-cols-1 gap-8 divide-y divide-dashed divide-gray-200 @2xl:gap-10 @3xl:gap-12">
+                <FormBlockWrapper
+                  title={'Patient'}
+                  description={'Patient information'}
+                >
                   <Controller
-                    name="status"
+                    name="patientId"
                     control={control}
-                    render={({ field: { name, onChange, value } }) => (
-                      <Select
-                        dropdownClassName="!z-10 h-auto"
-                        inPortal={false}
-                        options={statusOptions}
-                        value={value}
-                        onChange={onChange}
-                        name={name}
-                        label="Status"
-                        error={errors?.status?.message}
-                        getOptionValue={(option) => option.value}
-                        getOptionDisplayValue={(option) =>
-                          renderOptionDisplayValue(option.value as string)
-                        }
-                        displayValue={(selected: string) =>
-                          renderOptionDisplayValue(selected)
-                        }
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        isLoading={isLoadingGetPatients}
+                        label="Patient"
+                        placeholder="Select Patient"
+                        options={patientOptions}
+                        name="patientId"
+                        className={'col-span-full'}
+                        error={errors.patientId?.message}
                       />
                     )}
                   />
-                </div>
-              </FormBlockWrapper>
+                </FormBlockWrapper>
 
-              <AddInvoiceItems
-                watch={watch}
-                control={control}
-                register={register}
-                errors={errors}
-              />
+                <FormBlockWrapper
+                  title={'Date'}
+                  description={'Date of invoice creation'}
+                  className="pt-7 @2xl:pt-9 @3xl:pt-11"
+                >
+                  <Controller
+                    name="invoice_date"
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        {...field}
+                        placeholderText="Select invoice date"
+                        value={
+                          field.value
+                            ? dayjs(field.value).format('YYYY-MM-DD')
+                            : undefined
+                        }
+                        inputProps={{ label: 'Invoice Date' }}
+                        popperPlacement="top-start"
+                        dateFormat="YYYY-MM-DD"
+                        error={errors.invoice_date?.message}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="due_date"
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        {...field}
+                        placeholderText="Select due date"
+                        value={
+                          field.value
+                            ? dayjs(field.value).format('YYYY-MM-DD')
+                            : undefined
+                        }
+                        inputProps={{ label: 'Due Date' }}
+                        popperPlacement="top-start"
+                        dateFormat="YYYY-MM-DD"
+                        error={errors.due_date?.message}
+                      />
+                    )}
+                  />
+                </FormBlockWrapper>
+
+                <AddInvoiceItems
+                  watch={watch}
+                  control={control}
+                  register={register}
+                  errors={errors}
+                  setValue={setValue}
+                />
+
+                <FormBlockWrapper
+                  title={'Fee'}
+                  description={'To he who will receive this invoice'}
+                  className="pt-7 @2xl:pt-9 @3xl:pt-11"
+                >
+                  <Input
+                    type="number"
+                    label="Tax Fee"
+                    prefix={'$'}
+                    placeholder="15"
+                    {...register('taxFee')}
+                    error={errors.taxFee?.message}
+                  />
+                  <Input
+                    type="number"
+                    label="Other Fee"
+                    prefix={'$'}
+                    placeholder="15"
+                    {...register('otherFee')}
+                    error={errors.otherFee?.message}
+                  />
+
+                  <Textarea
+                    label="Note"
+                    placeholder="Note"
+                    {...register('note')}
+                    error={errors.note?.message}
+                    className="col-span-full"
+                  />
+                </FormBlockWrapper>
+                <FormBlockWrapper
+                  title={'Total Amount'}
+                  description={'Total amount of the invoice'}
+                  className="pt-7 @2xl:pt-9 @3xl:pt-11"
+                >
+                  <div className="col-span-full">
+                    <Text className="flex items-center justify-between text-base font-semibold text-gray-900">
+                      Total: <Text as="span">$ {totalAmount}</Text>
+                    </Text>
+                  </div>
+                </FormBlockWrapper>
+              </div>
             </div>
-          </div>
 
-          <FormFooter
-            isLoading={isLoading}
-            submitBtnText={id ? 'Update Invoice' : 'Create Invoice'}
-          />
-        </>
-      )}
+            <FormFooter
+              isLoading={isLoading}
+              submitBtnText={id ? 'Update Invoice' : 'Create Invoice'}
+            />
+          </>
+        );
+      }}
     </Form>
   );
 }

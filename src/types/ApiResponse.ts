@@ -485,3 +485,15 @@ export interface IPostUploadImageResponse extends ApiResponse {
     public_url: string;
   };
 }
+
+export interface IGetAllItemsResponse extends ApiResponse {
+  data: {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+    price: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+}
