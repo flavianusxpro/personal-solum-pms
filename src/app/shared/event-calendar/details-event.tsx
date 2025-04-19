@@ -1,38 +1,41 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { CalendarEvent } from '@/types';
 import { PiMapPin, PiXBold } from 'react-icons/pi';
-import { FaPencil, FaUserDoctor } from 'react-icons/fa6';
-import { ActionIcon, Button, Text, Title } from 'rizzui';
+import { FaPencil, FaUser, FaUserDoctor } from 'react-icons/fa6';
+import { ActionIcon, Button, Title } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { MdOutlineCalendarMonth } from 'react-icons/md';
-import useEventCalendar from '@core/hooks/use-event-calendar';
 import { formatDate } from '@core/utils/format-date';
-import EventForm from '@/app/shared/event-calendar/event-form';
-import { useGetAllDoctors } from '@/hooks/useDoctor';
+import { useDeleteAppointment } from '@/hooks/useAppointment';
+import toast from 'react-hot-toast';
+import CreateUpdateAppointmentForm from '../appointment/appointment-list/appointment-form';
 
 function DetailsEvents({ event }: { event: CalendarEvent }) {
-  const { deleteEvent } = useEventCalendar();
-  const { openModal, closeModal } = useModal();
+  const { closeModal, openModal } = useModal();
 
-  const { data: dataDoctor } = useGetAllDoctors({
-    page: 1,
-    perPage: 100,
-  });
-
-  const doctor = dataDoctor?.find(
-    (doc) => doc.id.toString() === event.doctor.toString()
-  );
+  const {
+    mutate: mutateDeleteAppointment,
+    isPending: isPendingDeleteAppointment,
+  } = useDeleteAppointment();
 
   function handleEditModal() {
     closeModal(),
       openModal({
-        view: <EventForm event={event} />,
-        customSize: '650px',
+        view: <CreateUpdateAppointmentForm data={event.data} />,
+        customSize: '700px',
       });
   }
 
-  function handleDelete(eventID: string) {
-    deleteEvent(eventID);
+  function handleDelete(eventId: string) {
+    mutateDeleteAppointment(eventId, {
+      onSuccess: () => {
+        toast.success('Event deleted successfully');
+        closeModal();
+      },
+      onError: (error: any) => {
+        toast.error('Failed to delete event: ' + error.response.data.message);
+      },
+    });
     closeModal();
   }
 
@@ -55,11 +58,14 @@ function DetailsEvents({ event }: { event: CalendarEvent }) {
       <div>
         <ul className="mt-7 flex flex-col gap-[18px] text-gray-600">
           <li className="flex gap-2">
+            <FaUser className="h-5 w-5" />
+            <span>Patient:</span>
+            <span className="font-medium text-gray-1000">{event.patient}</span>
+          </li>
+          <li className="flex gap-2">
             <FaUserDoctor className="h-5 w-5" />
             <span>Doctor:</span>
-            <span className="font-medium text-gray-1000">
-              {doctor?.first_name} {doctor?.last_name}
-            </span>
+            <span className="font-medium text-gray-1000">{event.doctor}</span>
           </li>
           <li className="flex gap-2">
             <FaPencil className="h-5 w-5" />
@@ -76,14 +82,14 @@ function DetailsEvents({ event }: { event: CalendarEvent }) {
               {formatDate(event.start, 'h:mm A')}
             </span>
           </li>
-          <li className="flex gap-2">
+          {/* <li className="flex gap-2">
             <MdOutlineCalendarMonth className="h-5 w-5" />
             <span>Event End:</span>
             <span className="font-medium text-gray-1000">
               {formatDate(event.end, 'MMMM D, YYYY')} at{' '}
               {formatDate(event.end, 'h:mm A')}
             </span>
-          </li>
+          </li> */}
           {event.location && (
             <li className="flex gap-2">
               <PiMapPin className="h-5 w-5" />
@@ -111,6 +117,7 @@ function DetailsEvents({ event }: { event: CalendarEvent }) {
           <Button
             variant="outline"
             onClick={() => handleDelete(event.id as string)}
+            isLoading={isPendingDeleteAppointment}
           >
             Delete
           </Button>

@@ -7,12 +7,12 @@ import { Calendar, dayjsLocalizer } from 'react-big-calendar';
 import EventForm from '@/app/shared/event-calendar/event-form';
 import DetailsEvents from '@/app/shared/event-calendar/details-event';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import useEventCalendar from '@core/hooks/use-event-calendar';
 import cn from '@core/utils/class-names';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import CSelect from '../ui/select';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
 import { useGetListSchedule } from '@/hooks/useSchedule';
+import { useGetAppointments } from '@/hooks/useAppointment';
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -26,7 +26,7 @@ export default function EventCalendarView() {
   const { openModal } = useModal();
   const { colorPresetName } = useColorPresetName();
 
-  const [selectDoctor, setSelectDoctor] = useState('');
+  const [selectDoctor, setSelectDoctor] = useState<number | null>(null);
   const [perPage, setPerPage] = useState(10);
 
   const { data: dataDoctor } = useGetAllDoctors({
@@ -39,18 +39,29 @@ export default function EventCalendarView() {
     perPage: 100,
   });
 
+  const { data: dataAppointment } = useGetAppointments({
+    page: 1,
+    perPage: 100,
+    doctorId: selectDoctor || undefined,
+  });
+
   const events: CalendarEvent[] = useMemo(() => {
-    if (!dataSchedule) return [];
-    return dataSchedule.map((schedule) => ({
-      id: schedule.id.toString(),
-      title: schedule.title,
-      start: new Date(schedule.start_date),
-      end: new Date(schedule.end_date),
+    if (!dataAppointment) return [];
+    return dataAppointment.map((appointment) => ({
+      title:
+        appointment.patient.first_name + ' ' + appointment.patient.last_name,
+      id: appointment.id.toString(),
+      start: new Date(appointment.date),
+      end: new Date(appointment.date),
       allDay: false,
-      description: schedule.description,
-      doctor: schedule.doctorId.toString(),
+      patient:
+        appointment.patient.first_name + ' ' + appointment.patient.last_name,
+      description: appointment.note || '-',
+      doctor:
+        appointment.doctor.first_name + ' ' + appointment.doctor.last_name,
+      data: appointment,
     }));
-  }, [dataSchedule]);
+  }, [dataAppointment]);
 
   const doctorOptions = useMemo(() => {
     if (!dataDoctor) return [];
@@ -110,7 +121,7 @@ export default function EventCalendarView() {
           label="Select Doctor"
           options={doctorOptions}
           value={selectDoctor}
-          onChange={(e: string) => setSelectDoctor(e)}
+          onChange={(e: number) => setSelectDoctor(e)}
         />
       </div>
 

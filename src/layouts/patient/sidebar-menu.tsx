@@ -17,7 +17,7 @@ export function SidebarMenu() {
   const pathname = usePathname();
   const router = useRouter();
   const { data } = useSession();
-  const role = data?.user.role;
+  const role = data?.role?.name;
 
   const menuItems = role === ROLES.Admin ? adminMenuItems : patientMenuItems;
 

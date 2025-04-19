@@ -1,4 +1,4 @@
-import { get, post } from '@/app/api/api';
+import { del, get, post } from '@/app/api/api';
 import {
   IGetAppointmentListResponse,
   IGetAppointmentSummaryResponse,
@@ -26,4 +26,8 @@ export async function postCreateAppointment(payload: IPayloadPostAppoinment) {
   return await post<any>('/admin/appointment/', payload).then((res) => {
     return res.data;
   });
+}
+
+export async function deleteAppointment(id: string) {
+  return await del<any>(`/admin/appointment/${id}`);
 }

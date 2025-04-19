@@ -1,4 +1,5 @@
 import {
+  deleteAppointment,
   getAppointmentList,
   getSummaryAppointments,
   postCreateAppointment,
@@ -23,5 +24,13 @@ export function useGetSummaryAppointments() {
 export function usePostCreateAppointment() {
   return useMutation({
     mutationFn: postCreateAppointment,
+  });
+}
+
+export function useDeleteAppointment() {
+  return useMutation({
+    mutationFn: async (id: string) => {
+      return await deleteAppointment(id);
+    },
   });
 }

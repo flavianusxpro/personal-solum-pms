@@ -10,7 +10,7 @@ declare module 'next-auth' {
       created_at: string;
       updated_at: string;
       permissions: any[];
-    } & DefaultSession["user"];
+    } & DefaultSession['user'];
   }
 
   interface User extends DefaultUser {
@@ -31,5 +31,13 @@ declare module 'next-auth/jwt' {
     /** OpenID ID Token */
     idToken?: string;
     accessToken?: string;
+    permissions?: any[];
+    role?: {
+      id: number;
+      name: string;
+      created_at: string;
+      updated_at: string;
+      permissions: any[];
+    };
   }
 }

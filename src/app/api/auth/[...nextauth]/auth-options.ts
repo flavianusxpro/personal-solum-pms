@@ -20,19 +20,17 @@ export const authOptions: NextAuthOptions = {
       return {
         ...session,
         accessToken: token.accessToken,
-        user: {
-          ...session.user,
-          accessToken: token.accessToken,
-          role: token.role,
-          id: token.idToken as string,
+        role: {
+          ...token.role,
         },
       };
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       if (user) {
         token.accessToken = user.accessToken;
-        token.role = user.role;
         token.idToken = user.id;
+        token.role = user.role;
+        token.permissions = [];
       }
       return token;
     },
@@ -60,10 +58,16 @@ export const authOptions: NextAuthOptions = {
 
           if (response.success && response.data) {
             return {
-              ...response.data,
-              role: response?.data?.role?.name ?? 'patient',
-              accessToken: response?.data?.access_token,
-            } as any;
+              id: response.data.role.id.toString(),
+              accessToken: response.data.access_token,
+              role: {
+                id: response.data.role?.id ?? 0,
+                name: response.data.role?.name ?? 'patient',
+                created_at: response.data.role?.created_at ?? '',
+                updated_at: response.data.role?.updated_at ?? '',
+                permissions: response.data.role?.permissions ?? [],
+              },
+            };
           }
         } catch (error) {
           throw new Error('Invalid credentials');
