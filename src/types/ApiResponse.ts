@@ -351,6 +351,39 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
   }[];
 }
 
+export interface IGetAppointmentByIdResponse extends ApiResponse {
+  success: boolean;
+  data: {
+    id: number;
+    clinicId: null;
+    patientId: number;
+    date: string;
+    due_date: string;
+    status: number;
+    note: string;
+    amount: string;
+    tax_fee: string;
+    other_fee: string;
+    total_amount: string;
+    created_at: string;
+    updated_at: string;
+    items: Item[];
+  };
+}
+
+interface Item {
+  id: number;
+  invoiceId: number;
+  code: string;
+  name: string;
+  description: string;
+  amount: string;
+  qty: number;
+  total_amount: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface IGetAppointmentSummaryResponse extends ApiResponse {
   data: {
     upcoming_appointment: number;

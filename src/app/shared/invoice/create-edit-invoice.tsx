@@ -3,14 +3,9 @@
 import { useMemo, useState } from 'react';
 import { SubmitHandler, Controller } from 'react-hook-form';
 import { Form } from '@core/ui/form';
-import { Text, Input, Select, Textarea } from 'rizzui';
-import { PhoneNumber } from '@core/ui/phone-input';
+import { Text, Input, Textarea, Loader } from 'rizzui';
 import { DatePicker } from '@core/ui/datepicker';
-import {
-  FormBlockWrapper,
-  statusOptions,
-  renderOptionDisplayValue,
-} from '@/app/shared/invoice/form-utils';
+import { FormBlockWrapper } from '@/app/shared/invoice/form-utils';
 import { AddInvoiceItems } from '@/app/shared/invoice/add-invoice-items';
 import FormFooter from '@core/components/form-footer';
 import { toast } from 'react-hot-toast';
@@ -21,9 +16,17 @@ import {
 import CSelect from '../ui/select';
 import { useGetAllPatients } from '@/hooks/usePatient';
 import dayjs from 'dayjs';
-import { usePostCreateInvoice } from '@/hooks/useInvoice';
+import {
+  useGetInvoiceById,
+  usePostCreateInvoice,
+  usePutUpdateInvoice,
+} from '@/hooks/useInvoice';
+import { useRouter } from 'next/navigation';
+import { routes } from '@/config/routes';
 
-export default function CreateInvoice({ id }: { id?: string }) {
+export default function CreateEditInvoice({ id }: { id?: string }) {
+  const router = useRouter();
+
   const [isLoading, setLoading] = useState(false);
 
   const { data: dataPatients, isLoading: isLoadingGetPatients } =
@@ -32,7 +35,11 @@ export default function CreateInvoice({ id }: { id?: string }) {
       perPage: 100,
     });
 
+  const { data: dataInvoice, isLoading: isLoadingGetInvoice } =
+    useGetInvoiceById(id);
+
   const { mutate: mutateCreate } = usePostCreateInvoice();
+  const { mutate: mutateUpdate } = usePutUpdateInvoice();
 
   const patientOptions = useMemo(() => {
     if (!dataPatients?.data) return [];
@@ -56,6 +63,43 @@ export default function CreateInvoice({ id }: { id?: string }) {
       (Number(data.taxFee) || 0) -
       (Number(data.otherFee) || 0);
 
+    if (id) {
+      mutateUpdate(
+        {
+          id: Number(id),
+          invoice_date: dayjs(data.invoice_date).format('YYYY-MM-DD'),
+          due_date: dayjs(data.due_date).format('YYYY-MM-DD'),
+          items: (data.items || []).map((item) => ({
+            ...item,
+            code: item.item.split(' - ')[0],
+            name: item.item.split(' - ')[1],
+            amount: Number(item.amount),
+            qty: Number(item.qty),
+            total_amount: Number(item.amount) * Number(item.qty),
+          })),
+          amount: totalAmount,
+          fee: Number(data.taxFee),
+          tax_fee: Number(data.taxFee),
+          total_amount: totalAmount,
+          note: data.note || '',
+          patientId: Number(data.patientId),
+          other_fee: Number(data.otherFee),
+        },
+        {
+          onSuccess: () => {
+            toast.success('Invoice updated successfully');
+            router.push(routes.invoice.home);
+          },
+          onError: (err: any) => {
+            toast.error(err?.response?.data?.message || 'Something went wrong');
+          },
+          onSettled: () => {
+            setLoading(false);
+          },
+        }
+      );
+      return;
+    }
     mutateCreate(
       {
         invoice_date: dayjs(data.invoice_date).format('YYYY-MM-DD'),
@@ -68,15 +112,18 @@ export default function CreateInvoice({ id }: { id?: string }) {
           qty: Number(item.qty),
           total_amount: Number(item.amount) * Number(item.qty),
         })),
-        amount: Number(data.total_amount),
-        fee: Number(data.fee),
+        amount: totalAmount,
+        fee: Number(data.taxFee),
+        tax_fee: Number(data.taxFee),
         total_amount: totalAmount,
         note: data.note || '',
         patientId: Number(data.patientId),
+        other_fee: Number(data.otherFee),
       },
       {
         onSuccess: () => {
           toast.success('Invoice created successfully');
+          router.push(routes.invoice.home);
         },
         onError: (err: any) => {
           toast.error(err?.response?.data?.message || 'Something went wrong');
@@ -88,11 +135,31 @@ export default function CreateInvoice({ id }: { id?: string }) {
     );
   };
 
+  if (id && isLoadingGetInvoice) {
+    return <Loader className="h-10 w-10" />;
+  }
+
   return (
     <Form<InvoiceFormInput>
       validationSchema={invoiceFormSchema}
       onSubmit={onSubmit}
-      useFormProps={{}}
+      useFormProps={{
+        defaultValues: {
+          patientId: dataInvoice?.data?.patientId,
+          invoice_date: dayjs(dataInvoice?.data?.date).toDate(),
+          due_date: dayjs(dataInvoice?.data?.due_date).toDate(),
+          items: dataInvoice?.data?.items.map((item) => ({
+            item: `${item.code} - ${item.name}`,
+            amount: Number(item.amount),
+            qty: Number(item.qty),
+            total_amount: Number(item.total_amount),
+          })),
+          taxFee: dataInvoice?.data?.tax_fee,
+          otherFee: dataInvoice?.data?.other_fee,
+          note: dataInvoice?.data?.note,
+          total_amount: Number(dataInvoice?.data?.total_amount),
+        },
+      }}
       className="flex flex-grow flex-col @container [&_label]:font-medium"
     >
       {({ register, setValue, control, watch, formState: { errors } }) => {

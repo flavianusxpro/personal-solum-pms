@@ -1,6 +1,6 @@
 import { routes } from '@/config/routes';
 import PageHeader from '@/app/shared/ui/page-header';
-import CreateInvoice from '@/app/shared/invoice/create-invoice';
+import CreateEditInvoice from '@/app/shared/invoice/create-edit-invoice';
 import { metaObject } from '@/config/site.config';
 
 export const metadata = {
@@ -27,7 +27,7 @@ export default function InvoiceCreatePage() {
         {/* <ImportButton title="Upload File" className="mt-4 @lg:mt-0" /> */}
       </PageHeader>
 
-      <CreateInvoice />
+      <CreateEditInvoice />
     </>
   );
 }

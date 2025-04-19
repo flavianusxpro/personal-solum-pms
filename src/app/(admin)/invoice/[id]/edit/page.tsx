@@ -1,7 +1,7 @@
 import { routes } from '@/config/routes';
 import PageHeader from '@/app/shared/ui/page-header';
 import ImportButton from '@/app/shared/ui/import-button';
-import CreateInvoice from '@/app/shared/invoice/create-invoice';
+import CreateEditInvoice from '@/app/shared/invoice/create-edit-invoice';
 import { metaObject } from '@/config/site.config';
 
 export const metadata = {
@@ -25,14 +25,20 @@ const pageHeader = {
   ],
 };
 
-export default function InvoiceEditPage() {
+interface InvoiceEditPageProps {
+  params: { id: string };
+}
+
+export default function InvoiceEditPage({ params }: InvoiceEditPageProps) {
+  const { id } = params;
+
   return (
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
-        <ImportButton title="Upload File" className="mt-4 @lg:mt-0" />
+        {/* <ImportButton title="Upload File" className="mt-4 @lg:mt-0" /> */}
       </PageHeader>
 
-      <CreateInvoice />
+      <CreateEditInvoice id={id} />
     </>
   );
 }

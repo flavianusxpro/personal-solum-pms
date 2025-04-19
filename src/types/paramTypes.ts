@@ -192,12 +192,15 @@ export interface IPayloadUploadImage {
 }
 
 export interface IPayloadCreateInvoice {
+  id?: number;
   patientId: number;
   invoice_date: string;
   due_date: string;
   note: string;
   amount: number;
   fee: number;
+  other_fee: number;
+  tax_fee: number;
   total_amount: number;
   items: Item[];
 }

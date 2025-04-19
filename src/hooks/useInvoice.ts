@@ -1,8 +1,10 @@
 import {
   deleteInvoice,
+  getInvoiceById,
   getInvoiceList,
   getItems,
   postCreateInvoice,
+  putCreateInvoice,
 } from '@/service/invoice';
 import { IParamGetAppointments } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -22,6 +24,14 @@ export function useGetInvoices(params: IParamGetAppointments) {
   });
 }
 
+export function useGetInvoiceById(id?: string) {
+  return useQuery({
+    queryKey: ['getInvoiceById' + id],
+    queryFn: async () => getInvoiceById(id as string),
+    enabled: !!id,
+  });
+}
+
 export function usePostCreateInvoice() {
   return useMutation({
     mutationFn: postCreateInvoice,
@@ -34,6 +44,12 @@ export function useGetItems() {
     queryFn: getItems,
     staleTime: 1000 * 60 * 5, // 5 minutes
     refetchOnWindowFocus: false,
+  });
+}
+
+export function usePutUpdateInvoice() {
+  return useMutation({
+    mutationFn: putCreateInvoice,
   });
 }
 
