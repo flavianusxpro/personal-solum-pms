@@ -7,6 +7,7 @@ import {
 import {
   IParamGetAllDoctor,
   IParamGetDoctorByClinic,
+  IPayloadAssignDoctorToClinic,
   IPayloadCreateEditDoctor,
   IPayloadSettingBillingDoctor,
   IPayloadSettingMeetingDoctor,
@@ -52,6 +53,7 @@ export async function putSettingMeetingDoctor(
     payload
   );
 }
+
 export async function putSettingBillingDoctor(
   payload: IPayloadSettingBillingDoctor
 ) {
@@ -59,4 +61,10 @@ export async function putSettingBillingDoctor(
     '/admin/doctor/setting/billing/' + payload.doctor_id,
     payload
   );
+}
+
+export async function postAssignDoctorToClinic(
+  payload: IPayloadAssignDoctorToClinic
+) {
+  return await post('/admin/doctor/assign-to-clinic', payload);
 }

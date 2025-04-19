@@ -92,14 +92,14 @@ export interface CalendarEvent {
   start: Date;
   end: Date;
   allDay?: boolean;
-  patient: string;
+  patient?: string;
   description?: string;
   location?: string;
   breakTimes?: {
     start: Date;
     end: Date;
   }[];
-  data: IGetAppointmentListResponse['data'][number];
+  data?: IGetAppointmentListResponse['data'][number];
 }
 
 export interface FlightingCardProps {

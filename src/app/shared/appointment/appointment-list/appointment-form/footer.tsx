@@ -22,9 +22,13 @@ export default function Footer({ className }: FooterProps) {
   const { closeModal } = useModal();
 
   const [formData] = useAtom(formDataAtom);
-  const { mutate } = usePostCreateAppointment();
+  const { mutate: mutateCreate } = usePostCreateAppointment();
 
-  const createAppoinment = () => {
+  const saveAppoinment = () => {
+    if (formData.id) {
+      toast.error('You have already booked an appointment');
+      return;
+    }
     const payload: IPayloadPostAppoinment = {
       appointment_type: formData.appointment_type,
       clinicId: formData.clinicId as number,
@@ -37,7 +41,7 @@ export default function Footer({ className }: FooterProps) {
       patient_id: formData.patient_id ? String(formData.patient_id) : '',
     };
 
-    mutate(payload, {
+    mutateCreate(payload, {
       onSuccess: () => {
         closeModal();
         toast.success('Booking successful!');
@@ -83,7 +87,7 @@ export default function Footer({ className }: FooterProps) {
           <Button
             className="!w-auto"
             type="button"
-            onClick={createAppoinment}
+            onClick={saveAppoinment}
             rounded="lg"
           >
             Save

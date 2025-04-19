@@ -1,6 +1,7 @@
 import {
   getDoctorById,
   getDoctorList,
+  postAssignDoctorToClinic,
   postCreateDoctor,
   putCreateDoctor,
   putSettingBillingDoctor,
@@ -67,5 +68,11 @@ export function useUpdateSettingBillingDoctor() {
     mutationFn: async (payload: IPayloadSettingBillingDoctor) => {
       return await putSettingBillingDoctor(payload);
     },
+  });
+}
+
+export function usePostAssignDoctorToClinic() {
+  return useMutation({
+    mutationFn: postAssignDoctorToClinic,
   });
 }

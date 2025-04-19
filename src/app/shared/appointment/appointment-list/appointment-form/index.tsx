@@ -57,6 +57,7 @@ import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 import dayjs from 'dayjs';
 
 type FormDataType = {
+  id?: number | null;
   clinicId?: number;
   patient_id?: number;
   doctorId?: number;
@@ -70,6 +71,7 @@ type FormDataType = {
 };
 
 export const initialFormData = {
+  id: null,
   clinicId: undefined,
   patient_id: undefined,
   doctorId: undefined,

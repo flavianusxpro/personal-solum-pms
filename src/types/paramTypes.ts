@@ -212,3 +212,7 @@ interface Item {
   qty: number;
   total_amount: number;
 }
+
+export interface IPayloadAssignDoctorToClinic {
+  clinic_ids: number[];
+}

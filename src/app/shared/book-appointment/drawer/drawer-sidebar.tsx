@@ -90,7 +90,7 @@ const PatientDrawerSideBar = ({ onClose }: { onClose: () => void }) => {
       {open === 'authenticated' && (
         <div className="flex w-full flex-col items-center gap-2">
           <Text className="text-center text-lg font-semibold">
-            You are logged in as {data?.user.name}
+            You are logged in as {data?.role?.name}
           </Text>
           <div className="mt-4 w-full pb-3 3xl:mt-6">
             {patientMenuItems.map((item: any, index: number) => {
