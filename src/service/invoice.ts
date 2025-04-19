@@ -1,4 +1,4 @@
-import { get, post } from '@/app/api/api';
+import { del, get, post } from '@/app/api/api';
 import {
   IGetAllItemsResponse,
   IGetAppointmentListResponse,
@@ -19,4 +19,8 @@ export async function getItems() {
   return await get<IGetAllItemsResponse>('/admin/invoice/item').then(
     (res) => res.data
   );
+}
+
+export async function deleteInvoice(id: string) {
+  return await del(`/admin/invoice/${id}`);
 }

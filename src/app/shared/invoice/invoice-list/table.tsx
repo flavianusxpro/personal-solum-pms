@@ -7,8 +7,9 @@ import { useColumn } from '@core/hooks/use-column';
 import { Button } from 'rizzui';
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { getColumns } from './columns';
-import { useGetInvoices } from '@/hooks/useInvoice';
+import { useDeleteInvoice, useGetInvoices } from '@/hooks/useInvoice';
 import dayjs from 'dayjs';
+import toast from 'react-hot-toast';
 const FilterElement = dynamic(
   () => import('@/app/shared/invoice/invoice-list/filter-element'),
   { ssr: false }
@@ -40,6 +41,8 @@ export default function InvoiceTableList() {
     status: filterStateValue?.status || undefined,
   });
 
+  const { mutate: mutateDelete } = useDeleteInvoice();
+
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
       handleSort(value);
@@ -47,7 +50,16 @@ export default function InvoiceTableList() {
   });
 
   const onDeleteItem = useCallback((id: string) => {
-    handleDelete(id);
+    mutateDelete(id, {
+      onSuccess: () => {
+        handleDelete(id);
+        toast.success('Invoice deleted successfully');
+      },
+      onError: (error: any) => {
+        toast.error('Error deleting invoice: ' + error.response.data.message);
+        console.error('Error deleting invoice:', error);
+      },
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

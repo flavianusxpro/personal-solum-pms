@@ -1,4 +1,9 @@
-import { getInvoiceList, getItems, postCreateInvoice } from '@/service/invoice';
+import {
+  deleteInvoice,
+  getInvoiceList,
+  getItems,
+  postCreateInvoice,
+} from '@/service/invoice';
 import { IParamGetAppointments } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
@@ -29,5 +34,11 @@ export function useGetItems() {
     queryFn: getItems,
     staleTime: 1000 * 60 * 5, // 5 minutes
     refetchOnWindowFocus: false,
+  });
+}
+
+export function useDeleteInvoice() {
+  return useMutation({
+    mutationFn: deleteInvoice,
   });
 }
