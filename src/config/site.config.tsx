@@ -3,6 +3,7 @@ import logoImg from '@public/logo.svg';
 import { LAYOUT_OPTIONS } from '@/config/enums';
 import logoIconImg from '@public/logo-short.svg';
 import { OpenGraph } from 'next/dist/lib/metadata/types/opengraph-types';
+import Logo from '@core/components/logo';
 
 enum MODE {
   DARK = 'dark',
@@ -12,7 +13,7 @@ enum MODE {
 export const siteConfig = {
   title: 'Solum Clinic',
   description: `Solum Clinic`,
-  logo: logoImg,
+  logo: Logo,
   icon: logoIconImg,
   mode: MODE.LIGHT,
   layout: LAYOUT_OPTIONS.HYDROGEN,

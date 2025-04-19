@@ -1,10 +1,12 @@
 'use client';
 
-import Image from 'next/image';
 import { QRCodeSVG } from 'qrcode.react';
-import { Badge, Title, Text } from 'rizzui';
-import { siteConfig } from '@/config/site.config';
+import { Badge, Title, Text, Loader } from 'rizzui';
 import Table from '../ui/table';
+import { useGetInvoiceById } from '@/hooks/useInvoice';
+import Logo from '@core/components/logo';
+import dayjs from 'dayjs';
+import { IGetInvoiceByIdResponse } from '@/types/ApiResponse';
 
 const invoiceItems = [
   {
@@ -51,19 +53,22 @@ const columns = [
   },
   {
     title: 'Item',
-    dataIndex: 'product',
-    key: 'product',
+    dataIndex: 'code',
+    key: 'code',
     width: 250,
-    render: (product: any) => (
+    render: (
+      _: string,
+      item: IGetInvoiceByIdResponse['data']['items'][number]
+    ) => (
       <>
         <Title as="h6" className="mb-0.5 text-sm font-medium">
-          {product.title}
+          {item?.code} - {item?.name}
         </Title>
         <Text
           as="p"
           className="max-w-[250px] overflow-hidden truncate text-sm text-gray-500"
         >
-          {product.description}
+          {item?.description}
         </Text>
       </>
     ),
@@ -71,30 +76,34 @@ const columns = [
 
   {
     title: 'Quantity',
-    dataIndex: 'quantity',
-    key: 'quantity',
+    dataIndex: 'qty',
+    key: 'qty',
     width: 200,
   },
   {
     title: 'Unit Price',
-    dataIndex: 'unitPrice',
-    key: 'unitPrice',
+    dataIndex: 'amount',
+    key: 'amount',
     width: 200,
     render: (value: string) => <Text className="font-medium">${value}</Text>,
   },
   {
     title: 'Total',
-    dataIndex: 'total',
-    key: 'total',
+    dataIndex: 'qty',
+    key: 'qty',
     width: 200,
     render: (value: string) => <Text className="font-medium">${value}</Text>,
   },
-];
+] as any;
 
-function InvoiceDetailsListTable() {
+function InvoiceDetailsListTable({
+  data,
+}: {
+  data?: IGetInvoiceByIdResponse['data']['items'];
+}) {
   return (
     <Table
-      data={invoiceItems}
+      data={data}
       columns={columns}
       variant="minimal"
       rowKey={(record) => record.id}
@@ -104,32 +113,24 @@ function InvoiceDetailsListTable() {
   );
 }
 
-export default function InvoiceDetails() {
+export default function InvoiceDetails({ id }: { id: string }) {
+  const { data: dataInvoice, isLoading } = useGetInvoiceById(id);
+
+  if (isLoading) return <Loader className="h-10 w-10" />;
+
   return (
     <div className="w-full rounded-xl border border-muted p-5 text-sm sm:p-6 lg:p-8 2xl:p-10">
       <div className="mb-12 flex flex-col-reverse items-start justify-between md:mb-16 md:flex-row">
-        <Image
-          src={siteConfig.logo}
-          alt={siteConfig.title}
-          className="dark:invert"
-          priority
-        />
+        <Logo className="max-w-[155px]" />
         <div className="mb-4 md:mb-0">
-          <Badge
-            variant="flat"
-            color="success"
-            rounded="md"
-            className="mb-3 md:mb-2"
-          >
-            Paid
-          </Badge>
-          <Title as="h6">INV - #246098</Title>
+          {getPaymentStatusBadge(dataInvoice?.status as number)}
+          <Title as="h6">#{dataInvoice?.id}</Title>
           <Text className="mt-0.5 text-gray-500">Invoice Number</Text>
         </div>
       </div>
 
-      <div className="mb-12 grid gap-4 xs:grid-cols-2 sm:grid-cols-3 sm:grid-rows-1">
-        <div className="">
+      <div className="mb-12 grid gap-4 xs:grid-cols-2 sm:grid-rows-1">
+        {/* <div className="">
           <Title as="h6" className="mb-3.5 font-semibold">
             From
           </Title>
@@ -145,36 +146,36 @@ export default function InvoiceDetails() {
             <Text className="mb-2 text-sm font-semibold">Creation Date</Text>
             <Text>Mar 22, 2013</Text>
           </div>
-        </div>
+        </div> */}
 
         <div className="mt-4 xs:mt-0">
           <Title as="h6" className="mb-3.5 font-semibold">
             Bill To
           </Title>
           <Text className="mb-1.5 text-sm font-semibold uppercase">
-            TRANSPORT LLC
+            Patient ID: {dataInvoice?.patientId}
           </Text>
-          <Text className="mb-1.5">Albert Flores</Text>
+          {/* <Text className="mb-1.5">Albert Flores</Text>
           <Text className="mb-1.5">
             2715 Ash Dr. San Jose, <br />
             South Dakota 83475
           </Text>
-          <Text className="mb-4 sm:mb-6 md:mb-8">(671) 555-0110</Text>
+          <Text className="mb-4 sm:mb-6 md:mb-8">(671) 555-0110</Text> */}
           <div>
             <Text className="mb-2 text-sm font-semibold">Due Date</Text>
-            <Text>Mar 22, 2013</Text>
+            <Text>{dayjs(dataInvoice?.due_date).format('MM DD, YYYY')}</Text>
           </div>
         </div>
 
         <div className="mt-4 flex sm:mt-6 md:mt-0 md:justify-end">
           <QRCodeSVG
-            value="https://reactjs.org/"
+            value={dataInvoice?.id.toString() as string}
             className="h-28 w-28 lg:h-32 lg:w-32"
           />
         </div>
       </div>
 
-      <InvoiceDetailsListTable />
+      <InvoiceDetailsListTable data={dataInvoice?.items} />
 
       <div className="flex flex-col-reverse items-start justify-between border-t border-muted pb-4 pt-8 xs:flex-row">
         <div className="mt-6 max-w-md pe-4 xs:mt-0">
@@ -184,41 +185,92 @@ export default function InvoiceDetails() {
           >
             Notes
           </Title>
-          <Text className="leading-[1.7]">
-            We appreciate your business. Should you need us to add VAT or extra
-            notes let us know!
-          </Text>
+          <Text className="leading-[1.7]">{dataInvoice?.note || '-'}</Text>
         </div>
         <div className="w-full max-w-sm">
           <Text className="flex items-center justify-between border-b border-muted pb-3.5 lg:pb-5">
             Subtotal:{' '}
             <Text as="span" className="font-semibold">
-              $700
+              ${dataInvoice?.amount}
             </Text>
           </Text>
           <Text className="flex items-center justify-between border-b border-muted py-3.5 lg:py-5">
-            Shipping:{' '}
+            Tax Fee:
             <Text as="span" className="font-semibold">
-              $142
+              ${dataInvoice?.tax_fee}
             </Text>
           </Text>
           <Text className="flex items-center justify-between border-b border-muted py-3.5 lg:py-5">
-            Discount:{' '}
+            Other Fee:{' '}
             <Text as="span" className="font-semibold">
-              $250
-            </Text>
-          </Text>
-          <Text className="flex items-center justify-between border-b border-muted py-3.5 lg:py-5">
-            Taxes:
-            <Text as="span" className="font-semibold">
-              15%
+              ${dataInvoice?.other_fee}
             </Text>
           </Text>
           <Text className="flex items-center justify-between pt-4 text-base font-semibold text-gray-900 lg:pt-5">
-            Total: <Text as="span">$659.5</Text>
+            Total: <Text as="span">${dataInvoice?.total_amount}</Text>
           </Text>
         </div>
       </div>
     </div>
   );
+}
+
+function getPaymentStatusBadge(status: number) {
+  switch (status) {
+    case 1:
+      return (
+        <Badge
+          variant="flat"
+          color="info"
+          rounded="md"
+          className="mb-3 md:mb-2"
+        >
+          Draft
+        </Badge>
+      );
+    case 2:
+      return (
+        <Badge
+          variant="flat"
+          color="info"
+          rounded="md"
+          className="mb-3 md:mb-2"
+        >
+          Open
+        </Badge>
+      );
+    case 3:
+      return (
+        <Badge
+          variant="flat"
+          color="success"
+          rounded="md"
+          className="mb-3 md:mb-2"
+        >
+          Paid
+        </Badge>
+      );
+    case 4:
+      return (
+        <Badge
+          variant="flat"
+          color="secondary"
+          rounded="md"
+          className="mb-3 md:mb-2"
+        >
+          Void
+        </Badge>
+      );
+    default:
+      return (
+        <Badge
+          variant="flat"
+          color="secondary"
+          rounded="md"
+          className="mb-3 md:mb-2"
+        >
+          {status}
+        </Badge>
+      );
+  }
 }

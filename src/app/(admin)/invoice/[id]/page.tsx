@@ -27,7 +27,14 @@ const pageHeader = {
   ],
 };
 
-export default function InvoiceDetailsPage() {
+interface InvoiceDetailsPageProps {
+  params: { id: string };
+}
+
+export default function InvoiceDetailsPage({
+  params,
+}: InvoiceDetailsPageProps) {
+  const { id } = params;
   return (
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
@@ -40,7 +47,7 @@ export default function InvoiceDetailsPage() {
         </div>
       </PageHeader>
 
-      <InvoiceDetails />
+      <InvoiceDetails id={id} />
     </>
   );
 }

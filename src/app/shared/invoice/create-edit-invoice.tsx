@@ -112,7 +112,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
           qty: Number(item.qty),
           total_amount: Number(item.amount) * Number(item.qty),
         })),
-        amount: totalAmount,
+        amount: totalItemAmount,
         fee: Number(data.taxFee),
         tax_fee: Number(data.taxFee),
         total_amount: totalAmount,
@@ -145,19 +145,19 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
       onSubmit={onSubmit}
       useFormProps={{
         defaultValues: {
-          patientId: dataInvoice?.data?.patientId,
-          invoice_date: dayjs(dataInvoice?.data?.date).toDate(),
-          due_date: dayjs(dataInvoice?.data?.due_date).toDate(),
-          items: dataInvoice?.data?.items.map((item) => ({
+          patientId: dataInvoice?.patientId,
+          invoice_date: dayjs(dataInvoice?.date).toDate(),
+          due_date: dayjs(dataInvoice?.due_date).toDate(),
+          items: dataInvoice?.items.map((item) => ({
             item: `${item.code} - ${item.name}`,
             amount: Number(item.amount),
             qty: Number(item.qty),
             total_amount: Number(item.total_amount),
           })),
-          taxFee: dataInvoice?.data?.tax_fee,
-          otherFee: dataInvoice?.data?.other_fee,
-          note: dataInvoice?.data?.note,
-          total_amount: Number(dataInvoice?.data?.total_amount),
+          taxFee: dataInvoice?.tax_fee,
+          otherFee: dataInvoice?.other_fee,
+          note: dataInvoice?.note,
+          total_amount: Number(dataInvoice?.total_amount),
         },
       }}
       className="flex flex-grow flex-col @container [&_label]:font-medium"

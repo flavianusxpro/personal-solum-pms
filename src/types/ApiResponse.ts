@@ -351,7 +351,7 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
   }[];
 }
 
-export interface IGetAppointmentByIdResponse extends ApiResponse {
+export interface IGetInvoiceByIdResponse extends ApiResponse {
   success: boolean;
   data: {
     id: number;

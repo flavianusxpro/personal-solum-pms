@@ -1,7 +1,7 @@
 import { del, get, post, put } from '@/app/api/api';
 import {
   IGetAllItemsResponse,
-  IGetAppointmentByIdResponse,
+  IGetInvoiceByIdResponse,
   IGetAppointmentListResponse,
 } from '@/types/ApiResponse';
 import { IParamGetInvoices, IPayloadCreateInvoice } from '@/types/paramTypes';
@@ -13,7 +13,9 @@ export async function getInvoiceList(params: IParamGetInvoices) {
 }
 
 export async function getInvoiceById(id: string) {
-  return await get<IGetAppointmentByIdResponse>(`/admin/invoice/detail/${id}`);
+  return await get<IGetInvoiceByIdResponse>(`/admin/invoice/detail/${id}`).then(
+    (res) => res.data
+  );
 }
 
 export async function postCreateInvoice(payload: IPayloadCreateInvoice) {
