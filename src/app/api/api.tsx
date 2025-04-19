@@ -4,6 +4,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 import { getSession } from 'next-auth/react';
+import toast from 'react-hot-toast';
 
 export const API_URL = 'https://clinicapi.xprogroup.com.au/';
 
@@ -35,6 +36,11 @@ axiosApi.interceptors.response.use(
     ) {
       window.location.replace('/login');
     }
+
+    if (error.response?.status === 500) {
+      toast.error('Server error. Please try again later or contact support.');
+    }
+
     return Promise.reject(error);
   }
 );
