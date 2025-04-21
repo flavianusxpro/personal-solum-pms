@@ -1,4 +1,5 @@
 import {
+  getAnalyticReportBillingByDoctorId,
   getDoctorById,
   getDoctorList,
   getSpecialists,
@@ -86,5 +87,17 @@ export function useGetSpecialists() {
     },
     staleTime: 1000 * 60 * 10, // 10 minutes
     refetchOnWindowFocus: false,
+  });
+}
+
+export function useGetAnalyticReportBillingByDoctorId(id: string) {
+  return useQuery({
+    queryKey: ['getAnalyticReportBillingByDoctorId' + id],
+    queryFn: async () => {
+      return await getAnalyticReportBillingByDoctorId(id);
+    },
+    staleTime: 1000 * 60 * 10, // 10 minutes
+    refetchOnWindowFocus: false,
+    enabled: !!id,
   });
 }

@@ -572,3 +572,13 @@ interface Permission {
   created_at: string;
   updated_at: string;
 }
+
+export interface IGetAnalyticReportBillingByDoctorIdResponse
+  extends ApiResponse {
+  data: {
+    total_appointment_in_last_30_days: number;
+    total_upcoming_appointment: number;
+    total_cancellation_appointment: number;
+    total_today_appointment: number;
+  };
+}

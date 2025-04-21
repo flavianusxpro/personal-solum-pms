@@ -23,15 +23,15 @@ export function useScrollableSlider() {
     const filterBarEl = sliderEl.current;
     const prevBtn = sliderPrevBtn.current;
     const nextBtn = sliderNextBtn.current;
-    const formPageHeaderEl = filterBarEl.classList.contains(
+    const formPageHeaderEl = filterBarEl?.classList?.contains(
       'formPageHeaderSliderElJS'
     );
     initNextPrevBtnVisibility();
 
     // @ts-ignore
     function initNextPrevBtnVisibility() {
-      let offsetWidth = filterBarEl.offsetWidth;
-      let scrollWidth = filterBarEl.scrollWidth;
+      let offsetWidth = filterBarEl?.offsetWidth;
+      let scrollWidth = filterBarEl?.scrollWidth;
       // show next btn when scrollWidth is gather than offsetWidth
       if (scrollWidth > offsetWidth) {
         nextBtn?.classList.remove('opacity-0', 'invisible');
@@ -69,11 +69,11 @@ export function useScrollableSlider() {
     }
 
     window.addEventListener('resize', initNextPrevBtnVisibility);
-    filterBarEl.addEventListener('scroll', visibleNextAndPrevBtnOnScroll);
+    filterBarEl?.addEventListener('scroll', visibleNextAndPrevBtnOnScroll);
     // clear event
     return () => {
       window.removeEventListener('resize', initNextPrevBtnVisibility);
-      filterBarEl.removeEventListener('scroll', visibleNextAndPrevBtnOnScroll);
+      filterBarEl?.removeEventListener('scroll', visibleNextAndPrevBtnOnScroll);
     };
   }, []);
 

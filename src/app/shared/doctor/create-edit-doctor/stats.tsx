@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from 'rizzui';
+import { Button, Loader } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { useScrollableSlider } from '@core/hooks/use-scrollable-slider';
 import { IconType } from 'react-icons/lib';
@@ -14,45 +14,13 @@ import {
   PiArrowDownRight,
   PiArrowUpRight,
 } from 'react-icons/pi';
+import { useGetAnalyticReportBillingByDoctorId } from '@/hooks/useDoctor';
+import { useParams } from 'next/navigation';
+import { useMemo } from 'react';
 
 type ReportBillingListStatsType = {
   className?: string;
 };
-
-const statData: StatType[] = [
-  {
-    title: 'TOTAL APPOINTMENT IN LAST 3O DAYS',
-    amount: '55',
-    increased: true,
-    percentage: '32.40',
-    icon: PiCalendarCheck,
-    iconWrapperFill: '#F5A623',
-  },
-  {
-    title: 'TOTAL UPCOMING APPOINTMENT',
-    amount: '44',
-    increased: true,
-    percentage: '32.40',
-    icon: PiCheckCircle,
-    iconWrapperFill: '#11843C',
-  },
-  {
-    title: 'TOTAL CANCELLATION',
-    amount: '33',
-    increased: false,
-    percentage: '32.40',
-    icon: PiClock,
-    iconWrapperFill: '#8A63D2',
-  },
-  {
-    title: 'TODAYS APPOINTMENT',
-    amount: '22',
-    increased: true,
-    percentage: '32.40',
-    icon: PiPhoneSlash,
-    iconWrapperFill: '#C50000',
-  },
-];
 
 export type StatType = {
   icon: IconType;
@@ -130,10 +98,10 @@ function StatCard({ className, transaction }: StatCardProps) {
   );
 }
 
-export function StatGrid() {
+export function StatGrid({ data }: { data: StatType[] }) {
   return (
     <>
-      {statData.map((stat: StatType, index: number) => {
+      {data.map((stat: StatType, index: number) => {
         return (
           <StatCard
             key={'stat-card-' + index}
@@ -149,6 +117,8 @@ export function StatGrid() {
 export default function ReportBillingListStats({
   className,
 }: ReportBillingListStatsType) {
+  const id = useParams<{ id: string }>().id;
+
   const {
     sliderEl,
     sliderPrevBtn,
@@ -156,6 +126,51 @@ export default function ReportBillingListStats({
     scrollToTheRight,
     scrollToTheLeft,
   } = useScrollableSlider();
+
+  const { data: dataReportBilling, isLoading } =
+    useGetAnalyticReportBillingByDoctorId(id);
+
+  const statData = useMemo(() => {
+    return [
+      {
+        title: 'TOTAL APPOINTMENT IN LAST 3O DAYS',
+        amount:
+          dataReportBilling?.total_appointment_in_last_30_days.toString() ||
+          '0',
+        increased: true,
+        percentage: '0',
+        icon: PiCalendarCheck,
+        iconWrapperFill: '#F5A623',
+      },
+      {
+        title: 'TOTAL UPCOMING APPOINTMENT',
+        amount: dataReportBilling?.total_upcoming_appointment.toString() || '0',
+        increased: true,
+        percentage: '',
+        icon: PiCheckCircle,
+        iconWrapperFill: '#11843C',
+      },
+      {
+        title: 'TOTAL CANCELLATION',
+        amount:
+          dataReportBilling?.total_cancellation_appointment.toString() || '0',
+        increased: false,
+        percentage: '',
+        icon: PiPhoneSlash,
+        iconWrapperFill: '#C50000',
+      },
+      {
+        title: 'TODAYS APPOINTMENT',
+        amount: dataReportBilling?.total_today_appointment.toString() || '0',
+        increased: true,
+        percentage: '32.40',
+        icon: PiClock,
+        iconWrapperFill: '#8A63D2',
+      },
+    ];
+  }, [dataReportBilling]);
+
+  if (isLoading) return <Loader className="h-10 w-10" />;
 
   return (
     <div
@@ -178,7 +193,7 @@ export default function ReportBillingListStats({
           ref={sliderEl}
           className="custom-scrollbar-x grid grid-flow-col gap-5 overflow-x-auto scroll-smooth 2xl:gap-6"
         >
-          <StatGrid />
+          <StatGrid data={statData} />
         </div>
       </div>
       <Button

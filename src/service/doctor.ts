@@ -1,6 +1,7 @@
 import { get, post, put } from '@/app/api/api';
 import {
   IGetAllDoctorsResponse,
+  IGetAnalyticReportBillingByDoctorIdResponse,
   IGetDoctorByClinicResponse,
   IGetDoctorByIdResponse,
   IGetSpecialistResponse,
@@ -75,6 +76,14 @@ export async function getSpecialists(params: IParamGetSpecialists) {
   return await get<IGetSpecialistResponse>('/admin/doctor/specialist', {
     params,
   }).then((res) => {
+    return res.data;
+  });
+}
+
+export async function getAnalyticReportBillingByDoctorId(id: string) {
+  return await get<IGetAnalyticReportBillingByDoctorIdResponse>(
+    `/admin/doctor/analytics/billing/${id}`
+  ).then((res) => {
     return res.data;
   });
 }
