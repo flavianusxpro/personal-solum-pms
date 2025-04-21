@@ -46,6 +46,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         const role = credentials?.role;
+
         const payload = {
           email: credentials?.email,
           password: credentials?.password,
@@ -57,15 +58,32 @@ export const authOptions: NextAuthOptions = {
           const response = await post<SignInApiResponse>(url, payload);
 
           if (response.success && response.data) {
+            if (response.data.role) {
+              return {
+                id: response.data.role.id.toString(),
+                accessToken: response.data.access_token,
+                role: {
+                  id: response.data.role?.id ?? 0,
+                  name: response.data.role?.name ?? 'patient',
+                  created_at: response.data.role?.created_at ?? '',
+                  updated_at: response.data.role?.updated_at ?? '',
+                  permissions: response.data.role?.permissions ?? [],
+                },
+              };
+            }
+
+            // patient
             return {
-              id: response.data.role.id.toString(),
+              name: response.data.name,
+              email: response.data.email,
+              id: response.data.name as string,
               accessToken: response.data.access_token,
               role: {
-                id: response.data.role?.id ?? 0,
-                name: response.data.role?.name ?? 'patient',
-                created_at: response.data.role?.created_at ?? '',
-                updated_at: response.data.role?.updated_at ?? '',
-                permissions: response.data.role?.permissions ?? [],
+                id: 0,
+                name: 'patient',
+                created_at: '',
+                updated_at: '',
+                permissions: [],
               },
             };
           }

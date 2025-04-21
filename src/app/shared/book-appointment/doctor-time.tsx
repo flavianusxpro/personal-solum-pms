@@ -186,8 +186,8 @@ function DoctorTime({
   const practices_open = doctor.appointment_schedule.practices_open;
   const practices_close = doctor.appointment_schedule.practices_close;
 
-  const [startHours, startMinutes] = practices_open.split(':').map(Number);
-  const [endHours, endMinutes] = practices_close.split(':').map(Number);
+  const [startHours, startMinutes] = practices_open?.split(':')?.map(Number);
+  const [endHours, endMinutes] = practices_close?.split(':')?.map(Number);
 
   const appointmentType = useMemo(
     () => bookAppointmentValue?.step3?.includes('Follow up'),
@@ -225,7 +225,7 @@ function DoctorTime({
         hour12: true,
       });
 
-      if (!bookedTimes.includes(timeString.split(' ')[0])) {
+      if (!bookedTimes.includes(timeString?.split(' ')[0])) {
         times.push(timeString);
       }
 

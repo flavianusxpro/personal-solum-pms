@@ -16,6 +16,8 @@ interface Permission {
 interface UserData {
   access_token: string;
   role: Role;
+  name?: string;
+  email?: string;
 }
 
 export interface SignInApiResponse {
