@@ -9,8 +9,15 @@ import {
 } from '@/types/paramTypes';
 
 export async function getAppointmentList(params: IParamGetAppointments) {
-  return await get<IGetAppointmentListResponse>('/admin/appointment/', {
-    params,
+  const q = JSON.stringify({
+    doctorName: params.doctorName,
+  });
+  return await get<IGetAppointmentListResponse>('/admin/appointment', {
+    params: {
+      page: params.page,
+      perPage: params.perPage,
+      q: q,
+    },
   }).then((res) => {
     return res.data;
   });

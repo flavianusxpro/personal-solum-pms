@@ -5,7 +5,7 @@ import ModalButton from '@/app/shared/ui/modal-button/modal-button';
 import PageHeader from '@/app/shared/ui/page-header';
 import { routes } from '@/config/routes';
 import { eventData } from '@/data/event-data';
-import EventForm from '@/app/shared/event-calendar/event-form';
+import CreateUpdateAppointmentForm from '@/app/shared/appointment/appointment-list/appointment-form';
 
 export const metadata = {
   ...metaObject('Event Calendar'),
@@ -36,8 +36,8 @@ export default function EventCalendarPage() {
             header="ID,Title,Description,Location,Start,end"
           />
           <ModalButton
-            label="Create Schedule"
-            view={<EventForm />}
+            label="Create Appointment"
+            view={<CreateUpdateAppointmentForm />}
             customSize="900px"
             className="mt-0 w-full @lg:w-auto"
           />

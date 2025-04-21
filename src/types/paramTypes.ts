@@ -114,6 +114,7 @@ export interface IParamGetAppointments extends IParamGetDataWithPagination {
   from?: string;
   to?: string;
   status?: number;
+  doctorName?: string;
 }
 export interface IParamGetInvoices extends IParamGetDataWithPagination {
   doctorId?: number;

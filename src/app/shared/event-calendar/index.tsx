@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { CalendarEvent } from '@/types';
 import dayjs from 'dayjs';
 import { Calendar, dayjsLocalizer } from 'react-big-calendar';
@@ -11,8 +11,8 @@ import cn from '@core/utils/class-names';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import CSelect from '../ui/select';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
-import { useGetListSchedule } from '@/hooks/useSchedule';
 import { useGetAppointments } from '@/hooks/useAppointment';
+import CreateUpdateAppointmentForm from '../appointment/appointment-list/appointment-form';
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -26,23 +26,17 @@ export default function EventCalendarView() {
   const { openModal } = useModal();
   const { colorPresetName } = useColorPresetName();
 
-  const [selectDoctor, setSelectDoctor] = useState<number | null>(null);
-  const [perPage, setPerPage] = useState(10);
+  const [selectDoctor, setSelectDoctor] = useState<string | null>(null);
 
   const { data: dataDoctor } = useGetAllDoctors({
     page: 1,
     perPage: 100,
   });
 
-  const { data: dataSchedule } = useGetListSchedule({
+  const { data: dataAppointment, refetch } = useGetAppointments({
     page: 1,
     perPage: 100,
-  });
-
-  const { data: dataAppointment } = useGetAppointments({
-    page: 1,
-    perPage: 100,
-    doctorId: selectDoctor || undefined,
+    doctorName: selectDoctor || undefined,
   });
 
   const events: CalendarEvent[] = useMemo(() => {
@@ -67,14 +61,14 @@ export default function EventCalendarView() {
     if (!dataDoctor) return [];
     return dataDoctor.map((doctor) => ({
       label: doctor.first_name + ' ' + doctor.last_name,
-      value: doctor.id,
+      value: doctor.first_name,
     }));
   }, [dataDoctor]);
 
   const handleSelectSlot = useCallback(
     ({ start, end }: { start: Date; end: Date }) => {
       openModal({
-        view: <EventForm startDate={start} endDate={end} />,
+        view: <CreateUpdateAppointmentForm />,
         customSize: '650px',
       });
     },
@@ -99,7 +93,7 @@ export default function EventCalendarView() {
         day: true,
         agenda: true,
       },
-      scrollToTime: new Date(2023, 10, 27, 6),
+      scrollToTime: new Date(),
       formats: {
         dateFormat: 'D',
         weekdayFormat: (date: Date, culture: any, localizer: any) =>
@@ -113,6 +107,12 @@ export default function EventCalendarView() {
     []
   );
 
+  useEffect(() => {
+    if (selectDoctor) {
+      refetch();
+    }
+  }, [selectDoctor, refetch]);
+
   return (
     <div className="@container">
       <div className="mb-4 flex w-1/4">
@@ -121,7 +121,7 @@ export default function EventCalendarView() {
           label="Select Doctor"
           options={doctorOptions}
           value={selectDoctor}
-          onChange={(e: number) => setSelectDoctor(e)}
+          onChange={(e: string) => setSelectDoctor(e)}
         />
       </div>
 
