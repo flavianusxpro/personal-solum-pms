@@ -68,7 +68,7 @@ export async function putSettingBillingDoctor(
 export async function postAssignDoctorToClinic(
   payload: IPayloadAssignDoctorToClinic
 ) {
-  return await post('/admin/doctor/assign-to-clinic', payload);
+  return await post(`/admin/doctor/${payload.id}/assign-to-clinic`, payload);
 }
 
 export async function getSpecialists(params: IParamGetSpecialists) {

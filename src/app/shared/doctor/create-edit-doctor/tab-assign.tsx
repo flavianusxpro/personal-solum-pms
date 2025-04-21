@@ -6,11 +6,10 @@ import toast from 'react-hot-toast';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { Flex, Input, Loader, Text, Textarea } from 'rizzui';
+import { Flex, Loader } from 'rizzui';
 import { assignSchema, AssignTypes } from '@/validators/assign-doctor.schema';
-import { useGetPatientById, useUpdateAssignDoctor } from '@/hooks/usePatient';
 import { useParams } from 'next/navigation';
-import { useGetAllDoctors } from '@/hooks/useDoctor';
+import { usePostAssignDoctorToClinic } from '@/hooks/useDoctor';
 import { useMemo } from 'react';
 import { useGetAllClinics } from '@/hooks/useClinic';
 
@@ -35,7 +34,7 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
     role: 'admin',
   });
 
-  const { mutate } = useUpdateAssignDoctor();
+  const { mutate } = usePostAssignDoctorToClinic();
 
   const clinicsOptions = useMemo(() => {
     if (!dataClinics) return [];
@@ -46,18 +45,17 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
   }, [dataClinics]);
 
   const onSubmit: SubmitHandler<AssignTypes> = (data) => {
-    const doctor_ids = data.doctor.map((doctor) => parseInt(doctor));
     mutate(
       {
-        patient_id: id,
-        doctor_ids,
+        id,
+        clinic_ids: data.clinic.map((item) => parseInt(item)),
       },
       {
         onSuccess: (data) => {
-          toast.success(data.message);
+          toast.success('Doctor assigned to clinic successfully');
         },
-        onError: (error) => {
-          toast.error(error.message);
+        onError: (error: any) => {
+          toast.error(error.response?.data?.message || 'Something went wrong');
         },
       }
     );
@@ -72,7 +70,7 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
         mode: 'all',
       }}
     >
-      {({ register, control, watch, formState: { errors } }) => {
+      {({ control, watch, formState: { errors } }) => {
         const { clinic } = watch();
         return (
           <>

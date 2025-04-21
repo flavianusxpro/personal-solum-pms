@@ -216,6 +216,7 @@ interface Item {
 }
 
 export interface IPayloadAssignDoctorToClinic {
+  id: string;
   clinic_ids: number[];
 }
 

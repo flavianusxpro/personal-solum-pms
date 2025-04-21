@@ -96,38 +96,38 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
         useFormProps={{
           mode: 'all',
           defaultValues: {
-            microsoft_team_link: dataDoctor?.setting.microsoft_team_link || '',
-            microsoft_team_id: dataDoctor?.setting.microsoft_team_id || '',
+            microsoft_team_link: dataDoctor?.setting?.microsoft_team_link || '',
+            microsoft_team_id: dataDoctor?.setting?.microsoft_team_id || '',
             microsoft_team_passcode:
-              dataDoctor?.setting.microsoft_team_passcode || '',
+              dataDoctor?.setting?.microsoft_team_passcode || '',
             // microsoft_team_status: dataDoctor?.setting.microsoft_team_status,
-            zoom_meeting_link: dataDoctor?.setting.zoom_meeting_link || '',
-            zoom_meeting_id: dataDoctor?.setting.zoom_meeting_id || '',
+            zoom_meeting_link: dataDoctor?.setting?.zoom_meeting_link || '',
+            zoom_meeting_id: dataDoctor?.setting?.zoom_meeting_id || '',
             zoom_meeting_passcode:
-              dataDoctor?.setting.zoom_meeting_passcode || '',
-            // zoom_meeting_status: dataDoctor?.setting.zoom_meeting_status,
-            skype_link: dataDoctor?.setting.skype_meeting_link || '',
-            skype_meeting_id: dataDoctor?.setting.skype_meeting_id || '',
+              dataDoctor?.setting?.zoom_meeting_passcode || '',
+            // zoom_meeting_status: dataDoctor?.setting?.zoom_meeting_status,
+            skype_link: dataDoctor?.setting?.skype_meeting_link || '',
+            skype_meeting_id: dataDoctor?.setting?.skype_meeting_id || '',
             skype_meeting_passcode:
-              dataDoctor?.setting.skype_meeting_passcode || '',
-            // skype_meeting_status: dataDoctor?.setting.skype_meeting_status,
-            // f2f: dataDoctor?.setting.f2f,
-            // teleHealth: dataDoctor?.setting.teleHealth,
-            // field1: dataDoctor?.setting.field1 || '',
-            // field2: dataDoctor?.setting.field2 || '',
-            // field3: dataDoctor?.setting.field3 || '',
-            // field4: dataDoctor?.setting.field4 || '',
-            fee: dataDoctor?.setting.fee || 0,
-            cancellation_fee: dataDoctor?.setting.cancellation_fee || 0,
+              dataDoctor?.setting?.skype_meeting_passcode || '',
+            // skype_meeting_status: dataDoctor?.setting?.skype_meeting_status,
+            // f2f: dataDoctor?.setting?.f2f,
+            // teleHealth: dataDoctor?.setting?.teleHealth,
+            // field1: dataDoctor?.setting?.field1 || '',
+            // field2: dataDoctor?.setting?.field2 || '',
+            // field3: dataDoctor?.setting?.field3 || '',
+            // field4: dataDoctor?.setting?.field4 || '',
+            fee: dataDoctor?.setting?.fee || 0,
+            cancellation_fee: dataDoctor?.setting?.cancellation_fee || 0,
             initial_appointment_fee:
-              Number(dataDoctor?.setting.initial_appointment_fee) || 0,
+              Number(dataDoctor?.setting?.initial_appointment_fee) || 0,
             follow_up_appointment_fee:
-              Number(dataDoctor?.setting.followup_appointment_fee) || 0,
+              Number(dataDoctor?.setting?.followup_appointment_fee) || 0,
             // doctor_timezone: dataDoctor?.setting.doctor_timezone,
             follow_up_appointment_time:
-              dataDoctor?.setting.followup_appointment_time,
+              dataDoctor?.setting?.followup_appointment_time,
             initial_appointment_time:
-              dataDoctor?.setting.initial_appointment_time,
+              dataDoctor?.setting?.initial_appointment_time,
           },
         }}
       >
