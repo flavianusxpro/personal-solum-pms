@@ -80,6 +80,7 @@ export interface IPayloadCreateEditDoctor {
   status?: number;
   date_of_birth?: string;
   gender?: string;
+  unit_number?: string;
   medicare_card_number?: string;
   medicare_expired_date?: string;
   timezone?: string;
@@ -92,6 +93,15 @@ export interface IPayloadCreateEditDoctor {
   address_line_1?: string;
   address_line_2?: string;
   street_number?: string;
+  street_name?: string;
+  suburb?: string;
+  postcode?: string;
+  country?: string;
+  state?: string;
+  treatment_type?: string;
+  specialist_type?: number[];
+  medical_interest?: string;
+  language?: string[];
 }
 
 export interface IParamGetAllPatient extends IParamGetDataWithPagination {}

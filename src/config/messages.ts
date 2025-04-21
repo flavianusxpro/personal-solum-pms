@@ -93,4 +93,5 @@ export const messages = {
   medicalInterestIsRequired: 'Medical Interest is required',
   specialistTypeIsRequired: 'Specialist Type is required',
   treatmentTypeIsRequired: 'Treatment Type is required',
+  unitNumberIsRequired: 'Unit Number is required',
 };

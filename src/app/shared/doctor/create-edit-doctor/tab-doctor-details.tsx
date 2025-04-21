@@ -8,24 +8,23 @@ import { Form } from '@core/ui/form';
 import { Flex, Input, Loader } from 'rizzui';
 import AvatarUpload from '@core/ui/file-upload/avatar-upload';
 import CSelect from '@/core/ui/select';
-import {
-  doctorTypeOption,
-  genderOption,
-  languageOption,
-  stateOption,
-} from '@/config/constants';
+import { genderOption, languageOption, stateOption } from '@/config/constants';
 import { IPayloadCreateEditDoctor } from '@/types/paramTypes';
 import { useParams } from 'next/navigation';
-import dayjs from 'dayjs';
 import {
   doctorDetailsFormSchema,
   DoctorDetailsFormTypes,
 } from '@/validators/doctor-details.schema';
-import { useGetDoctorById, useUpdateDoctor } from '@/hooks/useDoctor';
+import {
+  useGetDoctorById,
+  useGetSpecialists,
+  useUpdateDoctor,
+} from '@/hooks/useDoctor';
 import dynamic from 'next/dynamic';
 import QuillLoader from '@/core/components/loader/quill-loader';
 import SelectLoader from '@/core/components/loader/select-loader';
 import Divider from '@/app/shared/ui/divider';
+import { useMemo } from 'react';
 
 const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
   ssr: false,
@@ -48,19 +47,41 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     refetch: refetchDataDoctor,
     isLoading: isLoadingGetDataDoctor,
   } = useGetDoctorById(id);
-  const { mutate: mutateUpdatePatient } = useUpdateDoctor();
+  const { mutate: mutateUpdatePatient, isPending } = useUpdateDoctor();
+
+  const { data: dataSpecialists } = useGetSpecialists();
+
+  const specialistsOptions = useMemo(() => {
+    if (!dataSpecialists) return [];
+    return dataSpecialists.map((item) => ({
+      label: item.name,
+      value: item.id.toString(),
+    }));
+  }, [dataSpecialists]);
 
   const onSubmit: SubmitHandler<DoctorDetailsFormTypes> = (data) => {
     const payload: IPayloadCreateEditDoctor = {
       doctor_id: id ?? undefined,
       first_name: data.first_name,
       last_name: data.last_name as string,
+      unit_number: data.unit_number,
+      street_number: data.street_number,
+      street_name: data.street_name,
+      address_line_1: data.address_line_1,
+      address_line_2: data.address_line_2,
+      suburb: data.suburb,
+      postcode: data.postcode,
+      country: data.country,
+      state: data.state,
+      treatment_type: data.treatment_type,
+      specialist_type: data.specialist_type.map((item) => parseInt(item)),
+      medical_interest: data.medical_interest,
       email: data.email,
       date_of_birth: data.date_of_birth as string,
       gender: data.gender as string,
       mobile_number: data.mobile_number as string,
-      status: 1,
       description: data.about,
+      language: data.language,
     };
 
     if (id) {
@@ -90,6 +111,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
       useFormProps={{
         mode: 'all',
         defaultValues: {
+          unit_number: dataDoctor?.unit_number ?? '',
           first_name: dataDoctor?.first_name ?? '',
           last_name: dataDoctor?.last_name ?? '',
           email: dataDoctor?.email ?? '',
@@ -97,14 +119,20 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
           mobile_number: dataDoctor?.mobile_number ?? '',
           date_of_birth: dataDoctor?.date_of_birth ?? '',
           country: dataDoctor?.country ?? '',
-          street_number: dataDoctor?.street_name ?? '',
+          street_name: dataDoctor?.street_name ?? '',
           suburb: dataDoctor?.suburb ?? '',
           state: dataDoctor?.state ?? '',
           postcode: dataDoctor?.postcode ?? '',
           address_line_1: dataDoctor?.address_line_1 ?? '',
           address_line_2: dataDoctor?.address_line_2 ?? '',
           about: dataDoctor?.description ?? '',
-          // avatar: dataPatient?.avatar ?? '',
+          medical_interest: dataDoctor?.medical_interest ?? '',
+          treatment_type: dataDoctor?.treatment_type ?? '',
+          specialist_type: dataDoctor?.specialist_type.map((item) =>
+            item.toString()
+          ),
+          language: dataDoctor?.language ?? [],
+          avatar: dataDoctor?.photo ? { url: dataDoctor.photo } : null,
         },
       }}
     >
@@ -194,11 +222,21 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
                     disabled={isView}
                   />
                 </FormGroup>
+
                 <FormGroup title="Street Number" isLabel>
                   <Input
                     placeholder="Street"
                     {...register('street_number')}
                     error={errors.street_number?.message}
+                    className="flex-grow"
+                    disabled={isView}
+                  />
+                </FormGroup>
+                <FormGroup title="Street Name" isLabel>
+                  <Input
+                    placeholder="Street"
+                    {...register('street_name')}
+                    error={errors.street_name?.message}
                     className="flex-grow"
                     disabled={isView}
                   />
@@ -309,7 +347,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
                       searchable
                       {...field}
                       placeholder="Select Specialist Type"
-                      options={[]}
+                      options={specialistsOptions}
                       disabled={isView}
                       error={errors.specialist_type?.message}
                     />
@@ -362,7 +400,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
             </div>
             {!isView && (
               <FormFooter
-                // isLoading={isLoading}
+                isLoading={isPending}
                 altBtnText="Cancel"
                 submitBtnText="Save"
               />

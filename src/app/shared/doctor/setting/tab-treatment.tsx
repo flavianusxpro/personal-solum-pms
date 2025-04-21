@@ -20,7 +20,7 @@ import dayjs from 'dayjs';
 import {
   doctorDetailsFormSchema,
   DoctorDetailsFormTypes,
-} from '@/validators/doctor-details.schema';
+} from '@/validators/doctor-create.schema';
 import { useGetDoctorById, useUpdateDoctor } from '@/hooks/useDoctor';
 import dynamic from 'next/dynamic';
 import QuillLoader from '@/core/components/loader/quill-loader';

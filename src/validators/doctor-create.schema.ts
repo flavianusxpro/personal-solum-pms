@@ -7,7 +7,7 @@ export const doctorDetailsFormSchema = z.object({
   first_name: z.string().min(1, { message: messages.firstNameRequired }),
   last_name: z.string({ required_error: messages.lastNameRequired }),
   email: validateEmail,
-  // password: z.string({ required_error: messages.passwordRequired }),
+  password: z.string({ required_error: messages.passwordRequired }),
   mobile_number: z.string(),
   date_of_birth: z.string({ required_error: messages.dateOfBirthIsRequired }),
   gender: z.string({ required_error: messages.genderIsRequired }),
@@ -20,14 +20,14 @@ export const doctorDetailsFormSchema = z.object({
   suburb: z.string({ required_error: messages.cityIsRequired }),
   state: z.string({ required_error: messages.stateIsRequired }),
   postcode: z.string({ required_error: messages.postCodeIsRequired }),
-  // emergency_first_name: z.string({
-  //   required_error: messages.firstNameRequired,
-  // }),
-  // emergency_last_name: z.string({ required_error: messages.lastNameRequired }),
-  // emergency_mobile_number: z.string({
-  //   required_error: messages.phoneNumberIsRequired,
-  // }),
-  // emergency_email: validateEmail,
+  emergency_first_name: z.string({
+    required_error: messages.firstNameRequired,
+  }),
+  emergency_last_name: z.string({ required_error: messages.lastNameRequired }),
+  emergency_mobile_number: z.string({
+    required_error: messages.phoneNumberIsRequired,
+  }),
+  emergency_email: validateEmail,
   medical_interest: z.string({
     required_error: messages.medicalInterestIsRequired,
   }),
