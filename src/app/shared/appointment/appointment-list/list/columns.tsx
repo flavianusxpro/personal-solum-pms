@@ -237,25 +237,39 @@ function RenderAction({
 
 export function getPaymentStatusBadge(status: number | string) {
   switch (status) {
-    case 3:
+    case 5:
       return (
         <Flex gap="1" align="center">
           <Badge color="danger" renderAsDot />
           <Text className="font-medium text-orange-dark">Cancelled</Text>
         </Flex>
       );
-    case 2:
+    case 4:
       return (
         <Flex gap="1" align="center">
           <Badge color="success" renderAsDot />
-          <Text className="font-medium text-green-dark">Paid</Text>
+          <Text className="font-medium text-green-dark">Finished</Text>
+        </Flex>
+      );
+    case 3:
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="success" renderAsDot />
+          <Text className="font-medium text-green-dark">Confirmed</Text>
+        </Flex>
+      );
+    case 2:
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="warning" renderAsDot />
+          <Text className="text-yellow-dark font-medium">Pending</Text>
         </Flex>
       );
     case 1:
       return (
         <Flex gap="1" align="center">
-          <Badge color="danger" renderAsDot />
-          <Text className="font-medium text-red-dark">Pending</Text>
+          <Badge color="secondary" renderAsDot />
+          <Text className="text-yellow-dark font-medium">Draft</Text>
         </Flex>
       );
     default:
