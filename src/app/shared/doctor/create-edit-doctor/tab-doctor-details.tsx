@@ -128,9 +128,9 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
           about: dataDoctor?.description ?? '',
           medical_interest: dataDoctor?.medical_interest ?? '',
           treatment_type: dataDoctor?.treatment_type ?? '',
-          specialist_type: dataDoctor?.specialist_type.map((item) =>
-            item.toString()
-          ),
+          // specialist_type: dataDoctor?.specialist_type.map((item) =>
+          //   item.toString()
+          // ),
           language: dataDoctor?.language ?? [],
           avatar: dataDoctor?.photo ? { url: dataDoctor.photo } : null,
         },

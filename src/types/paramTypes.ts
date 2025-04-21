@@ -125,14 +125,19 @@ export interface IPayloadSettingMeetingDoctor {
   microsoft_team_link?: string;
   microsoft_team_id?: string;
   microsoft_team_passcode?: string;
+  microsoft_team_status?: boolean;
   zoom_meeting_link?: string;
   zoom_meeting_id?: string;
   zoom_meeting_passcode?: string;
+  zoom_meeting_status?: boolean;
   skype_meeting_link?: string;
   skype_meeting_id?: string;
   skype_meeting_passcode?: string;
+  skype_meeting_status?: boolean;
   initial_appointment_time?: number;
   follow_up_appointment_time?: number;
+  telehealth_meeting_status?: boolean;
+  f2f_meeting_status?: boolean;
   timeZone?: string;
 }
 
