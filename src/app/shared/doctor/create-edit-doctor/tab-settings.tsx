@@ -131,6 +131,11 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
               dataDoctor?.setting?.followup_appointment_time,
             initial_appointment_time:
               dataDoctor?.setting?.initial_appointment_time,
+            // academic_degree: dataDoctor?.setting?.academic_degree || '',
+            // fellowship: dataDoctor?.setting?.fellowship || '',
+            // certificate: dataDoctor?.setting?.certificate || '',
+            // other_qualification:
+            //   dataDoctor?.setting?.other_qualification || '',
           },
         }}
       >
@@ -283,34 +288,34 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
 
                 <FormGroup title="Qualification">
                   <Input
-                    {...register('field1')}
-                    label="Field 1"
-                    placeholder="Field 1"
-                    error={errors.field1?.message}
+                    {...register('academic_degree')}
+                    label="Academic Degree"
+                    placeholder="Enter your academic degree (e.g., MBBS, MD)"
+                    error={errors.academic_degree?.message}
                     className="w-full"
                     disabled={isView}
                   />
                   <Input
-                    {...register('field2')}
-                    label="Field 2"
-                    placeholder="Field 2"
-                    error={errors.field2?.message}
+                    {...register('fellowship')}
+                    label="Fellowship"
+                    placeholder="Enter your fellowship qualification (e.g., FRACGP)"
+                    error={errors.fellowship?.message}
                     className="w-full"
                     disabled={isView}
                   />
                   <Input
-                    {...register('field3')}
-                    label="Field 3"
-                    placeholder="Field 3"
-                    error={errors.field3?.message}
+                    {...register('certificate')}
+                    label="Certificate / Diploma"
+                    placeholder="Enter any certificates or diplomas (e.g., DCH)"
+                    error={errors.certificate?.message}
                     className="w-full"
                     disabled={isView}
                   />
                   <Input
-                    {...register('field4')}
-                    label="Field 4"
-                    placeholder="Field 4"
-                    error={errors.field4?.message}
+                    {...register('other_qualification')}
+                    label="Other Qualifications"
+                    placeholder="Enter other qualifications (e.g., BioMed, MSc)"
+                    error={errors.other_qualification?.message}
                     className="w-full"
                     disabled={isView}
                   />

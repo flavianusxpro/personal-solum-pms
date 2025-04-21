@@ -19,10 +19,10 @@ export const settingsDoctorSchema = z.object({
   f2f: z.boolean().optional(),
   teleHealth: z.boolean().optional(),
 
-  field1: z.string().optional(),
-  field2: z.string().optional(),
-  field3: z.string().optional(),
-  field4: z.string().optional(),
+  academic_degree: z.string().optional(),
+  fellowship: z.string().optional(),
+  certificate: z.string().optional(),
+  other_qualification: z.string().optional(),
 
   fee: z.number().optional(),
   cancellation_fee: z.number().optional(),
