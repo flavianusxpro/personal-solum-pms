@@ -152,7 +152,8 @@ export const GetColumns = ({
       key: 'status',
       width: 260,
       onHeaderCell: () => onHeaderCellClick('status'),
-      render: (status: number | string) => getPaymentStatusBadge(status),
+      render: (status: number | string, row: RowValue) =>
+        getPaymentStatusBadge(row.payment.status),
     },
     {
       title: <></>,
@@ -237,39 +238,25 @@ function RenderAction({
 
 export function getPaymentStatusBadge(status: number | string) {
   switch (status) {
-    case 5:
-      return (
-        <Flex gap="1" align="center">
-          <Badge color="danger" renderAsDot />
-          <Text className="font-medium text-orange-dark">Cancelled</Text>
-        </Flex>
-      );
-    case 4:
+    case 2:
       return (
         <Flex gap="1" align="center">
           <Badge color="success" renderAsDot />
-          <Text className="font-medium text-green-dark">Finished</Text>
+          <Text className="font-medium text-green-dark">Paid</Text>
         </Flex>
       );
     case 3:
       return (
         <Flex gap="1" align="center">
-          <Badge color="success" renderAsDot />
-          <Text className="font-medium text-green-dark">Confirmed</Text>
-        </Flex>
-      );
-    case 2:
-      return (
-        <Flex gap="1" align="center">
-          <Badge color="warning" renderAsDot />
-          <Text className="text-yellow-dark font-medium">Pending</Text>
+          <Badge color="danger" renderAsDot />
+          <Text className="text-yellow-dark font-medium">Canceled</Text>
         </Flex>
       );
     case 1:
       return (
         <Flex gap="1" align="center">
           <Badge color="secondary" renderAsDot />
-          <Text className="text-yellow-dark font-medium">Draft</Text>
+          <Text className="text-yellow-dark font-medium">Pending</Text>
         </Flex>
       );
     default:
