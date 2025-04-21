@@ -3,10 +3,12 @@ import {
   IGetAllDoctorsResponse,
   IGetDoctorByClinicResponse,
   IGetDoctorByIdResponse,
+  IGetSpecialistResponse,
 } from '@/types/ApiResponse';
 import {
   IParamGetAllDoctor,
   IParamGetDoctorByClinic,
+  IParamGetSpecialists,
   IPayloadAssignDoctorToClinic,
   IPayloadCreateEditDoctor,
   IPayloadSettingBillingDoctor,
@@ -67,4 +69,12 @@ export async function postAssignDoctorToClinic(
   payload: IPayloadAssignDoctorToClinic
 ) {
   return await post('/admin/doctor/assign-to-clinic', payload);
+}
+
+export async function getSpecialists(params: IParamGetSpecialists) {
+  return await get<IGetSpecialistResponse>('/admin/doctor/specialist', {
+    params,
+  }).then((res) => {
+    return res.data;
+  });
 }

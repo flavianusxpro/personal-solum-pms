@@ -1,6 +1,7 @@
 import {
   getDoctorById,
   getDoctorList,
+  getSpecialists,
   postAssignDoctorToClinic,
   postCreateDoctor,
   putCreateDoctor,
@@ -74,5 +75,16 @@ export function useUpdateSettingBillingDoctor() {
 export function usePostAssignDoctorToClinic() {
   return useMutation({
     mutationFn: postAssignDoctorToClinic,
+  });
+}
+
+export function useGetSpecialists() {
+  return useQuery({
+    queryKey: ['getSpecialists'],
+    queryFn: async () => {
+      return await getSpecialists({ page: 1, perPage: 100 });
+    },
+    staleTime: 1000 * 60 * 10, // 10 minutes
+    refetchOnWindowFocus: false,
   });
 }

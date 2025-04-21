@@ -143,18 +143,8 @@ export const doctorTypeOption = [
 ];
 
 export const languageOption = [
-  { label: 'English', value: 'en' },
-  { label: 'Spanish', value: 'es' },
-  { label: 'French', value: 'fr' },
-  { label: 'German', value: 'de' },
-  { label: 'Chinese', value: 'zh' },
-  { label: 'Japanese', value: 'ja' },
-  { label: 'Korean', value: 'ko' },
-  { label: 'Arabic', value: 'ar' },
-  { label: 'Hindi', value: 'hi' },
-  { label: 'Portuguese', value: 'pt' },
-  { label: 'Russian', value: 'ru' },
-  { label: 'Italian', value: 'it' },
+  { label: 'English', value: 'english' },
+  { label: 'Indonesia', value: 'indonesia' },
 ];
 
 export const timeZoneOption = [

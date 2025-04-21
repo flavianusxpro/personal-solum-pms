@@ -53,13 +53,8 @@ export default function TabTreatment() {
       email: data.email,
       date_of_birth: data.date_of_birth as string,
       gender: data.date_of_birth as string,
-      medicare_card_number: data.medicare_card as string,
-      medicare_expired_date: dayjs(data.medicare_expiry).format(
-        'DD MMMM YYYY'
-      ) as string,
       mobile_number: data.mobile_number as string,
       status: 1,
-      timezone: data.timezone ?? 'Australia/Sydney',
     };
 
     if (id) {
@@ -210,13 +205,6 @@ export default function TabTreatment() {
                           options={stateOption}
                           error={errors.state?.message as string}
                         />
-                        <Input
-                          label="Post Code"
-                          placeholder="Post Code"
-                          {...register('post_code')}
-                          error={errors.post_code?.message}
-                          className="flex-grow"
-                        />
                       </Flex>
                     </FormGroup>
                   )}
@@ -242,44 +230,6 @@ export default function TabTreatment() {
                   />
                 )}
               />
-              <FormGroup title="Treatment Type" isLabel>
-                <Controller
-                  name="treatmentType"
-                  control={control}
-                  render={({ field }) => (
-                    <CSelect
-                      searchable
-                      {...field}
-                      placeholder="Select Doctor Type"
-                      options={doctorTypeOption}
-                      error={errors.treatmentType?.message}
-                    />
-                  )}
-                />
-              </FormGroup>
-              <FormGroup title="Specialist Type" isLabel>
-                <Controller
-                  name="specialistType"
-                  control={control}
-                  render={({ field }) => (
-                    <CSelect
-                      searchable
-                      {...field}
-                      placeholder="Select Specialist Type"
-                      options={doctorTypeOption}
-                      error={errors.specialistType?.message}
-                    />
-                  )}
-                />
-              </FormGroup>
-              <FormGroup title="Medical Interest" isLabel>
-                <Input
-                  placeholder="Medical Interest"
-                  {...register('medicalInterest')}
-                  error={errors.medicalInterest?.message}
-                  className="flex-grow"
-                />
-              </FormGroup>
               <FormGroup title="Language" isLabel>
                 <Controller
                   name="language"

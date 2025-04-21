@@ -58,13 +58,8 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
       email: data.email,
       date_of_birth: data.date_of_birth as string,
       gender: data.gender as string,
-      medicare_card_number: data.medicare_card as string,
-      medicare_expired_date: dayjs(data.medicare_expiry).format(
-        'DD MMMM YYYY'
-      ) as string,
       mobile_number: data.mobile_number as string,
       status: 1,
-      timezone: data.timezone ?? 'Australia/Sydney',
       description: data.about,
     };
 
@@ -105,7 +100,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
           street_number: dataDoctor?.street_name ?? '',
           suburb: dataDoctor?.suburb ?? '',
           state: dataDoctor?.state ?? '',
-          post_code: dataDoctor?.postcode ?? '',
+          postcode: dataDoctor?.postcode ?? '',
           address_line_1: dataDoctor?.address_line_1 ?? '',
           address_line_2: dataDoctor?.address_line_2 ?? '',
           about: dataDoctor?.description ?? '',
@@ -253,8 +248,8 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
                         <Input
                           label="Post Code"
                           placeholder="Post Code"
-                          {...register('post_code')}
-                          error={errors.post_code?.message}
+                          {...register('postcode')}
+                          error={errors.postcode?.message}
                           className="flex-grow"
                           disabled={isView}
                         />
@@ -292,32 +287,31 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
             <div className="section-container">
               <FormGroup title="Treatment Type" isLabel>
                 <Controller
-                  name="treatmentType"
+                  name="treatment_type"
                   control={control}
                   render={({ field }) => (
-                    <MultySelect
-                      searchable
+                    <Input
                       {...field}
-                      placeholder="Select Treatment Type"
-                      options={doctorTypeOption}
+                      placeholder="Treatment Type"
+                      error={errors.treatment_type?.message}
+                      className="flex-grow"
                       disabled={isView}
-                      error={errors.treatmentType?.message}
                     />
                   )}
                 />
               </FormGroup>
               <FormGroup title="Specialist Type" isLabel>
                 <Controller
-                  name="specialistType"
+                  name="specialist_type"
                   control={control}
                   render={({ field }) => (
                     <MultySelect
                       searchable
                       {...field}
                       placeholder="Select Specialist Type"
-                      options={doctorTypeOption}
+                      options={[]}
                       disabled={isView}
-                      error={errors.specialistType?.message}
+                      error={errors.specialist_type?.message}
                     />
                   )}
                 />
@@ -325,8 +319,8 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
               <FormGroup title="Medical Interest" isLabel>
                 <Input
                   placeholder="Medical Interest"
-                  {...register('medicalInterest')}
-                  error={errors.medicalInterest?.message}
+                  {...register('medical_interest')}
+                  error={errors.medical_interest?.message}
                   className="flex-grow"
                   disabled={isView}
                 />

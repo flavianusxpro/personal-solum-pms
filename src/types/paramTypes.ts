@@ -96,6 +96,8 @@ export interface IPayloadCreateEditDoctor {
 
 export interface IParamGetAllPatient extends IParamGetDataWithPagination {}
 export interface IParamGetAllDoctor extends IParamGetDataWithPagination {}
+export interface IParamGetSpecialists extends IParamGetDataWithPagination {}
+export interface IParamGetRoles extends IParamGetDataWithPagination {}
 export interface IParamGetAppointments extends IParamGetDataWithPagination {
   doctorId?: number;
   patientId?: number;
@@ -215,4 +217,38 @@ interface Item {
 
 export interface IPayloadAssignDoctorToClinic {
   clinic_ids: number[];
+}
+
+export interface IPayloadCreateDoctorUser {
+  name: string;
+  email: string;
+  password: string;
+  roleId: number;
+  clinic_ids: number[];
+  doctor: Doctor;
+}
+
+interface Doctor {
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  mobile_number: string;
+  date_of_birth: string;
+  gender: string;
+  country: string;
+  street_name: string;
+  address_line_1: string;
+  address_line_2: string;
+  suburb: string;
+  state: string;
+  postcode: string;
+  emergency_first_name: string;
+  emergency_last_name: string;
+  emergency_mobile_number: string;
+  emergency_email: string;
+  medical_interest: string;
+  specialist_type: number[];
+  treatment_type: string;
+  language: string[];
 }

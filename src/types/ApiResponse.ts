@@ -536,3 +536,30 @@ export interface IGetAllItemsResponse extends ApiResponse {
     updated_at: string;
   }[];
 }
+
+export interface IGetSpecialistResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    name: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+}
+
+export interface IGetRolesResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    name: string;
+    created_at: string;
+    updated_at: string;
+    permissions: Permission[];
+  }[];
+}
+
+interface Permission {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
