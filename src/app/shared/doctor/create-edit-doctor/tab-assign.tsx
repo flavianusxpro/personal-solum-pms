@@ -7,11 +7,14 @@ import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
 import { Flex, Loader } from 'rizzui';
-import { assignSchema, AssignTypes } from '@/validators/assign-doctor.schema';
 import { useParams } from 'next/navigation';
 import { usePostAssignDoctorToClinic } from '@/hooks/useDoctor';
 import { useMemo } from 'react';
 import { useGetAllClinics } from '@/hooks/useClinic';
+import {
+  assignClinicSchema,
+  AssignClinicTypes,
+} from '@/validators/assign-clinic.schema';
 
 const MultySelect = dynamic(
   () => import('rizzui').then((mod) => mod.MultiSelect),
@@ -34,7 +37,7 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
     role: 'admin',
   });
 
-  const { mutate } = usePostAssignDoctorToClinic();
+  const { mutate, isPending } = usePostAssignDoctorToClinic();
 
   const clinicsOptions = useMemo(() => {
     if (!dataClinics) return [];
@@ -44,7 +47,7 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
     }));
   }, [dataClinics]);
 
-  const onSubmit: SubmitHandler<AssignTypes> = (data) => {
+  const onSubmit: SubmitHandler<AssignClinicTypes> = (data) => {
     mutate(
       {
         id,
@@ -62,8 +65,8 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
   };
 
   return (
-    <Form<AssignTypes>
-      validationSchema={assignSchema}
+    <Form<AssignClinicTypes>
+      validationSchema={assignClinicSchema}
       onSubmit={onSubmit}
       className="@container"
       useFormProps={{
@@ -71,7 +74,8 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
       }}
     >
       {({ control, watch, formState: { errors } }) => {
-        const { clinic } = watch();
+        console.log('🚀 ~ TabAssign ~ errors:', errors);
+
         return (
           <>
             <Flex direction="col" className="" gap="7">
@@ -99,7 +103,7 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
             </Flex>
             {!isView && (
               <FormFooter
-                // isLoading={isLoading}
+                isLoading={isPending}
                 altBtnText="Cancel"
                 submitBtnText="Save"
               />
