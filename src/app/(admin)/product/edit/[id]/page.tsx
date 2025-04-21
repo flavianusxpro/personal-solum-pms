@@ -1,11 +1,7 @@
-import Link from 'next/link';
 import { Metadata } from 'next';
-import { PiPlusBold } from 'react-icons/pi';
-import { productData } from '@/app/shared/ecommerce/product/create-edit/form-utils';
-import CreateEditProduct from '@/app/shared/ecommerce/product/create-edit';
+import CreateEditProduct from '@/app/shared/product/create-edit-product';
 import PageHeader from '@/app/shared/ui/page-header';
 import { metaObject } from '@/config/site.config';
-import { Button } from 'rizzui';
 import { routes } from '@/config/routes';
 
 type Props = {
@@ -49,7 +45,7 @@ export default function EditProductPage({
         breadcrumb={pageHeader.breadcrumb}
       ></PageHeader>
 
-      <CreateEditProduct slug={params.slug} product={productData} />
+      <CreateEditProduct />
     </>
   );
 }

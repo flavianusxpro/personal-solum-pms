@@ -1,7 +1,7 @@
 'use client';
 
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
-import { getColumns } from '@/app/shared/tableDataProduct/columns';
+import { getColumns } from '@/app/shared/product/tableDataProduct/columns';
 import { useColumn } from '@core/hooks/use-column';
 import { useTable } from '@core/hooks/use-table';
 import cn from '@core/utils/class-names';
@@ -9,9 +9,11 @@ import dynamic from 'next/dynamic';
 import React, { useCallback, useState } from 'react';
 import { PiCaretDownBold, PiCaretUpBold } from 'react-icons/pi';
 import { ActionIcon } from 'rizzui';
+import { productData } from '@/data/product-data';
+
 // dynamic import
 const FilterElement = dynamic(
-  () => import('@/app/shared/tableDataProduct/filter-element'),
+  () => import('@/app/shared/product/tableDataProduct/filter-element'),
   { ssr: false }
 );
 
@@ -43,11 +45,9 @@ const filterState = {
 };
 
 export default function PatientTable({
-  data = [],
   variant = 'modern',
   className,
 }: {
-  data: any[];
   variant?: 'modern' | 'minimal' | 'classic' | 'elegant' | 'retro';
   className?: string;
 }) {
@@ -83,12 +83,12 @@ export default function PatientTable({
     handleSelectAll,
     handleDelete,
     handleReset,
-  } = useTable(data, pageSize, filterState);
+  } = useTable(productData, pageSize, filterState);
 
   const columns = React.useMemo(
     () =>
       getColumns({
-        data,
+        data: productData,
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,

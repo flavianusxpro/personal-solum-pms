@@ -1,4 +1,4 @@
-import CreateEditProduct from '@/app/shared/ecommerce/product/create-edit';
+import CreateEditProduct from '@/app/shared/product/create-edit-product';
 import PageHeader from '@/app/shared/ui/page-header';
 import { routes } from '@/config/routes';
 import { metaObject } from '@/config/site.config';

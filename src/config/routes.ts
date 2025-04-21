@@ -19,8 +19,8 @@ export const routes = {
   product: {
     dashboard: '/product',
     create: '/product/create',
-    edit: (id: string) => `/user/edit/${id}`,
-    productDetail: (id: string) => `/user/${id}`,
+    edit: (id: string) => `/product/edit/${id}`,
+    productDetail: (id: string) => `/product/view/${id}`,
   },
   patient: {
     dashboard: '/patient',

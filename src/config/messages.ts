@@ -94,4 +94,8 @@ export const messages = {
   specialistTypeIsRequired: 'Specialist Type is required',
   treatmentTypeIsRequired: 'Treatment Type is required',
   unitNumberIsRequired: 'Unit Number is required',
+  skuIsRequired: 'SKU is required',
+  titleIsRequired: 'Title is required',
+  costPriceIsRequired: 'Cost Price is required',
+  sellPriceIsRequired: 'Sell Price is required',
 };

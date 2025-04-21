@@ -137,7 +137,7 @@ export const getColumns = ({
           placement="top"
           color="invert"
         >
-          <Link href={routes.product.create}>
+          <Link href={routes.product.edit(row.id)}>
             <ActionIcon
               as="span"
               size="sm"

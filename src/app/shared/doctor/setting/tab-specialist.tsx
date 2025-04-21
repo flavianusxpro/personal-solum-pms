@@ -176,41 +176,6 @@ export default function TabSpecialist({}: {}) {
                   />
                 </FormGroup>
 
-                <FormGroup title="Qualification">
-                  <Input
-                    {...register('field1')}
-                    label="Field 1"
-                    placeholder="Field 1"
-                    error={errors.field1?.message}
-                    className="w-full"
-                    disabled={isView}
-                  />
-                  <Input
-                    {...register('field2')}
-                    label="Field 2"
-                    placeholder="Field 2"
-                    error={errors.field2?.message}
-                    className="w-full"
-                    disabled={isView}
-                  />
-                  <Input
-                    {...register('field3')}
-                    label="Field 3"
-                    placeholder="Field 3"
-                    error={errors.field3?.message}
-                    className="w-full"
-                    disabled={isView}
-                  />
-                  <Input
-                    {...register('field4')}
-                    label="Field 4"
-                    placeholder="Field 4"
-                    error={errors.field4?.message}
-                    className="w-full"
-                    disabled={isView}
-                  />
-                </FormGroup>
-
                 <FormGroup title="Cost Setup">
                   <Grid columns="2">
                     <Controller

@@ -1,6 +1,6 @@
 import ExportButton from '@/app/shared/ui/export-button';
 import PageHeader from '@/app/shared/ui/page-header';
-import ProductTable from '@/app/shared/tableDataProduct/table';
+import ProductTable from '@/app/shared/product/tableDataProduct/table';
 import { routes } from '@/config/routes';
 import { metaObject } from '@/config/site.config';
 import { productData } from '@/data/product-data';
@@ -44,7 +44,7 @@ export default function ProductPage() {
         </div>
       </PageHeader>
 
-      <ProductTable data={productData} />
+      <ProductTable />
     </>
   );
 }
