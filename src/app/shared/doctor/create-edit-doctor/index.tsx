@@ -13,6 +13,7 @@ import TabCalendar from './tab-calendar';
 import TabSettings from './tab-settings';
 import { useParams } from 'next/navigation';
 import { useGetDoctorById } from '@/hooks/useDoctor';
+import TabAssign from './tab-assign';
 
 export const navItems = [
   {
@@ -38,6 +39,10 @@ export const navItems = [
   {
     value: 'calendar',
     label: 'Calendar',
+  },
+  {
+    value: 'assign',
+    label: 'Assign',
   },
   {
     value: 'settings',
@@ -100,6 +105,7 @@ export default function CreateEditDoctor({
         {tab === 'billing' && <TabBillingAppointments isView={isView} />}
         {tab === 'requirement' && <TabRequirement isView={isView} />}
         {tab === 'calendar' && <TabCalendar isView={isView} />}
+        {tab === 'assign' && <TabAssign isView={isView} />}
         {tab === 'settings' && <TabSettings isView={isView} />}
       </div>
     </>
