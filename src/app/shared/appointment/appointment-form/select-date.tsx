@@ -9,7 +9,7 @@ import Calendar from 'react-calendar';
 import {
   formDataAtom,
   useStepperAppointment,
-} from '@/app/shared/appointment/appointment-list/appointment-form';
+} from '@/app/shared/appointment/appointment-form';
 import dayjs from 'dayjs';
 import { appointmentBookSchema } from '@/validators/admin-appointment.schema';
 import Footer from './footer';

@@ -6,13 +6,13 @@ import EyeIcon from '@core/components/icons/eye';
 import DeletePopover from '@/app/shared/ui/delete-popover';
 import { Type } from '@/data/appointment-data';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import CreateUpdateAppointmentForm from '../appointment-form';
 import AppointmentDetails from './appointment-details';
 import AvatarCard from '@core/ui/avatar-card';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 import dayjs from 'dayjs';
 import ActionTooltipButton from '@/app/shared/ui/action-tooltip-button';
 import PencilIcon from '@/core/components/icons/pencil';
+import CreateUpdateAppointmentForm from '../../appointment-form';
 
 type RowValue = IGetAppointmentListResponse['data'][number];
 

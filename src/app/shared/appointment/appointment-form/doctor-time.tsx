@@ -9,7 +9,7 @@ import Footer from './footer';
 import {
   formDataAtom,
   useStepperAppointment,
-} from '@/app/shared/appointment/appointment-list/appointment-form';
+} from '@/app/shared/appointment/appointment-form';
 import { IParamGetDoctorByClinic } from '@/types/paramTypes';
 import { useMemo, useState } from 'react';
 import { useGetDoctorByClinic } from '@/hooks/useClinic';

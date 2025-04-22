@@ -4,45 +4,31 @@ import dynamic from 'next/dynamic';
 import { atom, useAtom } from 'jotai';
 const SelectClinic = dynamic(
   () =>
-    import(
-      '@/app/shared/appointment/appointment-list/appointment-form/select-clinic-patient'
-    ),
+    import('@/app/shared/appointment/appointment-form/select-clinic-patient'),
   {
     ssr: false,
   }
 );
 const SelectDoctorTime = dynamic(
-  () =>
-    import(
-      '@/app/shared/appointment/appointment-list/appointment-form/doctor-time'
-    ),
+  () => import('@/app/shared/appointment/appointment-form/doctor-time'),
   {
     ssr: false,
   }
 );
 const SelectDate = dynamic(
-  () =>
-    import(
-      '@/app/shared/appointment/appointment-list/appointment-form/select-date'
-    ),
+  () => import('@/app/shared/appointment/appointment-form/select-date'),
   {
     ssr: false,
   }
 );
 const SelectService = dynamic(
-  () =>
-    import(
-      '@/app/shared/appointment/appointment-list/appointment-form/select-services'
-    ),
+  () => import('@/app/shared/appointment/appointment-form/select-services'),
   {
     ssr: false,
   }
 );
 const Payment = dynamic(
-  () =>
-    import(
-      '@/app/shared/appointment/appointment-list/appointment-form/select-payment'
-    ),
+  () => import('@/app/shared/appointment/appointment-form/select-payment'),
   {
     ssr: false,
   }

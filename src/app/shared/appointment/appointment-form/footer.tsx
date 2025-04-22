@@ -5,7 +5,7 @@ import cn from '@core/utils/class-names';
 import {
   formDataAtom,
   useStepperAppointment,
-} from '@/app/shared/appointment/appointment-list/appointment-form';
+} from '@/app/shared/appointment/appointment-form';
 import { useAtom } from 'jotai';
 import { usePostCreateAppointment } from '@/hooks/useAppointment';
 import { IPayloadPostAppoinment } from '@/types/paramTypes';
