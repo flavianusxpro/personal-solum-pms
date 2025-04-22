@@ -2,12 +2,11 @@ import Link from 'next/link';
 import { routes } from '@/config/routes';
 import { Button } from 'rizzui';
 import PageHeader from '@/app/shared/ui/page-header';
-import UsersTable from '@/app/shared/tableDataUser/table';
 import { PiPlusBold } from 'react-icons/pi';
 import { orderData } from '@/data/order-data';
 import { metaObject } from '@/config/site.config';
 import ExportButton from '@/app/shared/ui/export-button';
-import UserList from './UserList';
+import UsersTable from '@/app/shared/user/users-table';
 
 export const metadata = {
   ...metaObject('Users'),
@@ -45,7 +44,7 @@ export default function UsersPage() {
         </div>
       </PageHeader>
 
-      <UserList />
+      <UsersTable />
     </>
   );
 }

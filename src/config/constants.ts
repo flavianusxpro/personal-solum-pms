@@ -31,6 +31,7 @@ export const ROW_PER_PAGE_OPTIONS = [
 ];
 
 export const ROLES = {
+  SuperAdmin: 'superadmin',
   Admin: 'administrator',
   Patient: 'patient',
   Doctor: 'doctor',

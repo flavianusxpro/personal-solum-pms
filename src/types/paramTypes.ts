@@ -108,6 +108,7 @@ export interface IParamGetAllPatient extends IParamGetDataWithPagination {}
 export interface IParamGetAllDoctor extends IParamGetDataWithPagination {}
 export interface IParamGetSpecialists extends IParamGetDataWithPagination {}
 export interface IParamGetRoles extends IParamGetDataWithPagination {}
+export interface IParamGetUsers extends IParamGetDataWithPagination {}
 export interface IParamGetAppointments extends IParamGetDataWithPagination {
   doctorId?: number;
   patientId?: number;

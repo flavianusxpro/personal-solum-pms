@@ -4,6 +4,7 @@ import { fileSchema, validateEmail } from './common-rules';
 
 // form zod validation schema
 export const patientDetailsFormSchema = z.object({
+  title: z.string({ required_error: messages.titleRequired }),
   first_name: z.string().min(1, { message: messages.firstNameRequired }),
   last_name: z.string().optional(),
   gender: z.string().optional(),

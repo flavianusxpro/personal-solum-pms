@@ -98,4 +98,5 @@ export const messages = {
   titleIsRequired: 'Title is required',
   costPriceIsRequired: 'Cost Price is required',
   sellPriceIsRequired: 'Sell Price is required',
+  titleRequired: 'Title is required',
 };

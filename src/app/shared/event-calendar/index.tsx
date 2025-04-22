@@ -139,7 +139,7 @@ export default function EventCalendarView() {
         scrollToTime={scrollToTime}
         className={cn(
           'h-[650px] md:h-[1000px]',
-          calendarToolbarClassName,
+          // calendarToolbarClassName,
           colorPresetName === 'black' && rtcEventClassName
         )}
       />

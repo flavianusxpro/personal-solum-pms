@@ -1,18 +1,3 @@
-interface Role {
-  id: number;
-  name: string;
-  created_at: string;
-  updated_at: string;
-  permissions: Permission[]; // You can replace 'any' with a more specific type if needed
-}
-
-interface Permission {
-  id: number;
-  name: string;
-  created_at: string;
-  updated_at: string;
-}
-
 interface UserData {
   access_token: string;
   role: Role;
@@ -38,6 +23,13 @@ interface ApiResponseWithPagination {
   page: number;
   perPage: number;
   data: any;
+}
+interface ApiUsersResponseWithPagination {
+  success: boolean;
+  count: number;
+  page: number;
+  perPage: number;
+  users: any;
 }
 export interface IGetAllClinicForPatientResponse
   extends ApiResponseWithPagination {
@@ -566,13 +558,6 @@ export interface IGetRolesResponse extends ApiResponseWithPagination {
   }[];
 }
 
-interface Permission {
-  id: number;
-  name: string;
-  created_at: string;
-  updated_at: string;
-}
-
 export interface IGetAnalyticReportBillingByDoctorIdResponse
   extends ApiResponse {
   data: {
@@ -581,4 +566,31 @@ export interface IGetAnalyticReportBillingByDoctorIdResponse
     total_cancellation_appointment: number;
     total_today_appointment: number;
   };
+}
+
+export interface IGetUsersResponse extends ApiUsersResponseWithPagination {
+  users: {
+    id: number;
+    name: string;
+    email: string;
+    status: number;
+    role: Role;
+    created_at: string;
+    updated_at: string;
+  }[];
+}
+
+interface Role {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+  permissions: Permission[];
+}
+
+interface Permission {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
 }

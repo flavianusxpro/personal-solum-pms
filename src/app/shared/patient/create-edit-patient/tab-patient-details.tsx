@@ -48,7 +48,7 @@ export default function PatientDetails({
     search: searchPatientType,
   });
 
-  const { mutate: mutateUpdatePatient } = useUpdatePatient();
+  const { mutate: mutateUpdatePatient, isPending } = useUpdatePatient();
 
   const patientProblemOptions = useMemo(
     () =>
@@ -71,6 +71,7 @@ export default function PatientDetails({
   const onSubmit: SubmitHandler<PatientDetailsFormTypes> = (data) => {
     const payload: IPayloadCreateEditPatient = {
       patient_id: id ?? undefined,
+      title: data.title,
       first_name: data.first_name,
       last_name: data.last_name as string,
       email: data.email,
@@ -92,6 +93,7 @@ export default function PatientDetails({
       state: data.state,
       suburb: data.suburb,
       postcode: data.post_code,
+      unit_number: data.unit_number,
     };
 
     if (id) {
@@ -121,6 +123,7 @@ export default function PatientDetails({
       useFormProps={{
         mode: 'all',
         defaultValues: {
+          title: dataPatient?.title ?? '',
           first_name: dataPatient?.first_name ?? '',
           last_name: dataPatient?.last_name ?? '',
           email: dataPatient?.email ?? '',
@@ -146,6 +149,8 @@ export default function PatientDetails({
       }}
     >
       {({ register, control, setValue, getValues, formState: { errors } }) => {
+        console.log('🚀 ~ errors:', errors);
+
         return (
           <>
             <div className="mb-10 grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
@@ -154,6 +159,26 @@ export default function PatientDetails({
                   title="Personal Info"
                   className="grid-cols-12 gap-4"
                 />
+                <FormGroup title="Title" isLabel>
+                  <Controller
+                    name="title"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        label=""
+                        placeholder="Select Title"
+                        options={[
+                          { label: 'Mr', value: 'Mr' },
+                          { label: 'Mrs', value: 'Mrs' },
+                          { label: 'Ms', value: 'Ms' },
+                        ]}
+                        error={errors.title?.message as string}
+                        disabled={isView}
+                      />
+                    )}
+                  />
+                </FormGroup>
                 <FormGroup title="First Name" isLabel>
                   <Input
                     placeholder="First Name"
@@ -373,7 +398,7 @@ export default function PatientDetails({
             </div>
             {!isView && (
               <FormFooter
-                // isLoading={isLoading}
+                isLoading={isPending}
                 altBtnText="Cancel"
                 submitBtnText="Save"
               />
