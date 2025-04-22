@@ -13,9 +13,8 @@ const Redirect = () => {
   useEffect(() => {
     if (data?.role?.name === ROLES.Admin) {
       return router.push(routes.appointment.dashboard);
-    }
-    if (data?.role?.name === ROLES.Patient) {
-      return router.push(routes.myDashboard);
+    } else {
+      return router.push(routes.accessDenied);
     }
   }, [data?.role?.name, data?.user, router]);
 
