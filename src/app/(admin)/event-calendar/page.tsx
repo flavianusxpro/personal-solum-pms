@@ -5,7 +5,7 @@ import ModalButton from '@/app/shared/ui/modal-button/modal-button';
 import PageHeader from '@/app/shared/ui/page-header';
 import { routes } from '@/config/routes';
 import { eventData } from '@/data/event-data';
-import CreateUpdateAppointmentForm from '@/app/shared/appointment/appointment-list/appointment-form';
+import CreateUpdateAppointmentForm from '@/app/shared/appointment/appointment-form';
 
 export const metadata = {
   ...metaObject('Event Calendar'),

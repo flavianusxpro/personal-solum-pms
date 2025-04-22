@@ -303,6 +303,7 @@ interface Setting {
   followup_appointment_time: number;
   initial_appointment_fee: string;
   followup_appointment_fee: string;
+  script_renewal_fee: string;
   created_at: string;
   updated_at: string;
 }

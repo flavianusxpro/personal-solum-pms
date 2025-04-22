@@ -9,7 +9,7 @@ import Footer from './footer';
 import {
   formDataAtom,
   useStepperAppointment,
-} from '@/app/shared/appointment/appointment-list/appointment-form';
+} from '@/app/shared/appointment/appointment-form';
 import { PiXBold } from 'react-icons/pi';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import toast from 'react-hot-toast';

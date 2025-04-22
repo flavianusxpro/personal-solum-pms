@@ -149,6 +149,7 @@ export interface IPayloadSettingBillingDoctor {
   cancellation_fee?: number;
   initial_appointment_fee?: number;
   followup_appointment_fee?: number;
+  script_renewal_fee?: number;
 }
 
 export interface IParamGetPatientProblem {

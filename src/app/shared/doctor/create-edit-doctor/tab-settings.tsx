@@ -62,6 +62,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
       cancellation_fee: data.cancellation_fee,
       initial_appointment_fee: data.initial_appointment_fee,
       followup_appointment_fee: data.follow_up_appointment_fee,
+      script_renewal_fee: data.script_renewal_fee,
     };
 
     mutateUpdateMeeting(payloadSettingMeeting, {
@@ -126,6 +127,8 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
               Number(dataDoctor?.setting?.initial_appointment_fee) || 0,
             follow_up_appointment_fee:
               Number(dataDoctor?.setting?.followup_appointment_fee) || 0,
+            script_renewal_fee:
+              Number(dataDoctor?.setting?.script_renewal_fee) || 0,
             // doctor_timezone: dataDoctor?.setting.doctor_timezone,
             follow_up_appointment_time:
               dataDoctor?.setting?.followup_appointment_time,
@@ -326,32 +329,6 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                 <FormGroup title="Cost Setup">
                   <Grid columns="2">
                     <Controller
-                      name="fee"
-                      control={control}
-                      render={({ field }) => (
-                        <CNumberInput
-                          {...field}
-                          label="Fee"
-                          placeholder="Fee"
-                          error={errors.fee?.message}
-                          disabled={isView}
-                        />
-                      )}
-                    />
-                    <Controller
-                      name="cancellation_fee"
-                      control={control}
-                      render={({ field }) => (
-                        <CNumberInput
-                          {...field}
-                          label="Cancellation Fee"
-                          placeholder="Cancellation Fee"
-                          error={errors.cancellation_fee?.message}
-                          disabled={isView}
-                        />
-                      )}
-                    />
-                    <Controller
                       name="initial_appointment_fee"
                       control={control}
                       render={({ field }) => (
@@ -377,27 +354,26 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                         />
                       )}
                     />
+                    <Controller
+                      name="script_renewal_fee"
+                      control={control}
+                      render={({ field }) => (
+                        <CNumberInput
+                          {...field}
+                          label="Script Renewal Fee"
+                          placeholder="Script Renewal Fee"
+                          error={errors.script_renewal_fee?.message}
+                          disabled={isView}
+                        />
+                      )}
+                    />
                   </Grid>
                 </FormGroup>
 
                 <Divider className="" />
 
-                <FormGroup title="Time">
+                <FormGroup title="Appointment Time Setup">
                   <Grid columns="2">
-                    <Controller
-                      name="doctor_timezone"
-                      control={control}
-                      render={({ field }) => (
-                        <CSelect
-                          {...field}
-                          label="Time Zone"
-                          placeholder="Select Time Zone"
-                          error={errors.doctor_timezone?.message}
-                          disabled={isView}
-                          options={timeZoneOption}
-                        />
-                      )}
-                    />
                     <Controller
                       name="initial_appointment_time"
                       control={control}
@@ -433,6 +409,25 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                             { label: '45 minutes', value: 45 },
                             { label: '60 minutes', value: 60 },
                           ]}
+                        />
+                      )}
+                    />
+                  </Grid>
+                </FormGroup>
+
+                <FormGroup title="Time Interval">
+                  <Grid columns="2">
+                    <Controller
+                      name="doctor_timezone"
+                      control={control}
+                      render={({ field }) => (
+                        <CSelect
+                          {...field}
+                          label="Doctor Timezone"
+                          placeholder="Select Doctor Timezone"
+                          error={errors.doctor_timezone?.message}
+                          disabled={isView}
+                          options={timeZoneOption}
                         />
                       )}
                     />

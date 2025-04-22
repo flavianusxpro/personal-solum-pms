@@ -8,7 +8,7 @@ import { MdOutlineCalendarMonth } from 'react-icons/md';
 import { formatDate } from '@core/utils/format-date';
 import { useDeleteAppointment } from '@/hooks/useAppointment';
 import toast from 'react-hot-toast';
-import CreateUpdateAppointmentForm from '../appointment/appointment-list/appointment-form';
+import CreateUpdateAppointmentForm from '../appointment/appointment-form';
 
 function DetailsEvents({ event }: { event: CalendarEvent }) {
   const { closeModal, openModal } = useModal();
