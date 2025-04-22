@@ -59,9 +59,9 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
       0
     );
     const totalAmount =
-      (totalItemAmount || 0) -
-      (Number(data.taxFee) || 0) -
-      (Number(data.otherFee) || 0);
+      (totalItemAmount || 0) +
+      ((totalItemAmount * Number(data.taxFee)) / 100 || 0) +
+      ((totalItemAmount * Number(data.otherFee)) / 100 || 0);
 
     if (id) {
       mutateUpdate(
@@ -77,7 +77,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
             qty: Number(item.qty),
             total_amount: Number(item.amount) * Number(item.qty),
           })),
-          amount: totalAmount,
+          amount: totalItemAmount,
           fee: Number(data.taxFee),
           tax_fee: Number(data.taxFee),
           total_amount: totalAmount,
@@ -163,18 +163,18 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
       className="flex flex-grow flex-col @container [&_label]:font-medium"
     >
       {({ register, setValue, control, watch, formState: { errors } }) => {
-        console.log('🚀 ~ CreateInvoice ~ errors:', errors);
+        const { items, taxFee, otherFee } = watch();
 
-        const totalItemAmount = watch('items')
-          ? (watch('items') || []).reduce((acc: number, item: any) => {
+        const totalItemAmount = items
+          ? (items || []).reduce((acc: number, item: any) => {
               const itemTotal = Number(item.amount) * Number(item.qty);
               return acc + itemTotal;
             }, 0)
           : 0;
         const totalAmount =
-          (totalItemAmount || 0) -
-          (Number(watch('taxFee')) || 0) -
-          (Number(watch('otherFee')) || 0);
+          (totalItemAmount || 0) +
+          ((totalItemAmount * Number(taxFee)) / 100 || 0) +
+          ((totalItemAmount * Number(otherFee)) / 100 || 0);
 
         return (
           <>
@@ -263,7 +263,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
                   <Input
                     type="number"
                     label="Tax Fee"
-                    prefix={'$'}
+                    suffix={'%'}
                     placeholder="15"
                     {...register('taxFee')}
                     error={errors.taxFee?.message}
@@ -271,7 +271,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
                   <Input
                     type="number"
                     label="Other Fee"
-                    prefix={'$'}
+                    suffix={'%'}
                     placeholder="15"
                     {...register('otherFee')}
                     error={errors.otherFee?.message}
