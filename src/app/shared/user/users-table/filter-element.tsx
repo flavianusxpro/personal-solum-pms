@@ -7,10 +7,10 @@ import { ROLES } from '@/config/constants';
 // import ModalButton from '../../ui/modal-button/modal-button';
 // import CreateUser from '@/app/(admin)/user/create/page';
 
-const statusOptions = [
+export const statusOptions = [
   {
     value: 1,
-    label: 'Draft',
+    label: 'Inactive',
   },
   {
     value: 2,
@@ -18,7 +18,7 @@ const statusOptions = [
   },
   {
     value: 3,
-    label: 'Deactivated',
+    label: 'Suspended',
   },
 ];
 
@@ -60,8 +60,8 @@ export default function FilterElement({
             updateFilter('status', value);
           }}
           placeholder="Filter by Status"
-          getOptionValue={(option: { value: any }) => option.value}
-          getOptionDisplayValue={(option: { value: any }) =>
+          getOptionValue={(option) => option.value}
+          getOptionDisplayValue={(option) =>
             renderOptionDisplayValue(option.value as number)
           }
           displayValue={(selected: number) =>
@@ -74,8 +74,8 @@ export default function FilterElement({
           dropdownClassName="!z-10 w-48"
           value={filters['role']}
           placeholder="Filter by Role"
-          className="@4xl:-auto -order-2 w-full min-w-[160px] @[25rem]:w-[calc(calc(100%_-_10px)_/_2)] @4xl:-order-4 @4xl:w-auto"
-          getOptionValue={(option: { value: any }) => option.value}
+          className="@4xl:-auto -order-2 w-full @[25rem]:w-[calc(calc(100%_-_10px)_/_2)] @4xl:-order-4 @4xl:w-auto"
+          getOptionValue={(option) => option.value}
           onChange={(value: string) => {
             updateFilter('role', value);
           }}

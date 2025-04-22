@@ -15,18 +15,18 @@ const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
 
 const filterState = {
   role: '',
-  status: '',
+  status: null,
 };
 
 export default function UsersTable() {
   const [pageSize, setPageSize] = useState(10);
 
-  const [filterParamsValues, setFilterParamsValues] = useState(filterState);
+  const [filterStateValue, setFilterStateValue] = useState(filterState);
 
   const [params, setParams] = useState({
     page: 1,
     perPage: 10,
-    ...filterParamsValues,
+    ...filterStateValue,
   });
 
   const { data: dataUsers } = useGetUsers(params);
@@ -42,6 +42,16 @@ export default function UsersTable() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const updateFilter = useCallback(
+    (columnId: string, filterValue: string | any[]) => {
+      setFilterStateValue((prevState) => ({
+        ...prevState,
+        [columnId]: filterValue,
+      }));
+    },
+    []
+  );
+
   const {
     isLoading,
     isFiltered,
@@ -50,7 +60,7 @@ export default function UsersTable() {
     totalItems,
     handlePaginate,
     filters,
-    updateFilter,
+    // updateFilter,
     searchTerm,
     handleSearch,
     sortConfig,
@@ -61,7 +71,7 @@ export default function UsersTable() {
     handleSelectAll,
     handleDelete,
     handleReset,
-  } = useTable(dataUsers?.users ?? [], pageSize, filterState);
+  } = useTable(dataUsers?.users ?? [], pageSize, filterStateValue);
 
   const columns = useMemo(
     () =>

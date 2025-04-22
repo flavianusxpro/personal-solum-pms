@@ -8,41 +8,11 @@ import DateCell from '@core/ui/date-cell';
 import { IGetUsersResponse } from '@/types/ApiResponse';
 import { HeaderCell } from '../../ui/table';
 import DeletePopover from '../../ui/delete-popover';
+import CSelect from '@/core/ui/select';
+import { useState } from 'react';
+import { statusOptions } from './filter-element';
 
 type User = IGetUsersResponse['users'][number];
-
-function getStatusBadge(status: number) {
-  switch (status) {
-    case 3:
-      return (
-        <div className="flex items-center">
-          <Badge color="danger" renderAsDot />
-          <Text className="ms-2 font-medium text-red-dark">Deactive</Text>
-        </div>
-      );
-    case 2:
-      return (
-        <div className="flex items-center">
-          <Badge color="success" renderAsDot />
-          <Text className="ms-2 font-medium text-green-dark">Active</Text>
-        </div>
-      );
-    case 1:
-      return (
-        <div className="flex items-center">
-          <Badge renderAsDot className="bg-gray-400" />
-          <Text className="ms-2 font-medium text-gray-600">Pending</Text>
-        </div>
-      );
-    default:
-      return (
-        <div className="flex items-center">
-          <Badge renderAsDot className="bg-gray-400" />
-          <Text className="ms-2 font-medium text-gray-600">{status}</Text>
-        </div>
-      );
-  }
-}
 
 type Columns = {
   data: any[];
@@ -155,7 +125,7 @@ export const getColumns = ({
     dataIndex: 'status',
     key: 'status',
     width: 120,
-    render: (status: User['status']) => getStatusBadge(status),
+    render: (status: number) => <StatusSelect selectItem={status} />,
   },
   {
     title: <></>,
@@ -193,3 +163,16 @@ export const getColumns = ({
     ),
   },
 ];
+
+function StatusSelect({ selectItem }: { selectItem?: number }) {
+  const [value, setValue] = useState(selectItem);
+  return (
+    <CSelect
+      dropdownClassName="!z-10 h-auto"
+      placeholder="Select Role"
+      options={statusOptions}
+      value={value}
+      onChange={setValue}
+    />
+  );
+}
