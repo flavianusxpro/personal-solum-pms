@@ -99,4 +99,5 @@ export const messages = {
   costPriceIsRequired: 'Cost Price is required',
   sellPriceIsRequired: 'Sell Price is required',
   titleRequired: 'Title is required',
+  confirmPasswordIsRequired: 'Confirm Password is required',
 };

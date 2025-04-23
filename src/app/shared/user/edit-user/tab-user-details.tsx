@@ -5,62 +5,64 @@ import toast from 'react-hot-toast';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { Flex, Input } from 'rizzui';
+import { Flex, Input, Loader } from 'rizzui';
 import AvatarUpload from '@core/ui/file-upload/avatar-upload';
 import CSelect from '@/core/ui/select';
+import { genderOption, stateOption } from '@/config/constants';
 import {
-  doctorTypeOption,
-  genderOption,
-  languageOption,
-  stateOption,
-} from '@/config/constants';
-import { IPayloadCreateEditDoctor } from '@/types/paramTypes';
+  patientDetailsFormSchema,
+  PatientDetailsFormTypes,
+} from '@/validators/patient-details.schema';
+import { useUpdatePatient } from '@/hooks/usePatient';
+import { IPayloadCreateEditPatient } from '@/types/paramTypes';
 import { useParams } from 'next/navigation';
 import dayjs from 'dayjs';
-import {
-  doctorDetailsFormSchema,
-  DoctorDetailsFormTypes,
-} from '@/validators/create-doctor.schema';
-import { useGetDoctorById, useUpdateDoctor } from '@/hooks/useDoctor';
-import dynamic from 'next/dynamic';
-import QuillLoader from '@/core/components/loader/quill-loader';
-import SelectLoader from '@/core/components/loader/select-loader';
+import { useGetUserById } from '@/hooks/useUser';
 
-const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
-  ssr: false,
-  loading: () => <QuillLoader className="col-span-full h-[143px]" />,
-});
-
-const MultySelect = dynamic(
-  () => import('rizzui').then((mod) => mod.MultiSelect),
-  {
-    ssr: false,
-    loading: () => <SelectLoader />,
-  }
-);
-
-export default function TabTreatment() {
+export default function UserDetails({ isView }: { isView?: boolean }) {
   const id = useParams<{ id: string }>().id;
 
-  const { data: dataDoctor } = useGetDoctorById(id);
-  const { mutate: mutateUpdatePatient } = useUpdateDoctor();
+  const {
+    data: dataPatient,
+    refetch: refetchGetDataPatient,
+    isLoading: isLoadingGetDataPatient,
+  } = useGetUserById(id);
 
-  const onSubmit: SubmitHandler<DoctorDetailsFormTypes> = (data) => {
-    const payload: IPayloadCreateEditDoctor = {
-      doctor_id: id ?? undefined,
+  const { mutate: mutateUpdatePatient, isPending } = useUpdatePatient();
+
+  const onSubmit: SubmitHandler<PatientDetailsFormTypes> = (data) => {
+    const payload: IPayloadCreateEditPatient = {
+      patient_id: id ?? undefined,
+      title: data.title,
       first_name: data.first_name,
       last_name: data.last_name as string,
       email: data.email,
+      password: data.password as string,
       date_of_birth: data.date_of_birth as string,
-      gender: data.date_of_birth as string,
+      gender: data.gender as string,
+      medicare_card_number: data.medicare_card as string,
+      medicare_expired_date: dayjs(data.medicare_expiry).format(
+        'DD MMMM YYYY'
+      ) as string,
       mobile_number: data.mobile_number as string,
       status: 1,
+      timezone: data.timezone ?? 'Australia/Sydney',
+      country: data.country,
+      potition_on_card: data.position_of_card,
+      patient_problem: data.patient_problem,
+      patient_type: data.patient_type,
+      street_name: data.street_name,
+      state: data.state,
+      suburb: data.suburb,
+      postcode: data.post_code,
+      unit_number: data.unit_number,
     };
 
     if (id) {
       return mutateUpdatePatient(payload, {
         onSuccess: () => {
           toast.success('Patient updated successfully');
+          refetchGetDataPatient();
         },
         onError: (error) => {
           console.log('🚀 ~ PatientDetails ~ error:', error);
@@ -72,20 +74,24 @@ export default function TabTreatment() {
     }
   };
 
+  if (isLoadingGetDataPatient) return <Loader size="lg" />;
+
   return (
-    <Form<DoctorDetailsFormTypes>
-      validationSchema={doctorDetailsFormSchema}
+    <Form<PatientDetailsFormTypes>
+      validationSchema={patientDetailsFormSchema}
       // resetValues={reset}
       onSubmit={onSubmit}
       className="@container"
       useFormProps={{
-        mode: 'onChange',
+        mode: 'all',
       }}
     >
       {({ register, control, setValue, getValues, formState: { errors } }) => {
+        console.log('🚀 ~ errors:', errors);
+
         return (
           <>
-            <div className="grid grid-cols-1 gap-7 border-b border-dashed pb-10 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
+            <div className="mb-10 grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
               <div className="flex flex-col gap-7">
                 <FormGroup
                   title="Personal Info"
@@ -97,6 +103,7 @@ export default function TabTreatment() {
                     {...register('first_name')}
                     error={errors.first_name?.message}
                     className="flex-grow"
+                    disabled={isView}
                   />
                 </FormGroup>
                 <FormGroup title="Last Name" isLabel>
@@ -105,6 +112,7 @@ export default function TabTreatment() {
                     {...register('last_name')}
                     error={errors.last_name?.message}
                     className="flex-grow"
+                    disabled={isView}
                   />
                 </FormGroup>
                 <FormGroup title="Gender" isLabel>
@@ -117,6 +125,7 @@ export default function TabTreatment() {
                         label=""
                         placeholder="Select Gender"
                         options={genderOption}
+                        disabled={isView}
                       />
                     )}
                   />
@@ -127,6 +136,7 @@ export default function TabTreatment() {
                     type="date"
                     {...register('date_of_birth')}
                     error={errors.date_of_birth?.message}
+                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
@@ -135,6 +145,7 @@ export default function TabTreatment() {
                     placeholder="Phone Number"
                     {...register('mobile_number')}
                     error={errors.mobile_number?.message}
+                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
@@ -144,8 +155,21 @@ export default function TabTreatment() {
                     placeholder="Email"
                     {...register('email')}
                     error={errors.email?.message}
+                    disabled={isView}
                     className="flex-grow"
                   />
+                </FormGroup>
+
+                <FormGroup title="Your Photo" isLabel>
+                  <div className="flex flex-col gap-6 @container @3xl:col-span-2">
+                    <AvatarUpload
+                      name="avatar"
+                      setValue={setValue}
+                      getValues={getValues}
+                      disabled={isView}
+                      error={errors?.avatar?.message as string}
+                    />
+                  </div>
                 </FormGroup>
               </div>
 
@@ -156,30 +180,25 @@ export default function TabTreatment() {
                     placeholder="Country"
                     {...register('country')}
                     error={errors.country?.message}
+                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
-                <FormGroup title="Street Number" isLabel>
+                <FormGroup title="Unit Number" isLabel>
+                  <Input
+                    placeholder="Unit Number"
+                    {...register('unit_number')}
+                    error={errors.unit_number?.message}
+                    disabled={isView}
+                    className="flex-grow"
+                  />
+                </FormGroup>
+                <FormGroup title="Street" isLabel>
                   <Input
                     placeholder="Street"
-                    {...register('street_number')}
-                    error={errors.street_number?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-                <FormGroup title="Address Line 1" isLabel>
-                  <Input
-                    placeholder="Address Line 1"
-                    {...register('address_line_1')}
-                    error={errors.address_line_1?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-                <FormGroup title="Address Line 2" isLabel>
-                  <Input
-                    placeholder="Address Line 2"
-                    {...register('address_line_2')}
-                    error={errors.address_line_2?.message}
+                    {...register('street_name')}
+                    error={errors.street_name?.message}
+                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
@@ -188,15 +207,16 @@ export default function TabTreatment() {
                     placeholder="Suburb"
                     {...register('suburb')}
                     error={errors.suburb?.message}
+                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
-                <Controller
-                  name="state"
-                  control={control}
-                  render={({ field }) => (
-                    <FormGroup title="">
-                      <Flex justify="between" align="center" gap="4">
+                <FormGroup title="States" isLabel>
+                  <Flex justify="between" align="center" gap="4">
+                    <Controller
+                      name="state"
+                      control={control}
+                      render={({ field }) => (
                         <CSelect
                           {...field}
                           label="State"
@@ -204,72 +224,38 @@ export default function TabTreatment() {
                           className="group relative z-0"
                           options={stateOption}
                           error={errors.state?.message as string}
+                          disabled={isView}
                         />
-                      </Flex>
-                    </FormGroup>
-                  )}
-                />
-              </div>
-            </div>
-
-            <div className="mb-10 mt-5 flex flex-col gap-7">
-              <FormGroup
-                title="Doctor Description"
-                description="Tell us a little about yourself and what makes you unique as a doctor"
-                className="grid-cols-12 gap-4"
-              />
-              <Controller
-                name="about"
-                control={control}
-                render={({ field }) => (
-                  <QuillEditor
-                    {...field}
-                    placeholder="About Doctor"
-                    error={errors.about?.message}
-                    className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[300px]"
-                  />
-                )}
-              />
-              <FormGroup title="Language" isLabel>
-                <Controller
-                  name="language"
-                  control={control}
-                  render={({ field }) => (
-                    <MultySelect
-                      {...field}
-                      onClear={() => field.onChange([])}
-                      options={languageOption}
-                      clearable
-                      placeholder="Select Doctor"
-                      error={errors.language?.message}
+                      )}
+                    />
+                    <Input
+                      label="Post Code"
+                      placeholder="Post Code"
+                      {...register('post_code')}
+                      error={errors.post_code?.message}
+                      disabled={isView}
                       className="flex-grow"
                     />
-                  )}
-                />
-                <Input
-                  placeholder="Language"
-                  {...register('language')}
-                  error={errors.language?.message}
-                  className="flex-grow"
-                />
-              </FormGroup>
-
-              <FormGroup title="Your Photo" isLabel>
-                <div className="flex flex-col gap-6 @container @3xl:col-span-2">
-                  <AvatarUpload
-                    name="avatar"
-                    setValue={setValue}
-                    getValues={getValues}
-                    error={errors?.avatar?.message as string}
+                  </Flex>
+                </FormGroup>
+                <FormGroup title="Description" isLabel>
+                  <Input
+                    placeholder="Description"
+                    {...register('description')}
+                    error={errors.description?.message}
+                    disabled={isView}
+                    className="flex-grow"
                   />
-                </div>
-              </FormGroup>
+                </FormGroup>
+              </div>
             </div>
-            <FormFooter
-              // isLoading={isLoading}
-              altBtnText="Cancel"
-              submitBtnText="Save"
-            />
+            {!isView && (
+              <FormFooter
+                isLoading={isPending}
+                altBtnText="Cancel"
+                submitBtnText="Save"
+              />
+            )}
           </>
         );
       }}

@@ -108,6 +108,7 @@ export interface IParamGetAllPatient extends IParamGetDataWithPagination {}
 export interface IParamGetAllDoctor extends IParamGetDataWithPagination {}
 export interface IParamGetSpecialists extends IParamGetDataWithPagination {}
 export interface IParamGetRoles extends IParamGetDataWithPagination {}
+export interface IParamGetPermissions extends IParamGetDataWithPagination {}
 export interface IParamGetUsers extends IParamGetDataWithPagination {}
 export interface IParamGetAppointments extends IParamGetDataWithPagination {
   doctorId?: number;
@@ -245,6 +246,13 @@ export interface IPayloadCreateDoctorUser {
   roleId: number;
   clinic_ids: number[];
   doctor: Doctor;
+}
+export interface IPayloadCreateUser {
+  name: string;
+  email: string;
+  password: string;
+  roleId: number;
+  clinic_ids: number[];
 }
 
 interface Doctor {

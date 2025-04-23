@@ -1,12 +1,23 @@
 import { get, post } from '@/app/api/api';
-import { IGetRolesResponse, IGetUsersResponse } from '@/types/ApiResponse';
 import {
+  IGetPermissionsResponse,
+  IGetRolesResponse,
+  IGetUserByIdResponse,
+  IGetUsersResponse,
+} from '@/types/ApiResponse';
+import {
+  IParamGetPermissions,
   IParamGetRoles,
   IParamGetUsers,
   IPayloadCreateDoctorUser,
+  IPayloadCreateUser,
 } from '@/types/paramTypes';
 
 export async function postCreateDoctorUser(payload: IPayloadCreateDoctorUser) {
+  return post('/admin/user', payload);
+}
+
+export async function postCreateUser(payload: IPayloadCreateUser) {
   return post('/admin/user', payload);
 }
 
@@ -20,4 +31,16 @@ export async function getUsers(params: IParamGetUsers) {
   return get<IGetUsersResponse>('/admin/user', {
     params,
   });
+}
+
+export async function getUserById(id: string) {
+  return get<IGetUserByIdResponse>('/admin/user/detail/' + id).then(
+    (res) => res.data
+  );
+}
+
+export async function getPermissions(params: IParamGetPermissions) {
+  return get<IGetPermissionsResponse>('/admin/user/permissions', {
+    params,
+  }).then((res) => res.data);
 }

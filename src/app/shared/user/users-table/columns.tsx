@@ -11,6 +11,8 @@ import DeletePopover from '../../ui/delete-popover';
 import CSelect from '@/core/ui/select';
 import { useState } from 'react';
 import { statusOptions } from './filter-element';
+import Link from 'next/link';
+import { routes } from '@/config/routes';
 
 type User = IGetUsersResponse['users'][number];
 
@@ -135,14 +137,16 @@ export const getColumns = ({
     render: (_: string, user: User) => (
       <div className="flex items-center justify-end gap-3 pe-3">
         <Tooltip size="sm" content={'Edit User'} placement="top" color="invert">
-          <ActionIcon
-            as="span"
-            size="sm"
-            variant="outline"
-            className="hover:!border-gray-900 hover:text-gray-700"
-          >
-            <PencilIcon className="h-4 w-4" />
-          </ActionIcon>
+          <Link href={routes.user.edit(user.id.toString())}>
+            <ActionIcon
+              as="span"
+              size="sm"
+              variant="outline"
+              className="hover:!border-gray-900 hover:text-gray-700"
+            >
+              <PencilIcon className="h-4 w-4" />
+            </ActionIcon>
+          </Link>
         </Tooltip>
         <Tooltip size="sm" content={'View User'} placement="top" color="invert">
           <ActionIcon

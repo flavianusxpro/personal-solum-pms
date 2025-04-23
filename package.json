@@ -8,6 +8,7 @@
     "dev": "next dev",
     "lint": "next lint",
     "build": "next build",
+    "vercel": "next build && vercel --prod",
     "start": "next start",
     "clean": "rm -rf node_modules .next .cache .turbo",
     "cache:clean": "rm -rf .next .cache .turbo",

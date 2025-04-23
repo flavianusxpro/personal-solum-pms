@@ -559,6 +559,15 @@ export interface IGetRolesResponse extends ApiResponseWithPagination {
   }[];
 }
 
+export interface IGetPermissionsResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    name: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+}
+
 export interface IGetAnalyticReportBillingByDoctorIdResponse
   extends ApiResponse {
   data: {
@@ -594,4 +603,20 @@ interface Permission {
   name: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface IGetUserByIdResponse extends ApiResponse {
+  data: {
+    id: number;
+    name: string;
+    email: string;
+    password: string;
+    roleId: number;
+    doctorId: null;
+    status: number;
+    created_at: string;
+    updated_at: string;
+    role: Role;
+    doctor: null;
+  };
 }

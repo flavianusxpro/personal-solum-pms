@@ -61,7 +61,7 @@ export default function AppointmentDetails({
             <PiMapPinLight className="me-2 hidden w-5 shrink-0 text-xl" />
             Payment Status:{' '}
             <span className="ps-2 font-medium text-gray-1000">
-              {getPaymentStatusBadge(data?.payment.status as number)}
+              {getPaymentStatusBadge(data?.payment?.status || 1)}
             </span>
           </li>
           <li className="flex items-center">

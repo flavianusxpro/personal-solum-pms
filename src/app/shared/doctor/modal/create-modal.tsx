@@ -11,7 +11,7 @@ import { IPayloadCreateDoctorUser } from '@/types/paramTypes';
 import {
   doctorDetailsFormSchema,
   DoctorDetailsFormTypes,
-} from '@/validators/doctor-create.schema';
+} from '@/validators/create-doctor.schema';
 import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
 import { PiX } from 'react-icons/pi';

@@ -1,16 +1,15 @@
+'use client';
+
 import Link from 'next/link';
 import { routes } from '@/config/routes';
 import { Button } from 'rizzui';
 import PageHeader from '@/app/shared/ui/page-header';
 import { PiPlusBold } from 'react-icons/pi';
 import { orderData } from '@/data/order-data';
-import { metaObject } from '@/config/site.config';
 import ExportButton from '@/app/shared/ui/export-button';
 import UsersTable from '@/app/shared/user/users-table';
-
-export const metadata = {
-  ...metaObject('Users'),
-};
+import ModalButton from '@/app/shared/ui/modal-button/modal-button';
+import CreateUserModal from '@/app/shared/user/modal/create-modal';
 
 const pageHeader = {
   title: 'Users',
@@ -35,12 +34,7 @@ export default function UsersPage() {
             fileName="order_data"
             header="Patient ID,Name,Email,Avatar,Items,Price,Status,Created At,Updated At"
           />
-          <Link href={routes.user.create} className="w-full @lg:w-auto">
-            <Button as="span" className="w-full @lg:w-auto">
-              <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
-              Add User
-            </Button>
-          </Link>
+          <ModalButton view={<CreateUserModal />}>Create User</ModalButton>
         </div>
       </PageHeader>
 
