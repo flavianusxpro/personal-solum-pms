@@ -100,4 +100,6 @@ export const messages = {
   sellPriceIsRequired: 'Sell Price is required',
   titleRequired: 'Title is required',
   confirmPasswordIsRequired: 'Confirm Password is required',
+  clinicNameRequired: 'Clinic Name is required',
+  clinicAddressRequired: 'Clinic Address is required',
 };
