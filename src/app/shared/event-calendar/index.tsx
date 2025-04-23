@@ -3,7 +3,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { CalendarEvent } from '@/types';
 import dayjs from 'dayjs';
-import { Calendar, dayjsLocalizer } from 'react-big-calendar';
+import {
+  Calendar,
+  dayjsLocalizer,
+  NavigateAction,
+  View,
+} from 'react-big-calendar';
 import EventForm from '@/app/shared/event-calendar/event-form';
 import DetailsEvents from '@/app/shared/event-calendar/details-event';
 import { useModal } from '@/app/shared/modal-views/use-modal';
@@ -85,6 +90,14 @@ export default function EventCalendarView() {
     [openModal]
   );
 
+  const onNavigate = useCallback(
+    (newDate: Date, view: View, action: NavigateAction) => {
+      const fromDate = dayjs(newDate).startOf('month').toDate();
+      const toDate = dayjs(newDate).endOf('month').toDate();
+    },
+    []
+  );
+
   const { views, scrollToTime, formats } = useMemo(
     () => ({
       views: {
@@ -142,6 +155,7 @@ export default function EventCalendarView() {
           // calendarToolbarClassName,
           colorPresetName === 'black' && rtcEventClassName
         )}
+        onNavigate={onNavigate}
       />
     </div>
   );

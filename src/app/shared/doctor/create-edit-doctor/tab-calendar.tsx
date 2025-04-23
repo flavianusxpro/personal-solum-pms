@@ -1,9 +1,14 @@
 'use client';
 
 import cn from '@core/utils/class-names';
-import { Calendar, dayjsLocalizer } from 'react-big-calendar';
+import {
+  Calendar,
+  dayjsLocalizer,
+  NavigateAction,
+  View,
+} from 'react-big-calendar';
 import dayjs from 'dayjs';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { CalendarEvent } from '@/core/types';
 import { useModal } from '../../modal-views/use-modal';
 import DetailsEvents from '../../event-calendar/details-event';
@@ -34,11 +39,14 @@ export default function TabCalendar({
   const { openModal } = useModal();
   const { colorPresetName } = useColorPresetName();
 
-  const { data: dataSchedule } = useGetListSchedule({
+  const [params, setParams] = useState({
     doctorId: id,
     page: 1,
-    perPage: 100,
+    perPage: 50,
+    data: '',
   });
+
+  const { data: dataSchedule } = useGetListSchedule(params);
 
   const events: CalendarEvent[] = useMemo(() => {
     if (!dataSchedule) return [];
@@ -95,6 +103,14 @@ export default function TabCalendar({
     [id, openModal]
   );
 
+  const onNavigate = useCallback(
+    (newDate: Date, view: View, action: NavigateAction) => {
+      const fromDate = dayjs(newDate).startOf('month').toDate();
+      const toDate = dayjs(newDate).endOf('month').toDate();
+    },
+    []
+  );
+
   return (
     <div className="@container">
       <Flex className="flex w-full items-center justify-end">
@@ -122,6 +138,7 @@ export default function TabCalendar({
           calendarToolbarClassName,
           colorPresetName === 'black' && rtcEventClassName
         )}
+        onNavigate={onNavigate}
       />
     </div>
   );

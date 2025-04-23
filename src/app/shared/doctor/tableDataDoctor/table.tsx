@@ -1,41 +1,18 @@
 'use client';
 
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
-import { getColumns } from '@/app/shared/tableDataDoctor/columns';
-import ExpandedOrderRow from '@/app/shared/tableDataDoctor/expanded-row';
+import { getColumns } from '@/app/shared/doctor/tableDataDoctor/columns';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
 import { useColumn } from '@core/hooks/use-column';
 import { useTable } from '@core/hooks/use-table';
-import cn from '@core/utils/class-names';
 import dynamic from 'next/dynamic';
 import React, { useCallback, useState } from 'react';
-import { PiCaretDownBold, PiCaretUpBold } from 'react-icons/pi';
-import { ActionIcon } from 'rizzui';
+
 // dynamic import
 const FilterElement = dynamic(
-  () => import('@/app/shared/tableDataDoctor/filter-element'),
+  () => import('@/app/shared/doctor/tableDataDoctor/filter-element'),
   { ssr: false }
 );
-
-function CustomExpandIcon(props: any) {
-  return (
-    <ActionIcon
-      size="sm"
-      variant="outline"
-      rounded="full"
-      className="expand-row-icon ms-2"
-      onClick={(e) => {
-        props.onExpand(props.record, e);
-      }}
-    >
-      {props.expanded ? (
-        <PiCaretUpBold className="h-3.5 w-3.5" />
-      ) : (
-        <PiCaretDownBold className="h-3.5 w-3.5" />
-      )}
-    </ActionIcon>
-  );
-}
 
 const filterState = {
   price: ['', ''],
@@ -133,10 +110,6 @@ export default function DoctorTable({}: {}) {
         data={tableData}
         // @ts-ignore
         columns={visibleColumns}
-        // expandable={{
-        //   expandIcon: CustomExpandIcon,
-        //   expandedRowRender: (record) => <ExpandedOrderRow record={record} />,
-        // }}
         paginatorOptions={{
           pageSize,
           setPageSize,

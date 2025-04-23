@@ -5,9 +5,9 @@ import PageHeader from '@/app/shared/ui/page-header';
 import ExportButton from '@/app/shared/ui/export-button';
 import { doctorData } from '@/data/doctor-data';
 import { PiPlusBold } from 'react-icons/pi';
-import DoctorList from '../../shared/doctor/DoctorList';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import CreateDoctorModal from '@/app/shared/doctor/modal/create-modal';
+import DoctorTable from '@/app/shared/doctor/tableDataDoctor/table';
 
 const pageHeader = {
   title: 'Doctors',
@@ -50,7 +50,7 @@ export default function DoctorPage() {
         </div>
       </PageHeader>
 
-      <DoctorList />
+      <DoctorTable />
     </>
   );
 }
