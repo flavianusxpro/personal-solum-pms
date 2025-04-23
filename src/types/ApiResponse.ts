@@ -354,7 +354,7 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
     paymentId: number;
     created_at: string;
     updated_at: string;
-    payment: IPayment;
+    payment: IPayment | null;
     patient: IPatient;
     doctor: IDoctor;
   }[];

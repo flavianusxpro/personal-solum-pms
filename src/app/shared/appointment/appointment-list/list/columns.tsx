@@ -153,7 +153,7 @@ export const GetColumns = ({
       width: 260,
       onHeaderCell: () => onHeaderCellClick('status'),
       render: (status: number | string, row: RowValue) =>
-        getPaymentStatusBadge(row.payment.status),
+        getPaymentStatusBadge(row?.payment?.status || 1),
     },
     {
       title: <></>,
@@ -255,8 +255,8 @@ export function getPaymentStatusBadge(status: number | string) {
     case 1:
       return (
         <Flex gap="1" align="center">
-          <Badge color="secondary" renderAsDot />
-          <Text className="text-yellow-dark font-medium">Pending</Text>
+          <Badge color="warning" renderAsDot />
+          <Text className="font-medium text-yellow-600">Pending</Text>
         </Flex>
       );
     default:
