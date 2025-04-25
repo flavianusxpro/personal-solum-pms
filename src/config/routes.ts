@@ -38,8 +38,8 @@ export const routes = {
     communication: '/setting/communication',
     payment: '/setting/payment',
     notificationReminder: '/setting/notification-reminder',
-    emailTemplate: '/template/email-template',
-    smsTemplate: '/template/sms-template',
+    emailTemplate: '/setting/email-template',
+    smsTemplate: '/setting/sms-template',
   },
 
   // Patient

@@ -1,7 +1,7 @@
 'use client';
 
 import PageHeader from '@/app/shared/ui/page-header';
-import Navigation from '@/app/(admin)/setting/navigation';
+import Navigation from '@/app/(admin)/setting/(setup)/navigation';
 
 const pageHeader = {
   title: 'Alice Ronnie',
