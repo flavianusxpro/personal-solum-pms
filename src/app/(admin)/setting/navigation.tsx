@@ -8,6 +8,7 @@ import { PiCaretLeftBold, PiCaretRightBold } from 'react-icons/pi';
 import { usePathname } from 'next/navigation';
 import { useLayout } from '@/layouts/use-layout';
 import { LAYOUT_OPTIONS } from '@/config/enums';
+import { routes } from '@/config/routes';
 
 interface menuInterface {
   label: string;
@@ -18,23 +19,19 @@ interface menuInterface {
 const menuItems: menuInterface[] = [
   {
     label: 'Clinic Setup',
-    value: '/setting/setup',
+    value: routes.setting.setup,
   },
   {
     label: 'Communications',
-    value: '/setting/communication',
+    value: routes.setting.communication,
   },
   {
     label: 'Payment',
-    value: '/setting/payment',
+    value: routes.setting.payment,
   },
   {
-    label: 'Email Template',
-    value: '/setting/email',
-  },
-  {
-    label: 'Reminder Settings',
-    value: '/setting/reminder',
+    label: 'Notification & Reminder',
+    value: routes.setting.notificationReminder,
   },
 ];
 

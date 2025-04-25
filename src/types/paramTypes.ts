@@ -5,6 +5,7 @@ interface IParamGetDataWithPagination {
   perPage: number;
   sort?: 'ASC' | 'DESC';
   search?: string;
+  q?: string;
 }
 export interface IParamGetAllClinic extends IParamGetDataWithPagination {
   role: RoleType;
@@ -106,6 +107,9 @@ export interface IPayloadCreateEditDoctor {
 
 export interface IParamGetAllPatient extends IParamGetDataWithPagination {}
 export interface IParamGetAllDoctor extends IParamGetDataWithPagination {}
+export interface IParamGetAllEmailTemplates
+  extends IParamGetDataWithPagination {}
+export interface IParamGetAllSmsTemplates extends IParamGetDataWithPagination {}
 export interface IParamGetSpecialists extends IParamGetDataWithPagination {}
 export interface IParamGetRoles extends IParamGetDataWithPagination {}
 export interface IParamGetPermissions extends IParamGetDataWithPagination {}
@@ -278,4 +282,44 @@ interface Doctor {
   specialist_type: number[];
   treatment_type: string;
   language: string[];
+}
+
+export interface IPayloadUpdateSmsNotificationSettings {
+  booking_confirmation_sms_status: boolean;
+  booking_confirmation_sms_text: string;
+  reschedule_sms_status: boolean;
+  reschedule_sms_text: string;
+  account_created_sms_status: boolean;
+  account_created_sms_text: string;
+  payment_confirmation_sms_status: boolean;
+  payment_confirmation_sms_text: string;
+}
+
+export interface IPayloadUpdateEmailNotificationSettings {
+  booking_confirmation_email_status: boolean;
+  booking_confirmation_email_html: string;
+  reschedule_email_status: boolean;
+  reschedule_email_html: string;
+  account_created_email_status: boolean;
+  account_created_email_html: string;
+  payment_confirmation_email_status: boolean;
+  payment_confirmation_email_html: string;
+  account_verification_email_status: boolean;
+  account_verification_email_html: string;
+  forgot_password_email_status: boolean;
+  forgot_password_email_html: string;
+  birthday_email_status: boolean;
+  birthday_email_html: string;
+}
+
+export interface IPayloadCreateEditEmailTemplate {
+  id?: string;
+  name: string;
+  html: string;
+}
+
+export interface IPayloadCreateEditSmsTemplate {
+  id?: string;
+  name: string;
+  text: string;
 }

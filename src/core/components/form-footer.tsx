@@ -44,13 +44,6 @@ export default function FormFooter({
           Export Product
         </Button>
       )}
-      {/* <Button
-        variant="outline"
-        className="w-full @xl:w-auto"
-        onClick={handleAltBtn}
-      >
-        {altBtnText}
-      </Button> */}
       <Button
         type={handleCreateBtn ? 'button' : 'submit'}
         onClick={handleCreateBtn ? handleCreateBtn : undefined}

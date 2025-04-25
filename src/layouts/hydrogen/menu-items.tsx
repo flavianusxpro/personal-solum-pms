@@ -1,6 +1,5 @@
 import { routes } from '@/config/routes';
 import dynamic from 'next/dynamic';
-import { PiDoorOpen } from 'react-icons/pi';
 
 // Dynamic imports untuk ikon yang digunakan
 const PiHouse = dynamic(() =>
@@ -29,6 +28,14 @@ const PiUser = dynamic(() =>
 );
 const PiGear = dynamic(() =>
   import('react-icons/pi').then((mod) => mod.PiGear)
+);
+
+const PiBriefcase = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiBriefcase)
+);
+
+const PiDoorOpen = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiDoorOpen)
 );
 
 // Note: do not add href in the label object, it is rendering as label
@@ -98,7 +105,7 @@ export const adminMenuItems = [
   {
     name: 'Marketing',
     href: routes.management.dashboard,
-    icon: <PiBoundingBox />,
+    icon: <PiBriefcase />,
     dropdownItems: [
       {
         name: 'Coupon',
@@ -121,6 +128,23 @@ export const adminMenuItems = [
     name: 'Settings',
     href: routes.setting.setup,
     icon: <PiGear />,
+    dropdownItems: [
+      {
+        name: 'Setup',
+        href: routes.setting.setup,
+        icon: <PiUser />,
+      },
+      {
+        name: 'Email Template',
+        href: routes.setting.emailTemplate,
+        icon: <PiUser />,
+      },
+      {
+        name: 'SMS Template',
+        href: routes.setting.smsTemplate,
+        icon: <PiUser />,
+      },
+    ],
   },
 ];
 export const patientMenuItems = [

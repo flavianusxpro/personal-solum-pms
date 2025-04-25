@@ -12,10 +12,6 @@ export const routes = {
     edit: (id: string) => `/user/edit/${id}`,
     userDetail: (id: string) => `/user/${id}`,
   },
-  setting: {
-    dashboard: '/setting',
-    setup: '/setting/setup',
-  },
   product: {
     dashboard: '/product',
     create: '/product/create',
@@ -36,6 +32,14 @@ export const routes = {
     create: '/invoice/create',
     details: (id: string) => `/invoice/${id}`,
     edit: (id: string) => `/invoice/${id}/edit`,
+  },
+  setting: {
+    setup: '/setting/setup',
+    communication: '/setting/communication',
+    payment: '/setting/payment',
+    notificationReminder: '/setting/notification-reminder',
+    emailTemplate: '/template/email-template',
+    smsTemplate: '/template/sms-template',
   },
 
   // Patient

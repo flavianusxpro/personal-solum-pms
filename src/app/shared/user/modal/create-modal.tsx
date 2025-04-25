@@ -63,7 +63,7 @@ export default function CreateUserModal() {
       name: data.name,
       email: data.email,
       password: data.password as string,
-      roleId: 5,
+      roleId: data.roleId,
       clinic_ids: data.clinic_ids?.map((clinicId) => parseInt(clinicId)) || [],
     };
 

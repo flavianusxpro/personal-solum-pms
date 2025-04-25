@@ -102,4 +102,5 @@ export const messages = {
   confirmPasswordIsRequired: 'Confirm Password is required',
   clinicNameRequired: 'Clinic Name is required',
   clinicAddressRequired: 'Clinic Address is required',
+  htmlIsRequired: 'HTML is required',
 };

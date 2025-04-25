@@ -218,6 +218,19 @@ export default function Setup() {
               className="flex-grow"
             />
           </FormGroup>
+
+          <FormGroup
+            title="Maps Location"
+            isLabel
+            className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+          >
+            <Input
+              placeholder="Maps Location"
+              {...register('map_location')}
+              error={errors.map_location?.message}
+              className="flex-grow"
+            />
+          </FormGroup>
         </div>
       </div>
 

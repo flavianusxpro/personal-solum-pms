@@ -620,3 +620,45 @@ export interface IGetUserByIdResponse extends ApiResponse {
     doctor: null;
   };
 }
+
+export interface IGetEmailNotificationSettingsResponse extends ApiResponse {
+  data: {
+    booking_confirmation_email_status: boolean;
+    booking_confirmation_email_html: null;
+    reschedule_email_status: boolean;
+    reschedule_email_html: null;
+    account_created_email_status: boolean;
+    account_created_email_html: null;
+    payment_confirmation_email_status: boolean;
+    payment_confirmation_email_html: null;
+    account_verification_email_status: boolean;
+    account_verification_email_html: null;
+    forgot_password_email_status: boolean;
+    forgot_password_email_html: null;
+    birthday_email_status: boolean;
+    birthday_email_html: null;
+  };
+}
+
+export interface IGetSmsNotificationSettingsResponse extends ApiResponse {
+  data: {
+    booking_confirmation_sms_status: boolean;
+    booking_confirmation_sms_text: null;
+    reschedule_sms_status: boolean;
+    reschedule_sms_text: null;
+    account_created_sms_status: boolean;
+    account_created_sms_text: null;
+    payment_confirmation_sms_status: boolean;
+    payment_confirmation_sms_text: null;
+  };
+}
+
+export interface IGetEmailTemplatesResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    name: string;
+    html: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+}
