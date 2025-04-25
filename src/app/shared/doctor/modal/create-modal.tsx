@@ -15,11 +15,12 @@ import {
 import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
 import { PiX } from 'react-icons/pi';
-import { useGetRoles, usePostCreateDoctorUser } from '@/hooks/useUser';
+import { usePostCreateDoctorUser } from '@/hooks/useUser';
 import { useGetSpecialists } from '@/hooks/useDoctor';
 import { useMemo } from 'react';
 import SelectLoader from '@/core/components/loader/select-loader';
 import dynamic from 'next/dynamic';
+import { useGetRoles } from '@/hooks/useRole';
 
 const MultySelect = dynamic(
   () => import('rizzui').then((mod) => mod.MultiSelect),
@@ -34,7 +35,10 @@ export default function CreatDoctorModal() {
 
   const { mutate: mutateCreateDoctor, isPending } = usePostCreateDoctorUser();
   const { data: dataSpecialists } = useGetSpecialists();
-  const { data: dataRoles } = useGetRoles();
+  const { data: dataRoles } = useGetRoles({
+    perPage: 1,
+    page: 1,
+  });
 
   const specialistsOptions = useMemo(() => {
     if (!dataSpecialists) return [];

@@ -11,7 +11,7 @@ import { IPayloadCreateUser } from '@/types/paramTypes';
 import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
 import { PiX } from 'react-icons/pi';
-import { useGetRoles, useGetUsers, usePostCreateUser } from '@/hooks/useUser';
+import { useGetUsers, usePostCreateUser } from '@/hooks/useUser';
 import SelectLoader from '@/core/components/loader/select-loader';
 import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
@@ -20,6 +20,7 @@ import {
   createUserSchema,
 } from '@/validators/create-user.schema';
 import { useGetAllClinics } from '@/hooks/useClinic';
+import { useGetRoles } from '@/hooks/useRole';
 
 const MultySelect = dynamic(
   () => import('rizzui').then((mod) => mod.MultiSelect),
@@ -35,7 +36,10 @@ export default function CreateUserModal() {
   const { mutate: mutateCreateUser, isPending } = usePostCreateUser();
   const { refetch } = useGetUsers({ page: 1, perPage: 10 });
 
-  const { data: dataRoles } = useGetRoles();
+  const { data: dataRoles } = useGetRoles({
+    page: 1,
+    perPage: 100,
+  });
   const { data: dataClinics } = useGetAllClinics({
     page: 1,
     perPage: 100,
