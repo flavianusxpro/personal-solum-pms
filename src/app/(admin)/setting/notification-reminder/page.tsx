@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { Input, Loader, Text, Textarea } from 'rizzui';
+import { Flex, Input, Loader, Text, Textarea } from 'rizzui';
 import {
   settingNotificationReminderFormSchema,
   SettingNotificationReminderFormTypes,
@@ -26,12 +26,23 @@ import {
   IPayloadUpdateEmailNotificationSettings,
   IPayloadUpdateSmsNotificationSettings,
 } from '@/types/paramTypes';
+import { useGetEmailTemplates, useGetSmsTemplates } from '@/hooks/useTemplate';
+import { useMemo } from 'react';
+import CSelect from '@/app/shared/ui/select';
 
 const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
   ssr: false,
 });
 
 export default function Setup() {
+  const { data: dataEmailTemplates } = useGetEmailTemplates({
+    page: 1,
+    perPage: 100,
+  });
+  const { data: dataSmsTemplates } = useGetSmsTemplates({
+    page: 1,
+    perPage: 100,
+  });
   const {
     data: dataEmailNotificationSettings,
     isLoading: isLoadingGetEmailNotification,
@@ -45,6 +56,22 @@ export default function Setup() {
     useUpdateEmailNotificationSettings();
   const { mutate: mutateUpdateSmsNotification } =
     useUpdateSmsNotificationSettings();
+
+  const emailTemplateOptions = useMemo(() => {
+    if (!dataEmailTemplates) return [];
+    return dataEmailTemplates.map((template) => ({
+      label: template.name,
+      value: template.html,
+    }));
+  }, [dataEmailTemplates]);
+
+  const smsTemplateOptions = useMemo(() => {
+    if (!dataSmsTemplates) return [];
+    return dataSmsTemplates.map((template) => ({
+      label: template.name,
+      value: template.text,
+    }));
+  }, [dataEmailTemplates]);
 
   const onSubmit: SubmitHandler<SettingNotificationReminderFormTypes> = (
     data
@@ -162,7 +189,7 @@ export default function Setup() {
             <FormGroup
               title="Notification"
               description="Notification provider is used to send email and SMS notifications"
-              className="mb-10 mt-4 border-t border-t-slate-300 pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+              className="mb-10 pt-7 @2xl:pt-9 @3xl:pt-11"
             />
 
             <StatusCard
@@ -175,6 +202,17 @@ export default function Setup() {
               switchValue={watch('booking_confirmation_email_status')}
               className="mb-10"
             >
+              <Flex justify="end" className="">
+                <CSelect
+                  searchable
+                  placeholder="Select Template"
+                  options={emailTemplateOptions}
+                  onChange={(value: string) =>
+                    setValue('booking_confirmation_email_html', value)
+                  }
+                  className="w-fit"
+                />
+              </Flex>
               <Controller
                 name="booking_confirmation_email_html"
                 control={control}
@@ -199,6 +237,17 @@ export default function Setup() {
               switchValue={watch('booking_confirmation_sms_status')}
               className="mb-10"
             >
+              <Flex justify="end" className="">
+                <CSelect
+                  searchable
+                  placeholder="Select Template"
+                  options={smsTemplateOptions}
+                  onChange={(value: string) =>
+                    setValue('booking_confirmation_sms_text', value)
+                  }
+                  className="w-fit"
+                />
+              </Flex>
               <Controller
                 name="booking_confirmation_sms_text"
                 control={control}
@@ -229,6 +278,17 @@ export default function Setup() {
               switchValue={watch('reschedule_email_status')}
               className="mb-10"
             >
+              <Flex justify="end" className="">
+                <CSelect
+                  searchable
+                  placeholder="Select Template"
+                  options={emailTemplateOptions}
+                  onChange={(value: string) =>
+                    setValue('reschedule_email_html', value)
+                  }
+                  className="w-fit"
+                />
+              </Flex>
               <Controller
                 name="reschedule_email_html"
                 control={control}
@@ -253,6 +313,17 @@ export default function Setup() {
               switchValue={watch('reschedule_sms_status')}
               className="mb-10"
             >
+              <Flex justify="end" className="">
+                <CSelect
+                  searchable
+                  placeholder="Select Template"
+                  options={smsTemplateOptions}
+                  onChange={(value: string) =>
+                    setValue('reschedule_sms_text', value)
+                  }
+                  className="w-fit"
+                />
+              </Flex>
               <Controller
                 name="reschedule_sms_text"
                 control={control}
@@ -283,6 +354,17 @@ export default function Setup() {
               switchValue={watch('account_created_email_status')}
               className="mb-10"
             >
+              <Flex justify="end" className="">
+                <CSelect
+                  searchable
+                  placeholder="Select Template"
+                  options={emailTemplateOptions}
+                  onChange={(value: string) =>
+                    setValue('account_created_email_html', value)
+                  }
+                  className="w-fit"
+                />
+              </Flex>
               <Controller
                 name="account_created_email_html"
                 control={control}
@@ -307,6 +389,17 @@ export default function Setup() {
               switchValue={watch('payment_confirmation_email_status')}
               className="mb-10"
             >
+              <Flex justify="end" className="">
+                <CSelect
+                  searchable
+                  placeholder="Select Template"
+                  options={emailTemplateOptions}
+                  onChange={(value: string) =>
+                    setValue('payment_confirmation_email_html', value)
+                  }
+                  className="w-fit"
+                />
+              </Flex>
               <Controller
                 name="payment_confirmation_email_html"
                 control={control}
@@ -331,6 +424,17 @@ export default function Setup() {
               switchValue={watch('account_verification_email_status')}
               className="mb-10"
             >
+              <Flex justify="end" className="">
+                <CSelect
+                  searchable
+                  placeholder="Select Template"
+                  options={emailTemplateOptions}
+                  onChange={(value: string) =>
+                    setValue('account_verification_email_html', value)
+                  }
+                  className="w-fit"
+                />
+              </Flex>
               <Controller
                 name="account_verification_email_html"
                 control={control}
@@ -355,6 +459,17 @@ export default function Setup() {
               switchValue={watch('forgot_password_email_status')}
               className="mb-10"
             >
+              <Flex justify="end" className="">
+                <CSelect
+                  searchable
+                  placeholder="Select Template"
+                  options={emailTemplateOptions}
+                  onChange={(value: string) =>
+                    setValue('forgot_password_email_html', value)
+                  }
+                  className="w-fit"
+                />
+              </Flex>
               <Controller
                 name="forgot_password_email_html"
                 control={control}
@@ -379,6 +494,17 @@ export default function Setup() {
               switchValue={watch('birthday_email_status')}
               className="mb-10"
             >
+              <Flex justify="end" className="">
+                <CSelect
+                  searchable
+                  placeholder="Select Template"
+                  options={emailTemplateOptions}
+                  onChange={(value: string) =>
+                    setValue('birthday_email_html', value)
+                  }
+                  className="w-fit"
+                />
+              </Flex>
               <Controller
                 name="birthday_email_html"
                 control={control}

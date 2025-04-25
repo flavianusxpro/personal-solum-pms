@@ -37,24 +37,25 @@ export default function StatusCard(props: IMeetingCard) {
       <div className="relative flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden">
         {icon}
       </div>
-      <div className="flex flex-grow flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <Title as="h3" className="mb-1 text-base font-semibold">
-            {meetName}
-          </Title>
-          <Text className="text-sm text-gray-500 transition-colors">
-            {content}
-          </Text>
-          <div className="w-full">
-            <div
-              className={`transition-all duration-300 ${
-                switchValue
-                  ? 'max-h-screen pt-7 opacity-100'
-                  : 'max-h-0 overflow-hidden opacity-0'
-              }`}
-            >
-              {children}
-            </div>
+      <div className="flex flex-grow flex-col sm:items-center sm:justify-between">
+        <Title
+          as="h3"
+          className="mb-1 w-full text-left text-base font-semibold"
+        >
+          {meetName}
+        </Title>
+        <Text className="w-full text-left text-sm text-gray-500 transition-colors">
+          {content}
+        </Text>
+        <div className="w-full">
+          <div
+            className={`transition-all duration-300 ${
+              switchValue
+                ? 'max-h-screen pt-7 opacity-100'
+                : 'max-h-0 overflow-hidden opacity-0'
+            }`}
+          >
+            {children}
           </div>
         </div>
       </div>

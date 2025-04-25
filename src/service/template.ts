@@ -1,5 +1,8 @@
 import { del, get, post, put } from '@/app/api/api';
-import { IGetEmailTemplatesResponse } from '@/types/ApiResponse';
+import {
+  IGetEmailTemplatesResponse,
+  IGetSmsTemplatesResponse,
+} from '@/types/ApiResponse';
 import {
   IParamGetAllEmailTemplates,
   IParamGetAllSmsTemplates,
@@ -14,7 +17,9 @@ export async function getEmailTemplates(params: IParamGetAllEmailTemplates) {
 }
 
 export async function getSmsTemplates(params: IParamGetAllSmsTemplates) {
-  return get<any>('/admin/template/sms', { params }).then((res) => res.data);
+  return get<IGetSmsTemplatesResponse>('/admin/template/sms', { params }).then(
+    (res) => res.data
+  );
 }
 
 export async function postEmailTemplate(
