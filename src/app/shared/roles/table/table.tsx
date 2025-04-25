@@ -4,25 +4,25 @@ import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { useColumn } from '@core/hooks/use-column';
 import { useTable } from '@core/hooks/use-table';
 import React, { useCallback, useState } from 'react';
-import { useDeleteSmsTemplate, useGetSmsTemplates } from '@/hooks/useTemplate';
 import { getColumns } from './columns';
 import { useModal } from '../../modal-views/use-modal';
+import { useDeleteRole, useGetRoles } from '@/hooks/useRole';
 
-export default function SmsTemplateTable({}: {}) {
+export default function RolesTable({}: {}) {
   const { openModal } = useModal();
   const [pageSize, setPageSize] = useState(10);
 
   const {
     data,
-    isLoading: isLoadingGetAllTemplate,
+    isLoading: isLoadingGetRoles,
     refetch,
-  } = useGetSmsTemplates({
+  } = useGetRoles({
     page: 1,
     perPage: pageSize,
     sort: 'DESC',
   });
 
-  const { mutate } = useDeleteSmsTemplate();
+  const { mutate } = useDeleteRole();
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -60,7 +60,7 @@ export default function SmsTemplateTable({}: {}) {
         },
         onError: (error: any) => {
           console.error(
-            'Failed to delete sms template: ',
+            'Failed to delete role: ',
             error?.response?.data?.message
           );
         },
@@ -99,7 +99,7 @@ export default function SmsTemplateTable({}: {}) {
   return (
     <div>
       <ControlledTable
-        isLoading={isLoading || isLoadingGetAllTemplate}
+        isLoading={isLoading || isLoadingGetRoles}
         showLoadingText={true}
         data={tableData}
         // @ts-ignore

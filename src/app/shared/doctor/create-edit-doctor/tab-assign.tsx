@@ -20,11 +20,7 @@ const MultySelect = dynamic(
   () => import('rizzui').then((mod) => mod.MultiSelect),
   {
     ssr: false,
-    loading: () => (
-      <div className="grid h-10 place-content-center">
-        <Loader variant="spinner" />
-      </div>
-    ),
+    loading: () => <Loader variant="spinner" />,
   }
 );
 

@@ -323,3 +323,9 @@ export interface IPayloadCreateEditSmsTemplate {
   name: string;
   text: string;
 }
+
+export interface IPayloadCreateEditRole {
+  id?: string;
+  name: string;
+  permissions: string[];
+}

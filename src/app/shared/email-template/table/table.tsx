@@ -15,7 +15,11 @@ export default function EmailTemplateTable({}: {}) {
   const { openModal } = useModal();
   const [pageSize, setPageSize] = useState(10);
 
-  const { data, isLoading: isLoadingGetAllTemplate } = useGetEmailTemplates({
+  const {
+    data,
+    isLoading: isLoadingGetAllTemplate,
+    refetch,
+  } = useGetEmailTemplates({
     page: 1,
     perPage: pageSize,
     sort: 'DESC',
@@ -55,6 +59,7 @@ export default function EmailTemplateTable({}: {}) {
       mutate(id, {
         onSuccess: () => {
           handleDelete(id);
+          refetch();
         },
         onError: (error: any) => {
           console.error(

@@ -40,6 +40,7 @@ export const routes = {
     notificationReminder: '/setting/notification-reminder',
     emailTemplate: '/setting/email-template',
     smsTemplate: '/setting/sms-template',
+    roles: '/setting/roles',
   },
 
   // Patient

@@ -144,6 +144,11 @@ export const adminMenuItems = [
         href: routes.setting.smsTemplate,
         icon: <PiUser />,
       },
+      {
+        name: 'Roles',
+        href: routes.setting.roles,
+        icon: <PiUser />,
+      },
     ],
   },
 ];

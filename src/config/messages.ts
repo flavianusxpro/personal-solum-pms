@@ -106,4 +106,5 @@ export const messages = {
   textIsRequired: 'Text is required',
   textIs100MaxLength: 'Text must be less than 100 characters',
   textIs100MinLength: 'Text must be at least 100 characters',
+  permissionsIsRequired: 'Permissions are required',
 };

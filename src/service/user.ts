@@ -38,9 +38,3 @@ export async function getUserById(id: string) {
     (res) => res.data
   );
 }
-
-export async function getPermissions(params: IParamGetPermissions) {
-  return get<IGetPermissionsResponse>('/admin/user/permissions', {
-    params,
-  }).then((res) => res.data);
-}
