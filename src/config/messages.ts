@@ -103,4 +103,7 @@ export const messages = {
   clinicNameRequired: 'Clinic Name is required',
   clinicAddressRequired: 'Clinic Address is required',
   htmlIsRequired: 'HTML is required',
+  textIsRequired: 'Text is required',
+  textIs100MaxLength: 'Text must be less than 100 characters',
+  textIs100MinLength: 'Text must be at least 100 characters',
 };

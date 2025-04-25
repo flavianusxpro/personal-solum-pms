@@ -3,50 +3,45 @@
 import { Controller, SubmitHandler } from 'react-hook-form';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { ActionIcon, Flex, Input, Title } from 'rizzui';
+import { ActionIcon, Flex, Input, Text, Textarea, Title } from 'rizzui';
 import { useModal } from '../../modal-views/use-modal';
 import { PiX } from 'react-icons/pi';
 import dynamic from 'next/dynamic';
 import {
-  emailTemplateFormSchema,
-  EmailTemplateFormTypes,
-} from '@/validators/create-email-template.schema';
-import {
-  useGetEmailTemplates,
-  usePostCreateEmailTemplate,
-  usePutUpdateEmailTemplate,
+  useGetSmsTemplates,
+  usePostCreateSmsTemplate,
+  usePutUpdateSmsTemplate,
 } from '@/hooks/useTemplate';
 import toast from 'react-hot-toast';
-import { IGetEmailTemplatesResponse } from '@/types/ApiResponse';
+import { IGetSmsTemplatesResponse } from '@/types/ApiResponse';
 import QuillLoader from '@/core/components/loader/quill-loader';
+import {
+  smsTemplateFormSchema,
+  SmsTemplateFormTypes,
+} from '@/validators/create-sms-template.schema';
 import cn from '@/core/utils/class-names';
 
-const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
-  ssr: false,
-  loading: () => <QuillLoader />,
-});
-
-interface CreateEditEmailTemplateModalProps {
-  data?: IGetEmailTemplatesResponse['data'][number];
+interface CreateEditSmsTemplateModalProps {
+  data?: IGetSmsTemplatesResponse['data'][number];
   isView?: boolean;
 }
 
-export default function CreateEditEmailTemplateModal({
+export default function CreateEditSmsTemplateModal({
   data,
   isView,
-}: CreateEditEmailTemplateModalProps) {
+}: CreateEditSmsTemplateModalProps) {
   const { closeModal } = useModal();
 
-  const { refetch } = useGetEmailTemplates({
+  const { refetch } = useGetSmsTemplates({
     page: 1,
     perPage: 10,
   });
   const { mutate: mutateCreate, isPending: isPendingCreate } =
-    usePostCreateEmailTemplate();
+    usePostCreateSmsTemplate();
   const { mutate: mutateUpdate, isPending: isPendingUpdate } =
-    usePutUpdateEmailTemplate();
+    usePutUpdateSmsTemplate();
 
-  const onSubmit: SubmitHandler<EmailTemplateFormTypes> = (formValues) => {
+  const onSubmit: SubmitHandler<SmsTemplateFormTypes> = (formValues) => {
     if (data?.id) {
       mutateUpdate(
         { ...formValues, id: data?.id.toString() },
@@ -54,11 +49,11 @@ export default function CreateEditEmailTemplateModal({
           onSuccess: () => {
             refetch();
             closeModal();
-            toast.success('Email template updated successfully');
+            toast.success('Sms template updated successfully');
           },
           onError: (error: any) => {
             toast.error(
-              'Failed to update email template: ',
+              'Failed to update sms template: ',
               error?.response?.data?.message
             );
           },
@@ -70,11 +65,11 @@ export default function CreateEditEmailTemplateModal({
       onSuccess: () => {
         refetch();
         closeModal();
-        toast.success('Email template created successfully');
+        toast.success('Sms template created successfully');
       },
       onError: (error: any) => {
         toast.error(
-          'Failed to create email template: ',
+          'Failed to create sms template: ',
           error?.response?.data?.message
         );
       },
@@ -82,8 +77,8 @@ export default function CreateEditEmailTemplateModal({
   };
 
   return (
-    <Form<EmailTemplateFormTypes>
-      validationSchema={emailTemplateFormSchema}
+    <Form<SmsTemplateFormTypes>
+      validationSchema={smsTemplateFormSchema}
       // resetValues={reset}
       onSubmit={onSubmit}
       className="@container"
@@ -91,16 +86,16 @@ export default function CreateEditEmailTemplateModal({
         mode: 'onChange',
         defaultValues: {
           name: data?.name || '',
-          html: data?.html || '',
+          text: data?.text || '',
         },
       }}
     >
-      {({ register, control, formState: { errors } }) => {
+      {({ register, control, watch, formState: { errors } }) => {
         return (
           <div className="flex flex-col gap-6 px-6 pt-6">
             <Flex justify="between" align="center" gap="4">
               <Title className="text-lg">
-                {isView ? 'View' : data ? 'Update' : 'Create'} Email Template
+                {isView ? 'View' : data ? 'Update' : 'Create'} Sms Template
               </Title>
               <ActionIcon variant="text" onClick={closeModal} className="">
                 <PiX className="h-6 w-6" />
@@ -116,19 +111,21 @@ export default function CreateEditEmailTemplateModal({
             />
 
             <Controller
-              name="html"
+              name="text"
               control={control}
               disabled={isView}
               render={({ field }) => (
-                <QuillEditor
+                <Textarea
                   {...field}
-                  error={errors.html?.message}
-                  label="Template Content"
-                  className={cn(
-                    '@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]',
-                    isView && 'mb-3'
-                  )}
+                  label="SMS Template"
+                  className={cn('mt-4', isView && 'mb-4')}
                   labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                  helperText={
+                    <Text className="text-sm text-gray-500">
+                      min. 10 / max. 100, Characters:{' '}
+                      {watch('text')?.length || 0}
+                    </Text>
+                  }
                 />
               )}
             />

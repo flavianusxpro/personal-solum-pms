@@ -662,3 +662,12 @@ export interface IGetEmailTemplatesResponse extends ApiResponseWithPagination {
     updated_at: string;
   }[];
 }
+export interface IGetSmsTemplatesResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    name: string;
+    text: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+}
