@@ -260,9 +260,9 @@ export interface IGetDoctorByIdResponse extends ApiResponse {
     emergency_email: string;
     emergency_relationship: null;
     medical_interest: string;
-    specialist_type: number[];
+    specialist_type: string;
     treatment_type: string;
-    language: string[];
+    language: string;
     timezone: string;
     created_at: string;
     updated_at: string;

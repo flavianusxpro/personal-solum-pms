@@ -59,6 +59,17 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     }));
   }, [dataSpecialists]);
 
+  const specialistTypeDefaultValues = useMemo(() => {
+    if (!dataDoctor?.specialist_type) return [];
+    const parsedSpecialistType = JSON.parse(
+      dataDoctor.specialist_type
+    ) as number[];
+    if (Array.isArray(parsedSpecialistType)) {
+      return parsedSpecialistType.map((item) => item.toString());
+    }
+    return [];
+  }, [dataDoctor]);
+
   const onSubmit: SubmitHandler<DoctorDetailsFormTypes> = (data) => {
     const payload: IPayloadCreateEditDoctor = {
       doctor_id: id ?? undefined,
@@ -128,17 +139,15 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
           about: dataDoctor?.description ?? '',
           medical_interest: dataDoctor?.medical_interest ?? '',
           treatment_type: dataDoctor?.treatment_type ?? '',
-          // specialist_type: dataDoctor?.specialist_type.map((item) =>
-          //   item.toString()
-          // ),
-          language: dataDoctor?.language ?? [],
+          specialist_type: specialistTypeDefaultValues,
+          language: dataDoctor?.language
+            ? (JSON.parse(dataDoctor.language) as (string | undefined)[])
+            : [],
           avatar: dataDoctor?.photo ? { url: dataDoctor.photo } : null,
         },
       }}
     >
       {({ register, control, setValue, getValues, formState: { errors } }) => {
-        console.log('🚀 ~ DoctorDetails ~ errors:', errors);
-
         return (
           <>
             <div className="grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
