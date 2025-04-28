@@ -22,11 +22,12 @@ export default function HydrogenLayout({
     }, []);
   }, [data]);
 
-  useEffect(() => {
-    if (!permissionRead?.includes(pathname.split('/')?.[1])) {
-      return router.push(routes.accessDenied);
-    }
-  }, [pathname, permissionRead, router]);
+  // enable to enable access control
+  // useEffect(() => {
+  //   if (!permissionRead?.includes(pathname.split('/')?.[1])) {
+  //     return router.push(routes.accessDenied);
+  //   }
+  // }, [pathname, permissionRead, router]);
 
   return (
     <main className="flex min-h-screen flex-grow">
