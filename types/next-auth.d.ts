@@ -2,6 +2,13 @@ import { DefaultSession } from 'next-auth';
 import 'next-auth/jwt';
 
 declare module 'next-auth' {
+  interface IPermission {
+    id: number;
+    name: string;
+    created_at: string;
+    updated_at: string;
+  }
+
   interface Session {
     accessToken?: string;
     role?: {
@@ -9,7 +16,7 @@ declare module 'next-auth' {
       name: string;
       created_at: string;
       updated_at: string;
-      permissions: any[];
+      permissions: IPermission[];
     } & DefaultSession['user'];
   }
 
@@ -22,7 +29,7 @@ declare module 'next-auth' {
       name: string;
       created_at: string;
       updated_at: string;
-      permissions: any[];
+      permissions: IPermission[];
     };
   }
 }
@@ -33,7 +40,7 @@ declare module 'next-auth/jwt' {
     /** OpenID ID Token */
     idToken?: string;
     accessToken?: string;
-    permissions?: any[];
+    permissions?: IPermission[];
     role?: {
       id: number;
       name: string;

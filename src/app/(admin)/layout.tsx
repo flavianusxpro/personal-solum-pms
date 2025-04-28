@@ -5,6 +5,9 @@ import HydrogenLayout from '@/layouts/hydrogen/layout';
 import { useSession } from 'next-auth/react';
 import { ROLES } from '@/config/constants';
 import AccessDenied from '../access-denied';
+import { useEffect, useMemo } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { routes } from '@/config/routes';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -16,13 +19,10 @@ export default function DefaultLayout({ children }: LayoutProps) {
 
 function LayoutProvider({ children }: LayoutProps) {
   const isMounted = useIsMounted();
-  const { data } = useSession();
+
   if (!isMounted) {
     return null;
   }
-
-  if (![ROLES.Admin, ROLES.Doctor].includes(data?.role?.name ?? ''))
-    <AccessDenied />;
 
   return <HydrogenLayout>{children}</HydrogenLayout>;
 }

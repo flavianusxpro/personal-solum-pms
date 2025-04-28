@@ -30,7 +30,6 @@ export const authOptions: NextAuthOptions = {
         token.accessToken = user.accessToken;
         token.idToken = user.id;
         token.role = user.role;
-        token.permissions = [];
       }
       return token;
     },
@@ -42,17 +41,13 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: 'Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
-        role: { label: 'Role', type: 'text' },
       },
       async authorize(credentials) {
-        const role = credentials?.role;
-
         const payload = {
           email: credentials?.email,
           password: credentials?.password,
         };
-        const url =
-          role === 'admin' ? 'admin/auth/login' : 'patient/auth/login';
+        const url = 'admin/auth/login';
 
         try {
           const response = await post<SignInApiResponse>(url, payload);
@@ -60,7 +55,7 @@ export const authOptions: NextAuthOptions = {
           if (response.success && response.data) {
             if (response.data.role) {
               return {
-                id: response.data.role.id.toString(),
+                id: (response.data.role?.id ?? 0).toString(),
                 accessToken: response.data.access_token,
                 role: {
                   id: response.data.role?.id ?? 0,
@@ -71,21 +66,6 @@ export const authOptions: NextAuthOptions = {
                 },
               };
             }
-
-            // patient
-            return {
-              name: response.data.name,
-              email: response.data.email,
-              id: response.data.name as string,
-              accessToken: response.data.access_token,
-              role: {
-                id: 0,
-                name: 'patient',
-                created_at: '',
-                updated_at: '',
-                permissions: [],
-              },
-            };
           }
         } catch (error) {
           throw new Error('Invalid credentials');

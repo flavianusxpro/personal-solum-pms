@@ -42,31 +42,37 @@ const PiDoorOpen = dynamic(() =>
 export const adminMenuItems = [
   {
     name: 'Overview',
+    permissionReadName: ['dashboard-read'],
   },
   {
     name: 'Dashboard',
     href: routes.appointment.dashboard,
     icon: <PiHouse />,
+    permissionReadName: ['dashboard-read'],
   },
   {
     name: 'Invoice',
     href: routes.invoice.home,
     icon: <PiCurrencyDollarDuotone />,
+    permissionReadName: ['invoice-read'],
   },
   {
     name: 'Appointment',
     href: routes.appointment.appointmentList,
     icon: <PiCalendarDuotone />,
+    permissionReadName: ['appointment-read'],
   },
   {
     name: 'Patients',
     href: routes.patient.dashboard,
     icon: <PiUserCirclePlus />,
+    permissionReadName: ['patient-read'],
   },
   {
     name: 'Doctors',
     icon: <PiUserFocus />,
     href: routes.doctor.dashboard,
+    permissionReadName: ['doctor-read'],
     dropdownItems: [
       {
         name: 'Doctor List',
@@ -84,16 +90,19 @@ export const adminMenuItems = [
     name: 'Calendars',
     href: routes.eventCalendar,
     icon: <PiCalendar />,
+    permissionReadName: ['calendar-read'],
   },
   {
     name: 'Users',
     href: routes.user.dashboard,
     icon: <PiUser />,
+    permissionReadName: ['user-read'],
   },
   {
     name: 'Management',
     href: routes.management.dashboard,
     icon: <PiBoundingBox />,
+    permissionReadName: ['management-read'],
     dropdownItems: [
       {
         name: 'Products',
@@ -106,6 +115,7 @@ export const adminMenuItems = [
     name: 'Marketing',
     href: routes.management.dashboard,
     icon: <PiBriefcase />,
+    permissionReadName: ['marketing-read'],
     dropdownItems: [
       {
         name: 'Coupon',
@@ -128,6 +138,7 @@ export const adminMenuItems = [
     name: 'Settings',
     href: routes.setting.setup,
     icon: <PiGear />,
+    permissionReadName: ['setting-read'],
     dropdownItems: [
       {
         name: 'Setup',
@@ -150,40 +161,5 @@ export const adminMenuItems = [
         icon: <PiUser />,
       },
     ],
-  },
-];
-export const patientMenuItems = [
-  {
-    name: 'Overview',
-  },
-  {
-    name: 'Dashboard',
-    href: routes.myDashboard,
-    icon: <PiHouse />,
-  },
-  {
-    name: 'My Appointment',
-    icon: <PiCurrencyDollarDuotone />,
-    href: routes.myAppointment.dashboard,
-  },
-  {
-    name: 'My Family',
-    href: routes.myFamily.dashboard,
-    icon: <PiCalendarDuotone />,
-  },
-  {
-    name: 'Payment Methods',
-    href: routes.paymentMethods,
-    icon: <PiUserCirclePlus />,
-  },
-  {
-    name: 'My Account Details',
-    href: routes.myAccountDetails,
-    icon: <PiUser />,
-  },
-  {
-    name: 'Sign Out',
-    isButton: true,
-    icon: <PiDoorOpen />,
   },
 ];

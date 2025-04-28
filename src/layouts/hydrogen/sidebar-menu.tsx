@@ -1,25 +1,36 @@
 import Link from 'next/link';
-import { Fragment } from 'react';
+import { Fragment, useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Title, Collapse, Button } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { PiCaretDownBold } from 'react-icons/pi';
-import {
-  adminMenuItems,
-  patientMenuItems,
-} from '@/layouts/hydrogen/menu-items';
+import { adminMenuItems } from '@/layouts/hydrogen/menu-items';
 import StatusBadge from '@core/components/get-status-badge';
 import { signOut, useSession } from 'next-auth/react';
-import { ROLES } from '@/config/constants';
 import { routes } from '@/config/routes';
+import { permission } from 'process';
 
 export function SidebarMenu() {
   const pathname = usePathname();
   const router = useRouter();
   const { data } = useSession();
-  const role = data?.role?.name;
 
-  const menuItems = role === ROLES.Admin ? adminMenuItems : patientMenuItems;
+  const permissionRead = useMemo(() => {
+    return data?.role?.permissions.reduce((acc: string[], permission) => {
+      if (permission.name.includes('read')) acc.push(permission.name);
+      return acc;
+    }, []);
+  }, [data]);
+
+  // use this to filter the menu items based on the permissions  // to show the menu items based on the permissions
+  const menuItems = useMemo(() => {
+    return adminMenuItems.reduce((acc: any[], item) => {
+      if (permissionRead?.includes(item.permissionReadName[0])) {
+        acc.push(item);
+      }
+      return acc;
+    }, []);
+  }, [permissionRead]);
 
   const handleSignOut = async () => {
     await signOut({ redirect: false }); // Prevent automatic re-render
@@ -28,7 +39,7 @@ export function SidebarMenu() {
 
   return (
     <div className="mt-4 pb-3 3xl:mt-6">
-      {menuItems.map((item: any, index: number) => {
+      {adminMenuItems.map((item: any, index: number) => {
         const isActive = pathname === (item?.href as string);
         const pathnameExistInDropdowns: any = item?.dropdownItems?.filter(
           (dropdownItem: any) => dropdownItem.href === pathname
