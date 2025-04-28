@@ -143,6 +143,7 @@ export default function CreateEditRoleModal({
                   options={permissionOptions}
                   error={errors.permissions?.message}
                   className="w-full"
+                  searchable
                 />
               )}
             />
