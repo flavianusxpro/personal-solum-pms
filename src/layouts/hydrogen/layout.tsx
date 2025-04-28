@@ -23,10 +23,7 @@ export default function HydrogenLayout({
   }, [data]);
 
   useEffect(() => {
-    if (
-      !permissionRead?.includes(pathname.split('/')?.[1]) ||
-      pathname === '/'
-    ) {
+    if (!permissionRead?.includes(pathname.split('/')?.[1])) {
       return router.push(routes.accessDenied);
     }
   }, [pathname, permissionRead, router]);

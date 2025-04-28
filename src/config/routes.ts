@@ -51,7 +51,7 @@ export const routes = {
     dashboard: '/appointment',
     appointmentList: '/appointment/list',
   },
-  eventCalendar: '/event-calendar',
+  calendar: '/calendar',
   forms: {
     profileSettings: '/forms/profile-settings',
     notificationPreference: '/forms/profile-settings/notification',

@@ -88,7 +88,7 @@ export const adminMenuItems = [
   },
   {
     name: 'Calendars',
-    href: routes.eventCalendar,
+    href: routes.calendar,
     icon: <PiCalendar />,
     permissionReadName: ['calendar-read'],
   },

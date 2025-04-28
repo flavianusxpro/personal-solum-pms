@@ -8,7 +8,6 @@ import { adminMenuItems } from '@/layouts/hydrogen/menu-items';
 import StatusBadge from '@core/components/get-status-badge';
 import { signOut, useSession } from 'next-auth/react';
 import { routes } from '@/config/routes';
-import { permission } from 'process';
 
 export function SidebarMenu() {
   const pathname = usePathname();
@@ -39,7 +38,7 @@ export function SidebarMenu() {
 
   return (
     <div className="mt-4 pb-3 3xl:mt-6">
-      {adminMenuItems.map((item: any, index: number) => {
+      {menuItems?.map((item: any, index: number) => {
         const isActive = pathname === (item?.href as string);
         const pathnameExistInDropdowns: any = item?.dropdownItems?.filter(
           (dropdownItem: any) => dropdownItem.href === pathname
