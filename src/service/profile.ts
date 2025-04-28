@@ -3,7 +3,7 @@ import { IGetProfileResponse } from '@/types/ApiResponse';
 import { IPayloadUpdatePassword } from '@/types/paramTypes';
 
 export async function getProfile() {
-  return await get<IGetProfileResponse>('/patient/profile').then(
+  return await get<IGetProfileResponse>('/admin/profile').then(
     (res) => res.data
   );
 }

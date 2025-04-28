@@ -1,7 +1,7 @@
 import { routes } from '@/config/routes';
+import { useProfile } from '@/hooks/useProfile';
 import Header from '@/layouts/hydrogen/header';
 import Sidebar from '@/layouts/hydrogen/sidebar';
-import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 
@@ -10,23 +10,27 @@ export default function HydrogenLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { data } = useSession();
   const pathname = usePathname();
   const router = useRouter();
 
+  const { data: dataProfile, isSuccess } = useProfile();
+
   const permissionRead = useMemo(() => {
-    return data?.role?.permissions.reduce((acc: string[], permission) => {
-      if (permission.name.includes('read'))
-        acc.push(permission.name.split('-')[0]);
-      return acc;
-    }, []);
-  }, [data]);
+    return dataProfile?.role?.permissions.reduce(
+      (acc: string[], permission) => {
+        if (permission.name.includes('read'))
+          acc.push(permission.name.split('-')[0]);
+        return acc;
+      },
+      []
+    );
+  }, [dataProfile?.role?.permissions]);
 
   useEffect(() => {
-    if (!permissionRead?.includes(pathname.split('/')?.[1])) {
+    if (!permissionRead?.includes(pathname.split('/')?.[1]) && isSuccess) {
       return router.push(routes.accessDenied);
     }
-  }, [pathname, permissionRead, router]);
+  }, [isSuccess, pathname, permissionRead, router]);
 
   return (
     <main className="flex min-h-screen flex-grow">

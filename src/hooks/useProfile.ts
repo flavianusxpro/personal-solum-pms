@@ -6,6 +6,8 @@ export const useProfile = () =>
   useQuery({
     queryKey: ['profile'],
     queryFn: async () => getProfile(),
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 60, // 1 hour
   });
 
 export function useUpdatePassword() {

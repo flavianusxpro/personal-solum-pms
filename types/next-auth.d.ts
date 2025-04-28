@@ -16,7 +16,6 @@ declare module 'next-auth' {
       name: string;
       created_at: string;
       updated_at: string;
-      permissions: IPermission[];
     } & DefaultSession['user'];
   }
 
@@ -29,7 +28,6 @@ declare module 'next-auth' {
       name: string;
       created_at: string;
       updated_at: string;
-      permissions: IPermission[];
     };
   }
 }
@@ -40,13 +38,11 @@ declare module 'next-auth/jwt' {
     /** OpenID ID Token */
     idToken?: string;
     accessToken?: string;
-    permissions?: IPermission[];
     role?: {
       id: number;
       name: string;
       created_at: string;
       updated_at: string;
-      permissions: any[];
     };
   }
 }

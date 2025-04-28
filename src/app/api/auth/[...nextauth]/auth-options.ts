@@ -62,7 +62,6 @@ export const authOptions: NextAuthOptions = {
                   name: response.data.role?.name ?? 'patient',
                   created_at: response.data.role?.created_at ?? '',
                   updated_at: response.data.role?.updated_at ?? '',
-                  permissions: response.data.role?.permissions ?? [],
                 },
               };
             }
