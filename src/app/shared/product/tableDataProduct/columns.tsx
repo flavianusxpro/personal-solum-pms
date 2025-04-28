@@ -189,7 +189,7 @@ export const getWidgetColumns = ({
     width: 90,
     render: (value: string, row: any) => (
       <Link
-        href={routes.eCommerce.editOrder(row.id)}
+        href={routes.product.edit(row.id)}
         className="ps-4 hover:text-gray-900 hover:underline"
       >
         #{value}

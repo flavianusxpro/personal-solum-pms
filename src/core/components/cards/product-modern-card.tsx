@@ -48,7 +48,7 @@ export default function ProductModernCard({
 
       <div className="pt-3">
         <Link
-          href={routes.eCommerce.productDetails(
+          href={routes.product.productDetails(
             String(slug ?? generateSlug(title))
           )}
         >

@@ -49,7 +49,7 @@ export default function ProductMinimalCard({
       <div className="pt-3.5">
         <div className="pb-1 font-medium text-red-dark">Just In</div>
         <Link
-          href={routes.eCommerce.productDetails(
+          href={routes?.product?.productDetails(
             String(slug ?? generateSlug(title))
           )}
         >

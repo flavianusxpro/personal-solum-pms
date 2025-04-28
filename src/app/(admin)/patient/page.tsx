@@ -14,7 +14,7 @@ const pageHeader = {
   title: 'Patients',
   breadcrumb: [
     {
-      href: routes.eCommerce.orders,
+      href: routes.patient.dashboard,
       name: 'Patients',
     },
     {
