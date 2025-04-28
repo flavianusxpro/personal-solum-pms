@@ -100,10 +100,10 @@ function DropdownMenu() {
           name={dataProfile?.name || ''}
         />
         <div className="ms-3 mt-2">
-          <Title as="h6" className="font-semibold">
+          <Title as="h6" className="text-center font-semibold">
             {dataProfile?.name || ''}
           </Title>
-          <Text className="text-sm text-gray-600">
+          <Text className="text-center text-sm text-gray-600">
             {dataProfile?.email || ''}
           </Text>
         </div>
