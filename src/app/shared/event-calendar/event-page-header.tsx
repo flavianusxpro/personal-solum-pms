@@ -15,7 +15,7 @@ const pageHeader = {
       name: 'Home',
     },
     {
-      href: routes.eventCalendar,
+      href: routes.calendar,
       name: 'Calendar',
     },
   ],
