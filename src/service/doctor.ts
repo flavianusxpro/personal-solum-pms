@@ -12,6 +12,7 @@ import {
   IParamGetSpecialists,
   IPayloadAssignDoctorToClinic,
   IPayloadCreateEditDoctor,
+  IPayloadPostCreateEditSpecialist,
   IPayloadSettingBillingDoctor,
   IPayloadSettingMeetingDoctor,
 } from '@/types/paramTypes';
@@ -70,6 +71,14 @@ export async function postAssignDoctorToClinic(
   return await post(`/admin/doctor/${payload.id}/assign-to-clinic`, payload);
 }
 
+export async function getAnalyticReportBillingByDoctorId(id: string) {
+  return await get<IGetAnalyticReportBillingByDoctorIdResponse>(
+    `/admin/doctor/analytics/billing/${id}`
+  ).then((res) => {
+    return res.data;
+  });
+}
+
 export async function getSpecialists(params: IParamGetSpecialists) {
   return await get<IGetSpecialistResponse>('/admin/doctor/specialist', {
     params,
@@ -78,10 +87,8 @@ export async function getSpecialists(params: IParamGetSpecialists) {
   });
 }
 
-export async function getAnalyticReportBillingByDoctorId(id: string) {
-  return await get<IGetAnalyticReportBillingByDoctorIdResponse>(
-    `/admin/doctor/analytics/billing/${id}`
-  ).then((res) => {
-    return res.data;
-  });
+export async function postCreateSpecialist(
+  payload: IPayloadPostCreateEditSpecialist
+) {
+  return await post<any>('/admin/doctor/specialist', payload);
 }

@@ -329,3 +329,9 @@ export interface IPayloadCreateEditRole {
   name: string;
   permissions: string[];
 }
+
+export interface IPayloadPostCreateEditSpecialist {
+  id?: string;
+  name: string;
+  description: string;
+}
