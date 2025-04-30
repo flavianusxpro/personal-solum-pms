@@ -113,6 +113,7 @@ export const getColumns = ({
         src={row?.patient?.photo || ''}
         name={`${row?.patient?.first_name} ${row?.patient?.last_name}`}
         description={row.patient?.email}
+        number={row.patient?.mobile_number}
       />
     ),
   },
