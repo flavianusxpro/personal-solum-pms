@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
@@ -51,7 +51,11 @@ export default function PatientTable({ className }: { className?: string }) {
   const [page, setPage] = useState(1);
   const [filterStateValue, setFilterStateValue] = useState(filterState);
 
-  const { data, isLoading: isLoadingGetAllPatients } = useGetAllPatients({
+  const {
+    data,
+    isLoading: isLoadingGetAllPatients,
+    refetch,
+  } = useGetAllPatients({
     page,
     perPage: pageSize,
     search: filterStateValue?.search,
@@ -82,12 +86,12 @@ export default function PatientTable({ className }: { className?: string }) {
     setFilterStateValue(filterState);
   }, []);
 
-  // const handleSearch = debounce((value: string) => {
-  //   setFilterStateValue((prevState) => ({
-  //     ...prevState,
-  //     search: value,
-  //   }));
-  // }, 500);
+  const handlerSearchFilter = debounce((value: string) => {
+    setFilterStateValue((prevState) => ({
+      ...prevState,
+      search: value,
+    }));
+  }, 1000);
 
   const {
     isLoading,
@@ -137,6 +141,10 @@ export default function PatientTable({ className }: { className?: string }) {
   const { visibleColumns, checkedColumns, setCheckedColumns } =
     useColumn(columns);
 
+  useEffect(() => {
+    refetch();
+  }, [filterStateValue, refetch]);
+
   return (
     <div className={cn(className)}>
       <ControlledTable
@@ -162,8 +170,10 @@ export default function PatientTable({ className }: { className?: string }) {
           searchTerm,
           onSearchClear: () => {
             handleSearch('');
+            handlerSearchFilter('');
           },
           onSearchChange: (event) => {
+            handlerSearchFilter(event.target.value);
             handleSearch(event.target.value);
           },
           hasSearched: isFiltered,

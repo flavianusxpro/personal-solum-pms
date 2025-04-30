@@ -22,7 +22,6 @@ export function useGetAllPatients(params: IParamGetAllPatient) {
     queryFn: async () => {
       return await getPatientList(params);
     },
-    enabled: !!params,
   });
 }
 

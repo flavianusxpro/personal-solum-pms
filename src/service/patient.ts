@@ -15,8 +15,9 @@ import {
 } from '@/types/paramTypes';
 
 export async function getPatientList(params: IParamGetAllPatient) {
+  const q = JSON.stringify({ name: params.search });
   return await get<IGetAllPatientsResponse>('/admin/patient', {
-    params,
+    params: { ...params, q },
   }).then((res) => {
     return res;
   });
