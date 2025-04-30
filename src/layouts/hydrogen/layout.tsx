@@ -16,10 +16,6 @@ export default function HydrogenLayout({
   const { permissionRead, isSuccess } = useAcl();
 
   useEffect(() => {
-    console.log('🚀 ~ pathname:', pathname.split('/')?.[1]);
-    console.log(permissionRead?.includes(pathname.split('/')?.[1]));
-    console.log('🚀 ~ useEffect ~ permissionRead:', permissionRead);
-
     if (
       !permissionRead?.includes(pathname.split('/')?.[1]) &&
       isSuccess &&
