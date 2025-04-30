@@ -11,7 +11,7 @@ const paginationLimitOptions = [5, 10, 15, 20, 25].map((v, idx) => ({
 
 export type TablePaginationProps = {
   pageSize: number;
-  setPageSize?: React.Dispatch<React.SetStateAction<number>>;
+  setPageSize?: (value: number) => void;
   paginatorClassName?: string;
 } & PaginationProps;
 

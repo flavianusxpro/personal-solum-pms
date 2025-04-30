@@ -11,11 +11,7 @@ const Redirect = () => {
   const { data } = useSession();
 
   useEffect(() => {
-    if (data?.role?.name === ROLES.Admin) {
-      return router.push(routes.appointment.dashboard);
-    } else {
-      return router.push(routes.accessDenied);
-    }
+    return router.push(routes.appointment.dashboard);
   }, [data?.role?.name, data?.user, router]);
 
   return (

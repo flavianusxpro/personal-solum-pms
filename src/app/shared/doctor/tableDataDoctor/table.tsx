@@ -6,7 +6,8 @@ import { useGetAllDoctors } from '@/hooks/useDoctor';
 import { useColumn } from '@core/hooks/use-column';
 import { useTable } from '@core/hooks/use-table';
 import dynamic from 'next/dynamic';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useModal } from '@/app/shared/modal-views/use-modal';
 
 // dynamic import
 const FilterElement = dynamic(
@@ -22,12 +23,21 @@ const filterState = {
 };
 
 export default function DoctorTable({}: {}) {
-  const [pageSize, setPageSize] = useState(10);
+  const { isOpen } = useModal();
   const [filterStateValue, setFilterStateValue] = useState(filterState);
 
-  const { data, isLoading: isLoadingGetAllDoctors } = useGetAllDoctors({
+  const [params, setParams] = useState({
     page: 1,
-    perPage: pageSize,
+    perPage: 10,
+  });
+
+  const {
+    data,
+    isLoading: isLoadingGetAllDoctors,
+    refetch,
+  } = useGetAllDoctors({
+    page: params.page,
+    perPage: params.perPage,
   });
 
   const onHeaderCellClick = (value: string) => ({
@@ -60,26 +70,21 @@ export default function DoctorTable({}: {}) {
     isFiltered,
     tableData,
     currentPage,
-    totalItems,
-    handlePaginate,
     filters,
-    // updateFilter,
     searchTerm,
     handleSearch,
     sortConfig,
     handleSort,
     selectedRowKeys,
-    setSelectedRowKeys,
     handleRowSelect,
     handleSelectAll,
     handleDelete,
-    // handleReset,
-  } = useTable(data ?? [], pageSize, filterStateValue);
+  } = useTable(data?.data ?? [], params.perPage, filterStateValue);
 
   const columns = React.useMemo(
     () =>
       getColumns({
-        data: data ?? [],
+        data: data?.data ?? [],
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -102,6 +107,10 @@ export default function DoctorTable({}: {}) {
   const { visibleColumns, checkedColumns, setCheckedColumns } =
     useColumn(columns);
 
+  useEffect(() => {
+    refetch();
+  }, [params, refetch, isOpen]);
+
   return (
     <div>
       <ControlledTable
@@ -111,11 +120,16 @@ export default function DoctorTable({}: {}) {
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{
-          pageSize,
-          setPageSize,
-          total: totalItems,
-          current: currentPage,
-          onChange: (page: number) => handlePaginate(page),
+          pageSize: params.perPage,
+          setPageSize: (pageSize: number) => {
+            setParams((prev) => ({
+              ...prev,
+              perPage: pageSize,
+            }));
+          },
+          total: data?.count,
+          current: params.page,
+          onChange: (page: number) => setParams((prev) => ({ ...prev, page })),
         }}
         filterOptions={{
           searchTerm,

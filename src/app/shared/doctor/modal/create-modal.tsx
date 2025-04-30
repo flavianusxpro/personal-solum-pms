@@ -36,7 +36,7 @@ export default function CreatDoctorModal() {
   const { mutate: mutateCreateDoctor, isPending } = usePostCreateDoctorUser();
   const { data: dataSpecialists } = useGetSpecialists();
   const { data: dataRoles } = useGetRoles({
-    perPage: 1,
+    perPage: 100,
     page: 1,
   });
 
@@ -48,13 +48,13 @@ export default function CreatDoctorModal() {
     }));
   }, [dataSpecialists]);
 
-  const isDoctorRole = useMemo(() => {
+  const doctorRole = useMemo(() => {
     if (!dataRoles) return false;
-    return dataRoles.some((role) => role.name === 'doctor');
+    return dataRoles.find((role) => role.name === 'doctor');
   }, [dataRoles]);
 
   const onSubmit: SubmitHandler<DoctorDetailsFormTypes> = (data) => {
-    if (!isDoctorRole) {
+    if (!doctorRole) {
       toast.error('Doctor Role not found');
       return;
     }
@@ -63,7 +63,7 @@ export default function CreatDoctorModal() {
       name: data.first_name + ' ' + data.last_name,
       email: data.email,
       password: data.password as string,
-      roleId: 5,
+      roleId: doctorRole.id,
       clinic_ids: [],
       doctor: {
         ...data,
@@ -138,6 +138,7 @@ export default function CreatDoctorModal() {
                         label=""
                         placeholder="Select Gender"
                         options={genderOption}
+                        error={errors.gender?.message as string}
                       />
                     )}
                   />

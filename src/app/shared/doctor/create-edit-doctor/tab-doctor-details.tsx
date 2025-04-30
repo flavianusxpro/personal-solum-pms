@@ -47,7 +47,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     refetch: refetchDataDoctor,
     isLoading: isLoadingGetDataDoctor,
   } = useGetDoctorById(id);
-  const { mutate: mutateUpdatePatient, isPending } = useUpdateDoctor();
+  const { mutate: mutateUpdateDoctor, isPending } = useUpdateDoctor();
 
   const { data: dataSpecialists } = useGetSpecialists();
 
@@ -96,13 +96,12 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     };
 
     if (id) {
-      return mutateUpdatePatient(payload, {
+      return mutateUpdateDoctor(payload, {
         onSuccess: () => {
-          toast.success('Patient updated successfully');
+          toast.success('Doctor updated successfully');
           refetchDataDoctor();
         },
         onError: (error) => {
-          console.log('🚀 ~ PatientDetails ~ error:', error);
           const errorMessage =
             (error as any)?.response?.data?.message || 'An error occurred';
           toast.error(errorMessage);

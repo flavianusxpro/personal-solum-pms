@@ -28,8 +28,6 @@ export async function getDoctorByClinic(params: IParamGetDoctorByClinic) {
 export async function getDoctorList(params: IParamGetAllDoctor) {
   return await get<IGetAllDoctorsResponse>('/admin/doctor', {
     params,
-  }).then((res) => {
-    return res.data;
   });
 }
 

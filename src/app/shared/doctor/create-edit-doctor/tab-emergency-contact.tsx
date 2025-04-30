@@ -25,7 +25,7 @@ export default function TabEmergencyContact({
   const id = useParams<{ id: string }>().id;
 
   const { data: dataDoctor, refetch } = useGetDoctorById(id);
-  const { mutate: mutateUpdatePatient } = useUpdateDoctor();
+  const { mutate: mutateUpdateDoctor } = useUpdateDoctor();
 
   const onSubmit: SubmitHandler<EmergencyContactTypes> = (data) => {
     const payload: IPayloadCreateEditDoctor = {
@@ -38,13 +38,12 @@ export default function TabEmergencyContact({
     };
 
     if (id) {
-      return mutateUpdatePatient(payload, {
+      return mutateUpdateDoctor(payload, {
         onSuccess: () => {
-          toast.success('Patient updated successfully');
+          toast.success('Doctor updated successfully');
           refetch;
         },
         onError: (error) => {
-          console.log('🚀 ~ PatientDetails ~ error:', error);
           const errorMessage =
             (error as any)?.response?.data?.message || 'An error occurred';
           toast.error(errorMessage);

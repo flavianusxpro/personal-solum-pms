@@ -70,8 +70,6 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
       }}
     >
       {({ control, watch, formState: { errors } }) => {
-        console.log('🚀 ~ TabAssign ~ errors:', errors);
-
         return (
           <>
             <Flex direction="col" className="" gap="7">
