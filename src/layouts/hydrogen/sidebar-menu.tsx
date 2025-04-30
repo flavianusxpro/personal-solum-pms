@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Fragment, useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { Title, Collapse, Button } from 'rizzui';
+import { Title, Collapse, Button, Loader } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { PiCaretDownBold } from 'react-icons/pi';
 import { adminMenuItems } from '@/layouts/hydrogen/menu-items';
@@ -9,37 +9,19 @@ import StatusBadge from '@core/components/get-status-badge';
 import { signOut } from 'next-auth/react';
 import { routes } from '@/config/routes';
 import { useProfile } from '@/hooks/useProfile';
+import useAcl from '@/core/hooks/use-acl';
 
 export function SidebarMenu() {
   const pathname = usePathname();
   const router = useRouter();
-
-  const { data: dataProfile } = useProfile();
-
-  const permissionRead = useMemo(() => {
-    return dataProfile?.role?.permissions.reduce(
-      (acc: string[], permission) => {
-        if (permission.name.includes('read')) acc.push(permission.name);
-        return acc;
-      },
-      []
-    );
-  }, [dataProfile?.role?.permissions]);
-
-  // use this to filter the menu items based on the permissions  // to show the menu items based on the permissions
-  const menuItems = useMemo(() => {
-    return adminMenuItems.reduce((acc: any[], item) => {
-      if (permissionRead?.includes(item.permissionReadName[0])) {
-        acc.push(item);
-      }
-      return acc;
-    }, []);
-  }, [permissionRead]);
+  const { menuItems, isLoadingProfile } = useAcl();
 
   const handleSignOut = async () => {
     await signOut({ redirect: false }); // Prevent automatic re-render
     router.replace(routes.signIn); // Redirect immediately
   };
+
+  if (isLoadingProfile) return <Loader />;
 
   return (
     <div className="mt-4 pb-3 3xl:mt-6">

@@ -42,37 +42,37 @@ const PiDoorOpen = dynamic(() =>
 export const adminMenuItems = [
   {
     name: 'Overview',
-    permissionReadName: ['dashboard-read'],
+    permissionReadName: ['dashboard'],
   },
   {
     name: 'Dashboard',
     href: routes.appointment.dashboard,
     icon: <PiHouse />,
-    permissionReadName: ['dashboard-read'],
+    permissionReadName: ['dashboard'],
   },
   {
     name: 'Invoice',
     href: routes.invoice.home,
     icon: <PiCurrencyDollarDuotone />,
-    permissionReadName: ['invoice-read'],
+    permissionReadName: ['invoice'],
   },
   {
     name: 'Appointment',
     href: routes.appointment.appointmentList,
     icon: <PiCalendarDuotone />,
-    permissionReadName: ['appointment-read'],
+    permissionReadName: ['appointment'],
   },
   {
     name: 'Patients',
     href: routes.patient.dashboard,
     icon: <PiUserCirclePlus />,
-    permissionReadName: ['patient-read'],
+    permissionReadName: ['patient'],
   },
   {
     name: 'Doctors',
     icon: <PiUserFocus />,
     href: routes.doctor.dashboard,
-    permissionReadName: ['doctor-read'],
+    permissionReadName: ['doctor'],
     dropdownItems: [
       {
         name: 'Doctor List',
@@ -90,19 +90,19 @@ export const adminMenuItems = [
     name: 'Calendars',
     href: routes.calendar,
     icon: <PiCalendar />,
-    permissionReadName: ['calendar-read'],
+    permissionReadName: ['calendar'],
   },
   {
     name: 'Users',
     href: routes.user.dashboard,
     icon: <PiUser />,
-    permissionReadName: ['user-read'],
+    permissionReadName: ['user'],
   },
   {
     name: 'Management',
     href: routes.management.dashboard,
     icon: <PiBoundingBox />,
-    permissionReadName: ['management-read'],
+    permissionReadName: ['management'],
     dropdownItems: [
       {
         name: 'Products',
@@ -115,7 +115,7 @@ export const adminMenuItems = [
     name: 'Marketing',
     href: routes.management.dashboard,
     icon: <PiBriefcase />,
-    permissionReadName: ['marketing-read'],
+    permissionReadName: ['marketing'],
     dropdownItems: [
       {
         name: 'Coupon',
@@ -138,7 +138,7 @@ export const adminMenuItems = [
     name: 'Settings',
     href: routes.setting.setup,
     icon: <PiGear />,
-    permissionReadName: ['setting-read'],
+    permissionReadName: ['setting'],
     dropdownItems: [
       {
         name: 'Setup',

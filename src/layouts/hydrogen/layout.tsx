@@ -1,4 +1,5 @@
 import { routes } from '@/config/routes';
+import useAcl from '@/core/hooks/use-acl';
 import { useProfile } from '@/hooks/useProfile';
 import Header from '@/layouts/hydrogen/header';
 import Sidebar from '@/layouts/hydrogen/sidebar';
@@ -12,22 +13,18 @@ export default function HydrogenLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-
-  const { data: dataProfile, isSuccess } = useProfile();
-
-  const permissionRead = useMemo(() => {
-    return dataProfile?.role?.permissions.reduce(
-      (acc: string[], permission) => {
-        if (permission.name.includes('read'))
-          acc.push(permission.name.split('-')[0]);
-        return acc;
-      },
-      []
-    );
-  }, [dataProfile?.role?.permissions]);
+  const { permissionRead, isSuccess } = useAcl();
 
   useEffect(() => {
-    if (!permissionRead?.includes(pathname.split('/')?.[1]) && isSuccess) {
+    console.log('🚀 ~ pathname:', pathname.split('/')?.[1]);
+    console.log(permissionRead?.includes(pathname.split('/')?.[1]));
+    console.log('🚀 ~ useEffect ~ permissionRead:', permissionRead);
+
+    if (
+      !permissionRead?.includes(pathname.split('/')?.[1]) &&
+      isSuccess &&
+      permissionRead
+    ) {
       return router.push(routes.accessDenied);
     }
   }, [isSuccess, pathname, permissionRead, router]);
