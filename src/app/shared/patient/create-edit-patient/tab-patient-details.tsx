@@ -87,8 +87,8 @@ export default function PatientDetails({
       timezone: data.timezone ?? 'Australia/Sydney',
       country: data.country,
       potition_on_card: data.position_of_card,
-      patient_problem: data.patient_problem,
-      patient_type: data.patient_type,
+      patient_problem: Number(data.patient_problem),
+      patient_type: Number(data.patient_type),
       street_name: data.street_name,
       state: data.state,
       suburb: data.suburb,
@@ -134,8 +134,8 @@ export default function PatientDetails({
           medicare_expiry: dataPatient?.medicare_expired_date
             ? dayjs(dataPatient.medicare_expired_date).format('YYYY-MM-DD')
             : '',
-          patient_problem: dataPatient?.patient_problem ?? 0,
-          patient_type: dataPatient?.patient_type ?? 0,
+          patient_problem: dataPatient?.patient_problem.toString(),
+          patient_type: dataPatient?.patient_type.toString(),
           position_of_card: dataPatient?.potition_on_card ?? '',
           country: dataPatient?.country ?? '',
           unit_number: dataPatient?.unit_number ?? '',

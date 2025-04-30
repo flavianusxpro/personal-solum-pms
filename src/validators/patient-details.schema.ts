@@ -28,10 +28,10 @@ export const patientDetailsFormSchema = z.object({
   avatar: fileSchema.optional(),
   password: z.string().optional(),
   timezone: z.string().optional(),
-  patient_type: z.number().min(1, {
+  patient_type: z.string().min(1, {
     message: messages.patientTypeRequired,
   }),
-  patient_problem: z.number().min(1, {
+  patient_problem: z.string().min(1, {
     message: messages.patientProblemRequired,
   }),
 });

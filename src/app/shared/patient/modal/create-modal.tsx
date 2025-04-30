@@ -40,7 +40,7 @@ export default function CreatePatienModal() {
     () =>
       dataPatientProblem?.map((item) => ({
         label: item.name,
-        value: item.id,
+        value: item.id.toString(),
       })),
     [dataPatientProblem]
   );
@@ -49,7 +49,7 @@ export default function CreatePatienModal() {
     () =>
       dataPatientTypes?.map((item) => ({
         label: item.name,
-        value: item.id,
+        value: item.id.toString(),
       })),
     [dataPatientTypes]
   );
@@ -96,6 +96,7 @@ export default function CreatePatienModal() {
       }}
     >
       {({ register, control, setValue, getValues, formState: { errors } }) => {
+        console.log('🚀 ~ CreatePatienModal ~ errors:', errors);
         return (
           <div className="flex flex-col gap-6 px-6 pt-6">
             <Flex justify="between" align="center" gap="4">
@@ -110,6 +111,33 @@ export default function CreatePatienModal() {
                   title="Personal Info"
                   className="grid-cols-12 gap-4"
                 />
+                <FormGroup title="Title" isLabel>
+                  <Controller
+                    name="title"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        label=""
+                        placeholder="Select Title"
+                        options={[
+                          { label: 'Mr', value: 'Mr' },
+                          { label: 'Mrs', value: 'Mrs' },
+                          { label: 'Ms', value: 'Ms' },
+                        ]}
+                        error={errors.title?.message as string}
+                      />
+                    )}
+                  />
+                </FormGroup>
+                <FormGroup title="First Name" isLabel>
+                  <Input
+                    placeholder="First Name"
+                    {...register('first_name')}
+                    error={errors.first_name?.message}
+                    className="flex-grow"
+                  />
+                </FormGroup>
                 <FormGroup title="First Name" isLabel>
                   <Input
                     placeholder="First Name"
@@ -175,25 +203,21 @@ export default function CreatePatienModal() {
                     className="flex-grow"
                   />
                 </FormGroup>
-                <FormGroup title="" isLabel={false}>
-                  <Flex gap="4" justify="between" align="center">
-                    <Input
-                      label="Position of Card"
-                      placeholder="Position of Card"
-                      {...register('position_of_card')}
-                      error={errors.position_of_card?.message}
-                      className="flex-grow"
-                    />
-                    <Input
-                      label="Expiry Date"
-                      type="date"
-                      placeholder="Expiry Date"
-                      {...register('medicare_expiry')}
-                      error={errors.medicare_expiry?.message}
-                      className="flex-grow"
-                    />
-                  </Flex>
-                </FormGroup>
+                <Input
+                  label="Position of Card"
+                  placeholder="Position of Card"
+                  {...register('position_of_card')}
+                  error={errors.position_of_card?.message}
+                  className="flex-grow"
+                />
+                <Input
+                  label="Expiry Date"
+                  type="date"
+                  placeholder="Expiry Date"
+                  {...register('medicare_expiry')}
+                  error={errors.medicare_expiry?.message}
+                  className="flex-grow"
+                />
                 <FormGroup title="Patient Type" isLabel>
                   <Controller
                     name="patient_type"

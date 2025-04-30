@@ -12,6 +12,7 @@ import ExpandedOrderRow from '@/app/shared/patient/table/expanded-row';
 import { getColumns } from './columns';
 import { useGetAllPatients } from '@/hooks/usePatient';
 import debounce from 'lodash/debounce';
+import { useModal } from '../../modal-views/use-modal';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/patient/table/filter-element'),
@@ -47,6 +48,7 @@ const filterState = {
 };
 
 export default function PatientTable({ className }: { className?: string }) {
+  const { isOpen } = useModal();
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [filterStateValue, setFilterStateValue] = useState(filterState);
@@ -143,7 +145,7 @@ export default function PatientTable({ className }: { className?: string }) {
 
   useEffect(() => {
     refetch();
-  }, [filterStateValue, refetch]);
+  }, [filterStateValue, refetch, isOpen]);
 
   return (
     <div className={cn(className)}>
