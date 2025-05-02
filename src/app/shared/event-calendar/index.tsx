@@ -46,7 +46,7 @@ export default function EventCalendarView() {
 
   const events: CalendarEvent[] = useMemo(() => {
     if (!dataAppointment) return [];
-    return dataAppointment.map((appointment) => ({
+    return dataAppointment.data.map((appointment) => ({
       title:
         appointment.patient.first_name + ' ' + appointment.patient.last_name,
       id: appointment.id.toString(),

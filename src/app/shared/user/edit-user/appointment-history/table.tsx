@@ -46,12 +46,12 @@ export default function AppointmentHistoryTable({
     handleRowSelect,
     handleSelectAll,
     handleDelete,
-  } = useTable(dataAppointment ?? [], pageSize);
+  } = useTable(dataAppointment?.data ?? [], pageSize);
 
   const columns = useMemo(
     () =>
       getColumns({
-        data: dataAppointment,
+        data: dataAppointment?.data,
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -70,7 +70,7 @@ export default function AppointmentHistoryTable({
   );
   const { visibleColumns } = useColumn(columns);
 
-  const selectedData = dataAppointment?.filter((item) =>
+  const selectedData = dataAppointment?.data.filter((item) =>
     selectedRowKeys.includes(item.id.toString())
   );
   // function handleExportData() {

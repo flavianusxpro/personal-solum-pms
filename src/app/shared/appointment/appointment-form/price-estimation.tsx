@@ -45,7 +45,7 @@ const PriceEstimationCost = ({
       patient_type: formData.patient_type,
       payment_id: paymentId,
       meeting_preference: 'ZOOM',
-      patient_id: formData.patient_id ? String(formData.patient_id) : '',
+      patient_id: formData.patient_id as number,
     };
 
     mutate(payload, {
