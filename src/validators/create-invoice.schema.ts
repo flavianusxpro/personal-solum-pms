@@ -33,7 +33,7 @@ export const invoiceFormSchema = z.object({
     )
     .min(1, { message: messages.itemIsRequired })
     .nullable(),
-  taxFee: z.string().min(0, { message: messages.nonNegative }).optional(),
+  taxFee: z.number().min(0, { message: messages.nonNegative }).optional(),
   otherFee: z.string().min(0, { message: messages.nonNegative }).optional(),
 });
 

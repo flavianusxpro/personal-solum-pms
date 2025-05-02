@@ -235,7 +235,6 @@ export interface IPayloadCreateInvoice {
   due_date: string;
   note: string;
   amount: number;
-  fee: number;
   other_fee: number;
   tax_fee: number;
   total_amount: number;

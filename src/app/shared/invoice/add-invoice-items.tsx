@@ -59,7 +59,7 @@ export function AddInvoiceItems({
         setValue(`total_amount`, Number(itemPrice));
       });
     }
-  }, [fields]);
+  }, [dataItems, fields, items, setValue, watch]);
 
   return (
     <FormBlockWrapper

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   Control,
   Controller,
@@ -39,8 +39,8 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
   watch,
   setValue,
 }) => {
-  const item = watch(`items.${index}.item`);
-  const findedItem = dataItems?.find((item) => item.code === item.code);
+  const selectedItem = watch(`items.${index}.item`)?.split(' - ')[0];
+  const findedItem = dataItems?.find((item) => item.code === selectedItem);
   const itemPrice = findedItem?.price ?? 0;
 
   const quantityValue = watch(
@@ -48,18 +48,18 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
     field.qty ?? 1
   ) as unknown as number;
 
-  const totalAmount = () => {
+  const totalAmount = useCallback(() => {
     return quantityValue * Number(itemPrice);
-  };
+  }, [quantityValue, itemPrice]);
 
   useEffect(() => {
     if (itemPrice) {
       setValue(`items.${index}.amount`, Number(itemPrice));
     }
-    if (item) {
+    if (selectedItem) {
       setValue(`items.${index}.total_amount`, totalAmount());
     }
-  }, [item, quantityValue, itemPrice]);
+  }, [selectedItem, quantityValue, itemPrice, setValue, index, totalAmount]);
 
   return (
     <div className="mb-8 grid grid-cols-1 items-start rounded-lg border border-muted p-4 shadow @md:p-5 @xl:p-6">

@@ -182,3 +182,8 @@ export const weekIntervalOption = [
     value: '4 weeks',
   },
 ];
+
+export const taxFeeOptions = [
+  { label: 'GST - 10%', value: 10 },
+  { label: 'No GST - 0%', value: 0 },
+];

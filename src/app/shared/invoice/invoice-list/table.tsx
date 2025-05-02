@@ -25,17 +25,19 @@ const filterState = {
 };
 
 export default function InvoiceTableList() {
-  const [pageSize, setPageSize] = useState(10);
-  const [page, setPage] = useState(1);
   const [filterStateValue, setFilterStateValue] = useState(filterState);
+  const [params, setParams] = useState({
+    page: 1,
+    pageSize: 10,
+  });
 
   const {
     data: dataInvoices,
     isLoading: isLoadingGetInvoices,
     refetch,
   } = useGetInvoices({
-    page: 1,
-    perPage: pageSize,
+    page: params.page,
+    perPage: params.pageSize,
     from: filterStateValue?.createdAt[0] || undefined,
     to: filterStateValue?.createdAt[1] || undefined,
     status: filterStateValue?.status || undefined,
@@ -96,7 +98,7 @@ export default function InvoiceTableList() {
     handleSelectAll,
     handleDelete,
     handleReset,
-  } = useTable(dataInvoices?.data ?? [], pageSize, filterStateValue);
+  } = useTable(dataInvoices?.data ?? [], params.pageSize, filterStateValue);
 
   const columns = React.useMemo(
     () =>
@@ -124,6 +126,10 @@ export default function InvoiceTableList() {
   const { visibleColumns, checkedColumns, setCheckedColumns } =
     useColumn(columns);
 
+  useEffect(() => {
+    refetch();
+  }, [params, refetch]);
+
   return (
     <>
       <ControlledTable
@@ -134,11 +140,12 @@ export default function InvoiceTableList() {
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{
-          pageSize,
-          setPageSize,
+          pageSize: params.pageSize,
+          setPageSize: (pageSize: number) =>
+            setParams((p) => ({ ...p, pageSize })),
           total: dataInvoices?.count,
-          current: page,
-          onChange: (page: number) => setPage(page),
+          current: params.page,
+          onChange: (page: number) => setParams((p) => ({ ...p, page })),
         }}
         filterOptions={{
           searchTerm,

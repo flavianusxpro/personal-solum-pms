@@ -8,42 +8,6 @@ import Logo from '@core/components/logo';
 import dayjs from 'dayjs';
 import { IGetInvoiceByIdResponse } from '@/types/ApiResponse';
 
-const invoiceItems = [
-  {
-    id: '1',
-    product: {
-      title: 'ChawkBazar Laravel Flutter Mobile App',
-      description:
-        'Along With Wordpress Themes & Plugins, We always try to use latest trending techs like React, Next Js, Gatsby Js, GraphQl, Shopify etc to make our products special.',
-    },
-    quantity: 2,
-    unitPrice: 100,
-    total: 200,
-  },
-  {
-    id: '2',
-    product: {
-      title: 'Borobazar React Next Grocery Template',
-      description:
-        'Our rich tech choice will help you to build high performance applications. We are also known to provide great customer supports to our customers.',
-    },
-    quantity: 2,
-    unitPrice: 100,
-    total: 200,
-  },
-  {
-    id: '3',
-    product: {
-      title: 'Superprops React Modern Landing Page Template',
-      description:
-        'Our rich tech choice will help you to build high performance applications. We are also known to provide great customer supports to our customers.',
-    },
-    quantity: 3,
-    unitPrice: 100,
-    total: 300,
-  },
-];
-
 const columns = [
   {
     title: '#',
@@ -89,8 +53,8 @@ const columns = [
   },
   {
     title: 'Total',
-    dataIndex: 'qty',
-    key: 'qty',
+    dataIndex: 'total_amount',
+    key: 'total_amount',
     width: 200,
     render: (value: string) => <Text className="font-medium">${value}</Text>,
   },
@@ -129,8 +93,8 @@ export default function InvoiceDetails({ id }: { id: string }) {
         </div>
       </div>
 
-      <div className="mb-12 grid gap-4 xs:grid-cols-2 sm:grid-rows-1">
-        {/* <div className="">
+      <div className="mb-12 grid gap-4 xs:grid-cols-3 sm:grid-rows-1">
+        <div className="">
           <Title as="h6" className="mb-3.5 font-semibold">
             From
           </Title>
@@ -144,9 +108,9 @@ export default function InvoiceDetails({ id }: { id: string }) {
           <Text className="mb-4 sm:mb-6 md:mb-8">(302) 555-0107</Text>
           <div>
             <Text className="mb-2 text-sm font-semibold">Creation Date</Text>
-            <Text>Mar 22, 2013</Text>
+            <Text>{dayjs(dataInvoice?.created_at).format('MMM DD, YYYY')}</Text>
           </div>
-        </div> */}
+        </div>
 
         <div className="mt-4 xs:mt-0">
           <Title as="h6" className="mb-3.5 font-semibold">
@@ -197,7 +161,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
           <Text className="flex items-center justify-between border-b border-muted py-3.5 lg:py-5">
             Tax Fee:
             <Text as="span" className="font-semibold">
-              ${dataInvoice?.tax_fee}
+              {dataInvoice?.tax_fee}%
             </Text>
           </Text>
           <Text className="flex items-center justify-between border-b border-muted py-3.5 lg:py-5">

@@ -23,6 +23,7 @@ import {
 } from '@/hooks/useInvoice';
 import { useRouter } from 'next/navigation';
 import { routes } from '@/config/routes';
+import { taxFeeOptions } from '@/config/constants';
 
 export default function CreateEditInvoice({ id }: { id?: string }) {
   const router = useRouter();
@@ -61,7 +62,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
     const totalAmount =
       (totalItemAmount || 0) +
       ((totalItemAmount * Number(data.taxFee)) / 100 || 0) +
-      ((totalItemAmount * Number(data.otherFee)) / 100 || 0);
+      (Number(data.otherFee) || 0);
 
     if (id) {
       mutateUpdate(
@@ -78,7 +79,6 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
             total_amount: Number(item.amount) * Number(item.qty),
           })),
           amount: totalItemAmount,
-          fee: Number(data.taxFee),
           tax_fee: Number(data.taxFee),
           total_amount: totalAmount,
           note: data.note || '',
@@ -113,7 +113,6 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
           total_amount: Number(item.amount) * Number(item.qty),
         })),
         amount: totalItemAmount,
-        fee: Number(data.taxFee),
         tax_fee: Number(data.taxFee),
         total_amount: totalAmount,
         note: data.note || '',
@@ -147,14 +146,18 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
         defaultValues: {
           patientId: dataInvoice?.patientId,
           invoice_date: dayjs(dataInvoice?.date).toDate(),
-          due_date: dayjs(dataInvoice?.due_date).toDate(),
+          due_date: dataInvoice?.due_date
+            ? dayjs(dataInvoice?.due_date).toDate()
+            : dayjs().add(3, 'day').toDate(),
           items: dataInvoice?.items.map((item) => ({
             item: `${item.code} - ${item.name}`,
             amount: Number(item.amount),
             qty: Number(item.qty),
             total_amount: Number(item.total_amount),
           })),
-          taxFee: dataInvoice?.tax_fee,
+          taxFee: dataInvoice?.tax_fee
+            ? Number(dataInvoice?.tax_fee)
+            : undefined,
           otherFee: dataInvoice?.other_fee,
           note: dataInvoice?.note,
           total_amount: Number(dataInvoice?.total_amount),
@@ -174,7 +177,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
         const totalAmount =
           (totalItemAmount || 0) +
           ((totalItemAmount * Number(taxFee)) / 100 || 0) +
-          ((totalItemAmount * Number(otherFee)) / 100 || 0);
+          (Number(otherFee) || 0);
 
         return (
           <>
@@ -260,18 +263,23 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
                   description={'To he who will receive this invoice'}
                   className="pt-7 @2xl:pt-9 @3xl:pt-11"
                 >
-                  <Input
-                    type="number"
-                    label="Tax Fee"
-                    suffix={'%'}
-                    placeholder="15"
-                    {...register('taxFee')}
-                    error={errors.taxFee?.message}
+                  <Controller
+                    name="taxFee"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        suffix={'%'}
+                        label="Tax Fee"
+                        placeholder="Select Tax Fee"
+                        options={taxFeeOptions}
+                      />
+                    )}
                   />
                   <Input
                     type="number"
                     label="Other Fee"
-                    suffix={'%'}
+                    prefix={'$'}
                     placeholder="15"
                     {...register('otherFee')}
                     error={errors.otherFee?.message}
