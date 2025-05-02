@@ -28,12 +28,18 @@ export const patientDetailsFormSchema = z.object({
   avatar: fileSchema.optional(),
   password: z.string().optional(),
   timezone: z.string().optional(),
-  patient_type: z.string().min(1, {
-    message: messages.patientTypeRequired,
-  }),
-  patient_problem: z.string().min(1, {
-    message: messages.patientProblemRequired,
-  }),
+  patient_type: z
+    .string()
+    .min(1, {
+      message: messages.patientTypeRequired,
+    })
+    .nullable(),
+  patient_problem: z
+    .string()
+    .min(1, {
+      message: messages.patientProblemRequired,
+    })
+    .nullable(),
 });
 
 // generate form types from zod validation schema

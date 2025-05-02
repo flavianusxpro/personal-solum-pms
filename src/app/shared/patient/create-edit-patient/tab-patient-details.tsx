@@ -54,7 +54,7 @@ export default function PatientDetails({
     () =>
       dataPatientProblem?.map((item) => ({
         label: item.name,
-        value: item.id,
+        value: item.id.toString(),
       })),
     [dataPatientProblem]
   );
@@ -63,7 +63,7 @@ export default function PatientDetails({
     () =>
       dataPatientTypes?.map((item) => ({
         label: item.name,
-        value: item.id,
+        value: item.id.toString(),
       })),
     [dataPatientTypes]
   );
@@ -134,8 +134,8 @@ export default function PatientDetails({
           medicare_expiry: dataPatient?.medicare_expired_date
             ? dayjs(dataPatient.medicare_expired_date).format('YYYY-MM-DD')
             : '',
-          patient_problem: dataPatient?.patient_problem.toString(),
-          patient_type: dataPatient?.patient_type.toString(),
+          patient_problem: dataPatient?.patient_problem?.toString() || null,
+          patient_type: dataPatient?.patient_type?.toString() || null,
           position_of_card: dataPatient?.potition_on_card ?? '',
           country: dataPatient?.country ?? '',
           unit_number: dataPatient?.unit_number ?? '',
@@ -149,8 +149,6 @@ export default function PatientDetails({
       }}
     >
       {({ register, control, setValue, getValues, formState: { errors } }) => {
-        console.log('🚀 ~ errors:', errors);
-
         return (
           <>
             <div className="mb-10 grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
