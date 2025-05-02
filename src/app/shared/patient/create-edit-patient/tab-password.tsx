@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { Button, Text, Input, Password, Flex } from 'rizzui';
+import { Button, Password, Flex } from 'rizzui';
 import { SubmitHandler } from 'react-hook-form';
 import { Form } from '@core/ui/form';
 import {
@@ -11,20 +10,18 @@ import {
 import FormGroup from '../../ui/form-group';
 import { useUpdatePassword } from '@/hooks/useProfile';
 import toast from 'react-hot-toast';
-import { useGetPatientById } from '@/hooks/usePatient';
 import { useParams } from 'next/navigation';
+import { useUpdatePatient } from '@/hooks/usePatient';
 
 export default function TabPassword({ isView = false }: { isView?: boolean }) {
   const id = useParams<{ id: string }>().id;
 
-  const { data: dataPatient } = useGetPatientById(id);
-
-  const { mutate } = useUpdatePassword();
+  const { mutate: mutateUpdatePatient, isPending } = useUpdatePatient();
 
   const onSubmit: SubmitHandler<ChangePasswordSchema> = (data) => {
-    mutate(
+    mutateUpdatePatient(
       {
-        oldPassword: '',
+        patient_id: id ?? undefined,
         password: data.newPassword,
       },
       {
@@ -49,9 +46,6 @@ export default function TabPassword({ isView = false }: { isView?: boolean }) {
         onSubmit={onSubmit}
         useFormProps={{
           mode: 'onChange',
-          defaultValues: {
-            email: dataPatient?.email,
-          },
         }}
         className="pt-1.5"
       >
@@ -59,18 +53,6 @@ export default function TabPassword({ isView = false }: { isView?: boolean }) {
           return (
             <div className="mt-4">
               <div className="border-y border-dashed border-muted py-10">
-                <FormGroup title="Email" isLabel>
-                  <Password
-                    size="lg"
-                    className="[&>label>span]:font-medium"
-                    inputClassName="text-sm"
-                    {...register('email')}
-                    error={errors.email?.message}
-                    disabled={true}
-                  />
-                </FormGroup>
-              </div>
-              <div className="border-b border-dashed border-muted py-10">
                 <FormGroup title="New Password" isLabel>
                   <Password
                     placeholder="Enter your new password"
@@ -102,7 +84,11 @@ export default function TabPassword({ isView = false }: { isView?: boolean }) {
                     Cancel
                   </Button>
                   {!isView && (
-                    <Button className="mt-2" type="submit">
+                    <Button
+                      isLoading={isPending}
+                      className="mt-2"
+                      type="submit"
+                    >
                       Reset Password
                     </Button>
                   )}

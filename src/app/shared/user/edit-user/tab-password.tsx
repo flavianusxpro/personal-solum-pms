@@ -49,9 +49,6 @@ export default function TabPassword({ isView = false }: { isView?: boolean }) {
         onSubmit={onSubmit}
         useFormProps={{
           mode: 'onChange',
-          defaultValues: {
-            email: dataPatient?.email,
-          },
         }}
         className="pt-1.5"
       >
@@ -59,18 +56,6 @@ export default function TabPassword({ isView = false }: { isView?: boolean }) {
           return (
             <div className="mt-4">
               <div className="border-y border-dashed border-muted py-10">
-                <FormGroup title="Email" isLabel>
-                  <Password
-                    size="lg"
-                    className="[&>label>span]:font-medium"
-                    inputClassName="text-sm"
-                    {...register('email')}
-                    error={errors.email?.message}
-                    disabled={true}
-                  />
-                </FormGroup>
-              </div>
-              <div className="border-b border-dashed border-muted py-10">
                 <FormGroup title="New Password" isLabel>
                   <Password
                     placeholder="Enter your new password"

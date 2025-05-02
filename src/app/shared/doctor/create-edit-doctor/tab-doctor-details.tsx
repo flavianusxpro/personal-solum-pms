@@ -49,11 +49,14 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
   } = useGetDoctorById(id);
   const { mutate: mutateUpdateDoctor, isPending } = useUpdateDoctor();
 
-  const { data: dataSpecialists } = useGetSpecialists();
+  const { data: dataSpecialists } = useGetSpecialists({
+    page: 1,
+    perPage: 100,
+  });
 
   const specialistsOptions = useMemo(() => {
     if (!dataSpecialists) return [];
-    return dataSpecialists.map((item) => ({
+    return dataSpecialists.data.map((item) => ({
       label: item.name,
       value: item.id.toString(),
     }));

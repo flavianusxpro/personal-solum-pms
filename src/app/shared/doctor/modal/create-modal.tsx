@@ -34,7 +34,10 @@ export default function CreatDoctorModal() {
   const { closeModal } = useModal();
 
   const { mutate: mutateCreateDoctor, isPending } = usePostCreateDoctorUser();
-  const { data: dataSpecialists } = useGetSpecialists();
+  const { data: dataSpecialists } = useGetSpecialists({
+    perPage: 100,
+    page: 1,
+  });
   const { data: dataRoles } = useGetRoles({
     perPage: 100,
     page: 1,
@@ -42,7 +45,7 @@ export default function CreatDoctorModal() {
 
   const specialistsOptions = useMemo(() => {
     if (!dataSpecialists) return [];
-    return dataSpecialists.map((item) => ({
+    return dataSpecialists.data.map((item) => ({
       label: item.name,
       value: item.id.toString(),
     }));

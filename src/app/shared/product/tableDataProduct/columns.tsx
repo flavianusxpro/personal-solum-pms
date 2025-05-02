@@ -290,7 +290,7 @@ export const getWidgetColumns = ({
           placement="top"
           color="invert"
         >
-          <Link href={routes.product.edit(row)}>
+          <Link href={routes.management.product.edit(row)}>
             <ActionIcon
               as="span"
               size="sm"
