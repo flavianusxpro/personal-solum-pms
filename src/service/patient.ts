@@ -1,4 +1,4 @@
-import { get, post, put } from '@/app/api/api';
+import { del, get, post, put } from '@/app/api/api';
 import {
   IGetAllPatientsResponse,
   IGetPatientByIdResponse,
@@ -34,8 +34,12 @@ export async function postCreatePatient(payload: IPayloadCreateEditPatient) {
   return await post<any>('/admin/patient', payload);
 }
 
-export async function putCreatePatient(payload: IPayloadCreateEditPatient) {
+export async function putUpdatePatient(payload: IPayloadCreateEditPatient) {
   return await put<any>('/admin/patient/' + payload.patient_id, payload);
+}
+
+export async function deletePatient(id: string) {
+  return await del<any>(`/admin/patient/${id}`);
 }
 
 export async function getPatientTypes(params: IParamGetPatientTypes) {

@@ -218,7 +218,7 @@ export const getColumns = ({
         <DeletePopover
           title={`Delete the Patient`}
           description={`Are you sure you want to delete this #${row.id} Patient?`}
-          onDelete={() => onDeleteItem(row.id.toString())}
+          onDelete={() => onDeleteItem(row.patient_id.toString())}
         />
       </div>
     ),

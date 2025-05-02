@@ -4,8 +4,9 @@ import {
   getPatientProblem,
   getPatientTypes,
   postCreatePatient,
-  putCreatePatient,
+  putUpdatePatient,
   putUpdateAssignDoctor,
+  deletePatient,
 } from '@/service/patient';
 import {
   IParamGetAllPatient,
@@ -48,8 +49,14 @@ export function useCreatePatient() {
 export function useUpdatePatient() {
   return useMutation({
     mutationFn: async (payload: IPayloadCreateEditPatient) => {
-      return await putCreatePatient(payload);
+      return await putUpdatePatient(payload);
     },
+  });
+}
+
+export function useDeletePatient() {
+  return useMutation({
+    mutationFn: deletePatient,
   });
 }
 

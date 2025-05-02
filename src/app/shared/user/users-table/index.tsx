@@ -6,7 +6,8 @@ import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
 import { getColumns } from './columns';
 import ControlledTable from '../../ui/controlled-table';
-import { useGetUsers } from '@/hooks/useUser';
+import { useDeleteUserById, useGetUsers } from '@/hooks/useUser';
+import toast from 'react-hot-toast';
 
 const FilterElement = dynamic(() => import('./filter-element'), { ssr: false });
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
@@ -29,7 +30,9 @@ export default function UsersTable() {
     ...filterStateValue,
   });
 
-  const { data: dataUsers } = useGetUsers(params);
+  const { data: dataUsers, refetch } = useGetUsers(params);
+
+  const { mutate: mutateDelete } = useDeleteUserById();
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -37,10 +40,24 @@ export default function UsersTable() {
     },
   });
 
-  const onDeleteItem = useCallback((id: string) => {
-    handleDelete(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const onDeleteItem = useCallback(
+    (id: string) => {
+      mutateDelete(id, {
+        onSuccess: () => {
+          toast.success('User deleted successfully.');
+          refetch();
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message ||
+              error?.message ||
+              'An error occurred while deleting the user.'
+          );
+        },
+      });
+    },
+    [mutateDelete, refetch]
+  );
 
   const updateFilter = useCallback(
     (columnId: string, filterValue: string | any[]) => {
@@ -117,11 +134,21 @@ export default function UsersTable() {
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{
-          pageSize,
-          setPageSize,
-          total: totalItems,
+          pageSize: params.perPage,
+          setPageSize: (value) =>
+            setParams((prev) => ({
+              ...prev,
+              perPage: value,
+            })),
+          total: dataUsers?.count,
           current: currentPage,
-          onChange: (page: number) => handlePaginate(page),
+          onChange: (page: number) => {
+            setParams((prev) => ({
+              ...prev,
+              page,
+            }));
+            handlePaginate(page);
+          },
         }}
         filterOptions={{
           searchTerm,

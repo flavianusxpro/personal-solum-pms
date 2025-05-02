@@ -43,8 +43,12 @@ export async function postCreateDoctor(payload: IPayloadCreateEditDoctor) {
   return await post<any>('/admin/doctor', payload);
 }
 
-export async function putCreateDoctor(payload: IPayloadCreateEditDoctor) {
+export async function putUpdateDoctor(payload: IPayloadCreateEditDoctor) {
   return await put<any>('/admin/doctor/' + payload.doctor_id, payload);
+}
+
+export async function deleteDoctor(id: string) {
+  return await del<any>(`/admin/doctor/${id}`);
 }
 
 export async function putSettingMeetingDoctor(

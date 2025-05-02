@@ -10,9 +10,10 @@ import { ActionIcon } from 'rizzui';
 import cn from '@core/utils/class-names';
 import ExpandedOrderRow from '@/app/shared/patient/table/expanded-row';
 import { getColumns } from './columns';
-import { useGetAllPatients } from '@/hooks/usePatient';
+import { useDeletePatient, useGetAllPatients } from '@/hooks/usePatient';
 import debounce from 'lodash/debounce';
 import { useModal } from '../../modal-views/use-modal';
+import toast from 'react-hot-toast';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/patient/table/filter-element'),
@@ -63,16 +64,32 @@ export default function PatientTable({ className }: { className?: string }) {
     search: filterStateValue?.search,
   });
 
+  const { mutate: mutateDeletePatient } = useDeletePatient();
+
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
       handleSort(value);
     },
   });
 
-  const onDeleteItem = useCallback((id: string) => {
-    handleDelete(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const onDeleteItem = useCallback(
+    (id: string) => {
+      mutateDeletePatient(id, {
+        onSuccess: () => {
+          refetch();
+          toast.success('Patient deleted successfully');
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message ||
+              error?.message ||
+              'Something went wrong'
+          );
+        },
+      });
+    },
+    [mutateDeletePatient, refetch]
+  );
 
   const updateFilter = useCallback(
     (columnId: string, filterValue: string | any[]) => {

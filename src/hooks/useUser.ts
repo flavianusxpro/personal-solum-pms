@@ -3,6 +3,7 @@ import {
   getUsers,
   postCreateUser,
   getUserById,
+  deleteUserById,
 } from '@/service/user';
 import { IParamGetUsers } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -32,5 +33,11 @@ export function useGetUserById(id: string) {
     queryFn: async () => {
       return await getUserById(id);
     },
+  });
+}
+
+export function useDeleteUserById() {
+  return useMutation({
+    mutationFn: deleteUserById,
   });
 }

@@ -2,12 +2,13 @@
 
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { getColumns } from '@/app/shared/doctor/tableDataDoctor/columns';
-import { useGetAllDoctors } from '@/hooks/useDoctor';
+import { useDeleteDoctor, useGetAllDoctors } from '@/hooks/useDoctor';
 import { useColumn } from '@core/hooks/use-column';
 import { useTable } from '@core/hooks/use-table';
 import dynamic from 'next/dynamic';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useModal } from '@/app/shared/modal-views/use-modal';
+import toast from 'react-hot-toast';
 
 // dynamic import
 const FilterElement = dynamic(
@@ -40,16 +41,28 @@ export default function DoctorTable({}: {}) {
     perPage: params.perPage,
   });
 
+  const { mutate: mutateDeleteDoctor } = useDeleteDoctor();
+
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
       handleSort(value);
     },
   });
 
-  const onDeleteItem = useCallback((id: string) => {
-    handleDelete(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const onDeleteItem = useCallback(
+    (id: string) => {
+      mutateDeleteDoctor(id, {
+        onSuccess: () => {
+          refetch();
+          toast.success('Delete doctor successfully');
+        },
+        onError: (error: any) => {
+          toast.error(error.response.data.message || 'Delete doctor failed');
+        },
+      });
+    },
+    [mutateDeleteDoctor, refetch]
+  );
 
   const updateFilter = useCallback(
     (columnId: string, filterValue: string | any[]) => {

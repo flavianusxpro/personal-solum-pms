@@ -1,4 +1,4 @@
-import { get, post } from '@/app/api/api';
+import { del, get, post } from '@/app/api/api';
 import {
   IGetPermissionsResponse,
   IGetRolesResponse,
@@ -37,4 +37,8 @@ export async function getUserById(id: string) {
   return get<IGetUserByIdResponse>('/admin/user/detail/' + id).then(
     (res) => res.data
   );
+}
+
+export async function deleteUserById(id: string) {
+  return del('/admin/user/' + id);
 }

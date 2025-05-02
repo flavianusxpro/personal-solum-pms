@@ -7,10 +7,11 @@ import {
   postAssignDoctorToClinic,
   postCreateDoctor,
   postCreateSpecialist,
-  putCreateDoctor,
+  putUpdateDoctor,
   putSettingBillingDoctor,
   putSettingMeetingDoctor,
   putUpdateSpecialist,
+  deleteDoctor,
 } from '@/service/doctor';
 
 import {
@@ -56,8 +57,14 @@ export function useCreateDoctor() {
 export function useUpdateDoctor() {
   return useMutation({
     mutationFn: async (payload: IPayloadCreateEditDoctor) => {
-      return await putCreateDoctor(payload);
+      return await putUpdateDoctor(payload);
     },
+  });
+}
+
+export function useDeleteDoctor() {
+  return useMutation({
+    mutationFn: deleteDoctor,
   });
 }
 
