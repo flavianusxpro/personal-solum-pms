@@ -64,7 +64,7 @@ export default function EventCalendarView() {
 
   const doctorOptions = useMemo(() => {
     if (!dataDoctor) return [];
-    return dataDoctor.map((doctor) => ({
+    return dataDoctor.data.map((doctor) => ({
       label: doctor.first_name + ' ' + doctor.last_name,
       value: doctor.first_name,
     }));

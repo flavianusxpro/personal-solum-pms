@@ -55,7 +55,7 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
   const doctorOptions = useMemo(() => {
     if (!dataDoctor) return [];
 
-    return dataDoctor?.map((doctor) => ({
+    return dataDoctor?.data?.map((doctor) => ({
       label: doctor.first_name + ' ' + doctor.last_name,
       value: doctor.id.toString(),
     }));

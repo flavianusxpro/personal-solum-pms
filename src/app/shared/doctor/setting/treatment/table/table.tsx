@@ -5,7 +5,7 @@ import { useColumn } from '@core/hooks/use-column';
 import { useTable } from '@core/hooks/use-table';
 import React, { useCallback, useState } from 'react';
 import { getColumns } from './columns';
-import { useModal } from '../../modal-views/use-modal';
+import { useModal } from '@/app/shared/modal-views/use-modal';
 import { useDeleteRole, useGetRoles } from '@/hooks/useRole';
 
 export default function RolesTable({}: {}) {

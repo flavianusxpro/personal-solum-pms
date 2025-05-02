@@ -4,7 +4,7 @@ import { Controller, SubmitHandler } from 'react-hook-form';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
 import { ActionIcon, Flex, Input, Loader, Text, Textarea, Title } from 'rizzui';
-import { useModal } from '../../../modal-views/use-modal';
+import { useModal } from '@/app/shared/modal-views/use-modal';
 import { PiX } from 'react-icons/pi';
 import dynamic from 'next/dynamic';
 import toast from 'react-hot-toast';

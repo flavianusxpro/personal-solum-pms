@@ -7,7 +7,7 @@ import EyeIcon from '@core/components/icons/eye';
 import PencilIcon from '@core/components/icons/pencil';
 import DateCell from '@core/ui/date-cell';
 import { ActionIcon, Checkbox, Text, Tooltip } from 'rizzui';
-import CreateEditRoleModal from '../specialist/modal/create-edit-modal';
+import CreateEditRoleModal from '../modal/create-edit-modal';
 
 type Columns = {
   data: IGetRolesResponse['data'];
