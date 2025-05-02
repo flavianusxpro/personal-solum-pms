@@ -11,6 +11,7 @@ import { signIn } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import { useProfile } from '@/hooks/useProfile';
 
 const initialValues: LoginSchema = {
   email: '',
@@ -26,6 +27,7 @@ export default function SignInForm() {
   const isMedium = useMedia('(max-width: 1200px)', false);
 
   const [isLoading, setIsloading] = useState(false);
+  const { refetch } = useProfile();
 
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
     setIsloading(true);
@@ -42,6 +44,7 @@ export default function SignInForm() {
       } else {
         router.push(routes.appointment.dashboard);
       }
+      refetch();
     }
 
     if (res?.error) {
