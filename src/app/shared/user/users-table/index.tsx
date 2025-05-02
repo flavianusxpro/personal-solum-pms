@@ -34,6 +34,12 @@ export default function UsersTable() {
 
   const { mutate: mutateDelete } = useDeleteUserById();
 
+  const dataList = useMemo(() => {
+    return dataUsers?.users.filter((item) => {
+      return item.role.name !== 'superadmin';
+    });
+  }, [dataUsers]);
+
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
       handleSort(value);
@@ -88,12 +94,12 @@ export default function UsersTable() {
     handleSelectAll,
     handleDelete,
     handleReset,
-  } = useTable(dataUsers?.users ?? [], pageSize, filterStateValue);
+  } = useTable(dataList ?? [], pageSize, filterStateValue);
 
   const columns = useMemo(
     () =>
       getColumns({
-        data: dataUsers?.users ?? [],
+        data: dataList ?? [],
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
