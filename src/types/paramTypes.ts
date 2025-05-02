@@ -333,5 +333,5 @@ export interface IPayloadCreateEditRole {
 export interface IPayloadPostCreateEditSpecialist {
   id?: string;
   name: string;
-  description: string;
+  description?: string;
 }

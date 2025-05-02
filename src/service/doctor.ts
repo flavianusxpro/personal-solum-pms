@@ -1,4 +1,4 @@
-import { get, post, put } from '@/app/api/api';
+import { del, get, post, put } from '@/app/api/api';
 import {
   IGetAllDoctorsResponse,
   IGetAnalyticReportBillingByDoctorIdResponse,
@@ -82,8 +82,6 @@ export async function getAnalyticReportBillingByDoctorId(id: string) {
 export async function getSpecialists(params: IParamGetSpecialists) {
   return await get<IGetSpecialistResponse>('/admin/doctor/specialist', {
     params,
-  }).then((res) => {
-    return res.data;
   });
 }
 
@@ -91,4 +89,14 @@ export async function postCreateSpecialist(
   payload: IPayloadPostCreateEditSpecialist
 ) {
   return await post<any>('/admin/doctor/specialist', payload);
+}
+
+export async function putUpdateSpecialist(
+  payload: IPayloadPostCreateEditSpecialist
+) {
+  return await put<any>('/admin/doctor/specialist/' + payload.id, payload);
+}
+
+export async function deleteSpecialist(id: string) {
+  return await del<any>(`/admin/doctor/specialist/${id}`);
 }

@@ -3,67 +3,44 @@
 import { Controller, SubmitHandler } from 'react-hook-form';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { ActionIcon, Flex, Input, Loader, Text, Textarea, Title } from 'rizzui';
+import { ActionIcon, Flex, Input, Textarea, Title } from 'rizzui';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { PiX } from 'react-icons/pi';
-import dynamic from 'next/dynamic';
 import toast from 'react-hot-toast';
-import { IGetRolesResponse } from '@/types/ApiResponse';
+import { IGetSpecialistResponse } from '@/types/ApiResponse';
 import {
-  CreateRoleInput,
-  createRoleSchema,
-} from '@/validators/create-role.schema';
+  useGetSpecialists,
+  usePostCreateSpecialist,
+  usePutUpdateSpecialist,
+} from '@/hooks/useDoctor';
 import {
-  useGetPermissions,
-  useGetRoles,
-  usePostCreateRole,
-  usePutUpdateRole,
-} from '@/hooks/useRole';
-import { useMemo } from 'react';
+  CreateSpecialistInput,
+  createSpecialistSchema,
+} from '@/validators/create-specialist.schema';
 
-const MultySelect = dynamic(
-  () => import('rizzui').then((mod) => mod.MultiSelect),
-  {
-    ssr: false,
-    loading: () => <Loader />,
-  }
-);
 interface CreateEditSmsTemplateModalProps {
-  data?: IGetRolesResponse['data'][number];
+  data?: IGetSpecialistResponse['data'][number];
   isView?: boolean;
 }
 
-export default function CreateEditRoleModal({
+export default function CreateEditSpecialistModal({
   data,
   isView,
 }: CreateEditSmsTemplateModalProps) {
   const { closeModal } = useModal();
 
-  const { refetch } = useGetRoles({
+  const { refetch } = useGetSpecialists({
     page: 1,
     perPage: 10,
+    sort: 'DESC',
   });
-  const { data: dataPermissions } = useGetPermissions();
 
   const { mutate: mutateCreate, isPending: isPendingCreate } =
-    usePostCreateRole();
+    usePostCreateSpecialist();
   const { mutate: mutateUpdate, isPending: isPendingUpdate } =
-    usePutUpdateRole();
+    usePutUpdateSpecialist();
 
-  const permissionOptions = useMemo(() => {
-    if (!dataPermissions) return [];
-    return dataPermissions?.map((item) => ({
-      label: item.name,
-      value: item.name,
-    }));
-  }, [dataPermissions]);
-
-  const defaultPermissionData = useMemo(() => {
-    if (!data) return [];
-    return data?.permissions?.map((item) => item.name) || [];
-  }, [data]);
-
-  const onSubmit: SubmitHandler<CreateRoleInput> = (formValues) => {
+  const onSubmit: SubmitHandler<CreateSpecialistInput> = (formValues) => {
     console.log('🚀 ~ formValues:', formValues);
     if (data?.id) {
       mutateUpdate(
@@ -72,11 +49,11 @@ export default function CreateEditRoleModal({
           onSuccess: () => {
             refetch();
             closeModal();
-            toast.success('Role updated successfully');
+            toast.success('Specialist updated successfully');
           },
           onError: (error: any) => {
             toast.error(
-              'Failed to update role: ',
+              'Failed to update specialist: ',
               error?.response?.data?.message
             );
           },
@@ -88,17 +65,20 @@ export default function CreateEditRoleModal({
       onSuccess: () => {
         refetch();
         closeModal();
-        toast.success('Role template created successfully');
+        toast.success('Specialist created successfully');
       },
       onError: (error: any) => {
-        toast.error('Failed to create role: ', error?.response?.data?.message);
+        toast.error(
+          'Failed to create specialist: ',
+          error?.response?.data?.message
+        );
       },
     });
   };
 
   return (
-    <Form<CreateRoleInput>
-      validationSchema={createRoleSchema}
+    <Form<CreateSpecialistInput>
+      validationSchema={createSpecialistSchema}
       // resetValues={reset}
       onSubmit={onSubmit}
       className="@container"
@@ -106,7 +86,7 @@ export default function CreateEditRoleModal({
         mode: 'onChange',
         defaultValues: {
           name: data?.name || '',
-          permissions: defaultPermissionData,
+          description: data?.description || '',
         },
       }}
     >
@@ -115,37 +95,30 @@ export default function CreateEditRoleModal({
           <div className="flex flex-col gap-6 px-6 pt-6">
             <Flex justify="between" align="center" gap="4">
               <Title className="text-lg">
-                {isView ? 'View' : data ? 'Update' : 'Create'} Role
+                {isView ? 'View' : data ? 'Update' : 'Create'} Specialist
               </Title>
               <ActionIcon variant="text" onClick={closeModal} className="">
                 <PiX className="h-6 w-6" />
               </ActionIcon>
             </Flex>
             <Input
-              label="Role Name"
+              label="Specialist Name"
               {...register('name')}
-              placeholder="Role Name"
+              placeholder="Specialist Name"
               className="w-full"
               error={errors.name?.message}
               disabled={isView}
             />
 
-            <Controller
-              name="permissions"
-              control={control}
+            <Textarea
+              label="Description"
+              {...register('description')}
+              placeholder="Description"
+              className="w-full"
+              error={errors.description?.message}
               disabled={isView}
-              render={({ field }) => (
-                <MultySelect
-                  {...field}
-                  label="Permissions"
-                  placeholder="Select permissions"
-                  options={permissionOptions}
-                  error={errors.permissions?.message}
-                  className="w-full"
-                  searchable
-                />
-              )}
             />
+
             {isView ? null : (
               <FormFooter
                 className="rounded-b-xl"

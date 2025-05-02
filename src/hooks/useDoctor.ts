@@ -1,17 +1,21 @@
 import {
+  deleteSpecialist,
   getAnalyticReportBillingByDoctorId,
   getDoctorById,
   getDoctorList,
   getSpecialists,
   postAssignDoctorToClinic,
   postCreateDoctor,
+  postCreateSpecialist,
   putCreateDoctor,
   putSettingBillingDoctor,
   putSettingMeetingDoctor,
+  putUpdateSpecialist,
 } from '@/service/doctor';
 
 import {
   IParamGetAllDoctor,
+  IParamGetSpecialists,
   IPayloadCreateEditDoctor,
   IPayloadSettingBillingDoctor,
   IPayloadSettingMeetingDoctor,
@@ -79,17 +83,6 @@ export function usePostAssignDoctorToClinic() {
   });
 }
 
-export function useGetSpecialists() {
-  return useQuery({
-    queryKey: ['getSpecialists'],
-    queryFn: async () => {
-      return await getSpecialists({ page: 1, perPage: 100 });
-    },
-    staleTime: 1000 * 60 * 10, // 10 minutes
-    refetchOnWindowFocus: false,
-  });
-}
-
 export function useGetAnalyticReportBillingByDoctorId(id: string) {
   return useQuery({
     queryKey: ['getAnalyticReportBillingByDoctorId' + id],
@@ -99,5 +92,34 @@ export function useGetAnalyticReportBillingByDoctorId(id: string) {
     staleTime: 1000 * 60 * 10, // 10 minutes
     refetchOnWindowFocus: false,
     enabled: !!id,
+  });
+}
+
+export function useGetSpecialists(params: IParamGetSpecialists) {
+  return useQuery({
+    queryKey: ['getSpecialists'],
+    queryFn: async () => {
+      return await getSpecialists(params);
+    },
+    staleTime: 1000 * 60 * 10, // 10 minutes
+    refetchOnWindowFocus: false,
+  });
+}
+
+export function usePostCreateSpecialist() {
+  return useMutation({
+    mutationFn: postCreateSpecialist,
+  });
+}
+
+export function usePutUpdateSpecialist() {
+  return useMutation({
+    mutationFn: putUpdateSpecialist,
+  });
+}
+
+export function useDeleteSpecialist() {
+  return useMutation({
+    mutationFn: deleteSpecialist,
   });
 }

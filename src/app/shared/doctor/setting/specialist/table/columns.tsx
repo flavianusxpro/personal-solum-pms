@@ -2,15 +2,15 @@
 
 import DeletePopover from '@/app/shared/ui/delete-popover';
 import { HeaderCell } from '@/app/shared/ui/table';
-import { IGetRolesResponse } from '@/types/ApiResponse';
+import { IGetSpecialistResponse } from '@/types/ApiResponse';
 import EyeIcon from '@core/components/icons/eye';
 import PencilIcon from '@core/components/icons/pencil';
 import DateCell from '@core/ui/date-cell';
 import { ActionIcon, Checkbox, Text, Tooltip } from 'rizzui';
-import CreateEditRoleModal from '../modal/create-edit-modal';
+import CreateEditSpecialistModal from '../modal/create-edit-modal';
 
 type Columns = {
-  data: IGetRolesResponse['data'];
+  data: IGetSpecialistResponse['data'];
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
@@ -20,7 +20,7 @@ type Columns = {
   openModal: (props: any) => void;
 };
 
-type Row = IGetRolesResponse['data'][number];
+type Row = IGetSpecialistResponse['data'][number];
 
 export const getColumns = ({
   data,
@@ -57,11 +57,25 @@ export const getColumns = ({
     ),
   },
   {
-    title: <HeaderCell title="ROLE NAME" />,
+    title: <HeaderCell title="ID" />,
+    dataIndex: 'id',
+    key: 'id',
+    width: 30,
+    render: (value: string) => <Text className="font-medium">{value}</Text>,
+  },
+  {
+    title: <HeaderCell title="SPECIALIST NAME" />,
     dataIndex: 'name',
     key: 'name',
     width: 200,
     render: (name: string) => <Text className="font-medium">{name}</Text>,
+  },
+  {
+    title: <HeaderCell title="Description" />,
+    dataIndex: 'description',
+    key: 'description',
+    width: 200,
+    render: (value: string) => <Text className="font-medium">{value}</Text>,
   },
   {
     title: <HeaderCell title="CREATED AT" />,
@@ -92,7 +106,7 @@ export const getColumns = ({
             className="hover:text-gray-700"
             onClick={() =>
               openModal({
-                view: <CreateEditRoleModal data={row} />,
+                view: <CreateEditSpecialistModal data={row} />,
               })
             }
           >
@@ -103,7 +117,7 @@ export const getColumns = ({
           <ActionIcon
             onClick={() =>
               openModal({
-                view: <CreateEditRoleModal isView data={row} />,
+                view: <CreateEditSpecialistModal isView data={row} />,
               })
             }
             size="sm"
@@ -114,8 +128,8 @@ export const getColumns = ({
           </ActionIcon>
         </Tooltip>
         <DeletePopover
-          title={`Delete the role`}
-          description={`Are you sure you want to delete this #${row.id} role?`}
+          title={`Delete the specialist`}
+          description={`Are you sure you want to delete this #${row.id} specialist?`}
           onDelete={() => onDeleteItem(row.id.toString())}
         />
       </div>

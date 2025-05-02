@@ -8,6 +8,10 @@ import { useParams } from 'next/navigation';
 import { useGetDoctorById } from '@/hooks/useDoctor';
 import TabTreatment from './tab-treatment';
 import TabSpecialist from './tab-specialist';
+import SpecialistTable from './specialist/table/table';
+import ModalButton from '../../ui/modal-button/modal-button';
+import CreateEditSpecialistModal from './specialist/modal/create-edit-modal';
+import CreateEditTreatmentModal from './treatment/modal/create-edit-modal';
 
 export const navItems = [
   {
@@ -37,23 +41,30 @@ export default function SettingDoctor({
   }
 
   const pageHeader = {
-    title: id
-      ? `${dataDoctor?.first_name ?? '-'} ${dataDoctor?.last_name ?? '-'}`
-      : 'Create Doctor',
+    title: 'Doctor Settings',
     breadcrumb: [
       {
         href: routes.doctor.dashboard,
         name: 'Doctors',
       },
       {
-        name: 'Account Settings',
+        name: 'Doctor Settings',
       },
     ],
   };
 
   return (
     <>
-      <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb} />
+      <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
+        <ModalButton
+          view={
+            <>
+              {tab === 'specialist' && <CreateEditSpecialistModal />}
+              {tab === 'treatment' && <CreateEditTreatmentModal />}
+            </>
+          }
+        />
+      </PageHeader>
       <div className="flex flex-col @container">
         <SimpleBar>
           <nav className="mb-7 flex items-center gap-5 border-b border-gray-300 md:gap-7 lg:gap-10">
@@ -69,8 +80,8 @@ export default function SettingDoctor({
           </nav>
         </SimpleBar>
 
-        {tab === 'doctor' && <TabTreatment />}
-        {tab === 'settings' && <TabSpecialist />}
+        {tab === 'specialist' && <SpecialistTable />}
+        {tab === 'treatment' && <></>}
       </div>
     </>
   );

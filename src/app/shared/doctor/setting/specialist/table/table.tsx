@@ -3,26 +3,31 @@
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { useColumn } from '@core/hooks/use-column';
 import { useTable } from '@core/hooks/use-table';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { getColumns } from './columns';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import { useDeleteRole, useGetRoles } from '@/hooks/useRole';
+import { useDeleteSpecialist, useGetSpecialists } from '@/hooks/useDoctor';
+import { IParamGetSpecialists } from '@/types/paramTypes';
 
 export default function SpecialistTable({}: {}) {
   const { openModal } = useModal();
-  const [pageSize, setPageSize] = useState(10);
-
-  const {
-    data,
-    isLoading: isLoadingGetRoles,
-    refetch,
-  } = useGetRoles({
+  const [params, setParams] = useState<IParamGetSpecialists>({
     page: 1,
-    perPage: pageSize,
+    perPage: 10,
     sort: 'DESC',
   });
 
-  const { mutate } = useDeleteRole();
+  const {
+    data,
+    isLoading: isLoadingGetSpecialists,
+    refetch,
+  } = useGetSpecialists({
+    page: params.page,
+    perPage: params.perPage,
+    sort: params.sort,
+  });
+
+  const { mutate } = useDeleteSpecialist();
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -49,7 +54,7 @@ export default function SpecialistTable({}: {}) {
     handleSelectAll,
     handleDelete,
     // handleReset,
-  } = useTable(data ?? [], pageSize);
+  } = useTable(data?.data ?? [], params.perPage);
 
   const onDeleteItem = useCallback(
     (id: string) => {
@@ -60,7 +65,7 @@ export default function SpecialistTable({}: {}) {
         },
         onError: (error: any) => {
           console.error(
-            'Failed to delete role: ',
+            'Failed to delete specialist: ',
             error?.response?.data?.message
           );
         },
@@ -72,7 +77,7 @@ export default function SpecialistTable({}: {}) {
   const columns = React.useMemo(
     () =>
       getColumns({
-        data: data ?? [],
+        data: data?.data ?? [],
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -96,20 +101,35 @@ export default function SpecialistTable({}: {}) {
   const { visibleColumns, checkedColumns, setCheckedColumns } =
     useColumn(columns);
 
+  useEffect(() => {
+    refetch();
+  }, [params, refetch]);
+
   return (
     <div>
       <ControlledTable
-        isLoading={isLoading || isLoadingGetRoles}
+        isLoading={isLoading || isLoadingGetSpecialists}
         showLoadingText={true}
         data={tableData}
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{
-          pageSize,
-          setPageSize,
-          total: totalItems,
+          pageSize: params.perPage,
+          setPageSize: (pageSize: number) => {
+            setParams((prev) => ({
+              ...prev,
+              perPage: pageSize,
+            }));
+          },
+          total: data?.count,
           current: currentPage,
-          onChange: (page: number) => handlePaginate(page),
+          onChange: (page: number) => {
+            handlePaginate(page);
+            setParams((prev) => ({
+              ...prev,
+              page: page,
+            }));
+          },
         }}
         filterOptions={{
           searchTerm,
