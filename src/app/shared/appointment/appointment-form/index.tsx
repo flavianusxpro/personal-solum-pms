@@ -124,6 +124,7 @@ export default function CreateUpdateAppointmentForm({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { closeModal } = useModal();
+  const isEdit = data?.id;
 
   const [step] = useAtom(stepperAtomAppointment);
   const [_, setFormData] = useAtom(formDataAtom);
@@ -134,6 +135,7 @@ export default function CreateUpdateAppointmentForm({
     resetLocation();
     if (data) {
       setFormData({
+        id: data?.id,
         appointment_type: data?.type,
         clinicId: data?.clinicId,
         date: data?.date,
@@ -156,7 +158,7 @@ export default function CreateUpdateAppointmentForm({
       <div className="w-full">
         <div className="flex items-center justify-between border-b border-gray-200 p-5 md:p-7">
           <Title as="h2" className="font-lexend text-lg font-semibold">
-            Book an appointment
+            {isEdit && 'Update '} Book an appointment
           </Title>
           <ActionIcon
             size="sm"

@@ -13,6 +13,18 @@ import dayjs from 'dayjs';
 import ActionTooltipButton from '@/app/shared/ui/action-tooltip-button';
 import PencilIcon from '@/core/components/icons/pencil';
 import CreateUpdateAppointmentForm from '../../appointment-form';
+import CSelect from '@/app/shared/ui/select';
+import { useState } from 'react';
+import { useUpdateAppointment } from '@/hooks/useAppointment';
+import toast from 'react-hot-toast';
+
+const statusOptions = [
+  { label: 'Draft', value: 1 },
+  { label: 'Pending', value: 2 },
+  { label: 'Confirmed', value: 3 },
+  { label: 'Finished', value: 4 },
+  { label: 'Cancelled', value: 5 },
+];
 
 type RowValue = IGetAppointmentListResponse['data'][number];
 
@@ -135,8 +147,12 @@ export const GetColumns = ({
       onHeaderCell: () => onHeaderCellClick('status'),
       dataIndex: 'status',
       key: 'status',
-      width: 250,
-      render: (value: string) => getScheduleStatusBadge(value),
+      width: 260,
+      render: (value: number, row: RowValue) => (
+        <div className="!w-full">
+          <StatusSelect selectItem={value} id={row.id} />
+        </div>
+      ),
     },
     {
       title: (
@@ -298,7 +314,7 @@ function getScheduleStatusBadge(status: number | string) {
     case 1:
       return (
         <Flex gap="1" align="center">
-          <Badge color="danger" renderAsDot />
+          <Badge color="info" renderAsDot />
           <Text className="font-medium text-red-dark">Draft</Text>
         </Flex>
       );
@@ -310,4 +326,45 @@ function getScheduleStatusBadge(status: number | string) {
         </div>
       );
   }
+}
+
+function StatusSelect({ selectItem, id }: { selectItem: number; id: number }) {
+  const selectItemValue = statusOptions.find(
+    (option) => option.value === selectItem
+  )?.value;
+  const [value, setValue] = useState(selectItemValue);
+
+  const { mutate, isPending } = useUpdateAppointment();
+
+  const handleChange = (value: number) => {
+    setValue(value);
+    mutate(
+      { id, status: value },
+      {
+        onSuccess: () => {
+          toast.success('Status updated successfully');
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || 'Error updating status'
+          );
+        },
+      }
+    );
+  };
+
+  return (
+    <CSelect
+      className={'min-w-[140px]'}
+      dropdownClassName="h-auto"
+      placeholder="Select Status"
+      options={statusOptions}
+      value={value}
+      onChange={handleChange}
+      isLoading={isPending}
+      displayValue={(option: { value: number }) =>
+        getScheduleStatusBadge(option.value)
+      }
+    />
+  );
 }

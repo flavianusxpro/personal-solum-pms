@@ -7,7 +7,10 @@ import {
   useStepperAppointment,
 } from '@/app/shared/appointment/appointment-form';
 import { useAtom } from 'jotai';
-import { usePostCreateAppointment } from '@/hooks/useAppointment';
+import {
+  usePostCreateAppointment,
+  useUpdateAppointment,
+} from '@/hooks/useAppointment';
 import { IPayloadPostAppoinment } from '@/types/paramTypes';
 import dayjs from 'dayjs';
 import toast from 'react-hot-toast';
@@ -23,10 +26,26 @@ export default function Footer({ className }: FooterProps) {
 
   const [formData] = useAtom(formDataAtom);
   const { mutate: mutateCreate } = usePostCreateAppointment();
+  const { mutate: mutateUpdate, isPending } = useUpdateAppointment();
+
+  const isEdit = formData.id;
 
   const saveAppoinment = () => {
-    if (formData.id) {
-      toast.error('You have already booked an appointment');
+    if (isEdit) {
+      mutateUpdate(
+        { ...formData, id: formData.id as number },
+        {
+          onSuccess: () => {
+            closeModal();
+            toast.success('Status updated successfully');
+          },
+          onError: (error: any) => {
+            toast.error(
+              error?.response?.data?.message || 'Error updating status'
+            );
+          },
+        }
+      );
       return;
     }
     const payload: IPayloadPostAppoinment = {
@@ -83,6 +102,22 @@ export default function Footer({ className }: FooterProps) {
             Back
           </Button>
         )}
+        {step === 3 && (
+          <Button
+            className="!w-auto"
+            type="button"
+            onClick={saveAppoinment}
+            isLoading={isPending}
+            rounded="lg"
+          >
+            {isEdit ? 'Save Update' : 'Payment'}
+          </Button>
+        )}
+        {step !== 4 && step !== 3 && (
+          <Button className="!w-auto" type="submit" rounded="lg">
+            Next
+          </Button>
+        )}
         {step === 4 && (
           <Button
             className="!w-auto"
@@ -91,11 +126,6 @@ export default function Footer({ className }: FooterProps) {
             rounded="lg"
           >
             Save
-          </Button>
-        )}
-        {step !== 4 && (
-          <Button className="!w-auto" type="submit" rounded="lg">
-            {step === 3 ? 'Payment' : 'Next'}
           </Button>
         )}
       </div>

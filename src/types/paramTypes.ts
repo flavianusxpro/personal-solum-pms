@@ -211,6 +211,18 @@ export interface IPayloadPostAppoinment {
   meeting_preference: string;
 }
 
+export interface IPayloadPutUpdateAppoinment {
+  id?: number;
+  clinicId?: number;
+  doctorId?: number;
+  patientId?: number;
+  patient_type?: string;
+  patient_problem?: string;
+  status?: number;
+  appointment_type?: string;
+  note?: string;
+}
+
 export interface IPayloadUploadImage {
   image: File;
   path_name: string;

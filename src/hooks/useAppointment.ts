@@ -3,6 +3,7 @@ import {
   getAppointmentList,
   getSummaryAppointments,
   postCreateAppointment,
+  putUpdateAppointment,
 } from '@/service/appointment';
 import { IParamGetAppointments } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -24,6 +25,12 @@ export function useGetSummaryAppointments() {
 export function usePostCreateAppointment() {
   return useMutation({
     mutationFn: postCreateAppointment,
+  });
+}
+
+export function useUpdateAppointment() {
+  return useMutation({
+    mutationFn: putUpdateAppointment,
   });
 }
 

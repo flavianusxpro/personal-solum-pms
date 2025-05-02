@@ -9,8 +9,6 @@ import { useGetAllPatients } from '@/hooks/usePatient';
 import { useMemo } from 'react';
 import { useGetAllClinics } from '@/hooks/useClinic';
 import { z } from 'zod';
-import { Text } from 'rizzui';
-import { ROLES } from '@/config/constants';
 
 const FormSchema = appointmentBookSchema['selectPatientAndClinic'];
 
@@ -19,6 +17,7 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 export default function SelectClinic() {
   const { gotoNextStep } = useStepperAppointment();
   const [formData, setFormData] = useAtom(formDataAtom);
+  const isEdit = formData?.id;
 
   const { data: dataClinics, isLoading: isLoadingClinics } = useGetAllClinics({
     page: 1,
@@ -68,9 +67,6 @@ export default function SelectClinic() {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-5 px-5 pb-6 pt-5 md:px-7 md:pb-9 md:pt-7">
-        {/* <Text className="text-base font-semibold">
-          Select Clinic and Patient:
-        </Text> */}
         <Controller
           control={control}
           name="clinicId"

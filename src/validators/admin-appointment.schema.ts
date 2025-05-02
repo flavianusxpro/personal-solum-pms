@@ -13,14 +13,14 @@ export const appointmentBookSchema = {
     doctorTime: z.string({ required_error: 'Doctor time is required' }),
   }),
   selectServiceType: z.object({
-    appointment_type: z.string({
-      required_error: 'Appointment type is required',
+    appointment_type: z.string().min(1, {
+      message: 'Appointment type is required',
     }),
-    patient_type: z.string({
-      required_error: 'Patient type is required',
+    patient_type: z.string().min(1, {
+      message: 'Patient type is required',
     }),
-    patient_problem: z.string({
-      required_error: 'Patient problem is required',
+    patient_problem: z.string().min(1, {
+      message: 'Patient problem is required',
     }),
     note: z.string().optional(),
   }),

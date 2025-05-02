@@ -1,4 +1,4 @@
-import { del, get, post } from '@/app/api/api';
+import { del, get, post, put } from '@/app/api/api';
 import {
   IGetAppointmentListResponse,
   IGetAppointmentSummaryResponse,
@@ -6,6 +6,7 @@ import {
 import {
   IParamGetAppointments,
   IPayloadPostAppoinment,
+  IPayloadPutUpdateAppoinment,
 } from '@/types/paramTypes';
 
 export async function getAppointmentList(params: IParamGetAppointments) {
@@ -28,9 +29,13 @@ export async function getSummaryAppointments() {
   });
 }
 export async function postCreateAppointment(payload: IPayloadPostAppoinment) {
-  return await post<any>('/admin/appointment/', payload).then((res) => {
-    return res.data;
-  });
+  return await post<any>('/admin/appointment/', payload);
+}
+
+export async function putUpdateAppointment(
+  payload: IPayloadPutUpdateAppoinment
+) {
+  return await put<any>(`/admin/appointment/${payload.id}`, payload);
 }
 
 export async function deleteAppointment(id: string) {
