@@ -214,11 +214,7 @@ function RenderAction({
           onClick={() =>
             openModal({
               view: (
-                <AppointmentDetails
-                  data={row}
-                  onDelete={() => onDeleteItem(row.id.toString())}
-                  onEdit={handleCreateModal}
-                />
+                <AppointmentDetails data={row} onEdit={handleCreateModal} />
               ),
               customSize: '900px',
             })

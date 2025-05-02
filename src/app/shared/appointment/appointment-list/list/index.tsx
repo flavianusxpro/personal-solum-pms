@@ -27,17 +27,21 @@ const filterState = {
 };
 
 export default function AppointmentListTable() {
-  const [pageSize, setPageSize] = useState(10);
-  const [_, setCheckedItems] = useState<string[]>([]);
   const { isOpen } = useModal();
+
+  const [_, setCheckedItems] = useState<string[]>([]);
+  const [params, setParams] = useState({
+    page: 1,
+    perPage: 10,
+  });
 
   const {
     data: dataAppointments,
     isLoading: isLoadingGetAppointments,
     refetch,
   } = useGetAppointments({
-    page: 1,
-    perPage: pageSize,
+    page: params.page,
+    perPage: params.perPage,
   });
 
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
@@ -83,12 +87,12 @@ export default function AppointmentListTable() {
     handleRowSelect,
     setSelectedRowKeys,
     selectedRowKeys,
-  } = useTable(dataAppointments ?? [], pageSize, filterState);
+  } = useTable(dataAppointments?.data ?? [], params.perPage, filterState);
 
   const columns = useMemo(
     () =>
       GetColumns({
-        data: dataAppointments,
+        data: dataAppointments?.data,
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -110,10 +114,12 @@ export default function AppointmentListTable() {
     useColumn(columns);
 
   useEffect(() => {
-    if (isOpen === false) {
-      refetch();
-    }
+    refetch();
   }, [isOpen, refetch]);
+
+  useEffect(() => {
+    refetch();
+  }, [params, refetch]);
 
   return (
     <div
@@ -133,11 +139,14 @@ export default function AppointmentListTable() {
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{
-          pageSize,
-          setPageSize,
-          total: totalItems,
+          pageSize: params.perPage,
+          setPageSize: (page) => setParams({ ...params, perPage: page }),
+          total: dataAppointments?.count,
           current: currentPage,
-          onChange: (page: number) => handlePaginate(page),
+          onChange: (page: number) => {
+            handlePaginate(page);
+            setParams({ ...params, page });
+          },
         }}
         filterOptions={{
           searchTerm,

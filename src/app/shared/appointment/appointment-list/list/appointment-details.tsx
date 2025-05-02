@@ -7,16 +7,13 @@ import { getPaymentStatusBadge } from './columns';
 
 export default function AppointmentDetails({
   data,
-  onDelete,
   onEdit,
 }: {
   data?: IGetAppointmentListResponse['data'][number];
-  onDelete: () => void;
   onEdit: () => void;
 }) {
   const { closeModal } = useModal();
 
-  console.log(data, 'doctor');
   return (
     <div className="block">
       <div className="flex items-center justify-between border-b border-gray-200 p-5 md:p-7">
@@ -81,7 +78,7 @@ export default function AppointmentDetails({
           <Button
             variant="solid"
             className="min-w-[80px]"
-            onClick={(e) => (onDelete(), closeModal())}
+            onClick={(e) => closeModal()}
           >
             Close
           </Button>

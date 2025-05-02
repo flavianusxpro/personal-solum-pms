@@ -18,8 +18,6 @@ export async function getAppointmentList(params: IParamGetAppointments) {
       perPage: params.perPage,
       q,
     },
-  }).then((res) => {
-    return res.data;
   });
 }
 export async function getSummaryAppointments() {
