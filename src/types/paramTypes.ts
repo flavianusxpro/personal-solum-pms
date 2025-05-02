@@ -200,7 +200,7 @@ export interface IPayloadPostForgotPassword {
 
 export interface IPayloadPostAppoinment {
   clinicId: number;
-  patient_id: number;
+  patientId: number;
   doctorId: number;
   date: string;
   note?: string;

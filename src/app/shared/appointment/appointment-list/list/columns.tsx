@@ -89,10 +89,10 @@ export const GetColumns = ({
       width: 320,
       render: (_: any, row: RowValue) => (
         <AvatarCard
-          src={row.patient.photo ?? ''}
-          name={`${row.patient.first_name} ${row.patient.last_name}`}
-          description={row.patient.email}
-          number={row.patient.mobile_number}
+          src={row?.patient?.photo ?? ''}
+          name={`${row?.patient?.first_name} ${row?.patient?.last_name}`}
+          description={row?.patient?.email}
+          number={row?.patient?.mobile_number}
         />
       ),
     },

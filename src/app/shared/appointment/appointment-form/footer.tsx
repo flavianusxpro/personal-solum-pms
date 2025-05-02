@@ -31,9 +31,21 @@ export default function Footer({ className }: FooterProps) {
   const isEdit = formData.id;
 
   const saveAppoinment = () => {
+    const payload: IPayloadPostAppoinment = {
+      appointment_type: formData.appointment_type,
+      clinicId: formData.clinicId as number,
+      doctorId: formData.doctorId as number,
+      date: `${dayjs(formData.date).format('YYYY-MM-DD')} ${formData.doctorTime}`,
+      note: formData.note,
+      patient_problem: formData.patient_problem,
+      patient_type: formData.patient_type,
+      meeting_preference: 'ZOOM',
+      patientId: formData.patient_id as number,
+    };
+
     if (isEdit) {
       mutateUpdate(
-        { ...formData, id: formData.id as number },
+        { ...payload, id: formData.id as number },
         {
           onSuccess: () => {
             closeModal();
@@ -48,17 +60,6 @@ export default function Footer({ className }: FooterProps) {
       );
       return;
     }
-    const payload: IPayloadPostAppoinment = {
-      appointment_type: formData.appointment_type,
-      clinicId: formData.clinicId as number,
-      doctorId: formData.doctorId as number,
-      date: `${dayjs(formData.date).format('YYYY-MM-DD')} ${formData.doctorTime}`,
-      note: formData.note,
-      patient_problem: formData.patient_problem,
-      patient_type: formData.patient_type,
-      meeting_preference: 'ZOOM',
-      patient_id: formData.patient_id as number,
-    };
 
     mutateCreate(payload, {
       onSuccess: () => {
@@ -105,8 +106,8 @@ export default function Footer({ className }: FooterProps) {
         {step === 3 && (
           <Button
             className="!w-auto"
-            type="button"
-            onClick={saveAppoinment}
+            type={isEdit ? 'button' : 'submit'}
+            onClick={isEdit ? saveAppoinment : undefined}
             isLoading={isPending}
             rounded="lg"
           >

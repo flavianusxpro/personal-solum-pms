@@ -48,13 +48,17 @@ export default function EventCalendarView() {
     if (!dataAppointment) return [];
     return dataAppointment.data.map((appointment) => ({
       title:
-        appointment.patient.first_name + ' ' + appointment.patient.last_name,
+        appointment?.patient?.first_name +
+        ' ' +
+        appointment?.patient?.last_name,
       id: appointment.id.toString(),
       start: new Date(appointment.date),
       end: new Date(appointment.date),
       allDay: false,
       patient:
-        appointment.patient.first_name + ' ' + appointment.patient.last_name,
+        appointment?.patient?.first_name +
+        ' ' +
+        appointment?.patient?.last_name,
       description: appointment.note || '-',
       doctor:
         appointment.doctor.first_name + ' ' + appointment.doctor.last_name,
