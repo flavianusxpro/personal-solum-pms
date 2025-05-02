@@ -38,7 +38,7 @@ export default function Footer({ className }: FooterProps) {
       patient_problem: formData.patient_problem,
       patient_type: formData.patient_type,
       meeting_preference: 'ZOOM',
-      patient_id: formData.patient_id ? String(formData.patient_id) : '',
+      patient_id: formData.patient_id as number,
     };
 
     mutateCreate(payload, {

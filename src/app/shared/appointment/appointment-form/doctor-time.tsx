@@ -89,60 +89,65 @@ export default function AppointmentPatientDoctor() {
         </Flex>
         <div className="mx-auto max-h-80 max-w-4xl divide-y divide-gray-200 overflow-auto">
           {isLoading && <Loader variant="spinner" size="xl" />}
-          {dataDoctor?.map((doctor, index: number) => (
-            <div key={index} className="mb-5">
-              {/* Doctor Header */}
-              <div className="flex items-center justify-between space-x-4 p-6">
-                <div className="flex items-center space-x-4">
-                  {doctor.url_photo ? (
-                    <Image
-                      src={doctor.url_photo}
-                      alt={doctor.first_name}
-                      className="h-12 w-12 rounded-full"
-                      height={48}
-                      width={48}
-                    />
-                  ) : (
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-300">
-                      🏥
-                    </div>
-                  )}
-                  <h3 className="cursor-pointer text-base font-bold hover:underline">
-                    Dr. {doctor.first_name} {doctor.last_name}
-                  </h3>
-                </div>
-                <div
-                  className="cursor-pointer"
-                  onClick={() =>
-                    setCurrentOpen((prev) =>
-                      prev === doctor.id ? null : doctor.id
-                    )
-                  }
-                >
-                  <div className="flex items-center gap-2">
-                    {currentOpen === doctor.id ? (
-                      <>
-                        <Text>Hide Appointment</Text> <BiChevronUp size={30} />
-                      </>
+          {dataDoctor?.map((doctor, index: number) => {
+            if (!doctor.id) return null;
+
+            return (
+              <div key={index} className="mb-5">
+                {/* Doctor Header */}
+                <div className="flex items-center justify-between space-x-4 p-6">
+                  <div className="flex items-center space-x-4">
+                    {doctor.url_photo ? (
+                      <Image
+                        src={doctor.url_photo}
+                        alt={doctor.first_name}
+                        className="h-12 w-12 rounded-full"
+                        height={48}
+                        width={48}
+                      />
                     ) : (
-                      <>
-                        <Text>See All Appointment</Text>
-                        <BiChevronDown size={30} />
-                      </>
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-300">
+                        🏥
+                      </div>
                     )}
+                    <h3 className="cursor-pointer text-base font-bold hover:underline">
+                      Dr. {doctor.first_name} {doctor.last_name}
+                    </h3>
+                  </div>
+                  <div
+                    className="cursor-pointer"
+                    onClick={() =>
+                      setCurrentOpen((prev) =>
+                        prev === doctor.id ? null : doctor.id
+                      )
+                    }
+                  >
+                    <div className="flex items-center gap-2">
+                      {currentOpen === doctor.id ? (
+                        <>
+                          <Text>Hide Appointment</Text>{' '}
+                          <BiChevronUp size={30} />
+                        </>
+                      ) : (
+                        <>
+                          <Text>See All Appointment</Text>
+                          <BiChevronDown size={30} />
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
+
+                {/* Doctor Times */}
+
+                <DoctorTime
+                  setValue={setValue}
+                  currentOpen={currentOpen}
+                  doctor={doctor}
+                />
               </div>
-
-              {/* Doctor Times */}
-
-              <DoctorTime
-                setValue={setValue}
-                currentOpen={currentOpen}
-                doctor={doctor}
-              />
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
       <Footer />

@@ -72,7 +72,6 @@ export default function AppointmentServices() {
   );
 
   const onSubmit: SubmitHandler<FormSchemaType> = (data) => {
-    console.log('data', data);
     setFormData((prev) => ({
       ...prev,
       appointment_type: data.appointment_type,
