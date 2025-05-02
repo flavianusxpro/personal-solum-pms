@@ -137,7 +137,7 @@ export const getColumns = ({
           placement="top"
           color="invert"
         >
-          <Link href={routes.product.edit(row.id)}>
+          <Link href={routes.management.product.edit(row.id)}>
             <ActionIcon
               as="span"
               size="sm"
@@ -154,7 +154,7 @@ export const getColumns = ({
           placement="top"
           color="invert"
         >
-          <Link href={routes.product.productDetail(row.id)}>
+          <Link href={routes.management.product.productDetail(row.id)}>
             <ActionIcon
               as="span"
               size="sm"
@@ -189,7 +189,7 @@ export const getWidgetColumns = ({
     width: 90,
     render: (value: string, row: any) => (
       <Link
-        href={routes.product.edit(row.id)}
+        href={routes.management.product.edit(row.id)}
         className="ps-4 hover:text-gray-900 hover:underline"
       >
         #{value}
@@ -308,7 +308,7 @@ export const getWidgetColumns = ({
           placement="top"
           color="invert"
         >
-          <Link href={routes.product.productDetail(row.id)}>
+          <Link href={routes.management.product.productDetail(row.id)}>
             <ActionIcon
               as="span"
               size="sm"

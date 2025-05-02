@@ -106,7 +106,7 @@ export const adminMenuItems = [
     dropdownItems: [
       {
         name: 'Products',
-        href: routes.product.dashboard,
+        href: routes.management.product.list,
         icon: <PiBoundingBox />,
       },
     ],
@@ -119,17 +119,17 @@ export const adminMenuItems = [
     dropdownItems: [
       {
         name: 'Coupon',
-        href: routes.product.dashboard,
+        href: routes.management.product.list,
         icon: <PiBoundingBox />,
       },
       {
         name: 'Email Marketing',
-        href: routes.product.dashboard,
+        href: routes.management.product.list,
         icon: <PiBoundingBox />,
       },
       {
         name: 'Sms Marketing',
-        href: routes.product.dashboard,
+        href: routes.management.product.list,
         icon: <PiBoundingBox />,
       },
     ],

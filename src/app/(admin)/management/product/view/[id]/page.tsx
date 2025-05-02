@@ -12,7 +12,7 @@ export default function ProductDetailsPage({ params }: any) {
     title: 'Product Detail',
     breadcrumb: [
       {
-        href: routes.product.dashboard,
+        href: routes.management.product.list,
         name: 'Product',
       },
       {

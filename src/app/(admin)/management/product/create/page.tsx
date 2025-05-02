@@ -11,7 +11,7 @@ const pageHeader = {
   title: 'Create New Product',
   breadcrumb: [
     {
-      href: routes.product.dashboard,
+      href: routes.management.product.list,
       name: 'Product',
     },
     {

@@ -12,12 +12,7 @@ export const routes = {
     edit: (id: string) => `/user/edit/${id}`,
     userDetail: (id: string) => `/user/${id}`,
   },
-  product: {
-    dashboard: '/product',
-    create: '/product/create',
-    edit: (id: string) => `/product/edit/${id}`,
-    productDetail: (id: string) => `/product/view/${id}`,
-  },
+
   patient: {
     dashboard: '/patient',
     create: '/patient/create',
@@ -26,6 +21,12 @@ export const routes = {
   },
   management: {
     dashboard: '/management',
+    product: {
+      list: '/management/product',
+      create: '/management/product/create',
+      edit: (id: string) => `/management/product/edit/${id}`,
+      productDetail: (id: string) => `/management/product/view/${id}`,
+    },
   },
   invoice: {
     home: '/invoice',

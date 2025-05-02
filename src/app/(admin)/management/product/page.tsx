@@ -16,7 +16,7 @@ const pageHeader = {
   title: 'Products',
   breadcrumb: [
     {
-      href: routes.product.dashboard,
+      href: routes.management.product.list,
       name: 'Products',
     },
     {
@@ -35,7 +35,10 @@ export default function ProductPage() {
             fileName="order_data"
             header="Order ID,Name,Email,Avatar,Items,Price,Status,Created At,Updated At"
           />
-          <Link href={routes.product.create} className="w-full @lg:w-auto">
+          <Link
+            href={routes.management.product.create}
+            className="w-full @lg:w-auto"
+          >
             <Button as="span" className="w-full @lg:w-auto">
               <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
               Add Products
