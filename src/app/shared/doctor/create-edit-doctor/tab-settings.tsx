@@ -20,10 +20,10 @@ import {
 } from '@/types/paramTypes';
 import toast from 'react-hot-toast';
 import CSelect from '../../ui/select';
-import { timeZoneOption } from '@/config/constants';
 import { IoChevronDownCircleOutline } from 'react-icons/io5';
 import TeamsIcon from '@core/components/icons/teams';
 import Divider from '../../ui/divider';
+import { useMemo } from 'react';
 
 export default function TabSettings({ isView = false }: { isView?: boolean }) {
   const id = useParams().id as string;
@@ -34,6 +34,14 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
     useUpdateSettingMeetingDoctor();
   const { mutate: mutateUpdateBilling, isPending: isPendingUpdateBillig } =
     useUpdateSettingBillingDoctor();
+
+  const timeZoneOptions = useMemo(() => {
+    const timezones = Intl.supportedValuesOf('timeZone');
+    return timezones.map((timezone) => ({
+      value: timezone,
+      label: `${timezone}`,
+    }));
+  }, []);
 
   const onSubmit: SubmitHandler<SettingsDoctorSchema> = (data) => {
     const payloadSettingMeeting: IPayloadSettingMeetingDoctor = {
@@ -129,7 +137,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
               Number(dataDoctor?.setting?.followup_appointment_fee) || 0,
             script_renewal_fee:
               Number(dataDoctor?.setting?.script_renewal_fee) || 0,
-            // doctor_timezone: dataDoctor?.setting.doctor_timezone,
+            doctor_timezone: dataDoctor?.timezone,
             follow_up_appointment_time:
               dataDoctor?.setting?.followup_appointment_time,
             initial_appointment_time:
@@ -375,7 +383,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
 
                 <Divider className="" />
 
-                <FormGroup title="Appointment Time Setup">
+                <FormGroup title="Appointment Time Interval Setup">
                   <Grid columns="2">
                     <Controller
                       name="initial_appointment_time"
@@ -418,7 +426,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                   </Grid>
                 </FormGroup>
 
-                <FormGroup title="Time Interval">
+                <FormGroup title="Timezone Setup">
                   <Grid columns="2">
                     <Controller
                       name="doctor_timezone"
@@ -430,7 +438,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                           placeholder="Select Doctor Timezone"
                           error={errors.doctor_timezone?.message}
                           disabled={isView}
-                          options={timeZoneOption}
+                          options={timeZoneOptions}
                         />
                       )}
                     />
