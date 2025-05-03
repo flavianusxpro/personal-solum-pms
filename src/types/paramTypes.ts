@@ -115,6 +115,7 @@ export interface IParamGetTreatments extends IParamGetDataWithPagination {}
 export interface IParamGetRoles extends IParamGetDataWithPagination {}
 export interface IParamGetPermissions extends IParamGetDataWithPagination {}
 export interface IParamGetUsers extends IParamGetDataWithPagination {}
+export interface IParamGetTaxes extends IParamGetDataWithPagination {}
 export interface IParamGetAppointments extends IParamGetDataWithPagination {
   doctorId?: number;
   patientId?: number;
@@ -352,4 +353,10 @@ export interface IPayloadCreateEditTreatment {
   id?: string;
   name: string;
   description?: string;
+}
+export interface IPayloadCreateEditTax {
+  id?: string;
+  name: string;
+  description?: string;
+  value: number;
 }

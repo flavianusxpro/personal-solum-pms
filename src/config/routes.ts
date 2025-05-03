@@ -42,6 +42,7 @@ export const routes = {
     emailTemplate: '/setting/email-template',
     smsTemplate: '/setting/sms-template',
     roles: '/setting/roles',
+    taxSettings: '/setting/tax',
   },
 
   bookAppointment: '/bookings',

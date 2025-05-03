@@ -540,6 +540,16 @@ export interface IGetTreatmentResponse extends ApiResponseWithPagination {
     updated_at: string;
   }[];
 }
+export interface IGetTaxesResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    name: string;
+    description: string;
+    value: number;
+    created_at: string;
+    updated_at: string;
+  }[];
+}
 
 export interface IGetRolesResponse extends ApiResponseWithPagination {
   data: {

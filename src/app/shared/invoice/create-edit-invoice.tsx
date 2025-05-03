@@ -23,7 +23,7 @@ import {
 } from '@/hooks/useInvoice';
 import { useRouter } from 'next/navigation';
 import { routes } from '@/config/routes';
-import { taxFeeOptions } from '@/config/constants';
+import { useGetTaxes } from '@/hooks/useTax';
 
 export default function CreateEditInvoice({ id }: { id?: string }) {
   const router = useRouter();
@@ -39,6 +39,11 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
   const { data: dataInvoice, isLoading: isLoadingGetInvoice } =
     useGetInvoiceById(id);
 
+  const { data: dataTaxes } = useGetTaxes({
+    page: 1,
+    perPage: 100,
+  });
+
   const { mutate: mutateCreate } = usePostCreateInvoice();
   const { mutate: mutateUpdate } = usePutUpdateInvoice();
 
@@ -49,6 +54,14 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
       value: item.id,
     }));
   }, [dataPatients]);
+
+  const taxFeeOptions = useMemo(() => {
+    if (!dataTaxes?.data) return [];
+    return dataTaxes?.data.map((item) => ({
+      label: `${item.description}`,
+      value: item.value,
+    }));
+  }, [dataTaxes]);
 
   const onSubmit: SubmitHandler<InvoiceFormInput> = (data) => {
     setLoading(true);
