@@ -335,6 +335,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                         <CNumberInput
                           {...field}
                           label="Initial Appointment Fee"
+                          suffix="$"
                           placeholder="Initial Appointment Fee"
                           error={errors.initial_appointment_fee?.message}
                           disabled={isView}
@@ -348,6 +349,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                         <CNumberInput
                           {...field}
                           label="Follow Up Appointment Fee"
+                          suffix="$"
                           placeholder="Follow Up Appointment Fee"
                           error={errors.follow_up_appointment_fee?.message}
                           disabled={isView}
@@ -361,6 +363,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                         <CNumberInput
                           {...field}
                           label="Script Renewal Fee"
+                          suffix="$"
                           placeholder="Script Renewal Fee"
                           error={errors.script_renewal_fee?.message}
                           disabled={isView}
