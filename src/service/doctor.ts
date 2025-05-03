@@ -5,13 +5,16 @@ import {
   IGetDoctorByClinicResponse,
   IGetDoctorByIdResponse,
   IGetSpecialistResponse,
+  IGetTreatmentResponse,
 } from '@/types/ApiResponse';
 import {
   IParamGetAllDoctor,
   IParamGetDoctorByClinic,
   IParamGetSpecialists,
+  IParamGetTreatments,
   IPayloadAssignDoctorToClinic,
   IPayloadCreateEditDoctor,
+  IPayloadCreateEditTreatment,
   IPayloadPostCreateEditSpecialist,
   IPayloadSettingBillingDoctor,
   IPayloadSettingMeetingDoctor,
@@ -103,4 +106,24 @@ export async function putUpdateSpecialist(
 
 export async function deleteSpecialist(id: string) {
   return await del<any>(`/admin/doctor/specialist/${id}`);
+}
+
+export async function getTreatments(params: IParamGetTreatments) {
+  return await get<IGetTreatmentResponse>('/admin/doctor/treatment', {
+    params,
+  });
+}
+
+export async function postCreateTreatment(
+  payload: IPayloadCreateEditTreatment
+) {
+  return await post<any>('/admin/doctor/treatment', payload);
+}
+
+export async function putUpdateTreatment(payload: IPayloadCreateEditTreatment) {
+  return await put<any>('/admin/doctor/treatment/' + payload.id, payload);
+}
+
+export async function deleteTreatment(id: string) {
+  return await del<any>(`/admin/doctor/treatment/${id}`);
 }

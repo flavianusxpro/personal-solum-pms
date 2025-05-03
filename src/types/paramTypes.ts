@@ -111,6 +111,7 @@ export interface IParamGetAllEmailTemplates
   extends IParamGetDataWithPagination {}
 export interface IParamGetAllSmsTemplates extends IParamGetDataWithPagination {}
 export interface IParamGetSpecialists extends IParamGetDataWithPagination {}
+export interface IParamGetTreatments extends IParamGetDataWithPagination {}
 export interface IParamGetRoles extends IParamGetDataWithPagination {}
 export interface IParamGetPermissions extends IParamGetDataWithPagination {}
 export interface IParamGetUsers extends IParamGetDataWithPagination {}
@@ -342,6 +343,12 @@ export interface IPayloadCreateEditRole {
 }
 
 export interface IPayloadPostCreateEditSpecialist {
+  id?: string;
+  name: string;
+  description?: string;
+}
+
+export interface IPayloadCreateEditTreatment {
   id?: string;
   name: string;
   description?: string;

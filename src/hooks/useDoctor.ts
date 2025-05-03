@@ -12,6 +12,10 @@ import {
   putSettingMeetingDoctor,
   putUpdateSpecialist,
   deleteDoctor,
+  getTreatments,
+  postCreateTreatment,
+  deleteTreatment,
+  putUpdateTreatment,
 } from '@/service/doctor';
 
 import {
@@ -128,5 +132,34 @@ export function usePutUpdateSpecialist() {
 export function useDeleteSpecialist() {
   return useMutation({
     mutationFn: deleteSpecialist,
+  });
+}
+
+export function useGetTreatments(params: IParamGetSpecialists) {
+  return useQuery({
+    queryKey: ['getTreatments'],
+    queryFn: async () => {
+      return await getTreatments(params);
+    },
+    staleTime: 1000 * 60 * 10, // 10 minutes
+    refetchOnWindowFocus: false,
+  });
+}
+
+export function usePostCreateTreatment() {
+  return useMutation({
+    mutationFn: postCreateTreatment,
+  });
+}
+
+export function usePutUpdateTreatment() {
+  return useMutation({
+    mutationFn: putUpdateTreatment,
+  });
+}
+
+export function useDeleteTreatment() {
+  return useMutation({
+    mutationFn: deleteTreatment,
   });
 }

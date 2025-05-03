@@ -3,38 +3,26 @@
 import { Controller, SubmitHandler } from 'react-hook-form';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { ActionIcon, Flex, Input, Loader, Text, Textarea, Title } from 'rizzui';
+import { ActionIcon, Flex, Input, Textarea, Title } from 'rizzui';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { PiX } from 'react-icons/pi';
-import dynamic from 'next/dynamic';
-import toast from 'react-hot-toast';
-import { IGetRolesResponse } from '@/types/ApiResponse';
-import {
-  CreateRoleInput,
-  createRoleSchema,
-} from '@/validators/create-role.schema';
-import {
-  useGetPermissions,
-  useGetRoles,
-  usePostCreateRole,
-  usePutUpdateRole,
-} from '@/hooks/useRole';
-import { useMemo } from 'react';
+
+import { IGetTreatmentResponse } from '@/types/ApiResponse';
+
 import {
   CreateTreatmentInput,
   createTreatmentSchema,
 } from '@/validators/create-treatment.schema';
-
-const MultySelect = dynamic(
-  () => import('rizzui').then((mod) => mod.MultiSelect),
-  {
-    ssr: false,
-    loading: () => <Loader />,
-  }
-);
+import {
+  useGetTreatments,
+  usePostCreateTreatment,
+  usePutUpdateTreatment,
+} from '@/hooks/useDoctor';
+import toast from 'react-hot-toast';
+import cn from '@/core/utils/class-names';
 
 interface CreateEditSmsTemplateModalProps {
-  data?: IGetRolesResponse['data'][number];
+  data?: IGetTreatmentResponse['data'][number];
   isView?: boolean;
 }
 
@@ -44,47 +32,50 @@ export default function CreateEditTreatmentModal({
 }: CreateEditSmsTemplateModalProps) {
   const { closeModal } = useModal();
 
-  const { refetch } = useGetRoles({
+  const { refetch } = useGetTreatments({
     page: 1,
     perPage: 10,
   });
 
   const { mutate: mutateCreate, isPending: isPendingCreate } =
-    usePostCreateRole();
+    usePostCreateTreatment();
   const { mutate: mutateUpdate, isPending: isPendingUpdate } =
-    usePutUpdateRole();
+    usePutUpdateTreatment();
 
   const onSubmit: SubmitHandler<CreateTreatmentInput> = (formValues) => {
     console.log('🚀 ~ formValues:', formValues);
     if (data?.id) {
-      // mutateUpdate(
-      //   { ...formValues, id: data?.id.toString() },
-      //   {
-      //     onSuccess: () => {
-      //       refetch();
-      //       closeModal();
-      //       toast.success('Role updated successfully');
-      //     },
-      //     onError: (error: any) => {
-      //       toast.error(
-      //         'Failed to update role: ',
-      //         error?.response?.data?.message
-      //       );
-      //     },
-      //   }
-      // );
+      mutateUpdate(
+        { ...formValues, id: data?.id.toString() },
+        {
+          onSuccess: () => {
+            refetch();
+            closeModal();
+            toast.success('Treatment updated successfully');
+          },
+          onError: (error: any) => {
+            toast.error(
+              'Failed to update treatment: ',
+              error?.response?.data?.message
+            );
+          },
+        }
+      );
       return;
     }
-    // mutateCreate(formValues, {
-    //   onSuccess: () => {
-    //     refetch();
-    //     closeModal();
-    //     toast.success('Role template created successfully');
-    //   },
-    //   onError: (error: any) => {
-    //     toast.error('Failed to create role: ', error?.response?.data?.message);
-    //   },
-    // });
+    mutateCreate(formValues, {
+      onSuccess: () => {
+        refetch();
+        closeModal();
+        toast.success('Treatment template created successfully');
+      },
+      onError: (error: any) => {
+        toast.error(
+          'Failed to create treatment: ',
+          error?.response?.data?.message
+        );
+      },
+    });
   };
 
   return (
@@ -97,13 +88,15 @@ export default function CreateEditTreatmentModal({
         mode: 'onChange',
         defaultValues: {
           name: data?.name || '',
-          // description: data?.description || '',
+          description: data?.description || '',
         },
       }}
     >
       {({ register, control, watch, formState: { errors } }) => {
         return (
-          <div className="flex flex-col gap-6 px-6 pt-6">
+          <div
+            className={cn('flex flex-col gap-6 px-6 pt-6', isView && 'pb-6')}
+          >
             <Flex justify="between" align="center" gap="4">
               <Title className="text-lg">
                 {isView ? 'View' : data ? 'Update' : 'Create'} Treatment
@@ -130,7 +123,7 @@ export default function CreateEditTreatmentModal({
               disabled={isView}
             />
 
-            {/* {isView ? null : (
+            {isView ? null : (
               <FormFooter
                 className="rounded-b-xl"
                 isLoading={isPendingCreate || isPendingUpdate}
@@ -138,7 +131,7 @@ export default function CreateEditTreatmentModal({
                 submitBtnText="Save"
                 isSticky={false}
               />
-            )} */}
+            )}
           </div>
         );
       }}

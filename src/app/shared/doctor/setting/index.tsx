@@ -12,6 +12,7 @@ import SpecialistTable from './specialist/table/table';
 import ModalButton from '../../ui/modal-button/modal-button';
 import CreateEditSpecialistModal from './specialist/modal/create-edit-modal';
 import CreateEditTreatmentModal from './treatment/modal/create-edit-modal';
+import TreatmentTable from './treatment/table/table';
 
 export const navItems = [
   {
@@ -81,7 +82,7 @@ export default function SettingDoctor({
         </SimpleBar>
 
         {tab === 'specialist' && <SpecialistTable />}
-        {tab === 'treatment' && <></>}
+        {tab === 'treatment' && <TreatmentTable />}
       </div>
     </>
   );

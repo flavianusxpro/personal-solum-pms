@@ -2,15 +2,15 @@
 
 import DeletePopover from '@/app/shared/ui/delete-popover';
 import { HeaderCell } from '@/app/shared/ui/table';
-import { IGetRolesResponse } from '@/types/ApiResponse';
+import { IGetTreatmentResponse } from '@/types/ApiResponse';
 import EyeIcon from '@core/components/icons/eye';
 import PencilIcon from '@core/components/icons/pencil';
 import DateCell from '@core/ui/date-cell';
 import { ActionIcon, Checkbox, Text, Tooltip } from 'rizzui';
-import CreateEditRoleModal from '../modal/create-edit-modal';
+import CreateEditTreatmentModal from '../modal/create-edit-modal';
 
 type Columns = {
-  data: IGetRolesResponse['data'];
+  data: IGetTreatmentResponse['data'];
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
@@ -20,7 +20,7 @@ type Columns = {
   openModal: (props: any) => void;
 };
 
-type Row = IGetRolesResponse['data'][number];
+type Row = IGetTreatmentResponse['data'][number];
 
 export const getColumns = ({
   data,
@@ -57,11 +57,25 @@ export const getColumns = ({
     ),
   },
   {
-    title: <HeaderCell title="ROLE NAME" />,
+    title: <HeaderCell title="ID" />,
+    dataIndex: 'id',
+    key: 'id',
+    width: 30,
+    render: (value: string) => <Text className="font-medium">{value}</Text>,
+  },
+  {
+    title: <HeaderCell title="TREATMENT NAME" />,
     dataIndex: 'name',
     key: 'name',
     width: 200,
     render: (name: string) => <Text className="font-medium">{name}</Text>,
+  },
+  {
+    title: <HeaderCell title="Description" />,
+    dataIndex: 'description',
+    key: 'description',
+    width: 200,
+    render: (value: string) => <Text className="font-medium">{value}</Text>,
   },
   {
     title: <HeaderCell title="CREATED AT" />,
@@ -85,25 +99,35 @@ export const getColumns = ({
     width: 130,
     render: (_: string, row: Row) => (
       <div className="flex items-center justify-end gap-3 pe-4">
-        <Tooltip size="sm" content={'Edit Role'} placement="top" color="invert">
+        <Tooltip
+          size="sm"
+          content={'Edit Treatment'}
+          placement="top"
+          color="invert"
+        >
           <ActionIcon
             size="sm"
             variant="outline"
             className="hover:text-gray-700"
             onClick={() =>
               openModal({
-                view: <CreateEditRoleModal data={row} />,
+                view: <CreateEditTreatmentModal data={row} />,
               })
             }
           >
             <PencilIcon className="h-4 w-4" />
           </ActionIcon>
         </Tooltip>
-        <Tooltip size="sm" content={'View Role'} placement="top" color="invert">
+        <Tooltip
+          size="sm"
+          content={'View Treatment'}
+          placement="top"
+          color="invert"
+        >
           <ActionIcon
             onClick={() =>
               openModal({
-                view: <CreateEditRoleModal isView data={row} />,
+                view: <CreateEditTreatmentModal isView data={row} />,
               })
             }
             size="sm"
@@ -114,8 +138,8 @@ export const getColumns = ({
           </ActionIcon>
         </Tooltip>
         <DeletePopover
-          title={`Delete the role`}
-          description={`Are you sure you want to delete this #${row.id} role?`}
+          title={`Delete the treatment`}
+          description={`Are you sure you want to delete this #${row.id} treatment?`}
           onDelete={() => onDeleteItem(row.id.toString())}
         />
       </div>

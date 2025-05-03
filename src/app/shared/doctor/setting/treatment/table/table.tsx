@@ -6,23 +6,26 @@ import { useTable } from '@core/hooks/use-table';
 import React, { useCallback, useState } from 'react';
 import { getColumns } from './columns';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import { useDeleteRole, useGetRoles } from '@/hooks/useRole';
+import { useDeleteTreatment, useGetTreatments } from '@/hooks/useDoctor';
 
-export default function RolesTable({}: {}) {
+export default function TreatmentTable({}: {}) {
   const { openModal } = useModal();
-  const [pageSize, setPageSize] = useState(10);
+  const [params, setParams] = useState({
+    page: 1,
+    pageSize: 10,
+  });
 
   const {
     data,
-    isLoading: isLoadingGetRoles,
+    isLoading: isLoadingGetTreatments,
     refetch,
-  } = useGetRoles({
-    page: 1,
-    perPage: pageSize,
+  } = useGetTreatments({
+    page: params.page,
+    perPage: params.pageSize,
     sort: 'DESC',
   });
 
-  const { mutate } = useDeleteRole();
+  const { mutate } = useDeleteTreatment();
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -49,7 +52,7 @@ export default function RolesTable({}: {}) {
     handleSelectAll,
     handleDelete,
     // handleReset,
-  } = useTable(data ?? [], pageSize);
+  } = useTable(data?.data ?? [], params.pageSize);
 
   const onDeleteItem = useCallback(
     (id: string) => {
@@ -60,7 +63,7 @@ export default function RolesTable({}: {}) {
         },
         onError: (error: any) => {
           console.error(
-            'Failed to delete role: ',
+            'Failed to delete treatment: ',
             error?.response?.data?.message
           );
         },
@@ -72,7 +75,7 @@ export default function RolesTable({}: {}) {
   const columns = React.useMemo(
     () =>
       getColumns({
-        data: data ?? [],
+        data: data?.data ?? [],
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -99,17 +102,21 @@ export default function RolesTable({}: {}) {
   return (
     <div>
       <ControlledTable
-        isLoading={isLoading || isLoadingGetRoles}
+        isLoading={isLoading || isLoadingGetTreatments}
         showLoadingText={true}
         data={tableData}
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{
-          pageSize,
-          setPageSize,
+          pageSize: params.pageSize,
+          setPageSize: (pageSize: number) =>
+            setParams((prev) => ({ ...prev, pageSize })),
           total: totalItems,
-          current: currentPage,
-          onChange: (page: number) => handlePaginate(page),
+          current: params.page,
+          onChange: (page: number) => {
+            handlePaginate(page);
+            setParams((prev) => ({ ...prev, page }));
+          },
         }}
         filterOptions={{
           searchTerm,
