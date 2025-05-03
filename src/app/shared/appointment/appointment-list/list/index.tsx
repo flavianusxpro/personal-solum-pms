@@ -9,8 +9,12 @@ import { useMedia } from '@core/hooks/use-media';
 import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
 import cn from '@core/utils/class-names';
-import { useGetAppointments } from '@/hooks/useAppointment';
+import {
+  useDeleteAppointment,
+  useGetAppointments,
+} from '@/hooks/useAppointment';
 import { useModal } from '@/app/shared/modal-views/use-modal';
+import toast from 'react-hot-toast';
 
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
@@ -44,6 +48,8 @@ export default function AppointmentListTable() {
     perPage: params.perPage,
   });
 
+  const { mutate } = useDeleteAppointment();
+
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
 
   const onHeaderCellClick = (value: string) => ({
@@ -52,10 +58,23 @@ export default function AppointmentListTable() {
     },
   });
 
-  const onDeleteItem = useCallback((id: string) => {
-    handleDelete(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const onDeleteItem = useCallback(
+    (id: string) => {
+      mutate(id, {
+        onSuccess: () => {
+          toast.success('Appointment deleted successfully');
+          refetch();
+        },
+        onError: (error: any) => {
+          console.error('Failed to delete appointment:', error);
+          toast.error(
+            'Failed to delete appointment: ' + error.response.data.message
+          );
+        },
+      });
+    },
+    [mutate, refetch]
+  );
 
   const onChecked = (
     event: React.ChangeEvent<HTMLInputElement>,

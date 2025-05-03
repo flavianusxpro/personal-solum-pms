@@ -54,7 +54,7 @@ export default function InvoiceTableList() {
   const onDeleteItem = useCallback((id: string) => {
     mutateDelete(id, {
       onSuccess: () => {
-        handleDelete(id);
+        refetch();
         toast.success('Invoice deleted successfully');
       },
       onError: (error: any) => {
