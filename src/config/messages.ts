@@ -108,4 +108,5 @@ export const messages = {
   textIs100MinLength: 'Text must be at least 100 characters',
   permissionsIsRequired: 'Permissions are required',
   taxValueIsRequired: 'Tax value is required',
+  passwordsDoNotMatch: 'Passwords do not match',
 };

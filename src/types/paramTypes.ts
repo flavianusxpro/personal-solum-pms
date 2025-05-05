@@ -200,6 +200,11 @@ export interface IPayloadPostForgotPassword {
   email: string;
 }
 
+export interface IPayloadPostVerifyAccount {
+  token: string;
+  password: string;
+}
+
 export interface IPayloadPostAppoinment {
   clinicId: number;
   patientId: number;
