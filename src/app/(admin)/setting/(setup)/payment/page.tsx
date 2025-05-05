@@ -66,7 +66,7 @@ export default function Payment() {
         return (
           <>
             <FormGroup
-              title="Card Payment"
+              title="Card Payment (not connected yet)"
               description="Configure your card payment settings here"
               className="mb-6 pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
             >

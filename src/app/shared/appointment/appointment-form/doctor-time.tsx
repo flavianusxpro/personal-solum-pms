@@ -18,6 +18,7 @@ import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
 import { IGetDoctorByClinicResponse } from '@/types/ApiResponse';
 import { appointmentBookSchema } from '@/validators/admin-appointment.schema';
 import cn from '@/core/utils/class-names';
+import dayjs from 'dayjs';
 
 const FormSchema = appointmentBookSchema['selectDoctorAndTime'];
 
@@ -169,14 +170,8 @@ function DoctorTime({
 }) {
   const [formData, setFormData] = useAtom(formDataAtom);
 
-  const practices_open = doctor.appointment_schedule.practices_open;
-  const practices_close = doctor.appointment_schedule.practices_close;
-
-  const [startHours, startMinutes] = practices_open.split(':').map(Number);
-  const [endHours, endMinutes] = practices_close.split(':').map(Number);
-
   const appointmentType = useMemo(
-    () => formData?.appointment_type?.includes('FOLLOWUP'),
+    () => formData?.appointment_type?.includes('Follow up'),
     [formData?.appointment_type]
   );
 
@@ -188,12 +183,61 @@ function DoctorTime({
     [appointmentType, doctor.appointment_duration]
   );
 
+  const selectedDateDay = dayjs(formData?.date).get('day');
+  const selectedDay = doctor?.appointment_schedule?.week.find(
+    (day) => day.day === selectedDateDay
+  );
+
+  const practices_open = selectedDay?.startTime;
+  const practices_close = selectedDay?.endTime;
+
+  const dailyBreakTime = useMemo(() => {
+    const selectedDailyBreakTime =
+      doctor?.appointment_schedule?.dailyBreakTimes;
+    if (!selectedDailyBreakTime) return [];
+
+    const dailyBreakTimes = selectedDailyBreakTime.map((item) => {
+      const startTime = item.startTime.split(':').map(Number);
+      const endTime = item.endTime.split(':').map(Number);
+
+      const start = new Date();
+      start.setHours(startTime[0], startTime[1], 0, 0);
+
+      const end = new Date();
+      end.setHours(endTime[0], endTime[1], 0, 0);
+
+      const breakTimes: string[] = [];
+      while (start < end) {
+        breakTimes.push(
+          start.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          })
+        );
+        start.setMinutes(start.getMinutes() + interval); // Assuming 15-minute intervals
+      }
+
+      return breakTimes;
+    });
+
+    return dailyBreakTimes.flat();
+  }, [doctor?.appointment_schedule?.dailyBreakTimes, interval]);
+
+  const [startHours, startMinutes] = practices_open
+    ? practices_open.split(':').map(Number)
+    : [0, 0];
+
+  const [endHours, endMinutes] = practices_close
+    ? practices_close.split(':').map(Number)
+    : [0, 0];
+
   const bookedTimes: string[] = useMemo(() => {
     return (
       doctor.booked_times.find((item) => item.date === formData.date)
         ?.booked_times ?? []
     );
-  }, [formData.date, doctor.booked_times]);
+  }, [doctor.booked_times, formData.date]);
 
   const timeList = useMemo(() => {
     const times: string[] = [];
@@ -210,7 +254,10 @@ function DoctorTime({
         hour12: true,
       });
 
-      if (!bookedTimes.includes(timeString.split(' ')[0])) {
+      if (
+        !bookedTimes.includes(timeString?.split(' ')[0]) &&
+        !dailyBreakTime.includes(timeString?.split(' ')[0])
+      ) {
         times.push(timeString);
       }
 
@@ -218,7 +265,15 @@ function DoctorTime({
     }
 
     return times;
-  }, [startHours, startMinutes, endHours, endMinutes, bookedTimes, interval]);
+  }, [
+    startHours,
+    startMinutes,
+    endHours,
+    endMinutes,
+    bookedTimes,
+    dailyBreakTime,
+    interval,
+  ]);
 
   return (
     <div className="px-4 pb-4">
@@ -236,7 +291,7 @@ function DoctorTime({
                 className="rounded-md bg-green-200/50 px-3 py-2 text-sm hover:bg-green-300"
                 onClick={() => {
                   setValue('doctorTime', time);
-                  setValue('doctorId', doctor.id);
+                  setValue('doctorId', doctor.id as number);
                   // setFormData((p) => ({
                   //   ...p,
                   //   doctorId: doctor.id,

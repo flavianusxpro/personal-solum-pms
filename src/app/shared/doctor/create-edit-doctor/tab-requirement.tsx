@@ -96,7 +96,10 @@ export default function TabRequirement({
     <form className="@container" onSubmit={handleSubmit(onSubmit)}>
       <div className="grid grid-cols-1 gap-x-7">
         {/* Personal */}
-        <FormGroup title="Personal" className="mb-7 grid-cols-12 gap-4" />
+        <FormGroup
+          title="Personal (not connected yet)"
+          className="mb-7 grid-cols-12 gap-4"
+        />
         <FormGroup title="Driver Licence" className="grid-cols-12" isLabel>
           <Grid gap="2">
             <Flex gap="2" className="col-span-12">

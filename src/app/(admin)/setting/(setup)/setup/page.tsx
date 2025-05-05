@@ -100,7 +100,7 @@ export default function Setup() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="@container">
       <FormGroup
-        title="Clinic Information"
+        title="Clinic Information (not connected yet)"
         description="Update your photo and personal details here"
         className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
       />

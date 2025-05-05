@@ -69,7 +69,7 @@ export interface IGetClinicByIdForPatientResponse extends ApiResponse {
 
 export interface IGetDoctorByClinicResponse extends ApiResponse {
   data: {
-    id: number;
+    id: number | null;
     first_name: string;
     last_name: string;
     gender: null;
@@ -78,7 +78,7 @@ export interface IGetDoctorByClinicResponse extends ApiResponse {
     description: null;
     appointment_duration: Appointmentduration;
     appointment_fee: Appointmentfee;
-    appointment_schedule: Appointmentschedule;
+    appointment_schedule: Appointmentschedule | null;
     booked_times: Booked_Times[];
   }[];
 }
@@ -89,8 +89,20 @@ interface Booked_Times {
 }
 
 interface Appointmentschedule {
-  practices_open: string;
-  practices_close: string;
+  interval: string;
+  week: Week[];
+  dailyBreakTimes: DailyBreakTime[];
+}
+
+interface DailyBreakTime {
+  startTime: string;
+  endTime: string;
+}
+
+interface Week {
+  day: number;
+  startTime: string;
+  endTime: string;
 }
 
 interface Appointmentfee {

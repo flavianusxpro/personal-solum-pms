@@ -79,7 +79,7 @@ export default function Communication() {
         return (
           <>
             <FormGroup
-              title="SMTP Configuration"
+              title="SMTP Configuration (not connected yet)"
               description="SMTP configuration is used to send email notifications"
               className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
             />
@@ -161,7 +161,7 @@ export default function Communication() {
             </div>
 
             <FormGroup
-              title="SMS Provider"
+              title="SMS Provider (not connected yet)"
               description="SMS provider is used to send SMS notifications"
               className="mb-10 mt-4 border-t border-t-slate-300 pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
             >
@@ -196,7 +196,7 @@ export default function Communication() {
                 <div className="mt-6 grid grid-cols-1 gap-4">
                   <StatusCard
                     icon={<IoChevronDownCircleOutline />}
-                    meetName="Twilio"
+                    meetName="Twilio (not connected yet)"
                     content="Twilio"
                     onSwitchChange={(checked) => {
                       setValue('twillio_status', checked);
@@ -224,7 +224,7 @@ export default function Communication() {
 
                   <StatusCard
                     icon={<IoChevronDownCircleOutline />}
-                    meetName="AWS"
+                    meetName="AWS (not connected yet)"
                     content="AWS"
                     onSwitchChange={(checked) => {
                       setValue('aws_status', checked);
@@ -252,7 +252,7 @@ export default function Communication() {
 
                   <StatusCard
                     icon={<IoChevronDownCircleOutline />}
-                    meetName="Google"
+                    meetName="Google (not connected yet)"
                     content="Google"
                     onSwitchChange={(checked) => {
                       setValue('google_status', checked);
@@ -279,37 +279,10 @@ export default function Communication() {
                   </StatusCard>
                 </div>
               </div>
-
-              <div className="mb-10 grid grid-cols-2 gap-7">
-                <FormGroup
-                  isLabel
-                  title="API Address"
-                  className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
-                >
-                  <Input
-                    placeholder="API Address"
-                    // {...register('first_name')}
-                    // error={errors.first_name?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-                <FormGroup
-                  isLabel
-                  title="ID"
-                  className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
-                >
-                  <Input
-                    placeholder="ID"
-                    // {...register('first_name')}
-                    // error={errors.first_name?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-              </div>
             </div>
 
             <FormGroup
-              title="Chat Feature"
+              title="Chat Feature (not connected yet)"
               description="Chat feature"
               className="mb-6 mt-4 border-t border-t-slate-300 pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
             ></FormGroup>
@@ -327,7 +300,7 @@ export default function Communication() {
               />
             </FormGroup>
 
-            <FormGroup isLabel title="Facebook Plugin">
+            <FormGroup isLabel title="Facebook Plugin (not connected yet)">
               <Switch
                 label="Enable Facebook Plugin"
                 variant="flat"

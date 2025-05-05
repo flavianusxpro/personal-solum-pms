@@ -115,7 +115,7 @@ export default function TabCalendar({
     <div className="@container">
       <Flex className="flex w-full items-center justify-end">
         <ModalButton
-          label="Create Schedule"
+          label="Create Schedule (not connected yet)"
           view={<ScheduleForm />}
           customSize="600px"
           className="mb-5 mt-0"
