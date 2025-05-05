@@ -1,4 +1,4 @@
-import { del, get, post } from '@/app/api/api';
+import { del, get, post, put } from '@/app/api/api';
 import {
   IGetPermissionsResponse,
   IGetRolesResponse,
@@ -11,6 +11,7 @@ import {
   IParamGetUsers,
   IPayloadCreateDoctorUser,
   IPayloadCreateUser,
+  IPayloadUpdateUser,
 } from '@/types/paramTypes';
 
 export async function postCreateDoctorUser(payload: IPayloadCreateDoctorUser) {
@@ -37,6 +38,10 @@ export async function getUserById(id: string) {
   return get<IGetUserByIdResponse>('/admin/user/detail/' + id).then(
     (res) => res.data
   );
+}
+
+export async function putUpdateUserById(payload: IPayloadUpdateUser) {
+  return put('/admin/user/' + payload.id, payload);
 }
 
 export async function deleteUserById(id: string) {

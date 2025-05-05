@@ -4,6 +4,7 @@ import {
   postCreateUser,
   getUserById,
   deleteUserById,
+  putUpdateUserById,
 } from '@/service/user';
 import { IParamGetUsers } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -22,8 +23,7 @@ export function useGetUsers(params: IParamGetUsers) {
     queryFn: async () => {
       return await getUsers(params);
     },
-    refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 10, // 10 minutes
+    refetchOnWindowFocus: true,
   });
 }
 
@@ -33,6 +33,12 @@ export function useGetUserById(id: string) {
     queryFn: async () => {
       return await getUserById(id);
     },
+  });
+}
+
+export function useUpdateUser() {
+  return useMutation({
+    mutationFn: putUpdateUserById,
   });
 }
 

@@ -5,67 +5,80 @@ import toast from 'react-hot-toast';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { Flex, Input, Loader } from 'rizzui';
-import AvatarUpload from '@core/ui/file-upload/avatar-upload';
+import { Input, Loader } from 'rizzui';
 import CSelect from '@/core/ui/select';
-import { genderOption, stateOption } from '@/config/constants';
-import {
-  patientDetailsFormSchema,
-  PatientDetailsFormTypes,
-} from '@/validators/patient-details.schema';
-import { useUpdatePatient } from '@/hooks/usePatient';
-import { IPayloadCreateEditPatient } from '@/types/paramTypes';
+import { IPayloadUpdateUser } from '@/types/paramTypes';
 import { useParams } from 'next/navigation';
-import dayjs from 'dayjs';
-import { useGetUserById } from '@/hooks/useUser';
+import { useGetUserById, useUpdateUser } from '@/hooks/useUser';
+import {
+  UpdateUserInput,
+  updateUserSchema,
+} from '@/validators/update-user.schema';
+import { useGetRoles } from '@/hooks/useRole';
+import { useGetAllClinics } from '@/hooks/useClinic';
+import { useMemo } from 'react';
+import SelectLoader from '@/core/components/loader/select-loader';
+import dynamic from 'next/dynamic';
+import PcSvg from '@public/pc.svg';
+import Image from 'next/image';
+
+const MultySelect = dynamic(
+  () => import('rizzui').then((mod) => mod.MultiSelect),
+  {
+    ssr: false,
+    loading: () => <SelectLoader />,
+  }
+);
 
 export default function UserDetails({ isView }: { isView?: boolean }) {
   const id = useParams<{ id: string }>().id;
 
-  const {
-    data: dataPatient,
-    refetch: refetchGetDataPatient,
-    isLoading: isLoadingGetDataPatient,
-  } = useGetUserById(id);
+  const { data: dataUser, isLoading: isLoadingGetDataUser } =
+    useGetUserById(id);
 
-  const { mutate: mutateUpdatePatient, isPending } = useUpdatePatient();
+  const { data: dataRoles } = useGetRoles({
+    page: 1,
+    perPage: 100,
+  });
+  const { data: dataClinics } = useGetAllClinics({
+    page: 1,
+    perPage: 100,
+    role: 'admin',
+  });
 
-  const onSubmit: SubmitHandler<PatientDetailsFormTypes> = (data) => {
-    const payload: IPayloadCreateEditPatient = {
-      patient_id: id ?? undefined,
-      title: data.title,
-      first_name: data.first_name,
-      last_name: data.last_name as string,
+  const { mutate: mutateUpdateUser, isPending } = useUpdateUser();
+
+  const roleOptions = useMemo(() => {
+    if (!dataRoles) return [];
+    return dataRoles?.map((item) => ({
+      label: item.name,
+      value: item.id,
+    }));
+  }, [dataRoles]);
+
+  const clinicOptions = useMemo(() => {
+    if (!dataClinics) return [];
+    return dataClinics?.data?.map((item) => ({
+      label: item.name,
+      value: item.id.toString(),
+    }));
+  }, [dataClinics]);
+
+  const onSubmit: SubmitHandler<UpdateUserInput> = (data) => {
+    const payload: IPayloadUpdateUser = {
+      id,
+      name: data.name,
       email: data.email,
-      password: data.password as string,
-      date_of_birth: data.date_of_birth as string,
-      gender: data.gender as string,
-      medicare_card_number: data.medicare_card as string,
-      medicare_expired_date: dayjs(data.medicare_expiry).format(
-        'DD MMMM YYYY'
-      ) as string,
-      mobile_number: data.mobile_number as string,
-      status: 1,
-      timezone: data.timezone ?? 'Australia/Sydney',
-      country: data.country,
-      potition_on_card: data.position_of_card,
-      patient_problem: Number(data.patient_problem),
-      patient_type: Number(data.patient_type),
-      street_name: data.street_name,
-      state: data.state,
-      suburb: data.suburb,
-      postcode: data.post_code,
-      unit_number: data.unit_number,
+      roleId: data.roleId,
+      clinic_ids: data?.clinic_ids?.map((item) => Number(item)),
     };
 
     if (id) {
-      return mutateUpdatePatient(payload, {
+      return mutateUpdateUser(payload, {
         onSuccess: () => {
-          toast.success('Patient updated successfully');
-          refetchGetDataPatient();
+          toast.success('User updated successfully');
         },
         onError: (error) => {
-          console.log('🚀 ~ PatientDetails ~ error:', error);
           const errorMessage =
             (error as any)?.response?.data?.message || 'An error occurred';
           toast.error(errorMessage);
@@ -74,16 +87,22 @@ export default function UserDetails({ isView }: { isView?: boolean }) {
     }
   };
 
-  if (isLoadingGetDataPatient) return <Loader size="lg" />;
+  if (isLoadingGetDataUser) return <Loader size="lg" />;
 
   return (
-    <Form<PatientDetailsFormTypes>
-      validationSchema={patientDetailsFormSchema}
+    <Form<UpdateUserInput>
+      validationSchema={updateUserSchema}
       // resetValues={reset}
       onSubmit={onSubmit}
       className="@container"
       useFormProps={{
         mode: 'all',
+        defaultValues: {
+          name: dataUser?.name,
+          email: dataUser?.email,
+          roleId: dataUser?.roleId,
+          // clinic_ids: dataUser?.clinic_ids,
+        },
       }}
     >
       {({ register, control, setValue, getValues, formState: { errors } }) => {
@@ -94,59 +113,16 @@ export default function UserDetails({ isView }: { isView?: boolean }) {
             <div className="mb-10 grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
               <div className="flex flex-col gap-7">
                 <FormGroup
-                  title="Personal Info"
+                  title="User Details"
                   className="grid-cols-12 gap-4"
                 />
-                <FormGroup title="First Name" isLabel>
+                <FormGroup title="Name" isLabel>
                   <Input
-                    placeholder="First Name"
-                    {...register('first_name')}
-                    error={errors.first_name?.message}
+                    placeholder="Name"
+                    {...register('name')}
+                    error={errors.name?.message}
                     className="flex-grow"
                     disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Last Name" isLabel>
-                  <Input
-                    placeholder="Last Name"
-                    {...register('last_name')}
-                    error={errors.last_name?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Gender" isLabel>
-                  <Controller
-                    name="gender"
-                    control={control}
-                    render={({ field }) => (
-                      <CSelect
-                        {...field}
-                        label=""
-                        placeholder="Select Gender"
-                        options={genderOption}
-                        disabled={isView}
-                      />
-                    )}
-                  />
-                </FormGroup>
-                <FormGroup title="Birth of Date" isLabel>
-                  <Input
-                    placeholder="Birth of Dae"
-                    type="date"
-                    {...register('date_of_birth')}
-                    error={errors.date_of_birth?.message}
-                    disabled={isView}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-                <FormGroup title="Phone Number" isLabel>
-                  <Input
-                    placeholder="Phone Number"
-                    {...register('mobile_number')}
-                    error={errors.mobile_number?.message}
-                    disabled={isView}
-                    className="flex-grow"
                   />
                 </FormGroup>
 
@@ -160,93 +136,101 @@ export default function UserDetails({ isView }: { isView?: boolean }) {
                   />
                 </FormGroup>
 
-                <FormGroup title="Your Photo" isLabel>
-                  <div className="flex flex-col gap-6 @container @3xl:col-span-2">
-                    <AvatarUpload
-                      name="avatar"
-                      setValue={setValue}
-                      getValues={getValues}
-                      disabled={isView}
-                      error={errors?.avatar?.message as string}
-                    />
-                  </div>
+                <FormGroup title="Role" isLabel>
+                  <Controller
+                    control={control}
+                    name="roleId"
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        options={roleOptions}
+                        error={errors.roleId?.message}
+                      />
+                    )}
+                  />
+                </FormGroup>
+                <FormGroup title="Clinic" isLabel>
+                  <Controller
+                    control={control}
+                    name="clinic_ids"
+                    render={({ field }) => (
+                      <MultySelect
+                        {...field}
+                        options={clinicOptions}
+                        placeholder="Select Clinic"
+                        error={errors.clinic_ids?.message}
+                      />
+                    )}
+                  />
                 </FormGroup>
               </div>
+            </div>
 
-              <div className="mb-10 flex flex-col gap-7">
-                <FormGroup title="Address" className="grid-cols-12" />
-                <FormGroup title="Country" isLabel>
-                  <Input
-                    placeholder="Country"
-                    {...register('country')}
-                    error={errors.country?.message}
-                    disabled={isView}
-                    className="flex-grow"
+            <div className="mb-10 flex flex-col gap-7">
+              <FormGroup title="" className="grid-cols-12" />
+              <div className="mx-auto w-full max-w-screen-2xl">
+                <div className="border-b border-dashed border-muted pb-4">
+                  <FormGroup
+                    title="Where you’re logged in"
+                    description="We’ll alert you via olivia@untitledui.com if there is any
+                    unusual activity on your account."
+                    className="grid-cols-12 gap-4"
                   />
-                </FormGroup>
-                <FormGroup title="Unit Number" isLabel>
-                  <Input
-                    placeholder="Unit Number"
-                    {...register('unit_number')}
-                    error={errors.unit_number?.message}
-                    disabled={isView}
-                    className="flex-grow"
+                </div>
+                <div className="flex items-center gap-6 border-b border-dashed border-muted py-6">
+                  <Image
+                    src={PcSvg}
+                    alt="pc"
+                    className="h-7 w-7 text-gray-500 dark:text-gray-400"
+                    width={28}
+                    height={28}
                   />
-                </FormGroup>
-                <FormGroup title="Street" isLabel>
-                  <Input
-                    placeholder="Street"
-                    {...register('street_name')}
-                    error={errors.street_name?.message}
-                    disabled={isView}
-                    className="flex-grow"
+                  <div>
+                    <div className="mb-2 flex items-center gap-2">
+                      <h3 className="rizzui-title-h3 text-base font-medium text-gray-900 dark:text-gray-700">
+                        2018 Macbook Pro 15-inch
+                      </h3>
+                      <span className="rizzui-text-span relative hidden rounded-md border border-muted py-1.5 pe-2.5 ps-5 text-xs font-semibold text-gray-900 before:absolute before:start-2.5 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full before:bg-green sm:block">
+                        Active Now
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <p className="rizzui-text-p text-sm font-normal text-gray-500">
+                        Melbourne, Australia
+                      </p>
+                      <span className="h-1 w-1 rounded-full bg-gray-600"></span>
+                      <p className="rizzui-text-p text-sm font-normal text-gray-500">
+                        22 Jan at 4:20pm
+                      </p>
+                    </div>
+                    <span className="rizzui-text-span relative mt-2 inline-block rounded-md border border-muted py-1.5 pe-2.5 ps-5 text-xs font-semibold text-gray-900 before:absolute before:start-2.5 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full before:bg-green sm:hidden">
+                      Active Now
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-6 py-6">
+                  <Image
+                    src={PcSvg}
+                    alt="pc"
+                    className="h-7 w-7 text-gray-500 dark:text-gray-400"
+                    width={28}
+                    height={28}
                   />
-                </FormGroup>
-                <FormGroup title="Suburb" isLabel>
-                  <Input
-                    placeholder="Suburb"
-                    {...register('suburb')}
-                    error={errors.suburb?.message}
-                    disabled={isView}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-                <FormGroup title="States" isLabel>
-                  <Flex justify="between" align="center" gap="4">
-                    <Controller
-                      name="state"
-                      control={control}
-                      render={({ field }) => (
-                        <CSelect
-                          {...field}
-                          label="State"
-                          placeholder="State"
-                          className="group relative z-0"
-                          options={stateOption}
-                          error={errors.state?.message as string}
-                          disabled={isView}
-                        />
-                      )}
-                    />
-                    <Input
-                      label="Post Code"
-                      placeholder="Post Code"
-                      {...register('post_code')}
-                      error={errors.post_code?.message}
-                      disabled={isView}
-                      className="flex-grow"
-                    />
-                  </Flex>
-                </FormGroup>
-                <FormGroup title="Description" isLabel>
-                  <Input
-                    placeholder="Description"
-                    {...register('description')}
-                    error={errors.description?.message}
-                    disabled={isView}
-                    className="flex-grow"
-                  />
-                </FormGroup>
+                  <div>
+                    <h3 className="rizzui-title-h3 mb-2 text-base font-medium text-gray-900 dark:text-gray-700">
+                      2020 Macbook Air M1
+                    </h3>
+                    <div className="flex items-center gap-2">
+                      <p className="rizzui-text-p text-sm font-normal text-gray-500">
+                        Melbourne, Australia
+                      </p>
+                      <span className="h-1 w-1 rounded-full bg-gray-600"></span>
+                      <p className="rizzui-text-p text-sm font-normal text-gray-500">
+                        22 Jan at 4:20pm
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             {!isView && (

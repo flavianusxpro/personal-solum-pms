@@ -126,7 +126,7 @@ export const getColumns = ({
     title: <HeaderCell title="Status" />,
     dataIndex: 'status',
     key: 'status',
-    width: 120,
+    width: 130,
     render: (status: number) => <StatusSelect selectItem={status} />,
   },
   {
