@@ -273,9 +273,10 @@ export interface IPayloadCreateUser {
 }
 export interface IPayloadUpdateUser {
   id: string;
-  name: string;
-  email: string;
-  roleId: number;
+  name?: string;
+  email?: string;
+  roleId?: number;
+  password?: string;
   clinic_ids?: number[];
 }
 

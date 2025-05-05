@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
@@ -20,8 +20,6 @@ const filterState = {
 };
 
 export default function UsersTable() {
-  const [pageSize, setPageSize] = useState(10);
-
   const [filterStateValue, setFilterStateValue] = useState(filterState);
 
   const [params, setParams] = useState({
@@ -94,7 +92,7 @@ export default function UsersTable() {
     handleSelectAll,
     handleDelete,
     handleReset,
-  } = useTable(dataList ?? [], pageSize, filterStateValue);
+  } = useTable(dataList ?? [], params.perPage, filterStateValue);
 
   const columns = useMemo(
     () =>
@@ -121,6 +119,10 @@ export default function UsersTable() {
 
   const { visibleColumns, checkedColumns, setCheckedColumns } =
     useColumn(columns);
+
+  useEffect(() => {
+    refetch();
+  }, [params, refetch]);
 
   return (
     <div className="">

@@ -19,7 +19,7 @@ export function usePostCreateUser() {
 
 export function useGetUsers(params: IParamGetUsers) {
   return useQuery({
-    queryKey: ['getUsers'],
+    queryKey: ['getUsers' + params],
     queryFn: async () => {
       return await getUsers(params);
     },
