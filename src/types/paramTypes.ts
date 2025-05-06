@@ -99,7 +99,7 @@ export interface IPayloadCreateEditDoctor {
   postcode?: string;
   country?: string;
   state?: string;
-  treatment_type?: string;
+  treatment_type?: number[];
   specialist_type?: number[];
   medical_interest?: string;
   language?: string[];
@@ -333,7 +333,7 @@ interface Doctor {
   emergency_email: string;
   medical_interest: string;
   specialist_type: number[];
-  treatment_type: string;
+  treatment_type: number[];
   language: string[];
 }
 

@@ -16,7 +16,7 @@ import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
 import { PiX } from 'react-icons/pi';
 import { usePostCreateDoctorUser } from '@/hooks/useUser';
-import { useGetSpecialists } from '@/hooks/useDoctor';
+import { useGetSpecialists, useGetTreatments } from '@/hooks/useDoctor';
 import { useMemo } from 'react';
 import SelectLoader from '@/core/components/loader/select-loader';
 import dynamic from 'next/dynamic';
@@ -38,6 +38,10 @@ export default function CreatDoctorModal() {
     perPage: 100,
     page: 1,
   });
+  const { data: dataTreatments } = useGetTreatments({
+    perPage: 100,
+    page: 1,
+  });
   const { data: dataRoles } = useGetRoles({
     perPage: 100,
     page: 1,
@@ -50,6 +54,14 @@ export default function CreatDoctorModal() {
       value: item.id.toString(),
     }));
   }, [dataSpecialists]);
+
+  const treatmentsOptions = useMemo(() => {
+    if (!dataTreatments) return [];
+    return dataTreatments.data.map((item) => ({
+      label: item.name,
+      value: item.id.toString(),
+    }));
+  }, [dataTreatments]);
 
   const doctorRole = useMemo(() => {
     if (!dataRoles) return false;
@@ -71,6 +83,7 @@ export default function CreatDoctorModal() {
       doctor: {
         ...data,
         specialist_type: data.specialist_type.map((item) => parseInt(item)),
+        treatment_type: data.treatment_type.map((item) => parseInt(item)),
       },
     };
 
@@ -80,7 +93,6 @@ export default function CreatDoctorModal() {
         closeModal();
       },
       onError: (error) => {
-        console.log('🚀 ~ DoctorDetails ~ error:', error);
         const errorMessage =
           (error as any)?.response?.data?.message || 'An error occurred';
         toast.error(errorMessage);
@@ -98,9 +110,7 @@ export default function CreatDoctorModal() {
         mode: 'onChange',
       }}
     >
-      {({ register, control, setValue, getValues, formState: { errors } }) => {
-        console.log('🚀 ~ CreatDoctorModal ~ errors:', errors);
-
+      {({ register, control, formState: { errors } }) => {
         return (
           <div className="flex flex-col gap-6 px-6 pt-6">
             <Flex justify="between" align="center" gap="4">
@@ -325,11 +335,18 @@ export default function CreatDoctorModal() {
                   />
                 </FormGroup>
                 <FormGroup title="Treatment Type" isLabel>
-                  <Input
-                    placeholder="Treatment Type"
-                    {...register('treatment_type')}
-                    error={errors.treatment_type?.message}
-                    className="flex-grow"
+                  <Controller
+                    name="treatment_type"
+                    control={control}
+                    render={({ field }) => (
+                      <MultySelect
+                        searchable
+                        {...field}
+                        placeholder="Select Treatment Type"
+                        options={treatmentsOptions}
+                        error={errors.treatment_type?.message}
+                      />
+                    )}
                   />
                 </FormGroup>
                 <FormGroup title="Language" isLabel>

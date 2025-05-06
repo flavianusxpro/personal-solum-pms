@@ -18,6 +18,7 @@ import {
 import {
   useGetDoctorById,
   useGetSpecialists,
+  useGetTreatments,
   useUpdateDoctor,
 } from '@/hooks/useDoctor';
 import dynamic from 'next/dynamic';
@@ -53,6 +54,10 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     page: 1,
     perPage: 100,
   });
+  const { data: dataTreatments } = useGetTreatments({
+    perPage: 100,
+    page: 1,
+  });
 
   const specialistsOptions = useMemo(() => {
     if (!dataSpecialists) return [];
@@ -62,6 +67,14 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     }));
   }, [dataSpecialists]);
 
+  const treatmentOptions = useMemo(() => {
+    if (!dataTreatments) return [];
+    return dataTreatments.data.map((item) => ({
+      label: item.name,
+      value: item.id.toString(),
+    }));
+  }, [dataTreatments]);
+
   const specialistTypeDefaultValues = useMemo(() => {
     if (!dataDoctor?.specialist_type) return [];
     const parsedSpecialistType = JSON.parse(
@@ -69,6 +82,17 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     ) as number[];
     if (Array.isArray(parsedSpecialistType)) {
       return parsedSpecialistType.map((item) => item.toString());
+    }
+    return [];
+  }, [dataDoctor]);
+
+  const treatmentTypeDefaultValues = useMemo(() => {
+    if (!dataDoctor?.treatment_type) return [];
+    const parsedTreatmentType = JSON.parse(
+      dataDoctor.treatment_type
+    ) as number[];
+    if (Array.isArray(parsedTreatmentType)) {
+      return parsedTreatmentType.map((item) => item.toString());
     }
     return [];
   }, [dataDoctor]);
@@ -87,7 +111,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
       postcode: data.postcode,
       country: data.country,
       state: data.state,
-      treatment_type: data.treatment_type,
+      treatment_type: data.treatment_type.map((item) => parseInt(item)),
       specialist_type: data.specialist_type.map((item) => parseInt(item)),
       medical_interest: data.medical_interest,
       email: data.email,
@@ -140,7 +164,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
           address_line_2: dataDoctor?.address_line_2 ?? '',
           about: dataDoctor?.description ?? '',
           medical_interest: dataDoctor?.medical_interest ?? '',
-          treatment_type: dataDoctor?.treatment_type ?? '',
+          treatment_type: treatmentTypeDefaultValues,
           specialist_type: specialistTypeDefaultValues,
           language: dataDoctor?.language
             ? (JSON.parse(dataDoctor.language) as (string | undefined)[])
@@ -339,12 +363,13 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
                   name="treatment_type"
                   control={control}
                   render={({ field }) => (
-                    <Input
+                    <MultySelect
+                      searchable
                       {...field}
-                      placeholder="Treatment Type"
-                      error={errors.treatment_type?.message}
-                      className="flex-grow"
+                      placeholder="Select Specialist Type"
+                      options={treatmentOptions}
                       disabled={isView}
+                      error={errors.treatment_type?.message}
                     />
                   )}
                 />
