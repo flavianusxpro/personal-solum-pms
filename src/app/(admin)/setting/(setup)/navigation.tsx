@@ -33,6 +33,10 @@ const menuItems: menuInterface[] = [
     label: 'Notification & Reminder',
     value: routes.setting.notificationReminder,
   },
+  {
+    label: 'Invoice Settings',
+    value: routes.setting.invoiceSettings,
+  },
 ];
 
 export default function Navigation() {

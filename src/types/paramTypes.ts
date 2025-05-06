@@ -99,7 +99,8 @@ export interface IPayloadCreateEditDoctor {
   postcode?: string;
   country?: string;
   state?: string;
-  treatment_type?: number[];
+  // treatment_type?: number[];
+  treatment_type?: string;
   specialist_type?: number[];
   medical_interest?: string;
   language?: string[];

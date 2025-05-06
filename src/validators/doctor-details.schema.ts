@@ -34,9 +34,12 @@ export const doctorDetailsFormSchema = z.object({
   specialist_type: z.array(
     z.string().min(1, { message: messages.specialistTypeIsRequired })
   ),
-  treatment_type: z.array(
-    z.string().min(1, { message: messages.specialistTypeIsRequired })
-  ),
+  treatment_type: z.string({
+    required_error: messages.treatmentTypeIsRequired,
+  }),
+  // treatment_type: z.array(
+  //   z.string().min(1, { message: messages.specialistTypeIsRequired })
+  // ),
   language: z.array(z.string()),
 
   doctorType: z.array(z.string()).optional(),

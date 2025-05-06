@@ -43,6 +43,7 @@ export const routes = {
     smsTemplate: '/setting/sms-template',
     roles: '/setting/roles',
     taxSettings: '/setting/tax',
+    invoiceSettings: '/setting/invoice-settings',
   },
 
   bookAppointment: '/bookings',
