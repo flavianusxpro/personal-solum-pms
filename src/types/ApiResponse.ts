@@ -88,7 +88,7 @@ interface Booked_Times {
   booked_times: string[];
 }
 
-interface Appointmentschedule {
+export interface Appointmentschedule {
   interval: string;
   week: Week[];
   dailyBreakTimes: DailyBreakTime[];
@@ -300,6 +300,7 @@ interface Setting {
   script_renewal_fee: string;
   created_at: string;
   updated_at: string;
+  schedule: string;
 }
 
 interface Clinic {

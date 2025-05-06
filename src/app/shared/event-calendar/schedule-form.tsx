@@ -28,6 +28,8 @@ import {
   useUpdateSettingAppointmentDoctor,
 } from '@/hooks/useDoctor';
 import { IPayloadSettingAppointmentDoctor } from '@/types/paramTypes';
+import { useEffect, useMemo } from 'react';
+import { Appointmentschedule } from '@/types/ApiResponse';
 
 interface CreateEventProps {
   startDate?: Date;
@@ -81,15 +83,17 @@ const weekInitialValue = [
 ];
 
 interface CreateScheduleProps {
-  event?: CalendarEvent;
+  isEdit?: boolean;
   doctorId: string;
 }
 
-export default function ScheduleForm({ event, doctorId }: CreateScheduleProps) {
+export default function ScheduleForm({
+  doctorId,
+  isEdit,
+}: CreateScheduleProps) {
   const { closeModal } = useModal();
-  const isNewSchedule = true;
 
-  const { refetch } = useGetDoctorById(doctorId ?? '');
+  const { data: dataDoctor, refetch } = useGetDoctorById(doctorId ?? '');
 
   const {
     mutate: mutateUpdateAppointment,
@@ -123,10 +127,17 @@ export default function ScheduleForm({ event, doctorId }: CreateScheduleProps) {
     append: appendDailyBreakField,
     update: updateDailyBreakField,
     remove: removeDailyBreakTime,
+    replace: replaceDailyBreakField,
   } = useFieldArray({
     control,
     name: 'dailyBreakTimes',
   });
+
+  const schedule = useMemo(() => {
+    return dataDoctor?.setting.schedule
+      ? (JSON.parse(dataDoctor.setting.schedule) as Appointmentschedule)
+      : null;
+  }, [dataDoctor?.setting?.schedule]);
 
   const onSubmit: SubmitHandler<ScheduleFormType> = (data) => {
     const payloadSettingAppointment: IPayloadSettingAppointmentDoctor = {
@@ -204,11 +215,36 @@ export default function ScheduleForm({ event, doctorId }: CreateScheduleProps) {
     });
   };
 
+  useEffect(() => {
+    if (schedule) {
+      const weekSchedule = weekInitialValue.map((day) => {
+        const matchedDay = schedule.week.find((item) => item.day === day.day);
+        return matchedDay
+          ? {
+              ...day,
+              startTime: matchedDay.startTime
+                ? new Date(matchedDay.startTime)
+                : undefined,
+              endTime: matchedDay.endTime
+                ? new Date(matchedDay.endTime)
+                : undefined,
+            }
+          : day;
+      });
+      const dailyBreakSchedule = schedule.dailyBreakTimes.map((item) => ({
+        startTime: item.startTime ? new Date(item.startTime) : undefined,
+        endTime: item.endTime ? new Date(item.endTime) : undefined,
+      }));
+      replaceDailyBreakField(dailyBreakSchedule);
+      replaceWeekField(weekSchedule);
+    }
+  }, [replaceDailyBreakField, replaceWeekField, schedule]);
+
   return (
     <div className="m-auto p-4 md:px-7 md:py-10">
       <div className="mb-6 flex items-center justify-between">
         <Title as="h3" className="text-lg">
-          {isNewSchedule ? 'Create a New Schedule' : 'Update Schedule'}
+          {isEdit ? 'Create a New Schedule' : 'Update Schedule'}
         </Title>
         <ActionIcon
           size="sm"

@@ -11,14 +11,14 @@ import dayjs from 'dayjs';
 import { useCallback, useMemo, useState } from 'react';
 import { CalendarEvent } from '@/core/types';
 import { useModal } from '../../modal-views/use-modal';
-import DetailsEvents from '../../event-calendar/details-event';
-import EventForm from '../../event-calendar/event-form';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
-import { useGetListSchedule } from '@/hooks/useSchedule';
 import { useParams } from 'next/navigation';
 import ModalButton from '../../ui/modal-button/modal-button';
 import ScheduleForm from '../../event-calendar/schedule-form';
 import { Flex } from 'rizzui';
+import { useGetDoctorById } from '@/hooks/useDoctor';
+import { Appointmentschedule } from '@/types/ApiResponse';
+import DetailsSchedule from '../../event-calendar/details-schedule';
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -39,27 +39,53 @@ export default function TabCalendar({
   const { openModal } = useModal();
   const { colorPresetName } = useColorPresetName();
 
-  const [params, setParams] = useState({
-    doctorId: id,
-    page: 1,
-    perPage: 50,
-    data: '',
-  });
+  const { data: dataDoctor } = useGetDoctorById(id);
 
-  const { data: dataSchedule } = useGetListSchedule(params);
+  const schedule = useMemo(() => {
+    return dataDoctor?.setting.schedule
+      ? (JSON.parse(dataDoctor.setting.schedule) as Appointmentschedule)
+      : undefined;
+  }, [dataDoctor?.setting?.schedule]);
 
-  const events: CalendarEvent[] = useMemo(() => {
-    if (!dataSchedule) return [];
-    return dataSchedule.map((schedule) => ({
-      id: schedule.id.toString(),
-      title: schedule.title,
-      start: new Date(schedule.start_date),
-      end: new Date(schedule.end_date),
-      allDay: false,
-      description: schedule.description,
-      doctor: schedule.doctorId.toString(),
-    }));
-  }, [dataSchedule]);
+  const calendarEvent: CalendarEvent[] = useMemo(() => {
+    if (!schedule) return [];
+
+    const events: CalendarEvent[] = [];
+    const startOfWeek = dayjs().startOf('week');
+    const endOfWeek = dayjs().add(1, 'year').endOf('week');
+
+    for (
+      let date = startOfWeek;
+      date.isBefore(endOfWeek);
+      date = date.add(1, 'week')
+    ) {
+      schedule.week.forEach((scheduleItem) => {
+        const startTime = dayjs(date)
+          .day(scheduleItem.day)
+          .hour(dayjs(scheduleItem.startTime).hour())
+          .minute(dayjs(scheduleItem.startTime).minute())
+          .toDate();
+
+        const endTime = dayjs(date)
+          .day(scheduleItem.day)
+          .hour(dayjs(scheduleItem.endTime).hour())
+          .minute(dayjs(scheduleItem.endTime).minute())
+          .toDate();
+
+        events.push({
+          id: `${scheduleItem.day}-${startTime.toISOString()}`,
+          title: `Schedule for Day ${scheduleItem.day}`,
+          start: startTime,
+          end: endTime,
+          allDay: false,
+          description: '',
+          doctor: id,
+        });
+      });
+    }
+
+    return events;
+  }, [id, schedule]);
 
   const { views, scrollToTime, formats } = useMemo(
     () => ({
@@ -86,21 +112,11 @@ export default function TabCalendar({
   const handleSelectEvent = useCallback(
     (event: CalendarEvent) => {
       openModal({
-        view: <DetailsEvents event={event} />,
+        view: <DetailsSchedule schedule={schedule} event={event} />,
         customSize: '500px',
       });
     },
     [openModal]
-  );
-
-  const handleSelectSlot = useCallback(
-    ({ start, end }: { start: Date; end: Date }) => {
-      openModal({
-        view: <EventForm doctorId={id} startDate={start} endDate={end} />,
-        customSize: '650px',
-      });
-    },
-    [id, openModal]
   );
 
   const onNavigate = useCallback(
@@ -123,14 +139,13 @@ export default function TabCalendar({
       </Flex>
       <Calendar
         localizer={localizer}
-        events={events}
+        events={calendarEvent}
         views={views}
         formats={formats}
         startAccessor="start"
         endAccessor="end"
         dayLayoutAlgorithm="no-overlap"
         onSelectEvent={handleSelectEvent}
-        onSelectSlot={handleSelectSlot}
         selectable
         scrollToTime={scrollToTime}
         className={cn(
