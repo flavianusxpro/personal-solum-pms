@@ -160,11 +160,6 @@ export const adminMenuItems = [
         href: routes.setting.roles,
         icon: <PiUser />,
       },
-      {
-        name: 'Tax',
-        href: routes.setting.taxSettings,
-        icon: <PiUser />,
-      },
     ],
   },
 ];
