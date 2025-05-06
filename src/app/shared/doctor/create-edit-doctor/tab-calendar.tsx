@@ -38,54 +38,62 @@ export default function TabCalendar({
   const id = useParams<{ id: string }>().id;
   const { openModal } = useModal();
   const { colorPresetName } = useColorPresetName();
+  const [dateRange, setDateRange] = useState({
+    from: dayjs().startOf('month').toDate(),
+    to: dayjs().endOf('month').toDate(),
+  });
 
   const { data: dataDoctor } = useGetDoctorById(id);
 
   const schedule = useMemo(() => {
-    return dataDoctor?.setting.schedule
-      ? (JSON.parse(dataDoctor.setting.schedule) as Appointmentschedule)
-      : undefined;
+    try {
+      return dataDoctor?.setting?.schedule
+        ? (JSON.parse(dataDoctor.setting.schedule) as Appointmentschedule)
+        : undefined;
+    } catch (error) {
+      return undefined;
+    }
   }, [dataDoctor?.setting?.schedule]);
 
   const calendarEvent: CalendarEvent[] = useMemo(() => {
     if (!schedule) return [];
 
     const events: CalendarEvent[] = [];
-    const startOfWeek = dayjs().startOf('week');
-    const endOfWeek = dayjs().add(1, 'year').endOf('week');
+    const startOfRange = dayjs(dateRange.from);
+    const endOfRange = dayjs(dateRange.to);
 
-    for (
-      let date = startOfWeek;
-      date.isBefore(endOfWeek);
-      date = date.add(1, 'week')
-    ) {
-      schedule.week.forEach((scheduleItem) => {
-        const startTime = dayjs(date)
-          .day(scheduleItem.day)
-          .hour(dayjs(scheduleItem.startTime).hour())
-          .minute(dayjs(scheduleItem.startTime).minute())
-          .toDate();
+    for (const scheduleItem of schedule?.week || []) {
+      let currentDate = startOfRange.clone();
 
-        const endTime = dayjs(date)
-          .day(scheduleItem.day)
-          .hour(dayjs(scheduleItem.endTime).hour())
-          .minute(dayjs(scheduleItem.endTime).minute())
-          .toDate();
+      while (currentDate.isBefore(endOfRange, 'day')) {
+        if (currentDate.day() === scheduleItem.day) {
+          const startTime = currentDate
+            .set('hour', parseInt(scheduleItem.startTime.split(':')[0], 10))
+            .set('minute', parseInt(scheduleItem.startTime.split(':')[1], 10))
+            .toDate();
 
-        events.push({
-          id: `${scheduleItem.day}-${startTime.toISOString()}`,
-          title: `Schedule for Day ${scheduleItem.day}`,
-          start: startTime,
-          end: endTime,
-          allDay: false,
-          description: '',
-          doctor: id,
-        });
-      });
+          const endTime = currentDate
+            .set('hour', parseInt(scheduleItem.endTime.split(':')[0], 10))
+            .set('minute', parseInt(scheduleItem.endTime.split(':')[1], 10))
+            .toDate();
+
+          events.push({
+            id: `${scheduleItem.day}-${currentDate.toISOString()}`,
+            title: `Schedule for Day ${scheduleItem.day}`,
+            start: startTime,
+            end: endTime,
+            allDay: false,
+            description: '',
+            doctor: id,
+          });
+        }
+
+        currentDate = currentDate.add(1, 'day');
+      }
     }
 
     return events;
-  }, [id, schedule]);
+  }, [id, schedule, dateRange]);
 
   const { views, scrollToTime, formats } = useMemo(
     () => ({
@@ -123,6 +131,10 @@ export default function TabCalendar({
     (newDate: Date, view: View, action: NavigateAction) => {
       const fromDate = dayjs(newDate).startOf('month').toDate();
       const toDate = dayjs(newDate).endOf('month').toDate();
+      setDateRange({
+        from: fromDate,
+        to: toDate,
+      });
     },
     []
   );

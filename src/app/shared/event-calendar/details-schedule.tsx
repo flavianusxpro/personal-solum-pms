@@ -132,8 +132,7 @@ function DetailsSchedule({ event, schedule }: DetailsScheduleProps) {
               <span>Break Times:</span>
               {dailyBreaks.map((breakTime, index) => (
                 <span key={index} className="font-medium text-gray-1000">
-                  {formatDate(new Date(breakTime.start), 'h:mm A')} -{' '}
-                  {formatDate(new Date(breakTime.end), 'h:mm A')}
+                  {breakTime.start} - {breakTime.end}
                   {index < (event?.breakTimes?.length ?? 0) - 1 ? ', ' : ''}
                 </span>
               ))}

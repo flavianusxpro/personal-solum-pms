@@ -121,6 +121,7 @@ export default function ScheduleForm({
     control,
     name: 'week',
   });
+  console.log('🚀 ~ weekFields:', weekFields);
 
   const {
     fields: dailyBreakFields,
@@ -138,6 +139,7 @@ export default function ScheduleForm({
       ? (JSON.parse(dataDoctor.setting.schedule) as Appointmentschedule)
       : null;
   }, [dataDoctor?.setting?.schedule]);
+  console.log('🚀 ~ schedule ~ schedule:', schedule);
 
   const onSubmit: SubmitHandler<ScheduleFormType> = (data) => {
     const payloadSettingAppointment: IPayloadSettingAppointmentDoctor = {
@@ -148,18 +150,21 @@ export default function ScheduleForm({
           .filter((item) => item.startTime !== undefined)
           .map((item) => ({
             day: item.day,
-            startTime: item.startTime ? item.startTime.toISOString() : '',
-            endTime: item.endTime ? item.endTime.toISOString() : '',
+            startTime: item.startTime
+              ? dayjs(item.startTime).format('HH:mm')
+              : '',
+            endTime: item.endTime ? dayjs(item.endTime).format('HH:mm') : '',
           })),
         dailyBreakTimes: (data?.dailyBreakTimes || [])
           .filter((item) => item.startTime !== undefined)
           .map((item) => ({
-            startTime: item.startTime?.toISOString() || '',
-            endTime: item.endTime?.toISOString() || '',
+            startTime: item.startTime
+              ? dayjs(item.startTime).format('HH:mm')
+              : '',
+            endTime: item.endTime ? dayjs(item.endTime).format('HH:mm') : '',
           })),
       },
     };
-
     mutateUpdateAppointment(payloadSettingAppointment, {
       onSuccess: () => {
         toast.success('Update schedule successfully');
@@ -216,29 +221,42 @@ export default function ScheduleForm({
   };
 
   useEffect(() => {
-    if (schedule) {
+    if (isEdit && schedule) {
       const weekSchedule = weekInitialValue.map((day) => {
-        const matchedDay = schedule.week.find((item) => item.day === day.day);
+        const matchedDay = schedule?.week?.find(
+          (item: any) => item.day === day.day
+        );
         return matchedDay
           ? {
               ...day,
-              startTime: matchedDay.startTime
-                ? new Date(matchedDay.startTime)
-                : undefined,
-              endTime: matchedDay.endTime
-                ? new Date(matchedDay.endTime)
-                : undefined,
+              startTime:
+                matchedDay.startTime &&
+                dayjs(matchedDay.startTime, 'HH:mm').isValid()
+                  ? dayjs(matchedDay.startTime, 'HH:mm').toDate()
+                  : startDay,
+              endTime:
+                matchedDay.endTime &&
+                dayjs(matchedDay.endTime, 'HH:mm').isValid()
+                  ? dayjs(matchedDay.endTime, 'HH:mm').toDate()
+                  : endDay,
             }
-          : day;
+          : { ...day };
       });
-      const dailyBreakSchedule = schedule.dailyBreakTimes.map((item) => ({
-        startTime: item.startTime ? new Date(item.startTime) : undefined,
-        endTime: item.endTime ? new Date(item.endTime) : undefined,
-      }));
+      const dailyBreakSchedule =
+        schedule?.dailyBreakTimes?.map((item: any) => ({
+          startTime:
+            item.startTime && dayjs(item.startTime, 'HH:mm').isValid()
+              ? dayjs(item.startTime, 'HH:mm').toDate()
+              : startDay,
+          endTime:
+            item.endTime && dayjs(item.endTime, 'HH:mm').isValid()
+              ? dayjs(item.endTime, 'HH:mm').toDate()
+              : endDay,
+        })) || [];
       replaceDailyBreakField(dailyBreakSchedule);
       replaceWeekField(weekSchedule);
     }
-  }, [replaceDailyBreakField, replaceWeekField, schedule]);
+  }, [isEdit, replaceDailyBreakField, replaceWeekField, schedule]);
 
   return (
     <div className="m-auto p-4 md:px-7 md:py-10">
