@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { Flex, Loader } from 'rizzui';
+import { FieldError, Flex, Loader } from 'rizzui';
 import { useParams } from 'next/navigation';
 import { usePostAssignDoctorToClinic } from '@/hooks/useDoctor';
 import { useMemo } from 'react';
@@ -80,16 +80,24 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
                     name="clinic"
                     control={control}
                     render={({ field }) => (
-                      <MultySelect
-                        {...field}
-                        onClear={() => field.onChange([])}
-                        options={clinicsOptions}
-                        clearable
-                        placeholder="Select Clinic"
-                        error={errors.clinic?.message}
-                        className="flex-grow"
-                        disabled={isView}
-                      />
+                      <>
+                        <MultySelect
+                          {...field}
+                          onClear={() => field.onChange([])}
+                          options={clinicsOptions}
+                          clearable
+                          placeholder="Select Clinic"
+                          error={errors.clinic?.message}
+                          className="flex-grow"
+                          disabled={isView}
+                        />
+                        {errors.clinic?.type === 'too_big' && (
+                          <FieldError
+                            error={errors.clinic?.message}
+                            className="text-red-500"
+                          />
+                        )}
+                      </>
                     )}
                   />
                 </FormGroup>

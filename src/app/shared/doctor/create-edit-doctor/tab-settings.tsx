@@ -320,7 +320,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
 
                 <Divider className="" />
 
-                <FormGroup title="Qualification">
+                <FormGroup title="Qualification (not ready yet)">
                   <Input
                     {...register('academic_degree')}
                     label="Academic Degree"

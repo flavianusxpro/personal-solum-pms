@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { useAtom } from 'jotai';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Loader } from 'rizzui';
+import { Loader, Text } from 'rizzui';
 import Footer from './footer';
 import {
   formDataAtom,
@@ -15,6 +15,7 @@ import { useGetPatientProblem, useGetPatientTypes } from '@/hooks/usePatient';
 import { useMemo } from 'react';
 import CSelect from '@/app/shared/ui/select';
 import { appointmentBookSchema } from '@/validators/admin-appointment.schema';
+import { PiHospital } from 'react-icons/pi';
 
 const Textarea = dynamic(() => import('rizzui').then((mod) => mod.Textarea), {
   ssr: false,
@@ -32,6 +33,7 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 export default function AppointmentServices() {
   const { gotoNextStep } = useStepperAppointment();
   const [formData, setFormData] = useAtom(formDataAtom);
+  console.log('🚀 ~ AppointmentServices ~ formData:', formData.patient_id);
   const {
     register,
     control,
@@ -131,6 +133,7 @@ export default function AppointmentServices() {
             <CSelect
               {...field}
               className="col-span-full md:col-span-1"
+              labelClassName="font-medium text-gray-1000 dark:text-white"
               placeholder="select patient problem..."
               label="Problem Type"
               options={patientProblemOptions}
@@ -144,6 +147,8 @@ export default function AppointmentServices() {
           render={({ field }) => (
             <Textarea
               {...field}
+              label="Notes"
+              labelClassName="font-medium text-gray-1000 dark:text-white"
               placeholder="Notes"
               error={errors.note?.message}
               textareaClassName="h-24"
@@ -151,7 +156,30 @@ export default function AppointmentServices() {
             />
           )}
         />
+        <div className="space-y-5">
+          <Text fontWeight="medium" className="text-gray-1000">
+            Last Appointment
+          </Text>
+          <div className="flex items-center gap-6">
+            <PiHospital className="h-8 w-8" />
+            <div>
+              <h3 className="rizzui-title-h3 mb-2 text-base font-medium text-gray-900 dark:text-gray-700">
+                Clinic
+              </h3>
+              <div className="flex items-center gap-2">
+                <p className="rizzui-text-p text-sm font-normal text-gray-500">
+                  Melbourne, Australia
+                </p>
+                <span className="h-1 w-1 rounded-full bg-gray-600"></span>
+                <p className="rizzui-text-p text-sm font-normal text-gray-500">
+                  22 Jan at 4:20pm
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
       <Footer />
     </form>
   );

@@ -4,7 +4,7 @@ import { Controller, SubmitHandler } from 'react-hook-form';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { ActionIcon, Flex, Input, Title } from 'rizzui';
+import { ActionIcon, FieldError, Flex, Input, Title } from 'rizzui';
 import CSelect from '@/core/ui/select';
 import { genderOption, languageOption, stateOption } from '@/config/constants';
 import { IPayloadCreateDoctorUser } from '@/types/paramTypes';
@@ -21,6 +21,8 @@ import { useMemo } from 'react';
 import SelectLoader from '@/core/components/loader/select-loader';
 import dynamic from 'next/dynamic';
 import { useGetRoles } from '@/hooks/useRole';
+import { useGetAllClinics } from '@/hooks/useClinic';
+import { error } from 'console';
 
 const MultySelect = dynamic(
   () => import('rizzui').then((mod) => mod.MultiSelect),
@@ -46,6 +48,19 @@ export default function CreatDoctorModal() {
     perPage: 100,
     page: 1,
   });
+  const { data: dataClinics } = useGetAllClinics({
+    page: 1,
+    perPage: 50,
+    role: 'admin',
+  });
+
+  const clinicsOptions = useMemo(() => {
+    if (!dataClinics) return [];
+    return dataClinics.data.map((clinic) => ({
+      label: clinic.name,
+      value: clinic.id.toString(),
+    }));
+  }, [dataClinics]);
 
   const specialistsOptions = useMemo(() => {
     if (!dataSpecialists) return [];
@@ -79,7 +94,7 @@ export default function CreatDoctorModal() {
       email: data.email,
       password: data.password as string,
       roleId: doctorRole.id,
-      clinic_ids: [],
+      clinic_ids: data.clinic_ids.map((item) => parseInt(item)),
       doctor: {
         ...data,
         specialist_type: data.specialist_type.map((item) => parseInt(item)),
@@ -180,6 +195,33 @@ export default function CreatDoctorModal() {
                     {...register('email')}
                     error={errors.email?.message}
                     className="flex-grow"
+                  />
+                </FormGroup>
+
+                <FormGroup title="Clinic" isLabel>
+                  <Controller
+                    name="clinic_ids"
+                    control={control}
+                    rules={{}}
+                    render={({ field }) => (
+                      <>
+                        <MultySelect
+                          {...field}
+                          onClear={() => field.onChange([])}
+                          options={clinicsOptions}
+                          clearable
+                          placeholder="Select Clinic"
+                          error={errors.clinic_ids?.message}
+                          className="flex-grow"
+                        />
+                        {errors.clinic_ids?.type === 'too_big' && (
+                          <FieldError
+                            error={errors.clinic_ids?.message}
+                            className="text-red-500"
+                          />
+                        )}
+                      </>
+                    )}
                   />
                 </FormGroup>
               </div>

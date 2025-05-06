@@ -14,13 +14,17 @@ import dayjs from 'dayjs';
 import { appointmentBookSchema } from '@/validators/admin-appointment.schema';
 import Footer from './footer';
 
-const availableDates = [
-  dayjs('2025-04-21').date(),
-  dayjs('2025-04-22').date(),
-  dayjs('2025-04-23').date(),
-  dayjs('2025-04-24').date(),
-  dayjs('2025-04-25').date(),
-];
+const disabledDate: dayjs.Dayjs[] = [];
+for (
+  let date = dayjs('2025-05-06');
+  date.isBefore(dayjs('2025-05-31'));
+  date = date.add(1, 'day')
+) {
+  if (date.day() !== 0 && date.day() !== 6) {
+    // Exclude weekends (Sunday: 0, Saturday: 6)
+    disabledDate.push(date);
+  }
+}
 
 // generate form types from zod validation schema
 
@@ -72,11 +76,15 @@ export default function DateTime() {
                   if (['year', 'decade', 'century'].includes(view)) {
                     return false;
                   }
-                  return !availableDates.includes(date.getDate());
+                  return !disabledDate.some((disabled) =>
+                    disabled.isSame(dayjs(date), 'day')
+                  );
                 }}
                 tileClassName={({ date, view }) => {
                   if (view === 'month') {
-                    const isDisabled = availableDates.includes(date.getDate());
+                    const isDisabled = disabledDate.some((disabled) =>
+                      disabled.isSame(dayjs(date), 'day')
+                    );
                     return isDisabled ? 'bg-green-100 hover:bg-green-200' : '';
                   }
                 }}

@@ -331,7 +331,7 @@ interface Doctor {
   emergency_first_name: string;
   emergency_last_name: string;
   emergency_mobile_number: string;
-  emergency_email: string;
+  emergency_email?: string;
   medical_interest: string;
   specialist_type: number[];
   treatment_type: number[];
