@@ -159,6 +159,33 @@ export interface IPayloadSettingBillingDoctor {
   script_renewal_fee?: number;
 }
 
+export interface IPayloadSettingAppointmentDoctor {
+  doctor_id: string;
+  practice_open_schedule_days?: number[];
+  practice_open_schedule_clock?: string;
+  practice_close_schedule_clock?: string;
+  initial_appointment_time?: number;
+  followup_appointment_time?: number;
+  schedule?: Schedule;
+}
+
+interface Schedule {
+  interval: string;
+  week: Week[];
+  dailyBreakTimes: DailyBreakTime[];
+}
+
+interface DailyBreakTime {
+  startTime: string;
+  endTime: string;
+}
+
+interface Week {
+  day: number;
+  startTime: string;
+  endTime: string;
+}
+
 export interface IParamGetPatientProblem {
   search: string;
 }

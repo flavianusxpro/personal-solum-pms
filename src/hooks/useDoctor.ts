@@ -16,15 +16,10 @@ import {
   postCreateTreatment,
   deleteTreatment,
   putUpdateTreatment,
+  putSettingAppointmentDoctor,
 } from '@/service/doctor';
 
-import {
-  IParamGetAllDoctor,
-  IParamGetSpecialists,
-  IPayloadCreateEditDoctor,
-  IPayloadSettingBillingDoctor,
-  IPayloadSettingMeetingDoctor,
-} from '@/types/paramTypes';
+import { IParamGetAllDoctor, IParamGetSpecialists } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 export function useGetAllDoctors(params: IParamGetAllDoctor) {
@@ -52,17 +47,13 @@ export function useGetDoctorById(id: string) {
 
 export function useCreateDoctor() {
   return useMutation({
-    mutationFn: async (payload: IPayloadCreateEditDoctor) => {
-      return await postCreateDoctor(payload);
-    },
+    mutationFn: postCreateDoctor,
   });
 }
 
 export function useUpdateDoctor() {
   return useMutation({
-    mutationFn: async (payload: IPayloadCreateEditDoctor) => {
-      return await putUpdateDoctor(payload);
-    },
+    mutationFn: putUpdateDoctor,
   });
 }
 
@@ -74,17 +65,19 @@ export function useDeleteDoctor() {
 
 export function useUpdateSettingMeetingDoctor() {
   return useMutation({
-    mutationFn: async (payload: IPayloadSettingMeetingDoctor) => {
-      return await putSettingMeetingDoctor(payload);
-    },
+    mutationFn: putSettingMeetingDoctor,
   });
 }
 
 export function useUpdateSettingBillingDoctor() {
   return useMutation({
-    mutationFn: async (payload: IPayloadSettingBillingDoctor) => {
-      return await putSettingBillingDoctor(payload);
-    },
+    mutationFn: putSettingBillingDoctor,
+  });
+}
+
+export function useUpdateSettingAppointmentDoctor() {
+  return useMutation({
+    mutationFn: putSettingAppointmentDoctor,
   });
 }
 

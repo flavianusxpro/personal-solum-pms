@@ -23,6 +23,11 @@ import { ScheduleFormType } from '@/validators/create-schedule.schema';
 import { DatePicker } from '@/core/ui/datepicker';
 import ActionTooltipButton from '../ui/action-tooltip-button';
 import { weekIntervalOption } from '@/config/constants';
+import {
+  useGetDoctorById,
+  useUpdateSettingAppointmentDoctor,
+} from '@/hooks/useDoctor';
+import { IPayloadSettingAppointmentDoctor } from '@/types/paramTypes';
 
 interface CreateEventProps {
   startDate?: Date;
@@ -36,56 +41,60 @@ const endDay = dayjs().hour(17).minute(0).toDate();
 
 const weekInitialValue = [
   {
-    day: 'Monday',
+    label: 'Monday',
+    day: 1,
     startTime: startDay,
     endTime: endDay,
   },
   {
-    day: 'Tuesday',
+    label: 'Tuesday',
+    day: 2,
     startTime: startDay,
     endTime: endDay,
   },
   {
-    day: 'Wednesday',
+    label: 'Wednesday',
+    day: 3,
     startTime: startDay,
     endTime: endDay,
   },
   {
-    day: 'Thursday',
+    label: 'Thursday',
+    day: 4,
     startTime: startDay,
     endTime: endDay,
   },
   {
-    day: 'Friday',
+    label: 'Friday',
+    day: 5,
     startTime: startDay,
     endTime: endDay,
   },
   {
-    day: 'Saturday',
+    label: 'Saturday',
+    day: 6,
   },
   {
-    day: 'Sunday',
+    label: 'Sunday',
+    day: 7,
   },
 ];
 
 interface CreateScheduleProps {
   event?: CalendarEvent;
-  doctorId?: string;
+  doctorId: string;
 }
 
 export default function ScheduleForm({ event, doctorId }: CreateScheduleProps) {
   const { closeModal } = useModal();
   const isNewSchedule = true;
 
-  const { refetch } = useGetListSchedule({
-    page: 1,
-    perPage: 100,
-  });
+  const { refetch } = useGetDoctorById(doctorId ?? '');
 
-  const { mutate: mutateCreateSchedule, isPending: isPendingCreateSchedule } =
-    usePostCreateSchedule();
-  const { mutate: mutateUpdateSchedule, isPending: isPendingUpdateSchedule } =
-    usePutUpdateSchedule();
+  const {
+    mutate: mutateUpdateAppointment,
+    isPending: isPendingUpdateAppointment,
+  } = useUpdateSettingAppointmentDoctor();
 
   const {
     control,
@@ -120,67 +129,36 @@ export default function ScheduleForm({ event, doctorId }: CreateScheduleProps) {
   });
 
   const onSubmit: SubmitHandler<ScheduleFormType> = (data) => {
-    console.log('🚀 ~ ScheduleForm ~ data:', data);
-    toast.success(
-      <Text as="b">
-        Event {isNewSchedule ? 'Created' : 'Updated'} Successfully
-      </Text>
-    );
+    const payloadSettingAppointment: IPayloadSettingAppointmentDoctor = {
+      doctor_id: doctorId || '',
+      schedule: {
+        interval: data.interval,
+        week: data.week
+          .filter((item) => item.startTime !== undefined)
+          .map((item) => ({
+            day: item.day,
+            startTime: item.startTime ? item.startTime.toISOString() : '',
+            endTime: item.endTime ? item.endTime.toISOString() : '',
+          })),
+        dailyBreakTimes: (data?.dailyBreakTimes || [])
+          .filter((item) => item.startTime !== undefined)
+          .map((item) => ({
+            startTime: item.startTime?.toISOString() || '',
+            endTime: item.endTime?.toISOString() || '',
+          })),
+      },
+    };
 
-    // if (isNewSchedule) {
-    //   mutateCreateSchedule(
-    //     {
-    //       title: data.title,
-    //       description: data.description ?? '',
-    //       start_date: dayjs(data.startDate).format('YYYY-MM-DD HH:mm'),
-    //       end_date: dayjs(data.endDate).format('YYYY-MM-DD HH:mm'),
-    //       doctorId: Number(data.doctor),
-    //       break_times: data.breakTimes?.map((date) => ({
-    //         start_date: dayjs(date.start).format('YYYY-MM-DD HH:mm'),
-    //         end_date: dayjs(date.end).format('YYYY-MM-DD HH:mm'),
-    //       })),
-    //     },
-    //     {
-    //       onSuccess: () => {
-    //         toast.success('Event Created Successfully');
-    //         refetch();
-    //         closeModal();
-    //       },
-    //       onError: (error: any) => {
-    //         toast.error(
-    //           error?.response?.data?.message ?? 'Something went wrong'
-    //         );
-    //       },
-    //     }
-    //   );
-    // } else {
-    //   mutateUpdateSchedule(
-    //     {
-    //       id: event?.id,
-    //       title: data.title,
-    //       description: data.description ?? '',
-    //       start_date: dayjs(data.startDate).format('YYYY-MM-DD HH:mm'),
-    //       end_date: dayjs(data.endDate).format('YYYY-MM-DD HH:mm'),
-    //       doctorId: Number(data.doctor),
-    //       break_times: data.breakTimes?.map((date) => ({
-    //         start_date: dayjs(date.start).format('YYYY-MM-DD HH:mm'),
-    //         end_date: dayjs(date.end).format('YYYY-MM-DD HH:mm'),
-    //       })),
-    //     },
-    //     {
-    //       onSuccess: () => {
-    //         toast.success('Event Updated Successfully');
-    //         refetch();
-    //         closeModal();
-    //       },
-    //       onError: (error: any) => {
-    //         toast.error(
-    //           error?.response?.data?.message ?? 'Something went wrong'
-    //         );
-    //       },
-    //     }
-    //   );
-    // }
+    mutateUpdateAppointment(payloadSettingAppointment, {
+      onSuccess: () => {
+        toast.success('Update schedule successfully');
+        refetch();
+        closeModal();
+      },
+      onError: (error: any) => {
+        toast.error(error?.response?.data?.message || 'Update schedule failed');
+      },
+    });
   };
 
   const deleteday = (index: number) => {
@@ -263,7 +241,7 @@ export default function ScheduleForm({ event, doctorId }: CreateScheduleProps) {
         {weekFields.map((item, index) => (
           <Flex key={index} align="center" gap="2">
             <Flex className="w-1/3">
-              <Text className="font-medium">{item.day}</Text>
+              <Text className="font-medium">{item.label}</Text>
             </Flex>
             {item.endTime && item.startTime ? (
               <Flex className="w-full">
@@ -410,7 +388,7 @@ export default function ScheduleForm({ event, doctorId }: CreateScheduleProps) {
           </Button>
           <Button
             type="submit"
-            isLoading={isPendingUpdateSchedule || isPendingCreateSchedule}
+            isLoading={isPendingUpdateAppointment}
             className="hover:gray-700 w-full @xl:w-auto"
           >
             Save

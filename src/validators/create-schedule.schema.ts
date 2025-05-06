@@ -4,7 +4,8 @@ export const scheduleFormSchema = z.object({
   interval: z.string({ required_error: 'Interval is required' }),
   week: z.array(
     z.object({
-      day: z.string(),
+      label: z.string(),
+      day: z.number(),
       startTime: z.date().optional(),
       endTime: z.date().optional(),
     })

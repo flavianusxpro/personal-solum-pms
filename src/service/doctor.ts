@@ -72,6 +72,15 @@ export async function putSettingBillingDoctor(
   );
 }
 
+export async function putSettingAppointmentDoctor(
+  payload: IPayloadSettingBillingDoctor
+) {
+  return await put<any>(
+    '/admin/doctor/setting/appointment/' + payload.doctor_id,
+    payload
+  );
+}
+
 export async function postAssignDoctorToClinic(
   payload: IPayloadAssignDoctorToClinic
 ) {

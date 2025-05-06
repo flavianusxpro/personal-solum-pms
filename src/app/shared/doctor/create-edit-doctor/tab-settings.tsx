@@ -10,11 +10,13 @@ import FormFooter from '@/core/components/form-footer';
 import CNumberInput from '@/core/ui/number-input';
 import {
   useGetDoctorById,
+  useUpdateSettingAppointmentDoctor,
   useUpdateSettingBillingDoctor,
   useUpdateSettingMeetingDoctor,
 } from '@/hooks/useDoctor';
 import { useParams } from 'next/navigation';
 import {
+  IPayloadSettingAppointmentDoctor,
   IPayloadSettingBillingDoctor,
   IPayloadSettingMeetingDoctor,
 } from '@/types/paramTypes';
@@ -32,8 +34,12 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
 
   const { mutate: mutateUpdateMeeting, isPending: isPendingUpdateMeeting } =
     useUpdateSettingMeetingDoctor();
-  const { mutate: mutateUpdateBilling, isPending: isPendingUpdateBillig } =
+  const { mutate: mutateUpdateBilling, isPending: isPendingUpdateBilling } =
     useUpdateSettingBillingDoctor();
+  const {
+    mutate: mutateUpdateAppointment,
+    isPending: isPendingUpdateAppointment,
+  } = useUpdateSettingAppointmentDoctor();
 
   const timeZoneOptions = useMemo(() => {
     const timezones = Intl.supportedValuesOf('timeZone');
@@ -60,10 +66,9 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
       skype_meeting_status: data.skype_meeting_status,
       f2f_meeting_status: data.f2f,
       telehealth_meeting_status: data.teleHealth,
-      initial_appointment_time: data.initial_appointment_time,
-      follow_up_appointment_time: data.follow_up_appointment_time,
       timeZone: data.doctor_timezone,
     };
+
     const payloadSettingBilling: IPayloadSettingBillingDoctor = {
       doctor_id: id,
       fee: data.fee,
@@ -71,6 +76,12 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
       initial_appointment_fee: data.initial_appointment_fee,
       followup_appointment_fee: data.follow_up_appointment_fee,
       script_renewal_fee: data.script_renewal_fee,
+    };
+
+    const payloadSettingAppointment: IPayloadSettingAppointmentDoctor = {
+      doctor_id: id,
+      followup_appointment_time: data.follow_up_appointment_time,
+      initial_appointment_time: data.initial_appointment_time,
     };
 
     mutateUpdateMeeting(payloadSettingMeeting, {
@@ -93,6 +104,18 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
       onError: (error: any) => {
         toast.error(
           'Error updating billing settings: ' + error.response.data.message
+        );
+      },
+    });
+
+    mutateUpdateAppointment(payloadSettingAppointment, {
+      onSuccess: () => {
+        toast.success('Appointment settings updated successfully');
+        refetchDataDoctor();
+      },
+      onError: (error: any) => {
+        toast.error(
+          'Error updating appointment settings: ' + error.response.data.message
         );
       },
     });
@@ -446,7 +469,11 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                 </FormGroup>
               </div>
               <FormFooter
-                isLoading={isPendingUpdateMeeting || isPendingUpdateBillig}
+                isLoading={
+                  isPendingUpdateMeeting ||
+                  isPendingUpdateBilling ||
+                  isPendingUpdateAppointment
+                }
                 altBtnText="Cancel"
                 submitBtnText="Save"
               />
