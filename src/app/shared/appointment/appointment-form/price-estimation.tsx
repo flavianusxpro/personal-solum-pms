@@ -41,6 +41,16 @@ const PriceEstimationCost = ({
     }
   }
 
+  function getAppointmentType() {
+    if (appointmentType?.includes('follow up')) {
+      return 'FOLLOWUP';
+    } else if (appointmentType?.includes('script renewal')) {
+      return 'SCRIPT_RENEWAL';
+    } else {
+      return 'INITIAL';
+    }
+  }
+
   const { mutate } = usePostCreateAppointment();
 
   const successPayment = (paymentId: string) => {
@@ -51,7 +61,7 @@ const PriceEstimationCost = ({
       date: `${dayjs(formData.date).format('YYYY-MM-DD')} ${formData.doctorTime}`,
       note: formData.note,
       patient_problem: formData.patient_problem,
-      patient_type: formData.patient_type,
+      patient_type: getAppointmentType(),
       payment_id: paymentId,
       meeting_preference: 'ZOOM',
       patientId: formData.patient_id as number,
