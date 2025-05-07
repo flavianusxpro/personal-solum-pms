@@ -23,6 +23,7 @@ import { IPayloadCreateEditPatient } from '@/types/paramTypes';
 import { useParams } from 'next/navigation';
 import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
+import { DatePicker } from '@/core/ui/datepicker';
 
 export default function PatientDetails({
   nextTab,
@@ -132,8 +133,8 @@ export default function PatientDetails({
           date_of_birth: dataPatient?.date_of_birth ?? '',
           medicare_card: dataPatient?.medicare_card_number ?? '',
           medicare_expiry: dataPatient?.medicare_expired_date
-            ? dayjs(dataPatient.medicare_expired_date).format('YYYY-MM-DD')
-            : '',
+            ? dayjs(dataPatient.medicare_expired_date).toDate()
+            : undefined,
           patient_problem: dataPatient?.patient_problem?.toString() || null,
           patient_type: dataPatient?.patient_type?.toString() || null,
           position_of_card: dataPatient?.potition_on_card ?? '',
@@ -148,7 +149,14 @@ export default function PatientDetails({
         },
       }}
     >
-      {({ register, control, setValue, getValues, formState: { errors } }) => {
+      {({
+        register,
+        control,
+        setValue,
+        getValues,
+        watch,
+        formState: { errors },
+      }) => {
         return (
           <>
             <div className="mb-10 grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
@@ -259,14 +267,19 @@ export default function PatientDetails({
                       disabled={isView}
                       className="flex-grow"
                     />
-                    <Input
-                      label="Expiry Date"
-                      type="date"
-                      placeholder="Expiry Date"
-                      {...register('medicare_expiry')}
+                    <DatePicker
+                      inputProps={{
+                        label: 'Medicare Expiry Date',
+                      }}
+                      selected={watch('medicare_expiry')}
+                      onChange={(date) => {
+                        if (!date) return;
+                        setValue('medicare_expiry', date);
+                      }}
+                      showDateSelect={false}
+                      minDate={new Date()}
+                      dateFormat="MM/YY"
                       error={errors.medicare_expiry?.message}
-                      className="flex-grow"
-                      disabled={isView}
                     />
                   </Flex>
                 </FormGroup>

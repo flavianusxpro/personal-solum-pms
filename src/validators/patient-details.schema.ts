@@ -23,7 +23,7 @@ export const patientDetailsFormSchema = z.object({
   }),
   description: z.string().optional(),
   medicare_card: z.string().optional(),
-  medicare_expiry: z.string().optional(),
+  medicare_expiry: z.date().optional(),
   position_of_card: z.string().optional(),
   avatar: fileSchema.optional(),
   password: z.string().optional(),
