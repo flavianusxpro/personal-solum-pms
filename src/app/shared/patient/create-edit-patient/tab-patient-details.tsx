@@ -81,7 +81,7 @@ export default function PatientDetails({
       gender: data.gender as string,
       medicare_card_number: data.medicare_card as string,
       medicare_expired_date: dayjs(data.medicare_expiry).format(
-        'DD MMMM YYYY'
+        'MMMM YYYY'
       ) as string,
       mobile_number: data.mobile_number as string,
       status: 1,
@@ -277,6 +277,7 @@ export default function PatientDetails({
                         setValue('medicare_expiry', date);
                       }}
                       showDateSelect={false}
+                      showMonthYearPicker
                       minDate={new Date()}
                       dateFormat="MM/YY"
                       error={errors.medicare_expiry?.message}
