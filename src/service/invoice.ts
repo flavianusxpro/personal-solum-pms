@@ -1,6 +1,5 @@
 import { del, get, post, put } from '@/app/api/api';
 import {
-  IGetAllItemsResponse,
   IGetInvoiceByIdResponse,
   IGetAppointmentListResponse,
 } from '@/types/ApiResponse';
@@ -24,12 +23,6 @@ export async function postCreateInvoice(payload: IPayloadCreateInvoice) {
 
 export async function putCreateInvoice(payload: IPayloadCreateInvoice) {
   return await put('/admin/invoice/' + payload.id, payload);
-}
-
-export async function getItems() {
-  return await get<IGetAllItemsResponse>('/admin/invoice/item').then(
-    (res) => res.data
-  );
 }
 
 export async function deleteInvoice(id: string) {

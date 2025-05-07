@@ -110,4 +110,5 @@ export const messages = {
   taxValueIsRequired: 'Tax value is required',
   passwordsDoNotMatch: 'Passwords do not match',
   maxLength: 'Maximum reached',
+  codeIsRequired: 'Code is required',
 };

@@ -8,8 +8,10 @@ import cn from '@core/utils/class-names';
 import dynamic from 'next/dynamic';
 import React, { useCallback, useState } from 'react';
 import { PiCaretDownBold, PiCaretUpBold } from 'react-icons/pi';
-import { ActionIcon } from 'rizzui';
-import { productData } from '@/data/product-data';
+import { ActionIcon, Loader } from 'rizzui';
+import { useDeleteItem, useGetItems } from '@/hooks/useItems';
+import { useModal } from '../../modal-views/use-modal';
+import toast from 'react-hot-toast';
 
 // dynamic import
 const FilterElement = dynamic(
@@ -41,17 +43,32 @@ const filterState = {
   price: ['', ''],
   createdAt: [null, null],
   updatedAt: [null, null],
-  status: '',
 };
 
-export default function PatientTable({
+export default function ProductTable({
   variant = 'modern',
   className,
 }: {
   variant?: 'modern' | 'minimal' | 'classic' | 'elegant' | 'retro';
   className?: string;
 }) {
-  const [pageSize, setPageSize] = useState(10);
+  const { openModal } = useModal();
+
+  const [params, setParams] = useState({
+    page: 1,
+    perPage: 10,
+  });
+
+  const {
+    data: dataItems,
+    isLoading: isLoadingGetItems,
+    refetch,
+  } = useGetItems({
+    page: params.page,
+    perPage: params.perPage,
+  });
+
+  const { mutate: mutateDelete } = useDeleteItem();
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -60,8 +77,15 @@ export default function PatientTable({
   });
 
   const onDeleteItem = useCallback((id: string) => {
-    handleDelete(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    mutateDelete(id, {
+      onSuccess: () => {
+        toast.success('Item deleted successfully');
+        refetch();
+      },
+      onError: (error: any) => {
+        toast.error('Failed to delete item: ', error?.response?.data?.message);
+      },
+    });
   }, []);
 
   const {
@@ -83,18 +107,19 @@ export default function PatientTable({
     handleSelectAll,
     handleDelete,
     handleReset,
-  } = useTable(productData, pageSize, filterState);
+  } = useTable(dataItems?.data ?? [], params.perPage, filterState);
 
   const columns = React.useMemo(
     () =>
       getColumns({
-        data: productData,
+        data: dataItems?.data ?? [],
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
         onDeleteItem,
         onChecked: handleRowSelect,
         handleSelectAll,
+        openModal,
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -115,7 +140,7 @@ export default function PatientTable({
     <div className={cn(className)}>
       <ControlledTable
         variant={variant}
-        isLoading={isLoading}
+        isLoading={isLoading || isLoadingGetItems}
         showLoadingText={true}
         data={tableData}
         // @ts-ignore
@@ -125,11 +150,16 @@ export default function PatientTable({
         //   expandedRowRender: (record) => <ExpandedOrderRow record={record} />,
         // }}
         paginatorOptions={{
-          pageSize,
-          setPageSize,
+          pageSize: params.perPage,
+          setPageSize: (pageSize: number) => {
+            setParams((p) => ({ ...p, perPage: pageSize }));
+          },
           total: totalItems,
-          current: currentPage,
-          onChange: (page: number) => handlePaginate(page),
+          current: params.page,
+          onChange: (page: number) => {
+            setParams((p) => ({ ...p, page }));
+            handlePaginate(page);
+          },
         }}
         filterOptions={{
           searchTerm,

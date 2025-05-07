@@ -31,7 +31,10 @@ export function AddInvoiceItems({
   errors,
   setValue,
 }: IPropsAddInvoiceItems) {
-  const { data: dataItems } = useGetItems();
+  const { data: dataItems } = useGetItems({
+    page: 1,
+    perPage: 100,
+  });
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -42,7 +45,7 @@ export function AddInvoiceItems({
 
   const itemsOptions = useMemo(() => {
     if (!dataItems) return [];
-    return dataItems.map((item) => ({
+    return dataItems.data.map((item) => ({
       value: `${item.code} - ${item.name}`,
       label: `${item.code} - ${item.name}`,
     }));
@@ -52,7 +55,7 @@ export function AddInvoiceItems({
     if (items?.length) {
       items.forEach((item, index) => {
         const itemId = watch(`items.${index}.item`);
-        const itemData = dataItems?.find(
+        const itemData = dataItems?.data.find(
           (item) => item.code === itemId?.split(' - ')[0]
         );
         const itemPrice = itemData?.price ?? 0;
@@ -71,7 +74,7 @@ export function AddInvoiceItems({
         {fields.map((field, index) => {
           return (
             <InvoiceItem
-              dataItems={dataItems}
+              dataItems={dataItems?.data}
               key={index}
               register={register}
               remove={remove}

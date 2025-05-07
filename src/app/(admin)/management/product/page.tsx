@@ -1,16 +1,9 @@
-import ExportButton from '@/app/shared/ui/export-button';
+'use client';
 import PageHeader from '@/app/shared/ui/page-header';
 import ProductTable from '@/app/shared/product/tableDataProduct/table';
 import { routes } from '@/config/routes';
-import { metaObject } from '@/config/site.config';
-import { productData } from '@/data/product-data';
-import Link from 'next/link';
-import { PiPlusBold } from 'react-icons/pi';
-import { Button } from 'rizzui';
-
-export const metadata = {
-  ...metaObject('Products'),
-};
+import ModalButton from '@/app/shared/ui/modal-button/modal-button';
+import CreateEditItemModal from '@/app/shared/product/modal/create-edit-modal';
 
 const pageHeader = {
   title: 'Products',
@@ -30,20 +23,12 @@ export default function ProductPage() {
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
         <div className="mt-4 flex items-center gap-3 @lg:mt-0">
-          <ExportButton
+          {/* <ExportButton
             data={productData}
             fileName="order_data"
             header="Order ID,Name,Email,Avatar,Items,Price,Status,Created At,Updated At"
-          />
-          <Link
-            href={routes.management.product.create}
-            className="w-full @lg:w-auto"
-          >
-            <Button as="span" className="w-full @lg:w-auto">
-              <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
-              Add Products
-            </Button>
-          </Link>
+          /> */}
+          <ModalButton view={<CreateEditItemModal />} />
         </div>
       </PageHeader>
 

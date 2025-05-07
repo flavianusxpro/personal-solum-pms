@@ -2,7 +2,6 @@ import {
   deleteInvoice,
   getInvoiceById,
   getInvoiceList,
-  getItems,
   postCreateInvoice,
   putCreateInvoice,
 } from '@/service/invoice';
@@ -35,15 +34,6 @@ export function useGetInvoiceById(id?: string) {
 export function usePostCreateInvoice() {
   return useMutation({
     mutationFn: postCreateInvoice,
-  });
-}
-
-export function useGetItems() {
-  return useQuery({
-    queryKey: ['getItems'],
-    queryFn: getItems,
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    refetchOnWindowFocus: false,
   });
 }
 

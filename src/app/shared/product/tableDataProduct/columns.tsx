@@ -9,6 +9,8 @@ import PencilIcon from '@core/components/icons/pencil';
 import AvatarCard from '@core/ui/avatar-card';
 import DateCell from '@core/ui/date-cell';
 import DeletePopover from '@/app/shared/ui/delete-popover';
+import { IGetAllItemsResponse } from '@/types/ApiResponse';
+import CreateEditItemModal from '../modal/create-edit-modal';
 
 function getStatusBadge(status: string) {
   switch (status.toLowerCase()) {
@@ -44,14 +46,17 @@ function getStatusBadge(status: string) {
 }
 
 type Columns = {
-  data: any[];
+  data: IGetAllItemsResponse['data'];
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
   onDeleteItem: (id: string) => void;
   onHeaderCellClick: (value: string) => void;
   onChecked?: (id: string) => void;
+  openModal: (props: any) => void;
 };
+
+type Row = IGetAllItemsResponse['data'][number];
 
 export const getColumns = ({
   data,
@@ -61,6 +66,7 @@ export const getColumns = ({
   onHeaderCellClick,
   handleSelectAll,
   onChecked,
+  openModal,
 }: Columns) => [
   {
     title: (
@@ -87,11 +93,18 @@ export const getColumns = ({
     ),
   },
   {
-    title: <HeaderCell title="SKU" />,
-    dataIndex: 'sku',
-    key: 'sku',
+    title: <HeaderCell title="ID" />,
+    dataIndex: 'id',
+    key: 'id',
     width: 120,
     render: (value: string) => <Text>#{value}</Text>,
+  },
+  {
+    title: <HeaderCell title="PRODUCT Code" />,
+    dataIndex: 'code',
+    key: 'code',
+    width: 300,
+    render: (value: string) => <Text>{value}</Text>,
   },
   {
     title: <HeaderCell title="PRODUCT NAME" />,
@@ -108,18 +121,9 @@ export const getColumns = ({
     render: (value: string) => <Text>{value}</Text>,
   },
   {
-    title: (
-      <HeaderCell
-        title="CREATED"
-        sortable
-        ascending={
-          sortConfig?.direction === 'asc' && sortConfig?.key === 'createdAt'
-        }
-      />
-    ),
-    onHeaderCell: () => onHeaderCellClick('createdAt'),
-    dataIndex: 'createdAt',
-    key: 'createdAt',
+    title: <HeaderCell title="CREATED" />,
+    dataIndex: 'created_at',
+    key: 'created_at',
     width: 200,
     render: (value: Date) => <DateCell date={value} />,
   },
@@ -129,46 +133,50 @@ export const getColumns = ({
     dataIndex: 'action',
     key: 'action',
     width: 130,
-    render: (_: string, row: any) => (
+    render: (_: string, row: Row) => (
       <div className="flex items-center justify-end gap-3 pe-4">
         <Tooltip
           size="sm"
-          content={'Edit Data Product'}
+          content={'Edit Data Item'}
           placement="top"
           color="invert"
         >
-          <Link href={routes.management.product.edit(row.id)}>
-            <ActionIcon
-              as="span"
-              size="sm"
-              variant="outline"
-              className="hover:text-gray-700"
-            >
-              <PencilIcon className="h-4 w-4" />
-            </ActionIcon>
-          </Link>
+          <ActionIcon
+            size="sm"
+            variant="outline"
+            className="hover:text-gray-700"
+            onClick={() =>
+              openModal({
+                view: <CreateEditItemModal data={row} />,
+              })
+            }
+          >
+            <PencilIcon className="h-4 w-4" />
+          </ActionIcon>
         </Tooltip>
         <Tooltip
           size="sm"
-          content={'View Data Product'}
+          content={'View Data Item'}
           placement="top"
           color="invert"
         >
-          <Link href={routes.management.product.productDetail(row.id)}>
-            <ActionIcon
-              as="span"
-              size="sm"
-              variant="outline"
-              className="hover:text-gray-700"
-            >
-              <EyeIcon className="h-4 w-4" />
-            </ActionIcon>
-          </Link>
+          <ActionIcon
+            size="sm"
+            variant="outline"
+            className="hover:text-gray-700"
+            onClick={() =>
+              openModal({
+                view: <CreateEditItemModal isView data={row} />,
+              })
+            }
+          >
+            <EyeIcon className="h-4 w-4" />
+          </ActionIcon>
         </Tooltip>
         <DeletePopover
-          title={`Delete the order`}
-          description={`Are you sure you want to delete this #${row.id} order?`}
-          onDelete={() => onDeleteItem(row.id)}
+          title={`Delete the item`}
+          description={`Are you sure you want to delete this #${row.id} item?`}
+          onDelete={() => onDeleteItem(row.id.toString())}
         />
       </div>
     ),

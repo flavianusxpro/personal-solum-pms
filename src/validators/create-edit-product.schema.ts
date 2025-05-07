@@ -3,14 +3,17 @@ import { messages } from '@/config/messages';
 
 // form zod validation schema
 export const productFormSchema = z.object({
-  sku: z.string({ required_error: messages.skuIsRequired }),
-  title: z.string({ required_error: messages.titleIsRequired }),
-  description: z.string().optional(),
-  cost_price: z.string({
-    required_error: messages.costPriceIsRequired,
+  // sku: z.string({ required_error: messages.skuIsRequired }),
+  // title: z.string({ required_error: messages.titleIsRequired }),
+  code: z.string().min(1, {
+    message: messages.codeIsRequired,
   }),
-  sell_price: z.string({
-    required_error: messages.sellPriceIsRequired,
+  name: z.string().min(1, {
+    message: messages.codeIsRequired,
+  }),
+  description: z.string().optional(),
+  price: z.string().min(1, {
+    message: messages.priceIsRequired,
   }),
 });
 
