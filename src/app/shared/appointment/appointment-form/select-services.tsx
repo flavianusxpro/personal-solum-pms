@@ -36,7 +36,6 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 export default function AppointmentServices() {
   const { gotoNextStep } = useStepperAppointment();
   const [formData, setFormData] = useAtom(formDataAtom);
-  console.log('🚀 ~ AppointmentServices ~ formData:', formData);
 
   const { data: dataPatientProblem } = useGetPatientProblem({ search: '' });
   const { data: dataPatientTypes } = useGetPatientTypes({
@@ -57,7 +56,6 @@ export default function AppointmentServices() {
   const lastAppointment = useMemo(() => {
     return dataAppointment?.data[0];
   }, [dataAppointment]);
-  console.log('🚀 ~ lastAppointment ~ lastAppointment:', lastAppointment);
 
   const lastClinic = useMemo(() => {
     if (!lastAppointment) return null;

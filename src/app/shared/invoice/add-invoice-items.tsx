@@ -12,9 +12,9 @@ import {
 import { useEffect, useMemo } from 'react';
 import { PiPlusBold } from 'react-icons/pi';
 import { FormBlockWrapper } from '@/app/shared/invoice/form-utils';
-import { useGetItems } from '@/hooks/useInvoice';
 import { InvoiceFormInput } from '@/validators/create-invoice.schema';
 import InvoiceItem from './item';
+import { useGetItems } from '@/hooks/useItems';
 
 // multiple invoice items generate component
 interface IPropsAddInvoiceItems {

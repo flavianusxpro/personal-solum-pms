@@ -6,9 +6,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { appointmentBookSchema } from '@/validators/admin-appointment.schema';
 import CSelect from '@/core/ui/select';
 import { useGetAllPatients } from '@/hooks/usePatient';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useGetAllClinics } from '@/hooks/useClinic';
 import { z } from 'zod';
+import { useGetAppointments } from '@/hooks/useAppointment';
 
 const FormSchema = appointmentBookSchema['selectPatientAndClinic'];
 
@@ -17,7 +18,6 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 export default function SelectClinic() {
   const { gotoNextStep } = useStepperAppointment();
   const [formData, setFormData] = useAtom(formDataAtom);
-  const isEdit = formData?.id;
 
   const { data: dataClinics, isLoading: isLoadingClinics } = useGetAllClinics({
     page: 1,
@@ -27,10 +27,30 @@ export default function SelectClinic() {
   const { data: dataPatients, isLoading: isLoadingPatients } =
     useGetAllPatients({ page: 1, perPage: 100 });
 
+  const { data: dataAppointment, refetch } = useGetAppointments({
+    patientId: formData?.patient_id,
+    page: 1,
+    perPage: 1,
+  });
+
+  const lastAppointment = useMemo(() => {
+    return dataAppointment?.data[0];
+  }, [dataAppointment]);
+
+  const lastClinic = useMemo(() => {
+    if (!lastAppointment) return null;
+    const clinic = dataClinics?.data.find(
+      (clinic) => clinic.id === lastAppointment.clinicId
+    );
+    return clinic;
+  }, [lastAppointment, dataClinics]);
+
   const {
     control,
     formState: { errors },
+    setValue,
     handleSubmit,
+    watch,
   } = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -38,6 +58,8 @@ export default function SelectClinic() {
       patient_id: formData.patient_id,
     },
   });
+
+  const { patient_id } = watch();
 
   const clinicsOptions = useMemo(() => {
     if (!dataClinics) return [];
@@ -64,24 +86,20 @@ export default function SelectClinic() {
     gotoNextStep();
   };
 
+  useEffect(() => {
+    if (lastClinic && patient_id) {
+      refetch();
+      setValue('clinicId', lastClinic.id);
+      setFormData((prev) => ({
+        ...prev,
+        clinicId: lastClinic.id,
+      }));
+    }
+  }, [lastClinic, patient_id, refetch, setFormData, setValue]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-5 px-5 pb-6 pt-5 md:px-7 md:pb-9 md:pt-7">
-        <Controller
-          control={control}
-          name="clinicId"
-          render={({ field }) => (
-            <CSelect
-              {...field}
-              isLoading={isLoadingClinics}
-              searchable
-              label="Select Clinic"
-              placeholder="Select Clinic"
-              error={errors.clinicId?.message}
-              options={clinicsOptions}
-            />
-          )}
-        />
         <Controller
           control={control}
           name="patient_id"
@@ -94,6 +112,21 @@ export default function SelectClinic() {
               placeholder="Select Patient"
               error={errors.patient_id?.message}
               options={patientsOptions}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="clinicId"
+          render={({ field }) => (
+            <CSelect
+              {...field}
+              isLoading={isLoadingClinics}
+              searchable
+              label="Select Clinic"
+              placeholder="Select Clinic"
+              error={errors.clinicId?.message}
+              options={clinicsOptions}
             />
           )}
         />
