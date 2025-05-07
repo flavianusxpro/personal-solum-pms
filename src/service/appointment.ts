@@ -17,6 +17,10 @@ export async function getAppointmentList(params: IParamGetAppointments) {
     params: {
       page: params.page,
       perPage: params.perPage,
+      from: params.from,
+      to: params.to,
+      patientId: params.patientId,
+      doctorId: params.doctorId,
       q,
     },
   });

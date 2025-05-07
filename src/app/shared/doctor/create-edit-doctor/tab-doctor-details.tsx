@@ -48,6 +48,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     refetch: refetchDataDoctor,
     isLoading: isLoadingGetDataDoctor,
   } = useGetDoctorById(id);
+
   const { mutate: mutateUpdateDoctor, isPending } = useUpdateDoctor();
 
   const { data: dataSpecialists } = useGetSpecialists({

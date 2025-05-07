@@ -1,11 +1,10 @@
 import { RegisterSchema } from '@/validators/register.schema';
 import { RoleType } from './constansTypes';
 interface IParamGetDataWithPagination {
-  page: number;
-  perPage: number;
+  page?: number;
+  perPage?: number;
   sort?: 'ASC' | 'DESC';
   search?: string;
-  q?: string;
 }
 export interface IParamGetAllClinic extends IParamGetDataWithPagination {
   role: RoleType;
@@ -124,6 +123,7 @@ export interface IParamGetAppointments extends IParamGetDataWithPagination {
   to?: string;
   status?: number;
   doctorName?: string;
+  q?: string;
 }
 export interface IParamGetInvoices extends IParamGetDataWithPagination {
   doctorId?: number;

@@ -10,6 +10,9 @@ import {
   ChangePasswordSchema,
 } from '@/validators/change-password.schema';
 import FormGroup from '../../ui/form-group';
+import { useUpdateDoctor } from '@/hooks/useDoctor';
+import toast from 'react-hot-toast';
+import { useParams } from 'next/navigation';
 
 const initialValues = {
   email: '',
@@ -18,11 +21,29 @@ const initialValues = {
 };
 
 export default function TabPassword({ isView = false }: { isView?: boolean }) {
+  const id = useParams<{ id: string }>().id;
   const [reset, setReset] = useState({});
 
+  const { mutate: mutateUpdateDoctor, isPending } = useUpdateDoctor();
+
   const onSubmit: SubmitHandler<ChangePasswordSchema> = (data) => {
-    console.log(data);
-    setReset(initialValues);
+    mutateUpdateDoctor(
+      {
+        doctor_id: id,
+        password: data.newPassword,
+      },
+      {
+        onSuccess: () => {
+          toast.success('Password updated successfully');
+          setReset(initialValues);
+        },
+        onError: (error: any) => {
+          toast.error(
+            'Failed to update password: ' + error?.response?.data?.message
+          );
+        },
+      }
+    );
   };
 
   return (
@@ -72,7 +93,7 @@ export default function TabPassword({ isView = false }: { isView?: boolean }) {
                   Cancel
                 </Button>
                 {!isView && (
-                  <Button className="mt-2" type="submit">
+                  <Button isLoading={isPending} className="mt-2" type="submit">
                     Reset Password
                   </Button>
                 )}
