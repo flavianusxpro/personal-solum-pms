@@ -108,6 +108,7 @@ interface Week {
 interface Appointmentfee {
   initial: string;
   followup: string;
+  script_renewal: string;
 }
 
 interface Appointmentduration {

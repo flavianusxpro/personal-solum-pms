@@ -168,6 +168,7 @@ function DoctorTime({
     doctorTime: string;
     followup_fee: string;
     initial_fee: string;
+    script_renewal_fee: string;
   }>;
 }) {
   const [formData, setFormData] = useAtom(formDataAtom);
@@ -296,6 +297,10 @@ function DoctorTime({
                   setValue('doctorId', doctor.id as number);
                   setValue('initial_fee', doctor.appointment_fee.initial);
                   setValue('followup_fee', doctor.appointment_fee.followup);
+                  setValue(
+                    'script_renewal_fee',
+                    doctor.appointment_fee.script_renewal
+                  );
                 }}
               >
                 {time}

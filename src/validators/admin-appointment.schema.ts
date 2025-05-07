@@ -13,6 +13,7 @@ export const appointmentBookSchema = {
     doctorTime: z.string({ required_error: 'Doctor time is required' }),
     followup_fee: z.string(),
     initial_fee: z.string(),
+    script_renewal_fee: z.string(),
   }),
   selectServiceType: z.object({
     appointment_type: z.string().min(1, {

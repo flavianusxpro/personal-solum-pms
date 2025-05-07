@@ -56,6 +56,7 @@ type FormDataType = {
   meeting_preference: string;
   followup_fee: string;
   initial_fee: string;
+  script_renewal_fee: string;
 };
 
 export const initialFormData = {
@@ -72,6 +73,7 @@ export const initialFormData = {
   meeting_preference: '',
   followup_fee: '',
   initial_fee: '',
+  script_renewal_fee: '',
 };
 
 export const formDataAtom = atom<FormDataType>(initialFormData);
@@ -152,6 +154,7 @@ export default function CreateUpdateAppointmentForm({
         patient_type: data?.patient_type,
         followup_fee: '',
         initial_fee: '',
+        script_renewal_fee: '',
       });
     } else {
       setFormData(initialFormData);
