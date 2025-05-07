@@ -172,6 +172,7 @@ function DoctorTime({
   }>;
 }) {
   const [formData, setFormData] = useAtom(formDataAtom);
+  console.log('🚀 ~ formData:', formData);
 
   const appointmentType = useMemo(
     () => formData?.appointment_type?.includes('Follow up'),
@@ -280,7 +281,7 @@ function DoctorTime({
 
   return (
     <div className="px-4 pb-4">
-      {doctor.appointment_schedule ? (
+      {practices_open ? (
         <div className="relative">
           <div
             className={`mt-4 grid transition-all delay-200 duration-1000 ease-in-out ${

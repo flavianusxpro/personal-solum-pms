@@ -59,8 +59,6 @@ export default function SelectClinic() {
     },
   });
 
-  const { patient_id } = watch();
-
   const clinicsOptions = useMemo(() => {
     if (!dataClinics) return [];
     return dataClinics.data.map((clinic) => ({
@@ -87,7 +85,7 @@ export default function SelectClinic() {
   };
 
   useEffect(() => {
-    if (lastClinic && patient_id) {
+    if (lastClinic && formData.patient_id) {
       refetch();
       setValue('clinicId', lastClinic.id);
       setFormData((prev) => ({
@@ -95,7 +93,7 @@ export default function SelectClinic() {
         clinicId: lastClinic.id,
       }));
     }
-  }, [lastClinic, patient_id, refetch, setFormData, setValue]);
+  }, [lastClinic, formData.patient_id, refetch, setFormData, setValue]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -106,6 +104,13 @@ export default function SelectClinic() {
           render={({ field }) => (
             <CSelect
               {...field}
+              onChange={(value) => {
+                field.onChange(value);
+                setFormData((prev) => ({
+                  ...prev,
+                  patient_id: value as number,
+                }));
+              }}
               searchable
               isLoading={isLoadingPatients}
               label="Select Patient"
