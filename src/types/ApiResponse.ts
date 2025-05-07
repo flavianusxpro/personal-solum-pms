@@ -696,3 +696,12 @@ export interface IGetRolesResponse extends ApiResponseWithPagination {
     permissions: Permission[];
   }[];
 }
+
+export interface IGetDashboardSummaryResponse extends ApiResponse {
+  data: {
+    total_appointment: number;
+    total_upcomping_appointment: number;
+    total_patient: number;
+    total_cancelled_appointment: number;
+  };
+}

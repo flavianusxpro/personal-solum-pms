@@ -14,48 +14,19 @@ import {
   PiArrowDownRight,
   PiArrowUpRight,
 } from 'react-icons/pi';
+import { useGetDashboardSummary } from '@/hooks/useDashboard';
+import { useMemo } from 'react';
 
 type AppointmentStatsType = {
   className?: string;
 };
 
-const statData: StatType[] = [
-  {
-    title: 'Total Appointment',
-    amount: '47',
-    increased: true,
-    percentage: '32.40',
-    icon: PiCalendarCheck,
-  },
-  {
-    title: 'Schedule Patients',
-    amount: '287',
-    increased: true,
-    percentage: '32.40',
-    icon: PiCheckCircle,
-  },
-  {
-    title: 'Waiting List',
-    amount: '77',
-    increased: false,
-    percentage: '32.40',
-    icon: PiClock,
-  },
-  {
-    title: 'Cancelled',
-    amount: '2,430',
-    increased: true,
-    percentage: '32.40',
-    icon: PiPhoneSlash,
-  },
-];
-
 export type StatType = {
   icon: IconType;
   title: string;
   amount: string;
-  increased: boolean;
-  percentage: string;
+  // increased: boolean;
+  // percentage: string;
   iconWrapperFill?: string;
   className?: string;
 };
@@ -66,8 +37,7 @@ export type StatCardProps = {
 };
 
 function StatCard({ className, transaction }: StatCardProps) {
-  const { icon, title, amount, increased, percentage, iconWrapperFill } =
-    transaction;
+  const { icon, title, amount, iconWrapperFill } = transaction;
   const Icon = icon;
   return (
     <div
@@ -93,7 +63,7 @@ function StatCard({ className, transaction }: StatCardProps) {
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-1.5">
+      {/* <div className="flex items-center gap-1.5">
         <div
           className={cn(
             'flex items-center gap-1',
@@ -122,12 +92,12 @@ function StatCard({ className, transaction }: StatCardProps) {
         <span className="truncate leading-none text-gray-500 group-first:text-gray-100 dark:group-first:text-gray-800">
           {increased ? 'Increased' : 'Decreased'}&nbsp;last month
         </span>
-      </div>
+      </div> */}
     </div>
   );
 }
 
-export function StatGrid() {
+export function StatGrid({ statData }: { statData: StatType[] }) {
   return (
     <>
       {statData.map((stat: StatType, index: number) => {
@@ -152,6 +122,46 @@ export default function AppointmentStats({ className }: AppointmentStatsType) {
     scrollToTheLeft,
   } = useScrollableSlider();
 
+  const { data: dataDashboard } = useGetDashboardSummary();
+
+  const statData: StatType[] = useMemo(() => {
+    return [
+      {
+        title: 'Total Appointment',
+        amount: dataDashboard?.total_appointment.toString() || '0',
+        // increased: true,
+        // percentage: '32.40',
+        icon: PiCalendarCheck,
+      },
+      {
+        title: 'Total Upcomming Appointment',
+        amount: dataDashboard?.total_upcomping_appointment.toString() || '0',
+        // increased: true,
+        // percentage: '32.40',
+        icon: PiCheckCircle,
+      },
+      {
+        title: 'Total Patient',
+        amount: dataDashboard?.total_patient.toString() || '0',
+        // increased: false,
+        // percentage: '32.40',
+        icon: PiClock,
+      },
+      {
+        title: 'Total Cancelled Appointment',
+        amount: dataDashboard?.total_cancelled_appointment.toString() || '0',
+        // increased: true,
+        // percentage: '32.40',
+        icon: PiPhoneSlash,
+      },
+    ];
+  }, [
+    dataDashboard?.total_appointment,
+    dataDashboard?.total_cancelled_appointment,
+    dataDashboard?.total_patient,
+    dataDashboard?.total_upcomping_appointment,
+  ]);
+
   return (
     <div
       className={cn(
@@ -173,7 +183,7 @@ export default function AppointmentStats({ className }: AppointmentStatsType) {
           ref={sliderEl}
           className="custom-scrollbar-x grid grid-flow-col gap-5 overflow-x-auto scroll-smooth 2xl:gap-6"
         >
-          <StatGrid />
+          <StatGrid statData={statData} />
         </div>
       </div>
       <Button

@@ -11,33 +11,22 @@ function calculatePercentage(total: number, value: number) {
   return percentage.toFixed(2);
 }
 
-const data = [
-  {
-    title: 'Appointment',
-    value: 380,
-    total: 580,
-    color: '#2B7F75',
-  },
-  {
-    title: 'Meeting',
-    value: 523,
-    total: 923,
-    color: '#176B87',
-  },
-  {
-    title: 'Surgery',
-    value: 180,
-    total: 456,
-    color: '#FFD66B',
-  },
-];
-
 type ValuePiece = Date | null;
 
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 export default function ScheduleList({ className }: { className?: string }) {
   const [value, onChange] = useState<Value>(new Date());
+
+  const data = [
+    {
+      title: 'Appointment',
+      value: 380,
+      total: 580,
+      color: '#2B7F75',
+    },
+  ];
+
   return (
     <div
       className={cn(

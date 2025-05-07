@@ -21,6 +21,7 @@ import {
   useGetPatientTypes,
 } from '@/hooks/usePatient';
 import { useMemo, useState } from 'react';
+import dayjs from 'dayjs';
 
 export default function CreatePatienModal() {
   const { closeModal } = useModal();
@@ -66,7 +67,7 @@ export default function CreatePatienModal() {
       status: 1,
       timezone: data.timezone ?? 'Australia/Sydney',
       medicare_card_number: data.medicare_card as string,
-      medicare_expired_date: data.medicare_expiry as string,
+      medicare_expired_date: dayjs(data.medicare_expiry).format('DD MMMM YYYY'),
       // setValue('patient_problem', dataPatient.patient_problem);
       // setValue('patient_type', dataPatient.patient_type);
     };
