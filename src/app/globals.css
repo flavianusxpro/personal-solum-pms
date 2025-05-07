@@ -1414,12 +1414,12 @@ div[style='z-index: 1000001;'],
 .react-calendar__navigation button:enabled:focus {
   @apply !bg-transparent;
 }
-.react-calendar__tile--active,
-.react-calendar__tile--now {
-  @apply !bg-[#2B7F75];
+.react-calendar__tile--active{
+  @apply !bg-[#2B7F75] text-gray-0;
 }
+
 .react-calendar__tile--now {
-  @apply !text-gray-0;
+  @apply border border-solid border-gray-950 bg-green-200 text-gray-950;
 }
 .react-calendar__month-view__days__day--weekend {
   @apply !text-red-dark;
