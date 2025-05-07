@@ -34,7 +34,7 @@ export default function UsersTable() {
 
   const dataList = useMemo(() => {
     return dataUsers?.users.filter((item) => {
-      return item.role.name !== 'superadmin';
+      return !['superadmin'].includes(item.role.name);
     });
   }, [dataUsers]);
 
