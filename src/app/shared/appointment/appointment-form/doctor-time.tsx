@@ -166,6 +166,8 @@ function DoctorTime({
   setValue: UseFormSetValue<{
     doctorId: number;
     doctorTime: string;
+    followup_fee: string;
+    initial_fee: string;
   }>;
 }) {
   const [formData, setFormData] = useAtom(formDataAtom);
@@ -292,11 +294,8 @@ function DoctorTime({
                 onClick={() => {
                   setValue('doctorTime', time);
                   setValue('doctorId', doctor.id as number);
-                  // setFormData((p) => ({
-                  //   ...p,
-                  //   doctorId: doctor.id,
-                  //   doctorTime: time,
-                  // }));
+                  setValue('initial_fee', doctor.appointment_fee.initial);
+                  setValue('followup_fee', doctor.appointment_fee.followup);
                 }}
               >
                 {time}

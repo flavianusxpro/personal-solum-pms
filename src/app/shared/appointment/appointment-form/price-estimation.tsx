@@ -1,14 +1,11 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import CheckCircleIcon from '@core/components/icons/check-circle';
-import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ActionIcon, Button, Flex, Input, Text, Title } from 'rizzui';
-import { routes } from '@/config/routes';
 import cn from '@/core/utils/class-names';
 import StripeCheckout from '@/app/shared/stripe-checkout/stripe-checkout';
 import { usePostCreateAppointment } from '@/hooks/useAppointment';
 import toast from 'react-hot-toast';
-import { useTimeout } from 'react-use';
 import { IPayloadPostAppoinment } from '@/types/paramTypes';
 import { useAtom } from 'jotai';
 import { formDataAtom } from '.';
@@ -31,6 +28,16 @@ const PriceEstimationCost = ({
 
   const [formData] = useAtom(formDataAtom);
   const [step, setStep] = React.useState(STEP.ESTIMATE_COST);
+
+  const appointmentType = formData?.patient_type?.includes('follow up');
+
+  function getFee() {
+    if (appointmentType) {
+      return formData?.followup_fee;
+    } else {
+      return formData?.initial_fee;
+    }
+  }
 
   const { mutate } = usePostCreateAppointment();
 
@@ -71,11 +78,11 @@ const PriceEstimationCost = ({
           <div className="grid w-full grid-cols-1 gap-2">
             <Flex justify="between" align="center">
               <Text>Total Cost:</Text>
-              <Text>$100</Text>
+              <Text>{getFee()}</Text>
             </Flex>
             <Flex justify="between" align="center">
               <Text>Sub Total:</Text>
-              <Text>$10</Text>
+              <Text>$-</Text>
             </Flex>
             <Flex justify="between" align="center">
               <Text>Coupon:</Text>
@@ -83,7 +90,7 @@ const PriceEstimationCost = ({
             </Flex>
             <Flex justify="between" align="center">
               <Text>Merchant Fee:</Text>
-              <Text>$10</Text>
+              <Text>$-</Text>
             </Flex>
             <Flex justify="between" align="center">
               <Text>Coupon:</Text>
