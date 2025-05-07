@@ -44,6 +44,8 @@ export default function AppointmentServices() {
   });
   const { data: dataAppointment } = useGetAppointments({
     patientId: formData?.patient_id,
+    page: 1,
+    perPage: 1,
   });
 
   const { data: dataClinics } = useGetAllClinics({

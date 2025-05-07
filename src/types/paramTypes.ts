@@ -1,8 +1,8 @@
 import { RegisterSchema } from '@/validators/register.schema';
 import { RoleType } from './constansTypes';
 interface IParamGetDataWithPagination {
-  page?: number;
-  perPage?: number;
+  page: number;
+  perPage: number;
   sort?: 'ASC' | 'DESC';
   search?: string;
 }

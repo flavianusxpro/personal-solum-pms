@@ -19,6 +19,8 @@ export default function AppointmentTodo({ className }: { className?: string }) {
   const { data: dataAppointment } = useGetAppointments({
     from: dayjs().format('YYYY-MM-DD'),
     to: dayjs().format('YYYY-MM-DD'),
+    page: 1,
+    perPage: 10,
   });
 
   const dataAppointmentToday = useMemo(() => {
