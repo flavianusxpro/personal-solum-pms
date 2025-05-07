@@ -40,6 +40,9 @@ export default function AppointmentPatientDoctor() {
     defaultValues: {
       doctorId: formData?.doctorId,
       doctorTime: formData?.doctorTime,
+      followup_fee: formData?.followup_fee,
+      initial_fee: formData?.initial_fee,
+      script_renewal_fee: formData?.script_renewal_fee,
     },
   });
   const watchDoctor = watch('doctorId');
@@ -62,6 +65,9 @@ export default function AppointmentPatientDoctor() {
       ...prev,
       doctorId: data.doctorId,
       doctorTime: data.doctorTime,
+      initial_fee: data.initial_fee,
+      followup_fee: data.followup_fee,
+      script_renewal_fee: data.script_renewal_fee,
     }));
     gotoNextStep();
   };
@@ -172,7 +178,6 @@ function DoctorTime({
   }>;
 }) {
   const [formData, setFormData] = useAtom(formDataAtom);
-  console.log('🚀 ~ formData:', formData);
 
   const appointmentType = useMemo(
     () => formData?.appointment_type?.includes('Follow up'),
@@ -300,7 +305,7 @@ function DoctorTime({
                   setValue('followup_fee', doctor.appointment_fee.followup);
                   setValue(
                     'script_renewal_fee',
-                    doctor.appointment_fee.script_renewal
+                    doctor.appointment_fee.script_renewal ?? '0'
                   );
                 }}
               >

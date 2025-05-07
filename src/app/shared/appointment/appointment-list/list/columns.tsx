@@ -195,14 +195,14 @@ function RenderAction({
     closeModal(),
       openModal({
         view: <CreateUpdateAppointmentForm />,
-        customSize: '700px',
+        customSize: '600px',
       });
   }
   function handleEditModal(row: RowValue) {
     closeModal(),
       openModal({
         view: <CreateUpdateAppointmentForm data={row} />,
-        customSize: '700px',
+        customSize: '600px',
       });
   }
   return (

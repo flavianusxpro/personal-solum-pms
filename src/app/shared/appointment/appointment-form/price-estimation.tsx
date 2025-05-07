@@ -29,7 +29,7 @@ const PriceEstimationCost = ({
   const [formData] = useAtom(formDataAtom);
   const [step, setStep] = React.useState(STEP.ESTIMATE_COST);
 
-  const appointmentType = formData?.patient_type;
+  const appointmentType = formData?.appointment_type;
 
   function getFee() {
     if (appointmentType.includes('follow up')) {
