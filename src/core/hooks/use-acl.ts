@@ -2,13 +2,17 @@
 
 import { useProfile } from '@/hooks/useProfile';
 import { adminMenuItems } from '@/layouts/hydrogen/menu-items';
-import { useMemo } from 'react';
+import { signOut } from 'next-auth/react';
+import { useEffect, useMemo } from 'react';
+import toast from 'react-hot-toast';
 
 export default function useAcl() {
   const {
     data: dataProfile,
     isLoading: isLoadingProfile,
     isSuccess,
+    isError,
+    error,
   } = useProfile();
 
   const permissionRead = useMemo(() => {
@@ -31,6 +35,14 @@ export default function useAcl() {
       return acc;
     }, []);
   }, [permissionRead]);
+
+  useEffect(() => {
+    if (isError) {
+      console.log('🚀 ~ useAcl ~ error:', error);
+      toast.error('Please login again to continue');
+      signOut();
+    }
+  }, [error, isError]);
 
   return { menuItems, isLoadingProfile, isSuccess, permissionRead };
 }
