@@ -108,7 +108,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
   ) as React.MutableRefObject<HTMLDivElement | null>;
   const reactToPrintFn = useReactToPrint({ content: () => contentRef.current });
   const { toPDF, targetRef } = usePDF({
-    filename: `Invoice: ${dataInvoice?.id}.pdf`,
+    filename: `Invoice-${dataInvoice?.id}.pdf`,
   });
 
   if (isLoading) return <Loader className="h-10 w-10" />;

@@ -161,7 +161,7 @@ export const adminMenuItems = [
         icon: <PiUser />,
       },
       {
-        name: 'Branch (coming soon)',
+        name: 'Branch',
         href: routes.setting.branch,
         icon: <PiUser />,
       },
