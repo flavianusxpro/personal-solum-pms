@@ -113,4 +113,5 @@ export const messages = {
   codeIsRequired: 'Code is required',
   branchIsRequired: 'Branch is required',
   mobileNumberIsRequired: 'Mobile number is required',
+  pharmachyNameIsRequired: 'Pharmachy name is required',
 };

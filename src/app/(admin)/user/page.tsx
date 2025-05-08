@@ -29,11 +29,11 @@ export default function UsersPage() {
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
         <div className="mt-4 flex items-center gap-3 @lg:mt-0">
-          <ExportButton
+          {/* <ExportButton
             data={orderData}
             fileName="order_data"
             header="Patient ID,Name,Email,Avatar,Items,Price,Status,Created At,Updated At"
-          />
+          /> */}
           <ModalButton view={<CreateUserModal />}>Create User</ModalButton>
         </div>
       </PageHeader>

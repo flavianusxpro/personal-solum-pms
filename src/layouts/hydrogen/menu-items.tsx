@@ -38,6 +38,10 @@ const PiDoorOpen = dynamic(() =>
   import('react-icons/pi').then((mod) => mod.PiDoorOpen)
 );
 
+const PiHospital = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiHospital)
+);
+
 // Note: do not add href in the label object, it is rendering as label
 export const adminMenuItems = [
   {
@@ -61,6 +65,12 @@ export const adminMenuItems = [
     href: routes.appointment.appointmentList,
     icon: <PiCalendarDuotone />,
     permissionReadName: ['appointment'],
+  },
+  {
+    name: 'Calendars',
+    href: routes.calendar,
+    icon: <PiCalendar />,
+    permissionReadName: ['calendar'],
   },
   {
     name: 'Patients',
@@ -87,10 +97,10 @@ export const adminMenuItems = [
     ],
   },
   {
-    name: 'Calendars',
-    href: routes.calendar,
-    icon: <PiCalendar />,
-    permissionReadName: ['calendar'],
+    name: 'Pharmachy (coming soon)',
+    href: routes.pharmachy,
+    icon: <PiHospital />,
+    permissionReadName: ['setting'],
   },
   {
     name: 'Users',

@@ -47,6 +47,8 @@ export const routes = {
     branch: '/setting/branch',
   },
 
+  pharmachy: '/pharmachy',
+
   bookAppointment: '/bookings',
   consentForm: '/form/consent-form',
   consentFormConfirmation: '/form/consent-form/confirmation',

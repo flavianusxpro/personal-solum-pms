@@ -2,7 +2,7 @@
 
 import DeletePopover from '@/app/shared/ui/delete-popover';
 import { HeaderCell } from '@/app/shared/ui/table';
-import { IGetAllClinicForPatientResponse } from '@/types/ApiResponse';
+import { IGetPharmachyListResponse } from '@/types/ApiResponse';
 import EyeIcon from '@core/components/icons/eye';
 import PencilIcon from '@core/components/icons/pencil';
 import DateCell from '@core/ui/date-cell';
@@ -11,7 +11,7 @@ import CreateEditModal from '../modal/create-edit-modal';
 import AvatarCard from '@/core/ui/avatar-card';
 
 type Columns = {
-  data: IGetAllClinicForPatientResponse['data'];
+  data: IGetPharmachyListResponse['data'];
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
@@ -21,7 +21,7 @@ type Columns = {
   openModal: (props: any) => void;
 };
 
-type Row = IGetAllClinicForPatientResponse['data'][number];
+type Row = IGetPharmachyListResponse['data'][number];
 
 export const getColumns = ({
   data,
@@ -58,49 +58,46 @@ export const getColumns = ({
     ),
   },
   {
-    title: <HeaderCell title="CLINIC" />,
+    title: <HeaderCell title="NAME" />,
     dataIndex: 'name',
     key: 'name',
+    width: 100,
+    render: (value: string) => value,
+  },
+  {
+    title: <HeaderCell title="ADDRESS" />,
+    dataIndex: 'address',
+    key: 'address',
     width: 200,
     render: (_: string, row: Row) => (
-      <AvatarCard
-        name={row.name}
-        src={row.logo}
-        description={row.email}
-        number={row.mobile_number}
-      />
+      <div>
+        <Text>Address Line 1: {row.address_line_1 ?? '-'}</Text>
+        <Text>Address Line 2: {row.address_line_2 ?? '-'}</Text>
+      </div>
     ),
   },
   {
-    title: <HeaderCell title="BRANCH TYPE" />,
-    dataIndex: 'default',
-    key: 'default',
+    title: <HeaderCell title="PHONE NUMBER" />,
+    dataIndex: 'phone',
+    key: 'phone',
     width: 100,
-    render: (value: boolean) => getDefaultBadge(value),
+    render: (value: number) => value,
   },
   {
-    title: <HeaderCell title="Status" />,
-    dataIndex: 'status',
-    key: 'status',
+    title: <HeaderCell title="BILLING EMAIL" />,
+    dataIndex: 'billing_email',
+    key: 'billing_email',
     width: 100,
-    render: (value: number) => getStatusBadge(value),
+    render: (value: string) => value,
   },
   {
-    title: <HeaderCell title="CREATED AT" />,
-    dataIndex: 'created_at',
-    key: 'created_at',
+    title: <HeaderCell title="DISPENSE EMAIL" />,
+    dataIndex: 'dispense_email',
+    key: 'dispense_email',
     width: 100,
-    render: (value: Date) => <DateCell clock date={value} />,
+    render: (value: string) => value,
   },
   {
-    title: <HeaderCell title="UPDATE AT" />,
-    dataIndex: 'updated_at',
-    key: 'updated_at',
-    width: 100,
-    render: (value: Date) => <DateCell clock date={value} />,
-  },
-  {
-    // Need to avoid this issue -> <td> elements in a large <table> do not have table headers.
     title: <HeaderCell title="Actions" className="opacity-0" />,
     dataIndex: 'action',
     key: 'action',
@@ -109,7 +106,7 @@ export const getColumns = ({
       <div className="flex items-center justify-end gap-3 pe-4">
         <Tooltip
           size="sm"
-          content={'Edit Branch'}
+          content={'Edit Pharmachy'}
           placement="top"
           color="invert"
         >
@@ -128,7 +125,7 @@ export const getColumns = ({
         </Tooltip>
         <Tooltip
           size="sm"
-          content={'View Branch'}
+          content={'View Pharmachy'}
           placement="top"
           color="invert"
         >
@@ -146,8 +143,8 @@ export const getColumns = ({
           </ActionIcon>
         </Tooltip>
         <DeletePopover
-          title={`Delete the branch`}
-          description={`Are you sure you want to delete this #${row.id} branch?`}
+          title={`Delete the pharmachy`}
+          description={`Are you sure you want to delete this #${row.id} pharmachy?`}
           onDelete={() => onDeleteItem(row.id.toString())}
         />
       </div>
@@ -168,7 +165,7 @@ function getStatusBadge(status: number) {
       return (
         <div className="flex items-center">
           <Badge color="danger" renderAsDot />
-          <Text className="ms-2 font-medium text-red-dark">Not verified</Text>
+          <Text className="ms-2 font-medium text-red-dark">Inactice</Text>
         </div>
       );
     default:
@@ -186,13 +183,13 @@ function getDefaultBadge(status: boolean) {
     case true:
       return (
         <div className="flex items-center">
-          <Text className="ms-2 font-medium text-green-dark">HEAD OFFICE</Text>
+          <Text className="ms-2 font-medium text-green-dark">TRUE</Text>
         </div>
       );
     case false:
       return (
         <div className="flex items-center">
-          <Text className="ms-2 font-medium text-red-dark">BRANCH</Text>
+          <Text className="ms-2 font-medium text-red-dark">FALSE</Text>
         </div>
       );
     default:

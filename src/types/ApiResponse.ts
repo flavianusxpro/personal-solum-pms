@@ -706,3 +706,23 @@ export interface IGetDashboardSummaryResponse extends ApiResponse {
     total_cancelled_appointment: number;
   };
 }
+
+export interface IGetPharmachyListResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    clinicId: number;
+    name: string;
+    phone: string;
+    dispense_email: string;
+    billing_email: string;
+    website: string;
+    address_line_1: string;
+    address_line_2: string;
+    city: string;
+    state: string;
+    postcode: string;
+    url_logo: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+}

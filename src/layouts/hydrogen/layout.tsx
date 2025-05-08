@@ -16,7 +16,7 @@ export default function HydrogenLayout({
   const { permissionRead, isSuccess } = useAcl();
 
   const whiteList = useMemo(
-    () => [routes.profile, routes.forms.profileSettings],
+    () => [routes.profile, routes.forms.profileSettings, routes.pharmachy],
     []
   );
 

@@ -25,15 +25,12 @@ import toast from 'react-hot-toast';
 import FormGroup from '../../ui/form-group';
 import cn from '@/core/utils/class-names';
 
-interface CreateEditSmsTemplateModalProps {
+interface IProps {
   data?: IGetAllClinicForPatientResponse['data'][number];
   isView?: boolean;
 }
 
-export default function CreateEditModal({
-  data,
-  isView,
-}: CreateEditSmsTemplateModalProps) {
+export default function CreateEditModal({ data, isView }: IProps) {
   const { closeModal } = useModal();
 
   const { refetch } = useGetAllClinics({
@@ -147,7 +144,7 @@ export default function CreateEditModal({
               <Input
                 label="Clinic Name"
                 {...register('name')}
-                placeholder="Role Name"
+                placeholder="Clinic Name"
                 className="w-full"
                 error={errors.name?.message}
                 disabled={isView}
@@ -190,7 +187,7 @@ export default function CreateEditModal({
                     placeholder="Select Status"
                     options={[
                       { value: 1, label: 'Active' },
-                      { value: 2, label: 'Inactive' },
+                      { value: 2, label: 'Not Verified' },
                     ]}
                     error={errors.status?.message}
                     disabled={isView}
@@ -204,11 +201,11 @@ export default function CreateEditModal({
                 render={({ field }) => (
                   <CSelect
                     {...field}
-                    label="Default"
-                    placeholder="Select Default"
+                    label="Branch Type"
+                    placeholder="Select Branch Type"
                     options={[
-                      { value: 1, label: 'Yes' },
-                      { value: 2, label: 'No' },
+                      { value: 1, label: 'Head Office' },
+                      { value: 2, label: 'Branch' },
                     ]}
                     error={errors.default?.message}
                     disabled={isView}

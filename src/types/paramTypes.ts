@@ -118,6 +118,7 @@ export interface IParamGetPermissions extends IParamGetDataWithPagination {}
 export interface IParamGetUsers extends IParamGetDataWithPagination {}
 export interface IParamGetTaxes extends IParamGetDataWithPagination {}
 export interface IParamsGetItems extends IParamGetDataWithPagination {}
+export interface IParamsGetPharmachies extends IParamGetDataWithPagination {}
 export interface IParamGetAppointments extends IParamGetDataWithPagination {
   doctorId?: number;
   patientId?: number;
@@ -421,4 +422,20 @@ export interface IPayloadCreateUpdateClinic {
   url_logo?: string;
   default: boolean;
   status: number;
+}
+
+export interface IPayloadCreateEditPharmachy {
+  id?: number;
+  clinicId: number;
+  name: string;
+  dispense_email: string;
+  phone: string;
+  billing_email: string;
+  website?: string;
+  address_line_1: string;
+  address_line_2: string;
+  city: string;
+  state: string;
+  postcode: string;
+  url_logo?: string;
 }
