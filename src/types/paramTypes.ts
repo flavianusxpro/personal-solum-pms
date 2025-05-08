@@ -5,6 +5,7 @@ interface IParamGetDataWithPagination {
   perPage: number;
   sort?: 'ASC' | 'DESC';
   search?: string;
+  q?: {};
 }
 export interface IParamGetAllClinic extends IParamGetDataWithPagination {
   role: RoleType;

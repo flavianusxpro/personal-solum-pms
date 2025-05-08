@@ -11,7 +11,7 @@ import { assignSchema, AssignTypes } from '@/validators/assign-doctor.schema';
 import { useGetPatientById, useUpdateAssignDoctor } from '@/hooks/usePatient';
 import { useParams } from 'next/navigation';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useGetAllClinics } from '@/hooks/useClinic';
 
 const MultySelect = dynamic(
@@ -29,6 +29,8 @@ const MultySelect = dynamic(
 export default function TabAssign({ isView = false }: { isView?: boolean }) {
   const id = useParams().id as string;
 
+  const [clinicIds, setClinicIds] = useState<string[]>([]);
+
   const { data: dataPatient } = useGetPatientById(id);
 
   const { data: dataClinics } = useGetAllClinics({
@@ -37,9 +39,16 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
     role: 'admin',
   });
 
-  const { data: dataDoctor } = useGetAllDoctors({
+  const {
+    data: dataDoctor,
+    refetch,
+    isLoading: isloadingGetDoctors,
+  } = useGetAllDoctors({
     page: 1,
     perPage: 50,
+    q: clinicIds.length
+      ? JSON.stringify({ clinic_ids: clinicIds.map((id) => parseInt(id)) })
+      : undefined,
   });
 
   const { mutate } = useUpdateAssignDoctor();
@@ -79,6 +88,12 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
     );
   };
 
+  useEffect(() => {
+    if (clinicIds.length > 0) {
+      refetch();
+    }
+  }, [clinicIds, refetch]);
+
   return (
     <Form<AssignTypes>
       validationSchema={assignSchema}
@@ -107,6 +122,10 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
                     render={({ field }) => (
                       <MultySelect
                         {...field}
+                        onChange={(value: string[]) => {
+                          field.onChange(value);
+                          setClinicIds(value);
+                        }}
                         onClear={() => field.onChange([])}
                         options={clinicsOptions}
                         clearable
@@ -129,7 +148,11 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
                         options={doctorOptions}
                         clearable
                         placeholder="Select Doctor"
-                        error={errors.doctor?.message}
+                        error={
+                          errors.doctor?.message || doctorOptions.length === 0
+                            ? 'No doctor found'
+                            : ''
+                        }
                         className="flex-grow"
                         disabled={isView || !clinic || clinic?.length === 0}
                       />
