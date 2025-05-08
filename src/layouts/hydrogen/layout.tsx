@@ -15,15 +15,21 @@ export default function HydrogenLayout({
   const router = useRouter();
   const { permissionRead, isSuccess } = useAcl();
 
+  const whiteList = useMemo(
+    () => [routes.profile, routes.forms.profileSettings],
+    []
+  );
+
   useEffect(() => {
     if (
       !permissionRead?.includes(pathname.split('/')?.[1]) &&
       isSuccess &&
-      permissionRead
+      permissionRead &&
+      !whiteList?.includes(pathname)
     ) {
       return router.push(routes.accessDenied);
     }
-  }, [isSuccess, pathname, permissionRead, router]);
+  }, [isSuccess, pathname, permissionRead, router, whiteList]);
 
   return (
     <main className="flex min-h-screen flex-grow">
