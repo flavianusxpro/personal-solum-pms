@@ -1,9 +1,10 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler } from 'react-hook-form';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { ActionIcon, Flex, Input, Title } from 'rizzui';
+import { ActionIcon, Flex, Input, Title, Loader } from 'rizzui';
 import { useModal } from '../../modal-views/use-modal';
 import { PiX } from 'react-icons/pi';
 import dynamic from 'next/dynamic';
@@ -36,6 +37,7 @@ export default function CreateEditEmailTemplateModal({
   isView,
 }: CreateEditEmailTemplateModalProps) {
   const { closeModal } = useModal();
+  const [isLoading, setIsLoading] = useState(true);
 
   const { refetch } = useGetEmailTemplates({
     page: 1,
@@ -81,10 +83,25 @@ export default function CreateEditEmailTemplateModal({
     });
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-[500px] items-center justify-center">
+        <Loader size="lg" />
+      </div>
+    );
+  }
+
   return (
     <Form<EmailTemplateFormTypes>
       validationSchema={emailTemplateFormSchema}
-      // resetValues={reset}
       onSubmit={onSubmit}
       className="@container"
       useFormProps={{
