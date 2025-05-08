@@ -94,6 +94,7 @@
     "react-scroll": "^1.9.0",
     "react-signature-canvas": "1.1.0-alpha.2",
     "react-svg-worldmap": "2.0.0-alpha.16",
+    "react-to-pdf": "^2.0.0",
     "react-to-print": "^2.15.1",
     "react-use": "^17.5.1",
     "react-zoom-pan-pinch": "^3.7.0",

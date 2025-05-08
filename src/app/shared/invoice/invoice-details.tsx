@@ -13,6 +13,7 @@ import PrintButton from '../ui/print-button';
 import { PiDownloadSimpleBold } from 'react-icons/pi';
 import { useReactToPrint } from 'react-to-print';
 import { useRef } from 'react';
+import { usePDF } from 'react-to-pdf';
 
 const pageHeader = {
   title: 'Invoice Details',
@@ -102,8 +103,13 @@ function InvoiceDetailsListTable({
 
 export default function InvoiceDetails({ id }: { id: string }) {
   const { data: dataInvoice, isLoading } = useGetInvoiceById(id);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement | null>(
+    null
+  ) as React.MutableRefObject<HTMLDivElement | null>;
   const reactToPrintFn = useReactToPrint({ content: () => contentRef.current });
+  const { toPDF, targetRef } = usePDF({
+    filename: `Invoice: ${dataInvoice?.id}.pdf`,
+  });
 
   if (isLoading) return <Loader className="h-10 w-10" />;
 
@@ -112,14 +118,19 @@ export default function InvoiceDetails({ id }: { id: string }) {
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
         <div className="mt-4 flex items-center gap-3 @lg:mt-0">
           <PrintButton onClick={reactToPrintFn} />
-          <Button className="w-full @lg:w-auto">
+          <Button onClick={toPDF} className="w-full @lg:w-auto">
             <PiDownloadSimpleBold className="me-1.5 h-[17px] w-[17px]" />
             Download
           </Button>
         </div>
       </PageHeader>
       <div
-        ref={contentRef}
+        ref={(el) => {
+          if (el) {
+            contentRef.current = el;
+            targetRef.current = el;
+          }
+        }}
         className="w-full rounded-xl border border-muted p-5 text-sm sm:p-6 lg:p-8 2xl:p-10"
       >
         <div className="mb-12 flex items-start justify-between md:mb-16 md:flex-row">
@@ -161,8 +172,8 @@ export default function InvoiceDetails({ id }: { id: string }) {
             </Text>
             {/* <Text className="mb-1.5">Albert Flores</Text>
           <Text className="mb-1.5">
-            2715 Ash Dr. San Jose, <br />
-            South Dakota 83475
+        2715 Ash Dr. San Jose, <br />
+        South Dakota 83475
           </Text>
           <Text className="mb-4 sm:mb-6 md:mb-8">(671) 555-0110</Text> */}
             <div>
