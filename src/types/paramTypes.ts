@@ -411,3 +411,14 @@ export interface IPayloadCreateItem {
   description?: string;
   price: number;
 }
+
+export interface IPayloadCreateUpdateClinic {
+  id?: string;
+  name: string;
+  email: string;
+  mobile_number: string;
+  address: string;
+  url_logo?: string;
+  default: boolean;
+  status: number;
+}

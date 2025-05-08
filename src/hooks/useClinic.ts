@@ -1,10 +1,16 @@
-import { getAllClinics, getClinicByIdForPatient } from '@/service/clinic';
+import {
+  deleteClinic,
+  getAllClinics,
+  getClinicByIdForPatient,
+  postCreateClinic,
+  putUpdateClinic,
+} from '@/service/clinic';
 import { getDoctorByClinic } from '@/service/doctor';
 import {
   IParamGetAllClinic,
   IParamGetDoctorByClinic,
 } from '@/types/paramTypes';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 export function useGetAllClinics(params: IParamGetAllClinic) {
   return useQuery({
@@ -28,5 +34,23 @@ export function useGetDoctorByClinic(params: IParamGetDoctorByClinic) {
     queryKey: ['clinic-by-clinic-for-patient' + params.id],
     queryFn: async () => getDoctorByClinic(params),
     enabled: !!params.id,
+  });
+}
+
+export function usePostCreateClinic() {
+  return useMutation({
+    mutationFn: postCreateClinic,
+  });
+}
+
+export function usePutUpdateClinic() {
+  return useMutation({
+    mutationFn: putUpdateClinic,
+  });
+}
+
+export function useDeleteClinic() {
+  return useMutation({
+    mutationFn: deleteClinic,
   });
 }

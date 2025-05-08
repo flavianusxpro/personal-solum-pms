@@ -1,9 +1,12 @@
-import { get } from '@/app/api/api';
+import { del, get, post, put } from '@/app/api/api';
 import {
   IGetAllClinicForPatientResponse,
   IGetClinicByIdForPatientResponse,
 } from '@/types/ApiResponse';
-import { IParamGetAllClinic } from '@/types/paramTypes';
+import {
+  IParamGetAllClinic,
+  IPayloadCreateUpdateClinic,
+} from '@/types/paramTypes';
 
 export async function getAllClinics(params: IParamGetAllClinic) {
   const url = `${params.role}/clinic`;
@@ -16,4 +19,16 @@ export async function getClinicByIdForPatient(id: string) {
   return await get<IGetClinicByIdForPatientResponse>(
     '/patient/clinic/' + id
   ).then((res) => res.data);
+}
+
+export async function postCreateClinic(payload: IPayloadCreateUpdateClinic) {
+  return await post('/admin/clinic', payload);
+}
+
+export async function putUpdateClinic(payload: IPayloadCreateUpdateClinic) {
+  return await put('/admin/clinic/' + payload.id, payload);
+}
+
+export async function deleteClinic(id: string) {
+  return await del('/admin/clinic/' + id);
 }

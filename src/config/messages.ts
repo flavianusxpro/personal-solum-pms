@@ -14,8 +14,8 @@ export const messages = {
   phoneNumberIsRequired: 'Phone Number is required',
   customerNameIsRequired: 'Customer name is required',
   lastNameRequired: 'Last name is required',
-  streetIsRequired: 'Street Address is required',
   emailIsRequired: 'Email address is required',
+  streetIsRequired: 'Street Address is required',
   invalidEmail: 'Invalid email address',
   roleIsRequired: 'Role is required',
   permissionIsRequired: 'Permission is required',
@@ -111,4 +111,6 @@ export const messages = {
   passwordsDoNotMatch: 'Passwords do not match',
   maxLength: 'Maximum reached',
   codeIsRequired: 'Code is required',
+  branchIsRequired: 'Branch is required',
+  mobileNumberIsRequired: 'Mobile number is required',
 };
