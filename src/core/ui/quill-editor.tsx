@@ -37,6 +37,7 @@ export default function QuillEditor({
       [{ font: [] }],
       [{ align: [] }],
 
+      ['link', 'image'], // link and image, video
       ['clean'],
     ],
   };
