@@ -118,17 +118,17 @@ export const adminMenuItems = [
     permissionReadName: ['marketing'],
     dropdownItems: [
       {
-        name: 'Coupon',
+        name: 'Coupon (coming soon)',
         href: routes.management.product.list,
         icon: <PiBoundingBox />,
       },
       {
-        name: 'Email Marketing',
+        name: 'Email Marketing (coming soon)',
         href: routes.management.product.list,
         icon: <PiBoundingBox />,
       },
       {
-        name: 'Sms Marketing',
+        name: 'Sms Marketing (coming soon)',
         href: routes.management.product.list,
         icon: <PiBoundingBox />,
       },
@@ -158,6 +158,11 @@ export const adminMenuItems = [
       {
         name: 'Roles',
         href: routes.setting.roles,
+        icon: <PiUser />,
+      },
+      {
+        name: 'Branch (coming soon)',
+        href: routes.setting.branch,
         icon: <PiUser />,
       },
     ],

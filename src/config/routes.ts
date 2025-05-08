@@ -44,6 +44,7 @@ export const routes = {
     roles: '/setting/roles',
     taxSettings: '/setting/tax',
     invoiceSettings: '/setting/invoice-settings',
+    branch: '/setting/branch',
   },
 
   bookAppointment: '/bookings',
