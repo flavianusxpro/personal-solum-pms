@@ -27,7 +27,7 @@ import {
   IPayloadUpdateSmsNotificationSettings,
 } from '@/types/paramTypes';
 import { useGetEmailTemplates, useGetSmsTemplates } from '@/hooks/useTemplate';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import CSelect from '@/app/shared/ui/select';
 
 const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
@@ -35,6 +35,8 @@ const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
 });
 
 export default function Setup() {
+  const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
+  const [showReschedule, setShowReschedule] = useState(false);
   const { data: dataEmailTemplates } = useGetEmailTemplates({
     page: 1,
     perPage: 100,
@@ -194,154 +196,176 @@ export default function Setup() {
 
             <StatusCard
               icon={<IoChevronDownCircleOutline />}
-              meetName="Email Booking Confirmation"
-              content="Email notification for booking confirmation"
-              onSwitchChange={(checked) => {
-                setValue('booking_confirmation_email_status', checked);
-              }}
-              switchValue={watch('booking_confirmation_email_status')}
+              meetName="Booking Confirmation"
+              content="notification for booking confirmation"
               className="mb-10"
-            >
-              <Flex justify="end" className="">
-                <CSelect
-                  searchable
-                  placeholder="Select Template"
-                  options={emailTemplateOptions}
-                  onChange={(value: string) =>
-                    setValue('booking_confirmation_email_html', value)
-                  }
-                  className="w-fit"
-                />
-              </Flex>
-              <Controller
-                name="booking_confirmation_email_html"
-                control={control}
-                render={({ field }) => (
-                  <QuillEditor
-                    {...field}
-                    label="Email Template"
-                    className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                  />
-                )}
-              />
-            </StatusCard>
-
-            <StatusCard
-              icon={<IoChevronDownCircleOutline />}
-              meetName="Sms Booking Confirmation"
-              content="Sms Notification for booking confirmation"
               onSwitchChange={(checked) => {
-                setValue('booking_confirmation_sms_status', checked);
+                setShowBookingConfirmation(checked);
               }}
-              switchValue={watch('booking_confirmation_sms_status')}
-              className="mb-10"
+              switchValue={showBookingConfirmation}
             >
-              <Flex justify="end" className="">
-                <CSelect
-                  searchable
-                  placeholder="Select Template"
-                  options={smsTemplateOptions}
-                  onChange={(value: string) =>
-                    setValue('booking_confirmation_sms_text', value)
-                  }
-                  className="w-fit"
-                />
-              </Flex>
-              <Controller
-                name="booking_confirmation_sms_text"
-                control={control}
-                render={({ field }) => (
-                  <Textarea
-                    {...field}
-                    label="SMS Template"
-                    className="mt-4"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                    helperText={
-                      <Text className="text-sm text-gray-500">
-                        min. 50 / max. 65, Characters:{' '}
-                        {watch('booking_confirmation_sms_text')?.length || 0}
-                      </Text>
+              <StatusCard
+                icon={<IoChevronDownCircleOutline />}
+                meetName="Email Booking Confirmation"
+                content="Email notification for booking confirmation"
+                onSwitchChange={(checked) => {
+                  setValue('booking_confirmation_email_status', checked);
+                }}
+                switchValue={watch('booking_confirmation_email_status')}
+                className="mb-10"
+              >
+                <Flex justify="end" className="">
+                  <CSelect
+                    searchable
+                    placeholder="Select Template"
+                    options={emailTemplateOptions}
+                    onChange={(value: string) =>
+                      setValue('booking_confirmation_email_html', value)
                     }
+                    className="w-fit"
                   />
-                )}
-              />
-            </StatusCard>
-
-            <StatusCard
-              icon={<IoChevronDownCircleOutline />}
-              meetName="Email Reschedule"
-              content="Email notification for reschedule"
-              onSwitchChange={(checked) => {
-                setValue('reschedule_email_status', checked);
-              }}
-              switchValue={watch('reschedule_email_status')}
-              className="mb-10"
-            >
-              <Flex justify="end" className="">
-                <CSelect
-                  searchable
-                  placeholder="Select Template"
-                  options={emailTemplateOptions}
-                  onChange={(value: string) =>
-                    setValue('reschedule_email_html', value)
-                  }
-                  className="w-fit"
+                </Flex>
+                <Controller
+                  name="booking_confirmation_email_html"
+                  control={control}
+                  render={({ field }) => (
+                    <QuillEditor
+                      {...field}
+                      label="Email Template"
+                      className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                    />
+                  )}
                 />
-              </Flex>
-              <Controller
-                name="reschedule_email_html"
-                control={control}
-                render={({ field }) => (
-                  <QuillEditor
-                    {...field}
-                    label="Email Template"
-                    className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                  />
-                )}
-              />
-            </StatusCard>
+              </StatusCard>
 
-            <StatusCard
-              icon={<IoChevronDownCircleOutline />}
-              meetName="Sms Reschedule"
-              content="Sms Notification for reschedule"
-              onSwitchChange={(checked) => {
-                setValue('reschedule_sms_status', checked);
-              }}
-              switchValue={watch('reschedule_sms_status')}
-              className="mb-10"
-            >
-              <Flex justify="end" className="">
-                <CSelect
-                  searchable
-                  placeholder="Select Template"
-                  options={smsTemplateOptions}
-                  onChange={(value: string) =>
-                    setValue('reschedule_sms_text', value)
-                  }
-                  className="w-fit"
-                />
-              </Flex>
-              <Controller
-                name="reschedule_sms_text"
-                control={control}
-                render={({ field }) => (
-                  <Textarea
-                    {...field}
-                    label="SMS Template"
-                    className="mt-4"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                    helperText={
-                      <Text className="text-sm text-gray-500">
-                        min. 50 / max. 65, Characters:{' '}
-                        {watch('reschedule_sms_text')?.length || 0}
-                      </Text>
+              <StatusCard
+                icon={<IoChevronDownCircleOutline />}
+                meetName="Sms Booking Confirmation"
+                content="Sms Notification for booking confirmation"
+                onSwitchChange={(checked) => {
+                  setValue('booking_confirmation_sms_status', checked);
+                }}
+                switchValue={watch('booking_confirmation_sms_status')}
+                className="mb-10"
+              >
+                <Flex justify="end" className="">
+                  <CSelect
+                    searchable
+                    placeholder="Select Template"
+                    options={smsTemplateOptions}
+                    onChange={(value: string) =>
+                      setValue('booking_confirmation_sms_text', value)
                     }
+                    className="w-fit"
                   />
-                )}
-              />
+                </Flex>
+                <Controller
+                  name="booking_confirmation_sms_text"
+                  control={control}
+                  render={({ field }) => (
+                    <Textarea
+                      {...field}
+                      label="SMS Template"
+                      className="mt-4"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                      helperText={
+                        <Text className="text-sm text-gray-500">
+                          min. 50 / max. 65, Characters:{' '}
+                          {watch('booking_confirmation_sms_text')?.length || 0}
+                        </Text>
+                      }
+                    />
+                  )}
+                />
+              </StatusCard>
+            </StatusCard>
+
+            <StatusCard
+              icon={<IoChevronDownCircleOutline />}
+              meetName="Reschedule"
+              content="notification for reschedule"
+              className="mb-10"
+              onSwitchChange={(checked) => {
+                setShowReschedule(checked);
+              }}
+              switchValue={showReschedule}
+            >
+              <StatusCard
+                icon={<IoChevronDownCircleOutline />}
+                meetName="Email Reschedule"
+                content="Email notification for reschedule"
+                onSwitchChange={(checked) => {
+                  setValue('reschedule_email_status', checked);
+                }}
+                switchValue={watch('reschedule_email_status')}
+                className="mb-10"
+              >
+                <Flex justify="end" className="">
+                  <CSelect
+                    searchable
+                    placeholder="Select Template"
+                    options={emailTemplateOptions}
+                    onChange={(value: string) =>
+                      setValue('reschedule_email_html', value)
+                    }
+                    className="w-fit"
+                  />
+                </Flex>
+                <Controller
+                  name="reschedule_email_html"
+                  control={control}
+                  render={({ field }) => (
+                    <QuillEditor
+                      {...field}
+                      label="Email Template"
+                      className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                    />
+                  )}
+                />
+              </StatusCard>
+
+              <StatusCard
+                icon={<IoChevronDownCircleOutline />}
+                meetName="Sms Reschedule"
+                content="Sms Notification for reschedule"
+                onSwitchChange={(checked) => {
+                  setValue('reschedule_sms_status', checked);
+                }}
+                switchValue={watch('reschedule_sms_status')}
+                className="mb-10"
+              >
+                <Flex justify="end" className="">
+                  <CSelect
+                    searchable
+                    placeholder="Select Template"
+                    options={smsTemplateOptions}
+                    onChange={(value: string) =>
+                      setValue('reschedule_sms_text', value)
+                    }
+                    className="w-fit"
+                  />
+                </Flex>
+                <Controller
+                  name="reschedule_sms_text"
+                  control={control}
+                  render={({ field }) => (
+                    <Textarea
+                      {...field}
+                      label="SMS Template"
+                      className="mt-4"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                      helperText={
+                        <Text className="text-sm text-gray-500">
+                          min. 50 / max. 65, Characters:{' '}
+                          {watch('reschedule_sms_text')?.length || 0}
+                        </Text>
+                      }
+                    />
+                  )}
+                />
+              </StatusCard>
             </StatusCard>
 
             <StatusCard
