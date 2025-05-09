@@ -8,12 +8,14 @@ import { Button } from 'rizzui';
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { getColumns } from './columns';
 import { useDeleteInvoice, useGetInvoices } from '@/hooks/useInvoice';
-import dayjs from 'dayjs';
 import toast from 'react-hot-toast';
+import debounce from 'lodash/debounce';
+
 const FilterElement = dynamic(
   () => import('@/app/shared/invoice/invoice-list/filter-element'),
   { ssr: false }
 );
+
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
 });
@@ -29,6 +31,7 @@ export default function InvoiceTableList() {
   const [params, setParams] = useState({
     page: 1,
     pageSize: 10,
+    search: '',
   });
 
   const {
@@ -41,6 +44,7 @@ export default function InvoiceTableList() {
     from: filterStateValue?.createdAt[0] || undefined,
     to: filterStateValue?.createdAt[1] || undefined,
     status: filterStateValue?.status || undefined,
+    q: JSON.stringify({ patientName: params.search }),
   });
 
   const { mutate: mutateDelete } = useDeleteInvoice();
@@ -74,6 +78,13 @@ export default function InvoiceTableList() {
     },
     []
   );
+
+  const handlerSearchFilter = debounce((value: string) => {
+    setParams((prevState) => ({
+      ...prevState,
+      search: value,
+    }));
+  }, 1000);
 
   useEffect(() => {
     refetch();
@@ -150,9 +161,11 @@ export default function InvoiceTableList() {
         filterOptions={{
           searchTerm,
           onSearchClear: () => {
+            handlerSearchFilter('');
             handleSearch('');
           },
           onSearchChange: (event) => {
+            handlerSearchFilter(event.target.value);
             handleSearch(event.target.value);
           },
           hasSearched: isFiltered,
