@@ -10,6 +10,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import toast from 'react-hot-toast';
 import { useCopyToClipboard } from 'react-use';
+import debounce from 'lodash/debounce';
 
 // dynamic import
 const FilterElement = dynamic(
@@ -32,6 +33,7 @@ export default function DoctorTable({}: {}) {
   const [params, setParams] = useState({
     page: 1,
     perPage: 10,
+    search: '',
   });
 
   const {
@@ -41,6 +43,7 @@ export default function DoctorTable({}: {}) {
   } = useGetAllDoctors({
     page: params.page,
     perPage: params.perPage,
+    q: JSON.stringify({ name: params.search }),
   });
 
   const { mutate: mutateDeleteDoctor } = useDeleteDoctor();
@@ -75,6 +78,13 @@ export default function DoctorTable({}: {}) {
     },
     []
   );
+
+  const handlerSearchFilter = debounce((value: string) => {
+    setParams((prevState) => ({
+      ...prevState,
+      search: value,
+    }));
+  }, 1000);
 
   const handleReset = useCallback(() => {
     setFilterStateValue(filterState);
@@ -155,8 +165,10 @@ export default function DoctorTable({}: {}) {
           searchTerm,
           onSearchClear: () => {
             handleSearch('');
+            handlerSearchFilter('');
           },
           onSearchChange: (event) => {
+            handlerSearchFilter(event.target.value);
             handleSearch(event.target.value);
           },
           hasSearched: isFiltered,

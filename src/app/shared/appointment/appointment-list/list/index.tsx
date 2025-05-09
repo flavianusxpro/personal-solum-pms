@@ -40,7 +40,6 @@ export default function AppointmentListTable() {
     perPage: 10,
     search: '',
   });
-  console.log('🚀 ~ AppointmentListTable ~ params:', params);
 
   const {
     data: dataAppointments,

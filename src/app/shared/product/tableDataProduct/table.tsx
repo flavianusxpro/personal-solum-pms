@@ -6,12 +6,13 @@ import { useColumn } from '@core/hooks/use-column';
 import { useTable } from '@core/hooks/use-table';
 import cn from '@core/utils/class-names';
 import dynamic from 'next/dynamic';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { PiCaretDownBold, PiCaretUpBold } from 'react-icons/pi';
 import { ActionIcon, Loader } from 'rizzui';
 import { useDeleteItem, useGetItems } from '@/hooks/useItems';
 import { useModal } from '../../modal-views/use-modal';
 import toast from 'react-hot-toast';
+import debounce from 'lodash/debounce';
 
 // dynamic import
 const FilterElement = dynamic(
@@ -57,6 +58,7 @@ export default function ProductTable({
   const [params, setParams] = useState({
     page: 1,
     perPage: 10,
+    search: '',
   });
 
   const {
@@ -66,6 +68,9 @@ export default function ProductTable({
   } = useGetItems({
     page: params.page,
     perPage: params.perPage,
+    q: JSON.stringify({
+      name: params.search,
+    }),
   });
 
   const { mutate: mutateDelete } = useDeleteItem();
@@ -87,6 +92,13 @@ export default function ProductTable({
       },
     });
   }, []);
+
+  const handlerSearchFilter = debounce((value: string) => {
+    setParams((prevState) => ({
+      ...prevState,
+      search: value,
+    }));
+  }, 1000);
 
   const {
     isLoading,
@@ -136,6 +148,10 @@ export default function ProductTable({
   const { visibleColumns, checkedColumns, setCheckedColumns } =
     useColumn(columns);
 
+  useEffect(() => {
+    refetch();
+  }, [params, refetch]);
+
   return (
     <div className={cn(className)}>
       <ControlledTable
@@ -165,9 +181,11 @@ export default function ProductTable({
           searchTerm,
           onSearchClear: () => {
             handleSearch('');
+            handlerSearchFilter('');
           },
           onSearchChange: (event) => {
             handleSearch(event.target.value);
+            handlerSearchFilter(event.target.value);
           },
           hasSearched: isFiltered,
           hideIndex: 1,
