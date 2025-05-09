@@ -109,7 +109,7 @@ export default function PatientTable({ className }: { className?: string }) {
     setFilterStateValue(filterState);
   }, []);
 
-  const handlerSearchFilter = debounce((value: string) => {
+  const handlerSearch = debounce((value: string) => {
     setParams((prevState) => ({
       ...prevState,
       search: value,
@@ -203,10 +203,10 @@ export default function PatientTable({ className }: { className?: string }) {
           searchTerm,
           onSearchClear: () => {
             handleSearch('');
-            handlerSearchFilter('');
+            handlerSearch('');
           },
           onSearchChange: (event) => {
-            handlerSearchFilter(event.target.value);
+            handlerSearch(event.target.value);
             handleSearch(event.target.value);
           },
           hasSearched: isFiltered,

@@ -59,25 +59,6 @@ export default function FilterElement({
         </Title>
       )}
 
-      {/* <DateFiled
-        selected={getDateRangeStateValues(filters['date'][0])}
-        startDate={getDateRangeStateValues(filters['date'][0]) as Date}
-        endDate={getDateRangeStateValues(filters['date'][1]) as Date}
-        selectsRange
-        className="w-full"
-        dateFormat="dd MMM yyyy"
-        onChange={(dates: [Date | null, Date | null]) => {
-          updateFilter('date', dates);
-        }}
-        placeholderText="Select created date"
-        {...(isMediumScreen && {
-          inputProps: {
-            label: 'Created Date',
-            labelClassName: 'font-medium text-gray-700',
-          },
-        })}
-        maxDate={new Date()}
-      /> */}
       <StatusField
         dropdownClassName="!z-10 h-auto"
         className="w-full @[35rem]:w-auto"

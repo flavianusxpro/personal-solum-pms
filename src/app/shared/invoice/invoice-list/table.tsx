@@ -79,7 +79,7 @@ export default function InvoiceTableList() {
     []
   );
 
-  const handlerSearchFilter = debounce((value: string) => {
+  const handlerSearch = debounce((value: string) => {
     setParams((prevState) => ({
       ...prevState,
       search: value,
@@ -161,11 +161,11 @@ export default function InvoiceTableList() {
         filterOptions={{
           searchTerm,
           onSearchClear: () => {
-            handlerSearchFilter('');
+            handlerSearch('');
             handleSearch('');
           },
           onSearchChange: (event) => {
-            handlerSearchFilter(event.target.value);
+            handlerSearch(event.target.value);
             handleSearch(event.target.value);
           },
           hasSearched: isFiltered,

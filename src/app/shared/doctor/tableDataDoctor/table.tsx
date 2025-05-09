@@ -79,7 +79,7 @@ export default function DoctorTable({}: {}) {
     []
   );
 
-  const handlerSearchFilter = debounce((value: string) => {
+  const handlerSearch = debounce((value: string) => {
     setParams((prevState) => ({
       ...prevState,
       search: value,
@@ -165,10 +165,10 @@ export default function DoctorTable({}: {}) {
           searchTerm,
           onSearchClear: () => {
             handleSearch('');
-            handlerSearchFilter('');
+            handlerSearch('');
           },
           onSearchChange: (event) => {
-            handlerSearchFilter(event.target.value);
+            handlerSearch(event.target.value);
             handleSearch(event.target.value);
           },
           hasSearched: isFiltered,

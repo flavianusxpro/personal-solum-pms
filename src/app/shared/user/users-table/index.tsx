@@ -8,6 +8,7 @@ import { getColumns } from './columns';
 import ControlledTable from '../../ui/controlled-table';
 import { useDeleteUserById, useGetUsers } from '@/hooks/useUser';
 import toast from 'react-hot-toast';
+import debounce from 'lodash/debounce';
 
 const FilterElement = dynamic(() => import('./filter-element'), { ssr: false });
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
@@ -25,11 +26,16 @@ export default function UsersTable() {
   const [params, setParams] = useState({
     page: 1,
     perPage: 10,
+    search: '',
     ...filterStateValue,
   });
 
-  const { data: dataUsers, refetch } = useGetUsers(params);
-
+  const { data: dataUsers, refetch } = useGetUsers({
+    ...params,
+    q: JSON.stringify({
+      name: params.search,
+    }),
+  });
   const { mutate: mutateDelete } = useDeleteUserById();
 
   const dataList = useMemo(() => {
@@ -72,6 +78,13 @@ export default function UsersTable() {
     },
     []
   );
+
+  const handlerSearch = debounce((value: string) => {
+    setParams((prevState) => ({
+      ...prevState,
+      search: value,
+    }));
+  }, 1000);
 
   const {
     isLoading,
@@ -126,14 +139,6 @@ export default function UsersTable() {
 
   return (
     <div className="">
-      <FilterElement
-        isFiltered={isFiltered}
-        filters={filters}
-        updateFilter={updateFilter}
-        handleReset={handleReset}
-        onSearch={handleSearch}
-        searchTerm={searchTerm}
-      />
       <ControlledTable
         variant="modern"
         data={tableData}
@@ -162,14 +167,24 @@ export default function UsersTable() {
           searchTerm,
           onSearchClear: () => {
             handleSearch('');
+            handlerSearch('');
           },
           onSearchChange: (event) => {
+            handlerSearch(event.target.value);
             handleSearch(event.target.value);
           },
           columns,
           checkedColumns,
           setCheckedColumns,
         }}
+        filterElement={
+          <FilterElement
+            isFiltered={isFiltered}
+            filters={filters}
+            updateFilter={updateFilter}
+            handleReset={handleReset}
+          />
+        }
         tableFooter={
           <TableFooter
             checkedItems={selectedRowKeys}

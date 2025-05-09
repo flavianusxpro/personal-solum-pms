@@ -93,7 +93,7 @@ export default function ProductTable({
     });
   }, []);
 
-  const handlerSearchFilter = debounce((value: string) => {
+  const handlerSearch = debounce((value: string) => {
     setParams((prevState) => ({
       ...prevState,
       search: value,
@@ -181,11 +181,11 @@ export default function ProductTable({
           searchTerm,
           onSearchClear: () => {
             handleSearch('');
-            handlerSearchFilter('');
+            handlerSearch('');
           },
           onSearchChange: (event) => {
             handleSearch(event.target.value);
-            handlerSearchFilter(event.target.value);
+            handlerSearch(event.target.value);
           },
           hasSearched: isFiltered,
           hideIndex: 1,

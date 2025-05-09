@@ -1,11 +1,10 @@
 'use client';
 
 import { PiTrashDuotone, PiMagnifyingGlassBold } from 'react-icons/pi';
-import { Badge, Text, Title, Button, Input } from 'rizzui';
+import { Badge, Text, Title, Button, Input, cn } from 'rizzui';
 import StatusField from '../../ui/controlled-table/status-field';
 import { ROLES } from '@/config/constants';
-// import ModalButton from '../../ui/modal-button/modal-button';
-// import CreateUser from '@/app/(admin)/user/create/page';
+import { useMedia } from '@core/hooks/use-media';
 
 export const statusOptions = [
   {
@@ -27,8 +26,6 @@ type FilterElementProps = {
   filters: { [key: string]: any };
   updateFilter: (columnId: string, filterValue: string | any[]) => void;
   handleReset: () => void;
-  onSearch: (searchTerm: string) => void;
-  searchTerm: string;
 };
 
 const roles = Object.entries(ROLES).map(([key, value]) => ({
@@ -41,80 +38,68 @@ export default function FilterElement({
   handleReset,
   filters,
   updateFilter,
-  onSearch,
-  searchTerm,
 }: FilterElementProps) {
+  const isMediumScreen = useMedia('(max-width: 1860px)', false);
+
   return (
     <>
-      <div className="relative z-50 mb-4 flex flex-wrap items-center justify-between gap-2.5 @container">
-        <Title as="h5" className="-order-6 basis-2/5 @xl:basis-auto">
-          All Users
-        </Title>
+      <div
+        className={cn(
+          'flex',
+          isMediumScreen ? 'flex-col gap-6' : 'flex-row items-center gap-3'
+        )}
+      >
+        {!isMediumScreen && (
+          <Title
+            as="h3"
+            className="rizzui-title-h3 pe-4 text-base font-semibold sm:text-lg"
+          >
+            All Users
+          </Title>
+        )}
 
         <StatusField
-          className="-order-3 w-full @[25rem]:w-[calc(calc(100%_-_10px)_/_2)] @4xl:-order-5 @4xl:w-auto"
-          options={statusOptions}
           dropdownClassName="!z-10 h-auto"
+          className="w-full @[35rem]:w-auto"
+          options={statusOptions}
           value={filters['status']}
           onChange={(value: string) => {
             updateFilter('status', value);
           }}
-          placeholder="Filter by Status"
-          getOptionValue={(option) => option.value}
-          getOptionDisplayValue={(option) =>
-            renderOptionDisplayValue(option.value as number)
-          }
-          displayValue={(selected: number) =>
-            renderOptionDisplayValue(selected)
-          }
+          getOptionValue={(option: { value: any }) => option.value}
+          {...(isMediumScreen && {
+            label: 'STATUS',
+            labelClassName: 'font-medium text-gray-700',
+          })}
         />
 
         <StatusField
-          options={roles}
-          dropdownClassName="!z-10 w-48"
+          dropdownClassName="!z-10 h-auto"
+          className="w-full @[35rem]:w-auto"
+          options={statusOptions}
           value={filters['role']}
-          placeholder="Filter by Role"
-          className="@4xl:-auto -order-2 w-full @[25rem]:w-[calc(calc(100%_-_10px)_/_2)] @4xl:-order-4 @4xl:w-auto"
-          getOptionValue={(option) => option.value}
           onChange={(value: string) => {
             updateFilter('role', value);
           }}
-          displayValue={(selected: string) =>
-            roles.find((option) => option.value === selected)?.value ?? selected
-          }
+          getOptionValue={(option: { value: any }) => option.value}
+          {...(isMediumScreen && {
+            label: 'ROLE',
+            labelClassName: 'font-medium text-gray-700',
+          })}
         />
 
-        {isFiltered && (
+        {isFiltered ? (
           <Button
             size="sm"
-            onClick={handleReset}
-            className="-order-1 h-8 w-full bg-gray-200/70 @4xl:-order-4 @4xl:w-auto"
+            onClick={() => {
+              handleReset();
+            }}
+            className="h-8 bg-gray-200/70"
             variant="flat"
           >
             <PiTrashDuotone className="me-1.5 h-[17px] w-[17px]" /> Clear
           </Button>
-        )}
-
-        <Input
-          type="search"
-          placeholder="Search for users..."
-          value={searchTerm}
-          onClear={() => onSearch('')}
-          onChange={(event) => onSearch(event.target.value)}
-          prefix={<PiMagnifyingGlassBold className="h-4 w-4" />}
-          rounded="lg"
-          clearable
-          className="-order-4 w-full @xl:-order-5 @xl:ms-auto @xl:w-auto @4xl:-order-2 @4xl:w-[230px] @5xl:w-auto"
-        />
-
-        {/* <div className="-order-5 flex basis-auto justify-end @xl:-order-4 @4xl:-order-1">
-          <ModalButton
-            label="Add New User"
-            view={<CreateUser />}
-            customSize="600px"
-            className="mt-0"
-          />
-        </div> */}
+        ) : null}
       </div>
     </>
   );
