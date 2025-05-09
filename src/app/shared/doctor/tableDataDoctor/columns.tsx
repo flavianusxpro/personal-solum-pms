@@ -52,6 +52,7 @@ type Columns = {
   onDeleteItem: (id: string) => void;
   onHeaderCellClick: (value: string) => void;
   onChecked?: (id: string) => void;
+  handleCopy: (text: string | number) => void;
 };
 
 export const getColumns = ({
@@ -62,6 +63,7 @@ export const getColumns = ({
   onHeaderCellClick,
   handleSelectAll,
   onChecked,
+  handleCopy,
 }: Columns) => [
   {
     title: (
@@ -114,22 +116,6 @@ export const getColumns = ({
       <Text className="font-medium text-gray-700">{value ?? '-'}</Text>
     ),
   },
-  // {
-  //   title: (
-  //     <HeaderCell
-  //       title="BIRTH DATE"
-  //       sortable
-  //       ascending={
-  //         sortConfig?.direction === 'asc' && sortConfig?.key === 'createdAt'
-  //       }
-  //     />
-  //   ),
-  //   onHeaderCell: () => onHeaderCellClick('createdAt'),
-  //   dataIndex: 'createdAt',
-  //   key: 'createdAt',
-  //   width: 200,
-  //   render: (value: Date) => <DateCell date={value} />,
-  // },
   {
     title: <HeaderCell title="CONTACT" />,
     dataIndex: 'number',
@@ -137,18 +123,20 @@ export const getColumns = ({
     width: 150,
     render: (_: any, row: any) => (
       <>
-        {row.email ? (
-          <p className="flex items-center gap-2 font-medium text-gray-700">
-            {row.email}
-            <PiCopy className="cursor-pointer active:scale-[0.99]" />
-          </p>
-        ) : null}
-        {row.number ? (
-          <p className="flex items-center gap-2 font-medium text-slate-400">
-            {row.number}
-            <PiCopy className="cursor-pointer active:scale-[0.99]" />
-          </p>
-        ) : null}
+        <p className="flex items-center gap-2 font-medium text-gray-700">
+          {row.email || '-'}
+          <PiCopy
+            onClick={() => handleCopy(row.email)}
+            className="cursor-pointer active:scale-[0.99]"
+          />
+        </p>
+        <p className="flex items-center gap-2 font-medium text-slate-400">
+          {row.mobile_number || '-'}
+          <PiCopy
+            onClick={() => handleCopy(row.mobile_number)}
+            className="cursor-pointer active:scale-[0.99]"
+          />
+        </p>
       </>
     ),
   },

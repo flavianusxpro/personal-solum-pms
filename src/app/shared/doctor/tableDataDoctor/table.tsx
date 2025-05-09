@@ -9,6 +9,7 @@ import dynamic from 'next/dynamic';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import toast from 'react-hot-toast';
+import { useCopyToClipboard } from 'react-use';
 
 // dynamic import
 const FilterElement = dynamic(
@@ -26,6 +27,7 @@ const filterState = {
 export default function DoctorTable({}: {}) {
   const { isOpen } = useModal();
   const [filterStateValue, setFilterStateValue] = useState(filterState);
+  const [_, copyToClipboard] = useCopyToClipboard();
 
   const [params, setParams] = useState({
     page: 1,
@@ -78,6 +80,10 @@ export default function DoctorTable({}: {}) {
     setFilterStateValue(filterState);
   }, []);
 
+  const handleCopy = (text: string | number) => {
+    copyToClipboard(String(text));
+  };
+
   const {
     isLoading,
     isFiltered,
@@ -104,6 +110,7 @@ export default function DoctorTable({}: {}) {
         onDeleteItem,
         onChecked: handleRowSelect,
         handleSelectAll,
+        handleCopy,
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
