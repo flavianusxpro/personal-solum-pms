@@ -145,6 +145,12 @@ export const adminMenuItems = [
     ],
   },
   {
+    name: 'Request Call Back',
+    href: routes.requestCallBack,
+    icon: <PiDoorOpen />,
+    permissionReadName: ['management'],
+  },
+  {
     name: 'Settings',
     href: routes.setting.setup,
     icon: <PiGear />,
