@@ -45,13 +45,15 @@ const filterState = {
   updatedAt: [null, null],
   status: '',
   condition: '',
-  search: '',
 };
 
 export default function PatientTable({ className }: { className?: string }) {
   const { isOpen } = useModal();
-  const [pageSize, setPageSize] = useState(10);
-  const [page, setPage] = useState(1);
+  const [params, setParams] = useState({
+    page: 1,
+    perPage: 10,
+    search: '',
+  });
   const [filterStateValue, setFilterStateValue] = useState(filterState);
 
   const {
@@ -59,9 +61,11 @@ export default function PatientTable({ className }: { className?: string }) {
     isLoading: isLoadingGetAllPatients,
     refetch,
   } = useGetAllPatients({
-    page,
-    perPage: pageSize,
-    search: filterStateValue?.search,
+    page: params.page,
+    perPage: params.perPage,
+    q: JSON.stringify({
+      name: params.search,
+    }),
   });
 
   const { mutate: mutateDeletePatient } = useDeletePatient();
@@ -106,7 +110,7 @@ export default function PatientTable({ className }: { className?: string }) {
   }, []);
 
   const handlerSearchFilter = debounce((value: string) => {
-    setFilterStateValue((prevState) => ({
+    setParams((prevState) => ({
       ...prevState,
       search: value,
     }));
@@ -131,7 +135,7 @@ export default function PatientTable({ className }: { className?: string }) {
     handleSelectAll,
     handleDelete,
     // handleReset,
-  } = useTable(data?.data ?? [], pageSize, filterStateValue);
+  } = useTable(data?.data ?? [], params.perPage, filterStateValue);
 
   const columns = React.useMemo(
     () =>
@@ -162,7 +166,7 @@ export default function PatientTable({ className }: { className?: string }) {
 
   useEffect(() => {
     refetch();
-  }, [filterStateValue, refetch, isOpen]);
+  }, [filterStateValue, refetch, isOpen, params]);
 
   return (
     <div className={cn(className)}>
@@ -179,11 +183,21 @@ export default function PatientTable({ className }: { className?: string }) {
           ),
         }}
         paginatorOptions={{
-          pageSize,
-          setPageSize,
+          pageSize: params.perPage,
+          setPageSize: (pageSize: number) =>
+            setParams((prevState) => ({
+              ...prevState,
+              perPage: pageSize,
+            })),
           total: data?.count,
-          current: page,
-          onChange: (page: number) => setPage(page),
+          current: params.page,
+          onChange: (page: number) => {
+            setParams((prevState) => ({
+              ...prevState,
+              page: page,
+            }));
+            handlePaginate(page);
+          },
         }}
         filterOptions={{
           searchTerm,
