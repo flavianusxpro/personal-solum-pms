@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { messages } from '@/config/messages';
-import { validateEmail } from './common-rules';
 
 // form zod validation schema
 export const createCouponSchema = z.object({
