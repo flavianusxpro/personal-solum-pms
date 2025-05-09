@@ -123,13 +123,13 @@ export const adminMenuItems = [
   },
   {
     name: 'Marketing',
-    href: routes.management.dashboard,
+    href: routes.marketing,
     icon: <PiBriefcase />,
     permissionReadName: ['marketing'],
     dropdownItems: [
       {
         name: 'Coupon (coming soon)',
-        href: routes.management.product.list,
+        href: routes.marketing.coupon,
         icon: <PiBoundingBox />,
       },
       {
@@ -145,7 +145,7 @@ export const adminMenuItems = [
     ],
   },
   {
-    name: 'Request Call Back',
+    name: 'Request Call Back (cooming soon)',
     href: routes.requestCallBack,
     icon: <PiDoorOpen />,
     permissionReadName: ['management'],

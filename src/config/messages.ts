@@ -114,4 +114,13 @@ export const messages = {
   branchIsRequired: 'Branch is required',
   mobileNumberIsRequired: 'Mobile number is required',
   pharmachyNameIsRequired: 'Pharmachy name is required',
+  typeIsRequired: 'Type is required',
+  couponNameIsRequired: 'Coupon name is required',
+  couponCodeIsRequired: 'Coupon code is required',
+  couponTypeIsRequired: 'Coupon type is required',
+  discountTypeIsRequired: 'Discount type is required',
+  valueIsRequired: 'Value is required',
+  expiryDateIsRequired: 'Expiry date is required',
+  useLimitIsRequired: 'Use limit is required',
+  userLimitIsRequired: 'User limit is required',
 };

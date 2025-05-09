@@ -28,6 +28,9 @@ export const routes = {
       productDetail: (id: string) => `/management/product/view/${id}`,
     },
   },
+  marketing: {
+    coupon: '/marketing/coupon',
+  },
   invoice: {
     home: '/invoice',
     create: '/invoice/create',
