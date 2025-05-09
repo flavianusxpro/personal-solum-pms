@@ -10,6 +10,7 @@ import { getColumns } from './columns';
 import { useDeleteInvoice, useGetInvoices } from '@/hooks/useInvoice';
 import toast from 'react-hot-toast';
 import debounce from 'lodash/debounce';
+import dayjs from 'dayjs';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/invoice/invoice-list/filter-element'),
@@ -22,7 +23,6 @@ const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
 
 const filterState = {
   createdAt: [null, null],
-  // dueDate: [null, null],
   status: null,
 };
 
@@ -41,8 +41,12 @@ export default function InvoiceTableList() {
   } = useGetInvoices({
     page: params.page,
     perPage: params.pageSize,
-    from: filterStateValue?.createdAt[0] || undefined,
-    to: filterStateValue?.createdAt[1] || undefined,
+    from: filterStateValue?.createdAt?.[0]
+      ? dayjs(filterStateValue?.createdAt?.[0]).format('YYYY-MM-DD')
+      : undefined,
+    to: filterStateValue?.createdAt[1]
+      ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
+      : undefined,
     status: filterStateValue?.status || undefined,
     q: JSON.stringify({ patientName: params.search }),
   });

@@ -11,6 +11,7 @@ import {
   renderOptionDisplayValue,
   statusOptions,
 } from '@/app/shared/invoice/form-utils';
+import CSelect from '../../ui/select';
 
 type FilterElementProps = {
   isFiltered: boolean;
@@ -26,12 +27,9 @@ export default function FilterElement({
   handleReset,
 }: FilterElementProps) {
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
+
   return (
     <>
-      {/* <PriceField
-        value={filters['amount']}
-        onChange={(data) => updateFilter('amount', data)}
-      /> */}
       <DateFiled
         selectsRange
         dateFormat="dd MMM yyyy"
@@ -54,40 +52,17 @@ export default function FilterElement({
           },
         })}
       />
-      {/* <DateFiled
-        selectsRange
-        dateFormat="dd MMM yyyy"
-        className="w-full"
-        selected={getDateRangeStateValues(filters['dueDate'][0])}
-        startDate={getDateRangeStateValues(filters['dueDate'][0]) as Date}
-        endDate={getDateRangeStateValues(filters['dueDate'][1]) as Date}
-        onChange={(date: any) => {
-          updateFilter('dueDate', date);
-        }}
-        placeholderText="Select due date"
-        {...(isMediumScreen && {
-          inputProps: {
-            label: 'Due Date',
-            labelClassName: 'font-medium text-gray-700',
-          },
-        })}
-      /> */}
-      <StatusField
+      <CSelect
         options={statusOptions}
-        value={filters['status']}
+        value={filters?.['status'] || null}
         onChange={(value: number) => {
           updateFilter('status', value);
         }}
         placeholder="Select status"
-        getOptionValue={(option) => option.value}
-        getOptionDisplayValue={(option) =>
-          renderOptionDisplayValue(option.value as number)
-        }
         clearable
         onClear={() => {
           updateFilter('status', null);
         }}
-        displayValue={(selected: number) => renderOptionDisplayValue(selected)}
         dropdownClassName="!z-10 h-auto"
         className={'w-auto'}
         {...(isMediumScreen && {
