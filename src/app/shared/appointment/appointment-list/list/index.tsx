@@ -15,6 +15,7 @@ import {
 } from '@/hooks/useAppointment';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import toast from 'react-hot-toast';
+import debounce from 'lodash/debounce';
 
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
@@ -37,7 +38,9 @@ export default function AppointmentListTable() {
   const [params, setParams] = useState({
     page: 1,
     perPage: 10,
+    search: '',
   });
+  console.log('🚀 ~ AppointmentListTable ~ params:', params);
 
   const {
     data: dataAppointments,
@@ -46,6 +49,9 @@ export default function AppointmentListTable() {
   } = useGetAppointments({
     page: params.page,
     perPage: params.perPage,
+    q: JSON.stringify({
+      patientName: params.search,
+    }),
   });
 
   const { mutate } = useDeleteAppointment();
@@ -75,6 +81,13 @@ export default function AppointmentListTable() {
     },
     [mutate, refetch]
   );
+
+  const handlerSearchFilter = debounce((value: string) => {
+    setParams((prevState) => ({
+      ...prevState,
+      search: value,
+    }));
+  }, 1000);
 
   const onChecked = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -171,8 +184,10 @@ export default function AppointmentListTable() {
           searchTerm,
           onSearchClear: () => {
             handleSearch('');
+            handlerSearchFilter('');
           },
           onSearchChange: (event) => {
+            handlerSearchFilter(event.target.value);
             handleSearch(event.target.value);
           },
           hasSearched: isFiltered,

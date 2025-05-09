@@ -10,19 +10,8 @@ import {
 } from '@/types/paramTypes';
 
 export async function getAppointmentList(params: IParamGetAppointments) {
-  const q = JSON.stringify({
-    doctorName: params.doctorName,
-  });
   return await get<IGetAppointmentListResponse>('/admin/appointment', {
-    params: {
-      page: params.page,
-      perPage: params.perPage,
-      from: params.from,
-      to: params.to,
-      patientId: params.patientId,
-      doctorId: params.doctorId,
-      q,
-    },
+    params,
   });
 }
 export async function getSummaryAppointments() {
