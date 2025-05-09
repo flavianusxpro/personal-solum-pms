@@ -97,7 +97,7 @@ export const adminMenuItems = [
     ],
   },
   {
-    name: 'Pharmachy (coming soon)',
+    name: 'Pharmachy',
     href: routes.pharmachy,
     icon: <PiHospital />,
     permissionReadName: ['setting'],
