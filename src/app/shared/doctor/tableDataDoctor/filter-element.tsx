@@ -44,11 +44,6 @@ export default function FilterElement({
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
   return (
     <>
-      {/* <PriceField
-        value={filters['price']}
-        onChange={(data) => updateFilter('price', data)}
-        label={'Price'}
-      /> */}
       <DateFiled
         selectsRange
         className="w-full"
@@ -66,40 +61,7 @@ export default function FilterElement({
           },
         })}
       />
-      <DateFiled
-        selectsRange
-        className="w-full"
-        selected={getDateRangeStateValues(filters['updatedAt'][0])}
-        startDate={getDateRangeStateValues(filters['updatedAt'][0]) as Date}
-        endDate={getDateRangeStateValues(filters['updatedAt'][1]) as Date}
-        onChange={(date: any) => {
-          updateFilter('updatedAt', date);
-        }}
-        placeholderText="Select modified date"
-        {...(isMediumScreen && {
-          inputProps: {
-            label: 'Due Date',
-            labelClassName: 'font-medium text-gray-700',
-          },
-        })}
-      />
-      {/* <StatusField
-        options={statusOptions}
-        value={filters['status']}
-        onChange={(value: string) => {
-          updateFilter('status', value);
-        }}
-        getOptionValue={(option: { value: any }) => option.value}
-        getOptionDisplayValue={(option: { value: any }) =>
-          renderOptionDisplayValue(option.value)
-        }
-        displayValue={(selected: string) => renderOptionDisplayValue(selected)}
-        {...(isMediumScreen && {
-          label: 'Status',
-          labelClassName: 'font-medium text-gray-700',
-        })}
-        dropdownClassName="h-auto"
-      /> */}
+
       {isFiltered ? (
         <Button
           size="sm"

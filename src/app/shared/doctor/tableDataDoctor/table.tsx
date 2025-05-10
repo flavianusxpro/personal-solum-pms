@@ -19,10 +19,7 @@ const FilterElement = dynamic(
 );
 
 const filterState = {
-  price: ['', ''],
   createdAt: [null, null],
-  updatedAt: [null, null],
-  status: '',
 };
 
 export default function DoctorTable({}: {}) {

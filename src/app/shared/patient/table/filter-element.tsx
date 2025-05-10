@@ -50,11 +50,6 @@ export default function FilterElement({
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
   return (
     <>
-      {/* <PriceField
-        value={filters['price']}
-        onChange={(data) => updateFilter('price', data)}
-        label={'Price'}
-      /> */}
       <DateFiled
         selectsRange
         className="w-full"
