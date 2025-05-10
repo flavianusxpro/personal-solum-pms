@@ -129,7 +129,7 @@ export default function CreatDoctorModal() {
         return (
           <div className="flex flex-col gap-6 px-6 pt-6">
             <Flex justify="between" align="center" gap="4">
-              <Title>Create Doctor</Title>
+              <Title className="text-lg">Create Doctor</Title>
               <ActionIcon variant="text" onClick={closeModal} className="">
                 <PiX className="h-6 w-6" />
               </ActionIcon>

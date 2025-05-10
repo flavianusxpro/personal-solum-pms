@@ -1,7 +1,15 @@
 'use client';
 
 import { HeaderCell } from '@/app/shared/ui/table';
-import { Text, Checkbox, ActionIcon, Tooltip, Badge, Flex } from 'rizzui';
+import {
+  Text,
+  Checkbox,
+  ActionIcon,
+  Tooltip,
+  Badge,
+  Flex,
+  Dropdown,
+} from 'rizzui';
 import EyeIcon from '@core/components/icons/eye';
 import DeletePopover from '@/app/shared/ui/delete-popover';
 import { Type } from '@/data/appointment-data';
@@ -12,11 +20,18 @@ import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 import dayjs from 'dayjs';
 import ActionTooltipButton from '@/app/shared/ui/action-tooltip-button';
 import PencilIcon from '@/core/components/icons/pencil';
-import CreateUpdateAppointmentForm from '../../appointment-form';
 import CSelect from '@/app/shared/ui/select';
 import { useState } from 'react';
 import { useUpdateAppointment } from '@/hooks/useAppointment';
 import toast from 'react-hot-toast';
+import CreateUpdateAppointmentForm from '../../modal/appointment-form';
+import { HiOutlineAdjustmentsVertical } from 'react-icons/hi2';
+import { FaRegNoteSticky } from 'react-icons/fa6';
+import { GrSchedules } from 'react-icons/gr';
+import { MdOutlineFreeCancellation } from 'react-icons/md';
+import AddNotesForm from '../../modal/add-notes';
+import CancelForm from '../../modal/cancel-form';
+import RescheduleAppointmentForm from '../../modal/reschedule';
 
 const statusOptions = [
   { label: 'Draft', value: 1 },
@@ -149,9 +164,7 @@ export const GetColumns = ({
       key: 'status',
       width: 260,
       render: (value: number, row: RowValue) => (
-        <div className="!w-full">
-          <StatusSelect selectItem={value} id={row.id} />
-        </div>
+        <StatusSelect selectItem={value} id={row.id} />
       ),
     },
     {
@@ -191,6 +204,7 @@ function RenderAction({
   onDeleteItem: (id: string) => void;
 }) {
   const { openModal, closeModal } = useModal();
+
   function handleCreateModal() {
     closeModal(),
       openModal({
@@ -198,6 +212,7 @@ function RenderAction({
         customSize: '600px',
       });
   }
+
   function handleEditModal(row: RowValue) {
     closeModal(),
       openModal({
@@ -205,8 +220,64 @@ function RenderAction({
         customSize: '600px',
       });
   }
+
+  function addNotesModal() {
+    closeModal(),
+      openModal({
+        view: <AddNotesForm />,
+        customSize: '600px',
+      });
+  }
+
+  function rescheduleModal(row: RowValue) {
+    closeModal(),
+      openModal({
+        view: <RescheduleAppointmentForm data={row} />,
+        customSize: '600px',
+      });
+  }
+
+  function cancelModal(row: RowValue) {
+    closeModal(),
+      openModal({
+        view: <CancelForm data={row} />,
+        customSize: '600px',
+      });
+  }
+
   return (
     <div className="flex items-center justify-end gap-3 pe-3">
+      <Dropdown placement="bottom-end">
+        <Dropdown.Trigger>
+          <Tooltip size="sm" content={'Actions'} placement="top" color="invert">
+            <ActionIcon
+              as="span"
+              aria-label={'Actions'}
+              className="hover:!border-gray-900 hover:text-gray-700"
+              size="sm"
+              variant="outline"
+              rounded="md"
+            >
+              <HiOutlineAdjustmentsVertical className="h-4 w-4" />
+            </ActionIcon>
+          </Tooltip>
+        </Dropdown.Trigger>
+        <Dropdown.Menu className="divide-y">
+          <Dropdown.Item onClick={addNotesModal}>
+            <FaRegNoteSticky className="mr-2 h-4 w-4" />
+            Add Notes
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => rescheduleModal(row)}>
+            <GrSchedules className="mr-2 h-4 w-4" />
+            Reschedule
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => cancelModal(row)}>
+            <MdOutlineFreeCancellation className="mr-2 h-4 w-4" />
+            Cancel
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+
       <ActionTooltipButton
         tooltipContent="Edit Appointment"
         variant="outline"

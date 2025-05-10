@@ -2,38 +2,33 @@
 
 import dynamic from 'next/dynamic';
 import { atom, useAtom } from 'jotai';
-const SelectClinic = dynamic(
-  () =>
-    import('@/app/shared/appointment/appointment-form/select-clinic-patient'),
+
+const SelectOption = dynamic(
+  () => import('@/app/shared/appointment/modal/reschedule/options'),
   {
     ssr: false,
   }
 );
 const SelectDoctorTime = dynamic(
-  () => import('@/app/shared/appointment/appointment-form/doctor-time'),
+  () => import('@/app/shared/appointment/modal/reschedule/doctor-time'),
   {
     ssr: false,
   }
 );
 const SelectDate = dynamic(
-  () => import('@/app/shared/appointment/appointment-form/select-date'),
+  () => import('@/app/shared/appointment/modal/reschedule/select-date'),
   {
     ssr: false,
   }
 );
-const SelectService = dynamic(
-  () => import('@/app/shared/appointment/appointment-form/select-services'),
+const AddReason = dynamic(
+  () => import('@/app/shared/appointment/modal/reschedule/add-reason'),
   {
     ssr: false,
   }
 );
-const Payment = dynamic(
-  () => import('@/app/shared/appointment/appointment-form/select-payment'),
-  {
-    ssr: false,
-  }
-);
-import { atomWithReset, atomWithStorage, useResetAtom } from 'jotai/utils';
+
+import { atomWithReset, useResetAtom } from 'jotai/utils';
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { ActionIcon, Title } from 'rizzui';
@@ -76,53 +71,59 @@ export const initialFormData = {
   script_renewal_fee: '',
 };
 
-export const formDataAtom = atom<FormDataType>(initialFormData);
+export const formRescheduleDataAtom = atom<FormDataType>(initialFormData);
 
-enum Step {
-  SelectClinic,
-  SelectService,
+export enum Step {
+  SelectOption,
   SelectDate,
   SelectDoctorTime,
-  Payment,
+  AddReason,
 }
 
-const firstStep = Step.SelectClinic;
-export const stepperAtomAppointment = atomWithReset<Step>(firstStep);
+const firstStep = Step.SelectOption;
+export const stepperAtomCancelAppointment = atomWithReset<Step>(firstStep);
 
-export function useStepperAppointment() {
-  const [step, setStep] = useAtom(stepperAtomAppointment);
+export function useStepperCancelAppointment() {
+  const [step, setStep] = useAtom(stepperAtomCancelAppointment);
+
   function gotoNextStep() {
     setStep(step + 1);
   }
+
   function gotoPrevStep() {
     setStep(step > firstStep ? step - 1 : step);
   }
+
   function resetStepper() {
     setStep(firstStep);
   }
+
+  function gotoStep(step: Step) {
+    setStep(step);
+  }
+
   return {
     step,
     setStep,
-    // gotoStep,
     resetStepper,
+    gotoStep,
     gotoNextStep,
     gotoPrevStep,
   };
 }
 
 const MAP_STEP_TO_COMPONENT = {
-  [Step.SelectClinic]: SelectClinic,
+  [Step.SelectOption]: SelectOption,
   [Step.SelectDate]: SelectDate,
   [Step.SelectDoctorTime]: SelectDoctorTime,
-  [Step.SelectService]: SelectService,
-  [Step.Payment]: Payment,
+  [Step.AddReason]: AddReason,
 };
 
 export const stepAppointmentTotalSteps = Object.keys(
   MAP_STEP_TO_COMPONENT
 ).length;
 
-export default function CreateUpdateAppointmentForm({
+export default function CancelAppointmentForm({
   data,
 }: {
   data?: IGetAppointmentListResponse['data'][number];
@@ -130,12 +131,11 @@ export default function CreateUpdateAppointmentForm({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { closeModal } = useModal();
-  const isEdit = data?.id;
 
-  const [step] = useAtom(stepperAtomAppointment);
-  const [_, setFormData] = useAtom(formDataAtom);
+  const [step] = useAtom(stepperAtomCancelAppointment);
+  const [_, setFormData] = useAtom(formRescheduleDataAtom);
   const Component = MAP_STEP_TO_COMPONENT[step];
-  const resetLocation = useResetAtom(stepperAtomAppointment);
+  const resetLocation = useResetAtom(stepperAtomCancelAppointment);
 
   useEffect(() => {
     resetLocation();
@@ -167,7 +167,7 @@ export default function CreateUpdateAppointmentForm({
       <div className="w-full">
         <div className="flex items-center justify-between border-b border-gray-200 p-5 md:p-7">
           <Title as="h2" className="font-lexend text-lg font-semibold">
-            {isEdit && 'Update '} Book an appointment
+            Reschedule Appointment
           </Title>
           <ActionIcon
             size="sm"

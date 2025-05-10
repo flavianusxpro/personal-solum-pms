@@ -2,7 +2,7 @@ import { useModal } from '@/app/shared/modal-views/use-modal';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 import dayjs from 'dayjs';
 import { PiCalendarCheckLight, PiMapPinLight, PiXBold } from 'react-icons/pi';
-import { Text, ActionIcon, Title, Button } from 'rizzui';
+import { ActionIcon, Title, Button } from 'rizzui';
 import { getPaymentStatusBadge } from './columns';
 
 export default function AppointmentDetails({

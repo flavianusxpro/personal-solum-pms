@@ -6,28 +6,25 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm, UseFormSetValue } from 'react-hook-form';
 import { Flex, Input, Loader, Text } from 'rizzui';
 import Footer from './footer';
-import {
-  formDataAtom,
-  useStepperAppointment,
-} from '@/app/shared/appointment/appointment-form';
 import { IParamGetDoctorByClinic } from '@/types/paramTypes';
 import { useMemo, useState } from 'react';
 import { useGetDoctorByClinic } from '@/hooks/useClinic';
 import Image from 'next/image';
 import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
 import { IGetDoctorByClinicResponse } from '@/types/ApiResponse';
-import { appointmentBookSchema } from '@/validators/admin-appointment.schema';
 import cn from '@/core/utils/class-names';
 import dayjs from 'dayjs';
+import { formRescheduleDataAtom, useStepperCancelAppointment } from '.';
+import { rescheduleAppointmentSchema } from '@/validators/reschedule-appointment.schema';
 
-const FormSchema = appointmentBookSchema['selectDoctorAndTime'];
+const FormSchema = rescheduleAppointmentSchema['selectDoctorAndTime'];
 
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 export default function AppointmentPatientDoctor() {
-  const { gotoNextStep } = useStepperAppointment();
+  const { gotoNextStep } = useStepperCancelAppointment();
 
-  const [formData, setFormData] = useAtom(formDataAtom);
+  const [formData, setFormData] = useAtom(formRescheduleDataAtom);
   const [currentOpen, setCurrentOpen] = useState<number | null>(null);
 
   const {
@@ -157,7 +154,7 @@ export default function AppointmentPatientDoctor() {
           })}
         </div>
       </div>
-      <Footer />
+      <Footer goBackToStepNumber={0} />
     </form>
   );
 }
@@ -177,7 +174,7 @@ function DoctorTime({
     script_renewal_fee: string;
   }>;
 }) {
-  const [formData, setFormData] = useAtom(formDataAtom);
+  const [formData] = useAtom(formRescheduleDataAtom);
 
   const appointmentType = useMemo(
     () => formData?.appointment_type?.includes('Follow up'),

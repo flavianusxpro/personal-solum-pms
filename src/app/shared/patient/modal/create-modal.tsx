@@ -101,7 +101,7 @@ export default function CreatePatienModal() {
         return (
           <div className="flex flex-col gap-6 px-6 pt-6">
             <Flex justify="between" align="center" gap="4">
-              <Title>Create Patient</Title>
+              <Title className="text-lg">Create Patient</Title>
               <ActionIcon variant="text" onClick={closeModal} className="">
                 <PiX className="h-6 w-6" />
               </ActionIcon>
