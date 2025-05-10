@@ -8,7 +8,7 @@ import {
 } from '@/validators/cancel-appointment.schema';
 import { Controller, SubmitHandler } from 'react-hook-form';
 import { PiCalendarCheckLight, PiMapPinLight, PiX } from 'react-icons/pi';
-import { ActionIcon, Flex, Title } from 'rizzui';
+import { ActionIcon, Flex, Textarea, Title } from 'rizzui';
 import { getPaymentStatusBadge } from '../../appointment-list/list/columns';
 import dayjs from 'dayjs';
 
@@ -107,11 +107,7 @@ export default function CancelForm({
               name="reason"
               control={control}
               render={({ field }) => (
-                <textarea
-                  {...field}
-                  placeholder="Add your reason here..."
-                  className="h-32 w-full rounded border p-2"
-                />
+                <Textarea {...field} placeholder="Add your reason here..." />
               )}
             />
             <FormFooter
