@@ -2,11 +2,11 @@ import { useModal } from '@/app/shared/modal-views/use-modal';
 import { Form } from '@/core/ui/form';
 import { Controller, SubmitHandler } from 'react-hook-form';
 import Footer from './footer';
-import { Text } from 'rizzui';
+import { Text, Textarea } from 'rizzui';
 import { z } from 'zod';
 import { rescheduleAppointmentSchema } from '@/validators/reschedule-appointment.schema';
 import { useAtom } from 'jotai';
-import { formRescheduleDataAtom } from '.';
+import { formRescheduleDataAtom, useStepperCancelAppointment } from '.';
 
 const FormSchema = rescheduleAppointmentSchema['reasons'];
 
@@ -14,12 +14,14 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 
 export default function AddReason() {
   const [formData, setFormData] = useAtom(formRescheduleDataAtom);
+  const { gotoNextStep } = useStepperCancelAppointment();
 
   const onSubmit: SubmitHandler<FormSchemaType> = (data) => {
     setFormData((prev) => ({
       ...prev,
       reason: data.reason,
     }));
+    gotoNextStep();
   };
 
   return (
@@ -44,15 +46,11 @@ export default function AddReason() {
                 name="reason"
                 control={control}
                 render={({ field }) => (
-                  <textarea
-                    {...field}
-                    placeholder="Add your reason here..."
-                    className="h-32 w-full rounded border p-2"
-                  />
+                  <Textarea {...field} placeholder="Add your reason here..." />
                 )}
               />
             </div>
-            <Footer isLastStep />
+            <Footer />
           </>
         );
       }}

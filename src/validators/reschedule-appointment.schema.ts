@@ -29,6 +29,6 @@ export const rescheduleAppointmentSchema = {
   }),
   selectMeetingType: z.string({ required_error: 'Meeting type is required' }),
   reasons: z.object({
-    reason: z.string().min(1, { message: 'Reason is required' }),
+    reason: z.string().optional(),
   }),
 };

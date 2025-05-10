@@ -27,6 +27,12 @@ const AddReason = dynamic(
     ssr: false,
   }
 );
+const RescheduleConfirmation = dynamic(
+  () => import('@/app/shared/appointment/modal/reschedule/confirmation'),
+  {
+    ssr: false,
+  }
+);
 
 import { atomWithReset, useResetAtom } from 'jotai/utils';
 import { useEffect } from 'react';
@@ -52,6 +58,22 @@ type FormDataType = {
   followup_fee: string;
   initial_fee: string;
   script_renewal_fee: string;
+  oldData?: {
+    id?: number | null;
+    clinicId?: number;
+    patient_id?: number;
+    doctorId?: number;
+    doctorTime: string;
+    date: string;
+    note: string;
+    appointment_type: string;
+    patient_type: string;
+    patient_problem: string;
+    meeting_preference: string;
+    followup_fee: string;
+    initial_fee: string;
+    script_renewal_fee: string;
+  };
 };
 
 export const initialFormData = {
@@ -69,6 +91,22 @@ export const initialFormData = {
   followup_fee: '',
   initial_fee: '',
   script_renewal_fee: '',
+  oldData: {
+    id: null,
+    clinicId: undefined,
+    patient_id: undefined,
+    doctorId: undefined,
+    doctorTime: '',
+    date: '',
+    note: '',
+    appointment_type: '',
+    patient_type: '',
+    patient_problem: '',
+    meeting_preference: '',
+    followup_fee: '',
+    initial_fee: '',
+    script_renewal_fee: '',
+  },
 };
 
 export const formRescheduleDataAtom = atom<FormDataType>(initialFormData);
@@ -78,6 +116,7 @@ export enum Step {
   SelectDate,
   SelectDoctorTime,
   AddReason,
+  Confirmation,
 }
 
 const firstStep = Step.SelectOption;
@@ -117,6 +156,7 @@ const MAP_STEP_TO_COMPONENT = {
   [Step.SelectDate]: SelectDate,
   [Step.SelectDoctorTime]: SelectDoctorTime,
   [Step.AddReason]: AddReason,
+  [Step.Confirmation]: RescheduleConfirmation,
 };
 
 export const stepAppointmentTotalSteps = Object.keys(
@@ -155,6 +195,22 @@ export default function CancelAppointmentForm({
         followup_fee: '',
         initial_fee: '',
         script_renewal_fee: '',
+        oldData: {
+          id: data?.id,
+          appointment_type: data?.type,
+          clinicId: data?.clinicId,
+          date: data?.date,
+          doctorId: data?.doctor?.id,
+          doctorTime: dayjs(data?.date).format('HH:mm'),
+          meeting_preference: '',
+          note: data?.note || '',
+          patient_id: data?.patientId,
+          patient_problem: data?.patient_problem,
+          patient_type: data?.patient_type,
+          followup_fee: '',
+          initial_fee: '',
+          script_renewal_fee: '',
+        },
       });
     } else {
       setFormData(initialFormData);
