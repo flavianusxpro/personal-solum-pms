@@ -10,39 +10,17 @@ import DateCell from '@core/ui/date-cell';
 import DeletePopover from '@/app/shared/ui/delete-popover';
 import { IGetAllPatientsResponse } from '@/types/ApiResponse';
 import { HeaderCell } from '@/app/shared/ui/table';
+import CSelect from '../../ui/select';
+import toast from 'react-hot-toast';
+import { useState } from 'react';
+import { useUpdatePatient } from '@/hooks/usePatient';
 
-function getStatusBadge(status: number | string) {
-  switch (status) {
-    case 'pending':
-      return (
-        <div className="flex items-center">
-          <Badge color="warning" renderAsDot />
-          <Text className="ms-2 font-medium text-orange-dark">{status}</Text>
-        </div>
-      );
-    case 1:
-      return (
-        <div className="flex items-center">
-          <Badge color="success" renderAsDot />
-          <Text className="ms-2 font-medium text-green-dark">Active</Text>
-        </div>
-      );
-    case 0:
-      return (
-        <div className="flex items-center">
-          <Badge color="danger" renderAsDot />
-          <Text className="ms-2 font-medium text-red-dark">Inactive</Text>
-        </div>
-      );
-    default:
-      return (
-        <div className="flex items-center">
-          <Badge renderAsDot className="bg-gray-400" />
-          <Text className="ms-2 font-medium text-gray-600">{status}</Text>
-        </div>
-      );
-  }
-}
+const statusOptions = [
+  { label: 'Active', value: 1 },
+  { label: 'Inactive', value: 2 },
+];
+
+type Row = IGetAllPatientsResponse['data'][number];
 
 type Columns = {
   data: IGetAllPatientsResponse['data'];
@@ -77,7 +55,7 @@ export const getColumns = ({
     dataIndex: 'checked',
     key: 'checked',
     width: 30,
-    render: (_: any, row: IGetAllPatientsResponse['data'][number]) => (
+    render: (_: any, row: Row) => (
       <div className="inline-flex ps-2">
         <Checkbox
           className="cursor-pointer"
@@ -99,7 +77,7 @@ export const getColumns = ({
     dataIndex: 'PATIENT NAME',
     key: 'PATIENT NAME',
     width: 300,
-    render: (_: any, row: IGetAllPatientsResponse['data'][number]) => (
+    render: (_: any, row: Row) => (
       <TableAvatar
         src={''}
         name={`${row.first_name} ${row.last_name}`}
@@ -133,7 +111,6 @@ export const getColumns = ({
     width: 200,
     render: (value: Date) => <DateCell date={value} />,
   },
-  // TODO
   {
     title: (
       <HeaderCell
@@ -170,8 +147,10 @@ export const getColumns = ({
     title: <HeaderCell title="Status" />,
     dataIndex: 'status',
     key: 'status',
-    width: 140,
-    render: (value: string) => getStatusBadge(value),
+    width: 110,
+    render: (value: number, row: Row) => (
+      <StatusSelect selectItem={value} id={row.patient_id} />
+    ),
   },
   {
     // Need to avoid this issue -> <td> elements in a large <table> do not have table headers.
@@ -179,7 +158,7 @@ export const getColumns = ({
     dataIndex: 'action',
     key: 'action',
     width: 130,
-    render: (_: string, row: IGetAllPatientsResponse['data'][number]) => (
+    render: (_: string, row: Row) => (
       <div className="flex items-center justify-end gap-3 pe-4">
         <Tooltip
           size="sm"
@@ -224,3 +203,71 @@ export const getColumns = ({
     ),
   },
 ];
+
+function getStatusBadge(status: number) {
+  switch (status) {
+    case 1:
+      return (
+        <div className="flex items-center">
+          <Badge color="success" renderAsDot />
+          <Text className="ms-2 font-medium text-green-dark">Active</Text>
+        </div>
+      );
+    case 2:
+      return (
+        <div className="flex items-center">
+          <Badge color="danger" renderAsDot />
+          <Text className="ms-2 font-medium text-red-dark">Inactive</Text>
+        </div>
+      );
+    default:
+      return (
+        <div className="flex items-center">
+          <Badge renderAsDot className="bg-gray-400" />
+          <Text className="ms-2 font-medium text-gray-600">{status}</Text>
+        </div>
+      );
+  }
+}
+
+function StatusSelect({ selectItem, id }: { selectItem: number; id: string }) {
+  const selectItemValue = statusOptions.find(
+    (option) => option.value === selectItem
+  )?.value;
+
+  const [value, setValue] = useState(selectItemValue);
+
+  const { mutate, isPending } = useUpdatePatient();
+
+  const handleChange = (value: number) => {
+    setValue(value);
+    mutate(
+      { patient_id: id, status: value },
+      {
+        onSuccess: () => {
+          toast.success('Status updated successfully');
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || 'Error updating status'
+          );
+        },
+      }
+    );
+  };
+
+  return (
+    <CSelect
+      className={'min-w-[140px]'}
+      dropdownClassName="h-auto"
+      placeholder="Select Status"
+      options={statusOptions}
+      value={value}
+      onChange={handleChange}
+      isLoading={isPending}
+      displayValue={(option: { label: string; value: number }) =>
+        getStatusBadge(option.value)
+      }
+    />
+  );
+}
