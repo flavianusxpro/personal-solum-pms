@@ -9,6 +9,7 @@ import { getDateRangeStateValues } from '@core/utils/get-formatted-date';
 import { useMedia } from '@core/hooks/use-media';
 import cn from '@/core/utils/class-names';
 import { appointmentTypes } from '@/data/appointment-data';
+import CSelect from '@/app/shared/ui/select';
 
 type FilterElementProps = {
   isFiltered: boolean;
@@ -22,18 +23,17 @@ export const appointmentTypesOptions = Object.entries(appointmentTypes).map(
 );
 
 const statusOptions = [
-  {
-    value: 'Paid',
-    label: 'Paid',
-  },
-  {
-    value: 'Unpaid',
-    label: 'Unpaid',
-  },
-  {
-    value: 'Refunded',
-    label: 'Refunded',
-  },
+  { value: 1, label: 'Draft' },
+  { value: 2, label: 'Pending' },
+  { value: 3, label: 'Confirmed' },
+  { value: 4, label: 'Finished' },
+  { value: 5, label: 'Cancelled' },
+];
+
+const paymentStatusOptions = [
+  { value: 1, label: 'Pending' },
+  { value: 2, label: 'Paid' },
+  { value: 3, label: 'Cancelled' },
 ];
 
 export default function FilterElement({
@@ -50,54 +50,79 @@ export default function FilterElement({
         isMediumScreen ? 'flex-col gap-6' : 'flex-row items-center gap-3'
       )}
     >
-      {!isMediumScreen && (
-        <Title
-          as="h3"
-          className="rizzui-title-h3 pe-4 text-base font-semibold sm:text-lg"
-        >
-          All Appointment
-        </Title>
-      )}
+      <DateFiled
+        selectsRange
+        dateFormat="dd MMM yyyy"
+        className="w-full"
+        isClearable
+        onClear={() => {
+          updateFilter('createdAt', [null, null]);
+        }}
+        selected={getDateRangeStateValues(filters?.['createdAt']?.[0])}
+        startDate={getDateRangeStateValues(filters?.['createdAt']?.[0]) as Date}
+        endDate={getDateRangeStateValues(filters?.['createdAt']?.[1]) as Date}
+        onChange={(date: any) => {
+          updateFilter('createdAt', date);
+        }}
+        placeholderText="Select created date"
+        {...(isMediumScreen && {
+          inputProps: {
+            label: 'Created Date',
+            labelClassName: 'font-medium text-gray-700',
+          },
+        })}
+      />
 
-      <StatusField
+      <CSelect
         dropdownClassName="!z-10 h-auto"
         className="w-full @[35rem]:w-auto"
         options={statusOptions}
-        value={filters['appointment_status']}
+        value={filters['status']}
         onChange={(value: string) => {
-          updateFilter('appointment_status', value);
+          updateFilter('status', value);
         }}
-        getOptionValue={(option: { value: any }) => option.value}
         {...(isMediumScreen && {
-          label: 'APPOINTMENT STATUS',
+          label: 'Appointment Status',
+          placeholder: 'Select appointment status',
           labelClassName: 'font-medium text-gray-700',
         })}
       />
-      <StatusField
+
+      <CSelect
         dropdownClassName="!z-10 h-auto"
         className="w-full @[35rem]:w-auto"
-        options={statusOptions}
+        options={paymentStatusOptions}
         value={filters['payment_status']}
         onChange={(value: string) => {
           updateFilter('payment_status', value);
         }}
-        getOptionValue={(option: { value: any }) => option.value}
         {...(isMediumScreen && {
-          label: 'PAYMENT STATUS',
+          label: 'Payment Status',
+          placeholder: 'Select payment status',
           labelClassName: 'font-medium text-gray-700',
         })}
       />
-      <StatusField
+
+      <CSelect
+        placeholder="Select reschedule type"
         dropdownClassName="!z-10 h-auto"
         className="w-full @[35rem]:w-auto"
-        options={statusOptions}
+        options={[
+          {
+            label: 'Yes',
+            value: 'true',
+          },
+          {
+            label: 'No',
+            value: 'false',
+          },
+        ]}
         value={filters['by_reschedule']}
         onChange={(value: string) => {
           updateFilter('by_reschedule', value);
         }}
-        getOptionValue={(option: { value: any }) => option.value}
         {...(isMediumScreen && {
-          label: 'BY RESCHEDULE',
+          label: 'By Reschedule',
           labelClassName: 'font-medium text-gray-700',
         })}
       />

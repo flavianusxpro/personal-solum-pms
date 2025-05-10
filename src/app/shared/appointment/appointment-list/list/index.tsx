@@ -26,14 +26,15 @@ const FilterElement = dynamic(
 );
 
 const filterState = {
-  payment_status: '',
-  appointment_status: '',
-  by_reschedule: '',
+  payment_status: null,
+  status: null,
+  by_reschedule: null,
 };
 
 export default function AppointmentListTable() {
   const { isOpen } = useModal();
 
+  const [filterStateValue, setFilterStateValue] = useState(filterState);
   const [_, setCheckedItems] = useState<string[]>([]);
   const [params, setParams] = useState({
     page: 1,
@@ -51,6 +52,9 @@ export default function AppointmentListTable() {
     q: JSON.stringify({
       patientName: params.search,
     }),
+    status: filterStateValue?.status || undefined,
+    payment_status: filterStateValue?.payment_status || undefined,
+    by_reschedule: filterStateValue?.by_reschedule || undefined,
   });
 
   const { mutate } = useDeleteAppointment();
@@ -99,6 +103,16 @@ export default function AppointmentListTable() {
     }
   };
 
+  const updateFilter = useCallback(
+    (columnId: string, filterValue: string | number | any[] | null) => {
+      setFilterStateValue((prevState) => ({
+        ...prevState,
+        [columnId]: filterValue,
+      }));
+    },
+    []
+  );
+
   const {
     isLoading,
     isFiltered,
@@ -107,7 +121,7 @@ export default function AppointmentListTable() {
     totalItems,
     handlePaginate,
     filters,
-    updateFilter,
+    // updateFilter,
     searchTerm,
     handleSearch,
     sortConfig,
@@ -118,7 +132,7 @@ export default function AppointmentListTable() {
     handleRowSelect,
     setSelectedRowKeys,
     selectedRowKeys,
-  } = useTable(dataAppointments?.data ?? [], params.perPage, filterState);
+  } = useTable(dataAppointments?.data ?? [], params.perPage, filterStateValue);
 
   const columns = useMemo(
     () =>
@@ -146,11 +160,7 @@ export default function AppointmentListTable() {
 
   useEffect(() => {
     refetch();
-  }, [isOpen, refetch]);
-
-  useEffect(() => {
-    refetch();
-  }, [params, refetch]);
+  }, [isOpen, refetch, filterStateValue, params]);
 
   return (
     <div

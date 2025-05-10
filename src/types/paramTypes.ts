@@ -125,7 +125,9 @@ export interface IParamGetAppointments extends IParamGetDataWithPagination {
   from?: string;
   to?: string;
   status?: number;
+  payment_status?: number;
   doctorName?: string;
+  by_reschedule?: boolean;
   q?: string;
 }
 export interface IParamGetInvoices extends IParamGetDataWithPagination {
