@@ -94,7 +94,7 @@ export default function FilterElement({
         dropdownClassName="h-auto z-10 bg-white/90 dark:bg-gray-800/90"
       />
 
-      <CSelect
+      {/* <CSelect
         options={conditionOptions}
         value={filters['condition']}
         onChange={(value: string) => {
@@ -110,7 +110,7 @@ export default function FilterElement({
           labelClassName: 'font-medium text-gray-700',
         })}
         dropdownClassName="h-auto bg-white/90 dark:bg-gray-800/90"
-      />
+      /> */}
       {isFiltered ? (
         <Button
           size="sm"
