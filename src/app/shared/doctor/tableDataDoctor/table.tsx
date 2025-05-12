@@ -11,6 +11,7 @@ import { useModal } from '@/app/shared/modal-views/use-modal';
 import toast from 'react-hot-toast';
 import { useCopyToClipboard } from 'react-use';
 import debounce from 'lodash/debounce';
+import dayjs from 'dayjs';
 
 // dynamic import
 const FilterElement = dynamic(
@@ -40,6 +41,12 @@ export default function DoctorTable({}: {}) {
   } = useGetAllDoctors({
     page: params.page,
     perPage: params.perPage,
+    from: filterStateValue?.createdAt?.[0]
+      ? dayjs(filterStateValue?.createdAt?.[0]).format('YYYY-MM-DD')
+      : undefined,
+    to: filterStateValue?.createdAt?.[1]
+      ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
+      : undefined,
     q: JSON.stringify({ name: params.search }),
   });
 
@@ -136,7 +143,7 @@ export default function DoctorTable({}: {}) {
 
   useEffect(() => {
     refetch();
-  }, [params, refetch, isOpen]);
+  }, [params, refetch, isOpen, filterStateValue]);
 
   return (
     <div>

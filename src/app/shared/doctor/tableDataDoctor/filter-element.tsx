@@ -47,6 +47,10 @@ export default function FilterElement({
       <DateFiled
         selectsRange
         className="w-full"
+        isClearable
+        onClear={() => {
+          updateFilter('createdAt', [null, null]);
+        }}
         selected={getDateRangeStateValues(filters['createdAt'][0])}
         startDate={getDateRangeStateValues(filters['createdAt'][0]) as Date}
         endDate={getDateRangeStateValues(filters['createdAt'][1]) as Date}
