@@ -1,12 +1,12 @@
 import { del, get, post, put } from '@/app/api/api';
 import {
   IGetInvoiceByIdResponse,
-  IGetAppointmentListResponse,
+  IGetInvoiceListResponse,
 } from '@/types/ApiResponse';
 import { IParamGetInvoices, IPayloadCreateInvoice } from '@/types/paramTypes';
 
 export async function getInvoiceList(params: IParamGetInvoices) {
-  return await get<IGetAppointmentListResponse>('/admin/invoice/', {
+  return await get<IGetInvoiceListResponse>('/admin/invoice/', {
     params,
   });
 }

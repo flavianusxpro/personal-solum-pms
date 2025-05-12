@@ -356,6 +356,59 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
   }[];
 }
 
+export interface IGetInvoiceListResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    clinicId: number;
+    patientId: number;
+    date: string;
+    due_date: string;
+    status: number;
+    note: string;
+    amount: string;
+    tax_fee: string;
+    other_fee: string;
+    total_amount: string;
+    created_at: string;
+    updated_at: string;
+    patient: Patient;
+  }[];
+}
+
+interface Patient {
+  id: number;
+  patient_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  mobile_number: string;
+  status: number;
+  title: string;
+  potition_on_card: string;
+  photo: null;
+  country: string;
+  unit_number: string;
+  street_name: string;
+  suburb: string;
+  state: string;
+  postcode: string;
+  date_of_birth: string;
+  gender: string;
+  medicare_card_number: string;
+  medicare_expired_date: string;
+  patient_type: string;
+  patient_problem: string;
+  emergency_first_name: string;
+  emergency_last_name: string;
+  emergency_mobile_number: string;
+  emergency_email: string;
+  emergency_relationship: string;
+  verification_token: string;
+  timezone: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface IGetInvoiceByIdResponse extends ApiResponse {
   success: boolean;
   data: {
