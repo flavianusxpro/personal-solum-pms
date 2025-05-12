@@ -101,15 +101,14 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
           />
         )}
       />
-      <Textarea
-        label="Description"
-        placeholder="Enter item description"
-        {...register(`items.${index}.description`)}
-        defaultValue={field.description}
-        error={errors?.items?.[index]?.description?.message}
-        textareaClassName="h-10"
-        className="w-full"
-      />
+      <div className="w-full">
+        <label className="block text-sm font-medium text-gray-700">
+          Description
+        </label>
+        <div className="mt-1.5 rounded-md border border-gray-300 p-2">
+          {field.description || 'Enter item description'}
+        </div>
+      </div>
       <Controller
         name={`items.${index}.qty`}
         control={control}

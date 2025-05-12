@@ -102,7 +102,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
           total_amount: totalAmount,
           note: data.note || '',
           patientId: Number(data.patientId),
-          other_fee: Number(data.otherFee),
+          other_fee: Number(data.otherFee || 0),
         },
         {
           onSuccess: () => {
@@ -132,11 +132,11 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
           total_amount: Number(item.amount) * Number(item.qty),
         })),
         amount: totalItemAmount,
-        tax_fee: Number(data.taxFee),
+        tax_fee: Number(data.taxFee || 0),
         total_amount: totalAmount,
         note: data.note || '',
         patientId: Number(data.patientId),
-        other_fee: Number(data.otherFee),
+        other_fee: Number(data.otherFee || 0),
       },
       {
         onSuccess: () => {
