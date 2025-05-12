@@ -6,14 +6,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { ActionIcon, Input, Text, Title } from 'rizzui';
 import Footer from './footer';
-import {
-  formDataAtom,
-  useStepperAppointment,
-} from '@/app/shared/appointment/appointment-form';
+
 import { PiXBold } from 'react-icons/pi';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
+import { formDataAtom, useStepperAppointment } from '.';
 
 export const appointmentPatientInfoSchema = z.object({
   name: z.string().min(1, { message: 'This field is required' }),

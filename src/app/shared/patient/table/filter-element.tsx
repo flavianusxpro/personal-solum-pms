@@ -7,6 +7,7 @@ import StatusField from '@/app/shared/ui/controlled-table/status-field';
 import { Badge, Text, Button } from 'rizzui';
 import { getDateRangeStateValues } from '@core/utils/get-formatted-date';
 import { useMedia } from '@core/hooks/use-media';
+import CSelect from '../../ui/select';
 
 const statusOptions = [
   {
@@ -37,7 +38,7 @@ const conditionOptions = [
 type FilterElementProps = {
   isFiltered: boolean;
   filters: { [key: string]: any };
-  updateFilter: (columnId: string, filterValue: string | any[]) => void;
+  updateFilter: (columnId: string, filterValue: string | any[] | null) => void;
   handleReset: () => void;
 };
 
@@ -48,11 +49,17 @@ export default function FilterElement({
   handleReset,
 }: FilterElementProps) {
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
+
   return (
     <>
       <DateFiled
         selectsRange
+        dateFormat="dd MMM yyyy"
         className="w-full"
+        isClearable
+        onClear={() => {
+          updateFilter('createdAt', [null, null]);
+        }}
         selected={getDateRangeStateValues(filters['createdAt'][0])}
         startDate={getDateRangeStateValues(filters['createdAt'][0]) as Date}
         endDate={getDateRangeStateValues(filters['createdAt'][1]) as Date}
@@ -67,50 +74,37 @@ export default function FilterElement({
           },
         })}
       />
-      <DateFiled
-        selectsRange
-        className="w-full"
-        selected={getDateRangeStateValues(filters['updatedAt'][0])}
-        startDate={getDateRangeStateValues(filters['updatedAt'][0]) as Date}
-        endDate={getDateRangeStateValues(filters['updatedAt'][1]) as Date}
-        onChange={(date: any) => {
-          updateFilter('updatedAt', date);
-        }}
-        placeholderText="Select modified date"
-        {...(isMediumScreen && {
-          inputProps: {
-            label: 'Due Date',
-            labelClassName: 'font-medium text-gray-700',
-          },
-        })}
-      />
-      <StatusField
+
+      <CSelect
         options={statusOptions}
+        placeholder="Select status"
         value={filters['status']}
         onChange={(value: string) => {
           updateFilter('status', value);
         }}
         getOptionValue={(option: { value: any }) => option.value}
-        getOptionDisplayValue={(option) => renderOptionDisplay(option.label)}
+        clearable
+        onClear={() => {
+          updateFilter('status', null);
+        }}
         {...(isMediumScreen && {
           label: 'Status',
           labelClassName: 'font-medium text-gray-700',
         })}
         dropdownClassName="h-auto z-10 bg-white/90 dark:bg-gray-800/90"
       />
-      <StatusField
+
+      <CSelect
         options={conditionOptions}
         value={filters['condition']}
         onChange={(value: string) => {
           updateFilter('condition', value);
         }}
         getOptionValue={(option: { value: any }) => option.value}
-        getOptionDisplayValue={(option: { value: any }) =>
-          renderConditionOptionDisplayValue(option.value)
-        }
-        displayValue={(selected: string) =>
-          renderConditionOptionDisplayValue(selected)
-        }
+        clearable
+        onClear={() => {
+          updateFilter('condition', null);
+        }}
         {...(isMediumScreen && {
           label: 'Condition',
           labelClassName: 'font-medium text-gray-700',

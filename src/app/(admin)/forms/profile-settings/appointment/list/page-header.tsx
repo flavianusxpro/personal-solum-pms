@@ -8,7 +8,7 @@ import PageHeader from '@/app/shared/ui/page-header';
 import ExportButton from '@/app/shared/ui/export-button';
 import { appointmentData } from '@/data/appointment-data';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import CreateUpdateAppointmentForm from '@/app/shared/appointment/appointment-form';
+import CreateUpdateAppointmentForm from '@/app/shared/appointment/modal/appointment-form';
 
 const pageHeader = {
   title: 'Appointment List',

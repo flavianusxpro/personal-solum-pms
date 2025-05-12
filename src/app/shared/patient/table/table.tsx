@@ -14,6 +14,7 @@ import { useDeletePatient, useGetAllPatients } from '@/hooks/usePatient';
 import debounce from 'lodash/debounce';
 import { useModal } from '../../modal-views/use-modal';
 import toast from 'react-hot-toast';
+import dayjs from 'dayjs';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/patient/table/filter-element'),
@@ -42,19 +43,17 @@ function CustomExpandIcon(props: any) {
 
 const filterState = {
   createdAt: [null, null],
-  updatedAt: [null, null],
-  status: '',
-  condition: '',
+  status: null,
+  condition: null,
 };
 
 export default function PatientTable({ className }: { className?: string }) {
-  const { isOpen } = useModal();
+  const [filterStateValue, setFilterStateValue] = useState(filterState);
   const [params, setParams] = useState({
     page: 1,
     perPage: 10,
     search: '',
   });
-  const [filterStateValue, setFilterStateValue] = useState(filterState);
 
   const {
     data,
@@ -63,8 +62,15 @@ export default function PatientTable({ className }: { className?: string }) {
   } = useGetAllPatients({
     page: params.page,
     perPage: params.perPage,
+    // from: filterStateValue?.createdAt?.[0]
+    //   ? dayjs(filterStateValue?.createdAt?.[0]).format('YYYY-MM-DD')
+    //   : undefined,
+    // to: filterStateValue?.createdAt?.[1]
+    //   ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
+    //   : undefined,
     q: JSON.stringify({
       name: params.search,
+      // status: filterStateValue?.status || undefined,
     }),
   });
 
@@ -96,7 +102,7 @@ export default function PatientTable({ className }: { className?: string }) {
   );
 
   const updateFilter = useCallback(
-    (columnId: string, filterValue: string | any[]) => {
+    (columnId: string, filterValue: string | number | any[] | null) => {
       setFilterStateValue((prevState) => ({
         ...prevState,
         [columnId]: filterValue,
@@ -115,6 +121,10 @@ export default function PatientTable({ className }: { className?: string }) {
       search: value,
     }));
   }, 1000);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, filterStateValue]);
 
   const {
     isLoading,
@@ -157,7 +167,6 @@ export default function PatientTable({ className }: { className?: string }) {
       onDeleteItem,
       handleRowSelect,
       handleSelectAll,
-      data,
     ]
   );
 
@@ -166,14 +175,15 @@ export default function PatientTable({ className }: { className?: string }) {
 
   useEffect(() => {
     refetch();
-  }, [filterStateValue, refetch, isOpen, params]);
+  }, [params, refetch]);
 
   return (
     <div className={cn(className)}>
       <ControlledTable
+        variant="modern"
+        data={tableData ?? []}
         isLoading={isLoading || isLoadingGetAllPatients}
         showLoadingText={true}
-        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         expandable={{
@@ -196,7 +206,6 @@ export default function PatientTable({ className }: { className?: string }) {
               ...prevState,
               page: page,
             }));
-            handlePaginate(page);
           },
         }}
         filterOptions={{
@@ -210,11 +219,9 @@ export default function PatientTable({ className }: { className?: string }) {
             handleSearch(event.target.value);
           },
           hasSearched: isFiltered,
-          hideIndex: 1,
           columns,
           checkedColumns,
           setCheckedColumns,
-          enableDrawerFilter: true,
         }}
         filterElement={
           <FilterElement

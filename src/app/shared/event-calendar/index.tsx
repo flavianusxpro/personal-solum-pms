@@ -17,7 +17,7 @@ import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import CSelect from '../ui/select';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
 import { useGetAppointments } from '@/hooks/useAppointment';
-import CreateUpdateAppointmentForm from '../appointment/appointment-form';
+import CreateUpdateAppointmentForm from '../appointment/modal/appointment-form';
 
 const localizer = dayjsLocalizer(dayjs);
 

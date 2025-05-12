@@ -7,10 +7,7 @@ import StatusField from '@/app/shared/ui/controlled-table/status-field';
 import { Button } from 'rizzui';
 import { getDateRangeStateValues } from '@core/utils/get-formatted-date';
 import { useMedia } from '@core/hooks/use-media';
-import {
-  renderOptionDisplayValue,
-  statusOptions,
-} from '@/app/shared/invoice/create-edit-form/form-utils';
+import { statusOptions } from '@/app/shared/invoice/create-edit-form/form-utils';
 import CSelect from '../../ui/select';
 
 type FilterElementProps = {

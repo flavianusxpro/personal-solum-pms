@@ -71,7 +71,6 @@ export default function InvoiceTableList() {
       },
       onError: (error: any) => {
         toast.error('Error deleting invoice: ' + error.response.data.message);
-        console.error('Error deleting invoice:', error);
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

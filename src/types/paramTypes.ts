@@ -106,7 +106,10 @@ export interface IPayloadCreateEditDoctor {
   language?: string[];
 }
 
-export interface IParamGetAllPatient extends IParamGetDataWithPagination {}
+export interface IParamGetAllPatient extends IParamGetDataWithPagination {
+  from?: string;
+  to?: string;
+}
 export interface IParamGetAllDoctor extends IParamGetDataWithPagination {}
 export interface IParamGetAllEmailTemplates
   extends IParamGetDataWithPagination {}

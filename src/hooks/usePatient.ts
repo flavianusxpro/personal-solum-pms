@@ -20,9 +20,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 export function useGetAllPatients(params: IParamGetAllPatient) {
   return useQuery({
     queryKey: ['patients', params],
-    queryFn: async () => {
-      return await getPatientList(params);
-    },
+    queryFn: async () => getPatientList(params),
   });
 }
 
