@@ -5,7 +5,7 @@ import { Badge, Text, Tooltip, ActionIcon, Checkbox } from 'rizzui';
 import { routes } from '@/config/routes';
 import EyeIcon from '@core/components/icons/eye';
 import PencilIcon from '@core/components/icons/pencil';
-import TableAvatar from '@core/ui/avatar-card';
+import AvatarCard from '@core/ui/avatar-card';
 import DateCell from '@core/ui/date-cell';
 import DeletePopover from '@/app/shared/ui/delete-popover';
 import { IGetAllPatientsResponse } from '@/types/ApiResponse';
@@ -14,6 +14,10 @@ import CSelect from '../../ui/select';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
 import { useUpdatePatient } from '@/hooks/usePatient';
+import ActionTooltipButton from '../../ui/action-tooltip-button';
+import { PiFlag } from 'react-icons/pi';
+import { useModal } from '../../modal-views/use-modal';
+import RedFlagForm from '../modal/red-flag';
 
 const statusOptions = [
   { label: 'Active', value: 1 },
@@ -78,7 +82,7 @@ export const getColumns = ({
     key: 'PATIENT NAME',
     width: 300,
     render: (_: any, row: Row) => (
-      <TableAvatar
+      <AvatarCard
         src={''}
         name={`${row.first_name} ${row.last_name}`}
         number={row.mobile_number}
@@ -158,51 +162,65 @@ export const getColumns = ({
     dataIndex: 'action',
     key: 'action',
     width: 130,
-    render: (_: string, row: Row) => (
-      <div className="flex items-center justify-end gap-3 pe-4">
-        <Tooltip
-          size="sm"
-          content={'Edit Data Patient'}
-          placement="top"
-          color="invert"
-        >
-          <Link href={routes.patient.edit(row.patient_id.toString())}>
-            <ActionIcon
-              as="span"
-              size="sm"
-              variant="outline"
-              className="hover:text-gray-700"
-            >
-              <PencilIcon className="h-4 w-4" />
-            </ActionIcon>
-          </Link>
-        </Tooltip>
-        <Tooltip
-          size="sm"
-          content={'View Data Patient'}
-          placement="top"
-          color="invert"
-        >
-          <Link href={routes.patient.patientDetail(row.patient_id.toString())}>
-            <ActionIcon
-              as="span"
-              size="sm"
-              variant="outline"
-              className="hover:text-gray-700"
-            >
-              <EyeIcon className="h-4 w-4" />
-            </ActionIcon>
-          </Link>
-        </Tooltip>
-        <DeletePopover
-          title={`Delete the Patient`}
-          description={`Are you sure you want to delete this #${row.id} Patient?`}
-          onDelete={() => onDeleteItem(row.patient_id.toString())}
-        />
-      </div>
+    render: (_: any, row: Row) => (
+      <RenderAction row={row} onDeleteItem={onDeleteItem} />
     ),
   },
 ];
+
+function RenderAction({
+  row,
+  onDeleteItem,
+}: {
+  row: Row;
+  onDeleteItem: (id: string) => void;
+}) {
+  const { openModal, closeModal } = useModal();
+
+  function handleRedFlagModal() {
+    closeModal(),
+      openModal({
+        view: <RedFlagForm />,
+        customSize: '600px',
+      });
+  }
+
+  return (
+    <div className="flex items-center justify-end gap-3 pe-4">
+      <ActionTooltipButton
+        onClick={handleRedFlagModal}
+        variant="outline"
+        tooltipContent="Red Flag Patient"
+      >
+        <PiFlag className="h-4 w-4 text-red-500" />
+      </ActionTooltipButton>
+
+      <ActionTooltipButton
+        tooltipContent="Edit Data Patient"
+        onClick={() => {}}
+        variant="outline"
+      >
+        <Link href={routes.patient.edit(row.patient_id.toString())}>
+          <PencilIcon className="h-4 w-4" />
+        </Link>
+      </ActionTooltipButton>
+      <ActionTooltipButton
+        tooltipContent="View Data Patient"
+        onClick={() => {}}
+        variant="outline"
+      >
+        <Link href={routes.patient.patientDetail(row.patient_id.toString())}>
+          <EyeIcon className="h-4 w-4" />
+        </Link>
+      </ActionTooltipButton>
+      <DeletePopover
+        title={`Delete the Patient`}
+        description={`Are you sure you want to delete this #${row.id} Patient?`}
+        onDelete={() => onDeleteItem(row.patient_id.toString())}
+      />
+    </div>
+  );
+}
 
 function getStatusBadge(status: number) {
   switch (status) {
@@ -258,7 +276,7 @@ function StatusSelect({ selectItem, id }: { selectItem: number; id: string }) {
 
   return (
     <CSelect
-      className={'min-w-[140px]'}
+      className={'min-w-[120px]'}
       dropdownClassName="h-auto"
       placeholder="Select Status"
       options={statusOptions}

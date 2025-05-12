@@ -1,6 +1,6 @@
 import { Text, Avatar, AvatarProps } from 'rizzui';
 import cn from '../utils/class-names';
-import { PiCopy } from 'react-icons/pi';
+import { PiCopy, PiWarning } from 'react-icons/pi';
 import { useCopyToClipboard } from 'react-use';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
@@ -55,6 +55,7 @@ export default function AvatarCard({
             onClick={() => handleCopy(name)}
             className="cursor-pointer active:scale-[0.99]"
           />
+          <PiWarning className="h-4 w-5 text-yellow-700" />
         </div>
         {description && (
           <div className="flex items-center gap-2">

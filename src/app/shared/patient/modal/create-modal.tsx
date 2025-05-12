@@ -97,7 +97,6 @@ export default function CreatePatienModal() {
       }}
     >
       {({ register, control, setValue, getValues, formState: { errors } }) => {
-        console.log('🚀 ~ CreatePatienModal ~ errors:', errors);
         return (
           <div className="flex flex-col gap-6 px-6 pt-6">
             <Flex justify="between" align="center" gap="4">

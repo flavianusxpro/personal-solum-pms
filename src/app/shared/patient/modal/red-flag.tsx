@@ -1,18 +1,16 @@
-import { useModal } from '@/app/shared/modal-views/use-modal';
-import FormFooter from '@/core/components/form-footer';
-import { Form } from '@/core/ui/form';
-import {
-  AddAppointmentNotesForm,
-  addAppointmentNotesSchema,
-} from '@/validators/add-appointment-notes.schema';
 import { Controller, SubmitHandler } from 'react-hook-form';
+import { useModal } from '../../modal-views/use-modal';
+import { Form } from '@/core/ui/form';
+import { ActionIcon, Flex, Input, Textarea, Title } from 'rizzui';
 import { PiX } from 'react-icons/pi';
-import { ActionIcon, Flex, Textarea, Title } from 'rizzui';
+import FormFooter from '@/core/components/form-footer';
+import { AddRedFlagPatientForm } from '@/validators/add-red-flag-patient.schema';
+import { addAppointmentNotesSchema } from '@/validators/add-appointment-notes.schema';
 
-export default function AddNotesForm() {
+export default function RedFlagForm() {
   const { closeModal } = useModal();
 
-  const onSubmit: SubmitHandler<AddAppointmentNotesForm> = (data) => {
+  const onSubmit: SubmitHandler<AddRedFlagPatientForm> = (data) => {
     console.log('🚀 ~ onSubmit ~ data:', data);
     // mutate(
     // {
@@ -32,7 +30,7 @@ export default function AddNotesForm() {
   };
 
   return (
-    <Form<AddAppointmentNotesForm>
+    <Form<AddRedFlagPatientForm>
       validationSchema={addAppointmentNotesSchema}
       // resetValues={reset}
       onSubmit={onSubmit}
@@ -45,18 +43,38 @@ export default function AddNotesForm() {
         return (
           <div className="flex flex-col gap-6 px-6 pt-6">
             <Flex justify="between" align="center" gap="4">
-              <Title className="text-lg">Add Notes</Title>
+              <Title className="text-lg">Add Red Flag</Title>
               <ActionIcon variant="text" onClick={closeModal} className="">
                 <PiX className="h-6 w-6" />
               </ActionIcon>
             </Flex>
+
+            <Input
+              {...register('notes')}
+              label="Category"
+              placeholder="Category"
+            />
+
             <Controller
               name="notes"
               control={control}
               render={({ field }) => (
-                <Textarea {...field} placeholder="Add your notes here..." />
+                <Textarea
+                  {...field}
+                  label="Description"
+                  placeholder="description"
+                />
               )}
             />
+
+            <Input {...register('notes')} label="Author" placeholder="Author" />
+            <Input
+              {...register('notes')}
+              label="Date"
+              type="date"
+              placeholder="Date"
+            />
+
             <FormFooter
               className="rounded-b-xl"
               //   isLoading={isPending}

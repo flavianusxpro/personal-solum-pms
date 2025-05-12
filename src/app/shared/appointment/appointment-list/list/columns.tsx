@@ -28,10 +28,12 @@ import CreateUpdateAppointmentForm from '../../modal/appointment-form';
 import { HiOutlineAdjustmentsVertical } from 'react-icons/hi2';
 import { FaRegNoteSticky } from 'react-icons/fa6';
 import { GrSchedules } from 'react-icons/gr';
+import { RxCountdownTimer } from 'react-icons/rx';
 import { MdOutlineFreeCancellation } from 'react-icons/md';
 import AddNotesForm from '../../modal/add-notes';
 import CancelForm from '../../modal/cancel-form';
 import RescheduleAppointmentForm from '../../modal/reschedule';
+import RevertForm from '../../modal/revert-form';
 
 const statusOptions = [
   { label: 'Draft', value: 1 },
@@ -245,6 +247,14 @@ function RenderAction({
       });
   }
 
+  function revertModal(row: RowValue) {
+    closeModal(),
+      openModal({
+        view: <RevertForm data={row} />,
+        customSize: '600px',
+      });
+  }
+
   return (
     <div className="flex items-center justify-end gap-3 pe-3">
       <Dropdown placement="bottom-end">
@@ -274,6 +284,10 @@ function RenderAction({
           <Dropdown.Item onClick={() => cancelModal(row)}>
             <MdOutlineFreeCancellation className="mr-2 h-4 w-4" />
             Cancel
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => revertModal(row)}>
+            <RxCountdownTimer className="mr-2 h-4 w-4" />
+            Revert Back
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>

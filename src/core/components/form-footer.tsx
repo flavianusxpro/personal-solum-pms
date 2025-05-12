@@ -47,7 +47,7 @@ export default function FormFooter({
         type={handleCreateBtn ? 'button' : 'submit'}
         onClick={handleCreateBtn ? handleCreateBtn : undefined}
         isLoading={isLoading}
-        className="w-full @xl:w-auto"
+        className="@xl:w-auto"
       >
         {submitBtnText}
       </Button>

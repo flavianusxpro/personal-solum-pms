@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { Flex, Input, Loader } from 'rizzui';
+import { Flex, Input, Loader, Textarea } from 'rizzui';
 import AvatarUpload from '@core/ui/file-upload/avatar-upload';
 import CSelect from '@/core/ui/select';
 import { genderOption, stateOption } from '@/config/constants';
@@ -145,7 +145,10 @@ export default function PatientDetails({
           suburb: dataPatient?.suburb ?? '',
           state: dataPatient?.state ?? '',
           post_code: dataPatient?.postcode ?? '',
-          // avatar: dataPatient?.avatar ?? '',
+          avatar: {
+            name: `${dataPatient?.first_name}`,
+            url: dataPatient?.photo || undefined,
+          },
         },
       }}
     >
@@ -402,6 +405,15 @@ export default function PatientDetails({
                     placeholder="Description"
                     {...register('description')}
                     error={errors.description?.message}
+                    disabled={isView}
+                    className="flex-grow"
+                  />
+                </FormGroup>
+                <FormGroup title="Notes" isLabel>
+                  <Textarea
+                    placeholder="Notes"
+                    {...register('notes')}
+                    error={errors.notes?.message}
                     disabled={isView}
                     className="flex-grow"
                   />

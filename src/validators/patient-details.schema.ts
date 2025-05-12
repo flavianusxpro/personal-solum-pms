@@ -22,6 +22,8 @@ export const patientDetailsFormSchema = z.object({
     message: messages.postCodeMaxLength,
   }),
   description: z.string().optional(),
+  notes: z.string().optional(),
+
   medicare_card: z.string().optional(),
   medicare_expiry: z.date().optional(),
   position_of_card: z.string().optional(),
