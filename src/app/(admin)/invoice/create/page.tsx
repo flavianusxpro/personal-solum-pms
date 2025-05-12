@@ -1,6 +1,6 @@
 import { routes } from '@/config/routes';
 import PageHeader from '@/app/shared/ui/page-header';
-import CreateEditInvoice from '@/app/shared/invoice/create-edit-invoice';
+import CreateEditInvoice from '@/app/shared/invoice/create-edit-form';
 import { metaObject } from '@/config/site.config';
 
 export const metadata = {

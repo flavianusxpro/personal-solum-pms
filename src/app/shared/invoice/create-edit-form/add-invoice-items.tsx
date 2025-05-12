@@ -11,7 +11,7 @@ import {
 } from 'react-hook-form';
 import { useEffect, useMemo } from 'react';
 import { PiPlusBold } from 'react-icons/pi';
-import { FormBlockWrapper } from '@/app/shared/invoice/form-utils';
+import { FormBlockWrapper } from '@/app/shared/invoice/create-edit-form/form-utils';
 import { InvoiceFormInput } from '@/validators/create-invoice.schema';
 import InvoiceItem from './item';
 import { useGetItems } from '@/hooks/useItems';
@@ -65,12 +65,8 @@ export function AddInvoiceItems({
   }, [dataItems, fields, items, setValue, watch]);
 
   return (
-    <FormBlockWrapper
-      title={'Item Details'}
-      description={'Add one or multiple item'}
-      className="pt-7 @2xl:pt-9 @3xl:pt-11"
-    >
-      <div className="col-span-2 @container">
+    <div className="col-span-2 mt-4 rounded-lg border border-muted @container">
+      <div className="mb-8 grid grid-cols-1 items-start gap-4 p-4 !pb-0 @md:p-5 @xl:p-6">
         {fields.map((field, index) => {
           return (
             <InvoiceItem
@@ -88,26 +84,26 @@ export function AddInvoiceItems({
             />
           );
         })}
-
-        <div className="flex w-full flex-col items-start justify-between @4xl:flex-row @4xl:pt-6">
-          <Button
-            onClick={() =>
-              append({
-                item: null,
-                description: '',
-                amount: 0,
-                qty: 1,
-                total_amount: 0,
-              } as any)
-            }
-            variant="flat"
-            className="-mt-2 mb-1 w-full @4xl:mb-0 @4xl:mt-0 @4xl:w-auto"
-          >
-            <PiPlusBold className="me-1.5 h-4 w-4" /> Add Item
-          </Button>
-          <FieldError error={errors.items?.message} />
-        </div>
       </div>
-    </FormBlockWrapper>
+
+      <div className="flex w-full flex-col items-start justify-between px-4 pb-6 @4xl:flex-row @4xl:px-6">
+        <Button
+          onClick={() =>
+            append({
+              item: null,
+              description: '',
+              amount: 0,
+              qty: 1,
+              total_amount: 0,
+            } as any)
+          }
+          variant="flat"
+          className="-mt-2 mb-1 w-full @4xl:mb-0 @4xl:mt-0 @4xl:w-auto"
+        >
+          <PiPlusBold className="me-1.5 h-4 w-4" /> Add Item
+        </Button>
+        <FieldError error={errors.items?.message} />
+      </div>
+    </div>
   );
 }

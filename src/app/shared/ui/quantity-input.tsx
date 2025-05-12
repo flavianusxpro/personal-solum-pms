@@ -7,10 +7,12 @@ export default function QuantityInput({
   name,
   error,
   onChange,
+  className,
 }: {
   name?: string;
   error?: string;
   onChange?: (value: number) => void;
+  className?: string;
 }) {
   const [value, setValue] = useState(1);
 
@@ -39,6 +41,7 @@ export default function QuantityInput({
 
   return (
     <Input
+      className={className}
       label="Quantity"
       type="number"
       min={1}

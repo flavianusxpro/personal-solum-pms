@@ -10,6 +10,9 @@ export const invoiceFormSchema = z.object({
     .date({ required_error: messages.invoiceDateRequired })
     .nullable(),
   due_date: z.date({ required_error: messages.dueDateIsRequired }).nullable(),
+  invoice_number: z.string().optional(),
+  reference: z.string().optional(),
+  branding_theme: z.string().optional(),
   note: z.string().optional().nullable(),
   fee: z.number().optional(),
   total_amount: z.number().min(0, { message: messages.nonNegative }),

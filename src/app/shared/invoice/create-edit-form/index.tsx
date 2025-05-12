@@ -3,21 +3,22 @@
 import { useMemo, useState } from 'react';
 import { SubmitHandler, Controller } from 'react-hook-form';
 import { Form } from '@core/ui/form';
-import { Text, Input, Textarea, Loader } from 'rizzui';
+import { Text, Input, Textarea, Loader, Flex } from 'rizzui';
 import { DatePicker } from '@core/ui/datepicker';
-import { FormBlockWrapper } from '@/app/shared/invoice/form-utils';
-import { AddInvoiceItems } from '@/app/shared/invoice/add-invoice-items';
+import { FormBlockWrapper } from '@/app/shared/invoice/create-edit-form/form-utils';
+import { AddInvoiceItems } from '@/app/shared/invoice/create-edit-form/add-invoice-items';
 import FormFooter from '@core/components/form-footer';
 import { toast } from 'react-hot-toast';
 import {
   InvoiceFormInput,
   invoiceFormSchema,
 } from '@/validators/create-invoice.schema';
-import CSelect from '../ui/select';
+import CSelect from '@/app/shared/ui/select';
 import { useGetAllPatients } from '@/hooks/usePatient';
 import dayjs from 'dayjs';
 import {
   useGetInvoiceById,
+  useGetInvoices,
   usePostCreateInvoice,
   usePutUpdateInvoice,
 } from '@/hooks/useInvoice';
@@ -38,6 +39,11 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
 
   const { data: dataInvoice, isLoading: isLoadingGetInvoice } =
     useGetInvoiceById(id);
+
+  const { data: dataInvoices } = useGetInvoices({
+    page: 1,
+    perPage: 10,
+  });
 
   const { data: dataTaxes } = useGetTaxes({
     page: 1,
@@ -192,14 +198,14 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
           ((totalItemAmount * Number(taxFee)) / 100 || 0) +
           (Number(otherFee) || 0);
 
+        const selectedTax = taxFeeOptions.find((item) => item.value === taxFee);
+        console.log('🚀 ~ CreateEditInvoice ~ selectedTax:', selectedTax);
+
         return (
           <>
             <div className="flex-grow pb-10">
               <div className="grid grid-cols-1 gap-8 divide-y divide-dashed divide-gray-200 @2xl:gap-10 @3xl:gap-12">
-                <FormBlockWrapper
-                  title={'Patient'}
-                  description={'Patient information'}
-                >
+                <Flex>
                   <Controller
                     name="patientId"
                     control={control}
@@ -211,18 +217,11 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
                         placeholder="Select Patient"
                         options={patientOptions}
                         name="patientId"
-                        className={'col-span-full'}
                         error={errors.patientId?.message}
                       />
                     )}
                   />
-                </FormBlockWrapper>
 
-                <FormBlockWrapper
-                  title={'Date'}
-                  description={'Date of invoice creation'}
-                  className="pt-7 @2xl:pt-9 @3xl:pt-11"
-                >
                   <Controller
                     name="invoice_date"
                     control={control}
@@ -239,6 +238,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
                         popperPlacement="top-start"
                         dateFormat="YYYY-MM-DD"
                         error={errors.invoice_date?.message}
+                        className="w-full"
                       />
                     )}
                   />
@@ -258,18 +258,51 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
                         popperPlacement="top-start"
                         dateFormat="YYYY-MM-DD"
                         error={errors.due_date?.message}
+                        className="w-full"
                       />
                     )}
                   />
-                </FormBlockWrapper>
+                  <Input
+                    label="Invoice Number"
+                    placeholder="Invoice Number"
+                    prefix={'#'}
+                    {...register('invoice_number')}
+                    error={errors.invoice_number?.message}
+                    className="w-full"
+                  />
 
-                <AddInvoiceItems
-                  watch={watch}
-                  control={control}
-                  register={register}
-                  errors={errors}
-                  setValue={setValue}
-                />
+                  <Input
+                    label="Reference"
+                    placeholder="Reference"
+                    {...register('reference')}
+                    error={errors.reference?.message}
+                    className="w-full"
+                  />
+
+                  <CSelect
+                    label="Branding Theme"
+                    placeholder="Select Branding Theme"
+                    {...register('branding_theme')}
+                    error={errors.branding_theme?.message}
+                    className="w-full"
+                    dropdownClassName="!z-10 h-auto"
+                    options={[{ label: 'Default', value: 'default' }]}
+                  />
+                </Flex>
+
+                <FormBlockWrapper
+                  title={'Item Details'}
+                  description={'Add one or multiple item'}
+                  className="grid pt-7 @2xl:pt-9 @3xl:pt-11 sm:grid-cols-1"
+                >
+                  <AddInvoiceItems
+                    watch={watch}
+                    control={control}
+                    register={register}
+                    errors={errors}
+                    setValue={setValue}
+                  />
+                </FormBlockWrapper>
 
                 <FormBlockWrapper
                   title={'Fee'}
@@ -306,17 +339,32 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
                     className="col-span-full"
                   />
                 </FormBlockWrapper>
-                <FormBlockWrapper
-                  title={'Total Amount'}
-                  description={'Total amount of the invoice'}
-                  className="pt-7 @2xl:pt-9 @3xl:pt-11"
-                >
-                  <div className="col-span-full">
-                    <Text className="flex items-center justify-between text-base font-semibold text-gray-900">
+
+                <Flex justify="end" className="pt-6">
+                  <div className="w-1/3">
+                    <Text className="mb-2 flex items-center justify-between text-base font-semibold text-gray-900">
+                      Subtotal: <Text as="span">$ {totalItemAmount}</Text>
+                    </Text>
+                    <Text className="flex w-2/3 items-center justify-between text-sm text-gray-900">
+                      Include discount:{' '}
+                      <Text as="span" className="text-gray-500">
+                        $ 0
+                      </Text>
+                    </Text>
+                    {selectedTax?.label && (
+                      <Text className="flex w-2/3 items-center justify-between text-sm text-gray-900">
+                        Include {selectedTax.label}:{' '}
+                        <Text as="span" className="text-gray-500">
+                          $ {selectedTax.value}
+                        </Text>
+                      </Text>
+                    )}
+
+                    <Text className="mt-2 flex items-center justify-between text-base font-semibold text-gray-900">
                       Total: <Text as="span">$ {totalAmount}</Text>
                     </Text>
                   </div>
-                </FormBlockWrapper>
+                </Flex>
               </div>
             </div>
 

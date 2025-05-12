@@ -10,7 +10,7 @@ import { useMedia } from '@core/hooks/use-media';
 import {
   renderOptionDisplayValue,
   statusOptions,
-} from '@/app/shared/invoice/form-utils';
+} from '@/app/shared/invoice/create-edit-form/form-utils';
 import CSelect from '../../ui/select';
 
 type FilterElementProps = {
