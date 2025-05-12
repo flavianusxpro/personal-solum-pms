@@ -96,7 +96,9 @@ export const getColumns = ({
     key: 'gender',
     width: 150,
     render: (value: string) => (
-      <Text className="font-medium text-gray-700">{value}</Text>
+      <Text className="font-medium text-gray-700">
+        {value.charAt(0).toUpperCase() + value.slice(1)?.toLowerCase()}
+      </Text>
     ),
   },
   {

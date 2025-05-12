@@ -33,8 +33,8 @@ import { PiCheckBold } from 'react-icons/pi';
 type IRowType = IGetInvoiceListResponse['data'][number];
 
 const statusOptions = [
-  { label: 'Payment Link Via SMS', value: 1 },
-  { label: 'Payment By Credit Card', value: 2 },
+  { label: 'Send via SMS', value: 1 },
+  { label: 'Send via Credit Card', value: 2 },
 ];
 
 function getPaymentStatusBadge(status: number) {
