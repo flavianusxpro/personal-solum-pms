@@ -26,7 +26,9 @@ import { HiOutlineAdjustmentsVertical } from 'react-icons/hi2';
 import { useModal } from '../../modal-views/use-modal';
 import { FaRegNoteSticky } from 'react-icons/fa6';
 import { GrSchedules } from 'react-icons/gr';
-import RefundForm from '../modal/cancel-form';
+import RefundForm from '../modal/refund-form';
+import ActionTooltipButton from '../../ui/action-tooltip-button';
+import { PiCheckBold } from 'react-icons/pi';
 
 type IRowType = IGetInvoiceListResponse['data'][number];
 
@@ -193,6 +195,9 @@ function RenderAction({
 
   return (
     <div className="flex items-center justify-end gap-3 pe-3">
+      <ActionTooltipButton tooltipContent="Approve Invoice" variant="outline">
+        <PiCheckBold className="h-4 w-4 text-green-500" />
+      </ActionTooltipButton>
       <Dropdown placement="bottom-end">
         <Dropdown.Trigger>
           <Tooltip size="sm" content={'Actions'} placement="top" color="invert">

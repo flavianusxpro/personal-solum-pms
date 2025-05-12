@@ -15,6 +15,7 @@ export const productFormSchema = z.object({
   price: z.string().min(1, {
     message: messages.priceIsRequired,
   }),
+  taxFee: z.string().optional(),
 });
 
 // generate form types from zod validation schema
