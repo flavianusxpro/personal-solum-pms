@@ -102,7 +102,6 @@ export default function DoctorTable({}: {}) {
     isLoading,
     isFiltered,
     tableData,
-    currentPage,
     filters,
     searchTerm,
     handleSearch,
@@ -111,7 +110,6 @@ export default function DoctorTable({}: {}) {
     selectedRowKeys,
     handleRowSelect,
     handleSelectAll,
-    handleDelete,
   } = useTable(data?.data ?? [], params.perPage, filterStateValue);
 
   const columns = React.useMemo(

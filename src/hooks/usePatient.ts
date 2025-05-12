@@ -19,8 +19,10 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 export function useGetAllPatients(params: IParamGetAllPatient) {
   return useQuery({
-    queryKey: ['patients', params],
+    queryKey: ['patients' + params],
     queryFn: async () => getPatientList(params),
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 10, // 10 minutes
   });
 }
 

@@ -155,7 +155,7 @@ export const getColumns = ({
     key: 'status',
     width: 110,
     render: (value: number, row: Row) => (
-      <StatusSelect selectItem={value} id={row.patient_id} />
+      <StatusSelect selectItem={value} id={row?.patient_id} />
     ),
   },
   {
@@ -202,7 +202,7 @@ function RenderAction({
         onClick={() => {}}
         variant="outline"
       >
-        <Link href={routes.patient.edit(row.patient_id.toString())}>
+        <Link href={routes.patient.edit(row?.patient_id?.toString())}>
           <PencilIcon className="h-4 w-4" />
         </Link>
       </ActionTooltipButton>
@@ -211,14 +211,14 @@ function RenderAction({
         onClick={() => {}}
         variant="outline"
       >
-        <Link href={routes.patient.patientDetail(row.patient_id.toString())}>
+        <Link href={routes.patient.patientDetail(row?.patient_id?.toString())}>
           <EyeIcon className="h-4 w-4" />
         </Link>
       </ActionTooltipButton>
       <DeletePopover
         title={`Delete the Patient`}
         description={`Are you sure you want to delete this #${row.id} Patient?`}
-        onDelete={() => onDeleteItem(row.patient_id.toString())}
+        onDelete={() => onDeleteItem(row?.patient_id?.toString())}
       />
     </div>
   );

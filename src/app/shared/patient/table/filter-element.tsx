@@ -54,7 +54,6 @@ export default function FilterElement({
     <>
       <DateFiled
         selectsRange
-        dateFormat="dd MMM yyyy"
         className="w-full"
         isClearable
         onClear={() => {

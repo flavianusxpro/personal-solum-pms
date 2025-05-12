@@ -47,7 +47,7 @@ const filterState = {
   condition: null,
 };
 
-export default function PatientTable({ className }: { className?: string }) {
+export default function PatientTable() {
   const [filterStateValue, setFilterStateValue] = useState(filterState);
   const [params, setParams] = useState({
     page: 1,
@@ -62,15 +62,15 @@ export default function PatientTable({ className }: { className?: string }) {
   } = useGetAllPatients({
     page: params.page,
     perPage: params.perPage,
-    // from: filterStateValue?.createdAt?.[0]
-    //   ? dayjs(filterStateValue?.createdAt?.[0]).format('YYYY-MM-DD')
-    //   : undefined,
-    // to: filterStateValue?.createdAt?.[1]
-    //   ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
-    //   : undefined,
+    from: filterStateValue?.createdAt?.[0]
+      ? dayjs(filterStateValue?.createdAt?.[0]).format('YYYY-MM-DD')
+      : undefined,
+    to: filterStateValue?.createdAt?.[1]
+      ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
+      : undefined,
     q: JSON.stringify({
       name: params.search,
-      // status: filterStateValue?.status || undefined,
+      status: filterStateValue?.status || undefined,
     }),
   });
 
@@ -122,19 +122,12 @@ export default function PatientTable({ className }: { className?: string }) {
     }));
   }, 1000);
 
-  useEffect(() => {
-    refetch();
-  }, [refetch, filterStateValue]);
-
   const {
     isLoading,
     isFiltered,
     tableData,
-    currentPage,
-    totalItems,
     handlePaginate,
     filters,
-    // updateFilter,
     searchTerm,
     handleSearch,
     sortConfig,
@@ -143,8 +136,6 @@ export default function PatientTable({ className }: { className?: string }) {
     setSelectedRowKeys,
     handleRowSelect,
     handleSelectAll,
-    handleDelete,
-    // handleReset,
   } = useTable(data?.data ?? [], params.perPage, filterStateValue);
 
   const columns = React.useMemo(
@@ -175,13 +166,13 @@ export default function PatientTable({ className }: { className?: string }) {
 
   useEffect(() => {
     refetch();
-  }, [params, refetch]);
+  }, [params, refetch, filterStateValue]);
 
   return (
-    <div className={cn(className)}>
+    <div>
       <ControlledTable
         variant="modern"
-        data={tableData ?? []}
+        data={tableData}
         isLoading={isLoading || isLoadingGetAllPatients}
         showLoadingText={true}
         // @ts-ignore
@@ -219,13 +210,14 @@ export default function PatientTable({ className }: { className?: string }) {
             handleSearch(event.target.value);
           },
           hasSearched: isFiltered,
+          hideIndex: 1,
           columns,
           checkedColumns,
           setCheckedColumns,
         }}
         filterElement={
           <FilterElement
-            isFiltered={isFiltered}
+            isFiltered={false}
             filters={filters}
             updateFilter={updateFilter}
             handleReset={handleReset}
