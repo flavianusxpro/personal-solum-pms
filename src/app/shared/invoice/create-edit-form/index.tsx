@@ -40,7 +40,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
   const { data: dataInvoice, isLoading: isLoadingGetInvoice } =
     useGetInvoiceById(id);
 
-  const { data: dataInvoices } = useGetInvoices({
+  const { data: dataInvoices, isLoading: isLoadingInvoices } = useGetInvoices({
     page: 1,
     perPage: 10,
   });
@@ -153,7 +153,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
     );
   };
 
-  if (id && isLoadingGetInvoice) {
+  if ((id && isLoadingGetInvoice) || isLoadingInvoices) {
     return <Loader className="h-10 w-10" />;
   }
 
@@ -180,6 +180,9 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
           otherFee: dataInvoice?.other_fee,
           note: dataInvoice?.note,
           total_amount: Number(dataInvoice?.total_amount),
+          invoice_number:
+            dataInvoice?.id?.toString() ||
+            ((dataInvoices?.count ?? 0) + 1).toString(),
         },
       }}
       className="flex flex-grow flex-col @container [&_label]:font-medium"
@@ -199,7 +202,6 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
           (Number(otherFee) || 0);
 
         const selectedTax = taxFeeOptions.find((item) => item.value === taxFee);
-        console.log('🚀 ~ CreateEditInvoice ~ selectedTax:', selectedTax);
 
         return (
           <>
