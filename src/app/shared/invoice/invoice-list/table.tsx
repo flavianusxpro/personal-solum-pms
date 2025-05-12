@@ -6,7 +6,7 @@ import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
 import { Button } from 'rizzui';
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
-import { getColumns } from './columns';
+import { getColumns, StatusSelect } from './columns';
 import { useDeleteInvoice, useGetInvoices } from '@/hooks/useInvoice';
 import toast from 'react-hot-toast';
 import debounce from 'lodash/debounce';
@@ -18,6 +18,10 @@ const FilterElement = dynamic(
 );
 
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
+  ssr: false,
+});
+
+const TableHeader = dynamic(() => import('@/app/shared/ui/table-header'), {
   ssr: false,
 });
 
@@ -185,6 +189,11 @@ export default function InvoiceTableList() {
             handleReset={handleReset}
           />
         }
+        tableHeader={
+          <TableHeader checkedItems={selectedRowKeys}>
+            <StatusSelect />
+          </TableHeader>
+        }
         tableFooter={
           <TableFooter
             checkedItems={selectedRowKeys}
@@ -193,10 +202,10 @@ export default function InvoiceTableList() {
               handleDelete(ids);
             }}
           >
-            <Button size="sm" className="dark:bg-gray-300 dark:text-gray-800">
+            {/* <Button size="sm" className="dark:bg-gray-300 dark:text-gray-800">
               Re-send {selectedRowKeys.length}{' '}
               {selectedRowKeys.length > 1 ? 'Invoices' : 'Invoice'}{' '}
-            </Button>
+            </Button> */}
           </TableFooter>
         }
         className="rounded-md border border-muted text-sm shadow-sm [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:h-60 [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:justify-center [&_.rc-table-row:last-child_td.rc-table-cell]:border-b-0 [&_thead.rc-table-thead]:border-t-0"

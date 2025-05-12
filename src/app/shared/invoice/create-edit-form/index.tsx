@@ -303,39 +303,17 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
                     register={register}
                     errors={errors}
                     setValue={setValue}
+                    taxFeeOptions={taxFeeOptions}
                   />
                 </FormBlockWrapper>
 
                 <FormBlockWrapper
-                  title={'Fee'}
-                  description={'To he who will receive this invoice'}
+                  title={'Notes'}
+                  description={'Add any additional notes'}
                   className="pt-7 @2xl:pt-9 @3xl:pt-11"
                 >
-                  <Controller
-                    name="taxFee"
-                    control={control}
-                    render={({ field }) => (
-                      <CSelect
-                        {...field}
-                        suffix={'%'}
-                        label="Tax Fee"
-                        placeholder="Select Tax Fee"
-                        options={taxFeeOptions}
-                      />
-                    )}
-                  />
-                  <Input
-                    type="number"
-                    label="Other Fee"
-                    prefix={'$'}
-                    placeholder="15"
-                    {...register('otherFee')}
-                    error={errors.otherFee?.message}
-                  />
-
                   <Textarea
-                    label="Note"
-                    placeholder="Note"
+                    placeholder="Notes"
                     {...register('note')}
                     error={errors.note?.message}
                     className="col-span-full"
@@ -353,14 +331,14 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
                         $ 0
                       </Text>
                     </Text>
-                    {selectedTax?.label && (
+                    {/* {selectedTax?.label && (
                       <Text className="flex w-2/3 items-center justify-between text-sm text-gray-900">
                         Include {selectedTax.label}:{' '}
                         <Text as="span" className="text-gray-500">
                           $ {selectedTax.value}
                         </Text>
                       </Text>
-                    )}
+                    )} */}
 
                     <Text className="mt-2 flex items-center justify-between text-base font-semibold text-gray-900">
                       Total: <Text as="span">$ {totalAmount}</Text>

@@ -10,7 +10,14 @@ import {
 import { PiTrashBold } from 'react-icons/pi';
 import CSelect from '../../ui/select';
 import QuantityInput from '../../ui/quantity-input';
-import { ActionIcon, Button, Input, Text, Textarea } from 'rizzui';
+import {
+  ActionIcon,
+  Button,
+  Input,
+  SelectOption,
+  Text,
+  Textarea,
+} from 'rizzui';
 import { InvoiceFormInput } from '@/validators/create-invoice.schema';
 import { IGetAllItemsResponse } from '@/types/ApiResponse';
 
@@ -25,6 +32,7 @@ interface InvoiceItemProps {
   register: UseFormRegister<InvoiceFormInput>;
   setValue: UseFormSetValue<InvoiceFormInput>;
   remove: (index: number) => void;
+  taxFeeOptions: SelectOption[];
 }
 
 const InvoiceItem: React.FC<InvoiceItemProps> = ({
@@ -38,6 +46,7 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
   dataItems,
   watch,
   setValue,
+  taxFeeOptions,
 }) => {
   const selectedItem = watch(`items.${index}.item`)?.split(' - ')[0];
   const findedItem = dataItems?.find((item) => item.code === selectedItem);
@@ -59,7 +68,22 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
     if (selectedItem) {
       setValue(`items.${index}.total_amount`, totalAmount());
     }
-  }, [selectedItem, quantityValue, itemPrice, setValue, index, totalAmount]);
+
+    if (findedItem?.description) {
+      setValue(`items.${index}.description`, findedItem.description);
+    }
+
+    // set tax rate
+    // setValue(`items.${index}.tax_rate`, 0);
+  }, [
+    selectedItem,
+    quantityValue,
+    itemPrice,
+    setValue,
+    index,
+    totalAmount,
+    findedItem?.description,
+  ]);
 
   return (
     <div className="flex w-full items-start gap-3 @lg:gap-4 @2xl:gap-5">
@@ -93,7 +117,7 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
           <QuantityInput
             {...field}
             error={errors?.items?.[index]?.qty?.message}
-            className="w-1/2"
+            className="w-1/3"
           />
         )}
       />
@@ -106,6 +130,20 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
         placeholder="select item"
         className="w-1/2"
         disabled
+      />
+
+      <Controller
+        name="taxFee"
+        control={control}
+        render={({ field }) => (
+          <CSelect
+            {...field}
+            label="Tax Fee"
+            placeholder="Select Tax Fee"
+            options={taxFeeOptions}
+            className="w-1/3"
+          />
+        )}
       />
 
       <Input

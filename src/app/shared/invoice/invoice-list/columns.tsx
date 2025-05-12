@@ -162,15 +162,6 @@ export const getColumns = ({
     render: (created_at: Date) => <DateCell clock date={created_at} />,
   },
   {
-    title: <HeaderCell title="PAYMENT" />,
-    dataIndex: 'status',
-    key: 'status',
-    width: 650,
-    render: (_: number, row: IRowType) => (
-      <StatusSelect id={row.id} selectItem={row.status} />
-    ),
-  },
-  {
     title: <></>,
     dataIndex: 'action',
     key: 'action',
@@ -302,11 +293,8 @@ function getPaymentMethodBadge(status: number | string) {
   }
 }
 
-function StatusSelect({ selectItem, id }: { selectItem: number; id: number }) {
-  const selectItemValue = statusOptions.find(
-    (option) => option.value === selectItem
-  )?.value;
-  const [value, setValue] = useState(selectItemValue);
+export function StatusSelect() {
+  const [value, setValue] = useState<number | null>(null);
 
   const { mutate, isPending } = usePutUpdateInvoice();
 
@@ -329,7 +317,7 @@ function StatusSelect({ selectItem, id }: { selectItem: number; id: number }) {
 
   return (
     <CSelect
-      className={'min-w-[140px]'}
+      className={'w-[200px]'}
       dropdownClassName="h-auto"
       placeholder="Select Payment Method"
       options={statusOptions}

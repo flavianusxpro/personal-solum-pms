@@ -24,6 +24,7 @@ type ControlledTableProps = {
   filterOptions?: TableFilterProps;
   paginatorOptions?: TablePaginationProps;
   tableFooter?: React.ReactNode;
+  tableHeader?: React.ReactNode;
   className?: string;
   paginatorClassName?: string;
 } & TableProps;
@@ -37,21 +38,9 @@ export default function ControlledTable({
   showLoadingText,
   paginatorClassName,
   className,
+  tableHeader,
   ...tableProps
 }: ControlledTableProps) {
-  // if (isLoading) {
-  //   return (
-  //     <div className="grid h-full min-h-[128px] flex-grow place-content-center items-center justify-center">
-  //       <Loader variant="spinner" size="xl" />
-  //       {showLoadingText ? (
-  //         <Title as="h6" className="-me-2 mt-4 font-medium text-gray-500">
-  //           Loading...
-  //         </Title>
-  //       ) : null}
-  //     </div>
-  //   );
-  // }
-
   return (
     <>
       {!isEmpty(filterOptions) && (
@@ -59,6 +48,8 @@ export default function ControlledTable({
       )}
 
       <div className="relative">
+        {tableHeader ? tableHeader : null}
+
         {isLoading ? (
           <div className="grid h-full min-h-[128px] flex-grow place-content-center items-center justify-center">
             <Loader variant="spinner" size="xl" />

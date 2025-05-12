@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, FieldError } from 'rizzui';
+import { Button, FieldError, SelectOption } from 'rizzui';
 import {
   useFieldArray,
   UseFormWatch,
@@ -23,6 +23,7 @@ interface IPropsAddInvoiceItems {
   control: Control<InvoiceFormInput>;
   errors: FieldErrors<InvoiceFormInput>;
   setValue: UseFormSetValue<InvoiceFormInput>;
+  taxFeeOptions: SelectOption[];
 }
 export function AddInvoiceItems({
   watch,
@@ -30,6 +31,7 @@ export function AddInvoiceItems({
   control,
   errors,
   setValue,
+  taxFeeOptions,
 }: IPropsAddInvoiceItems) {
   const { data: dataItems } = useGetItems({
     page: 1,
@@ -64,6 +66,18 @@ export function AddInvoiceItems({
     }
   }, [dataItems, fields, items, setValue, watch]);
 
+  useEffect(() => {
+    if (items?.length === 0) {
+      append({
+        item: null,
+        description: '',
+        amount: 0,
+        qty: 1,
+        total_amount: 0,
+      } as any);
+    }
+  }, [append, items?.length]);
+
   return (
     <div className="col-span-2 mt-4 rounded-lg border border-muted @container">
       <div className="mb-8 grid grid-cols-1 items-start gap-4 p-4 !pb-0 @md:p-5 @xl:p-6">
@@ -81,6 +95,7 @@ export function AddInvoiceItems({
               field={field}
               index={index}
               setValue={setValue}
+              taxFeeOptions={taxFeeOptions}
             />
           );
         })}
