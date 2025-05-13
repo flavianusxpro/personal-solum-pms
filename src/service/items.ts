@@ -14,6 +14,10 @@ export async function putUpdateItem(payload: IPayloadCreateItem) {
   return await put('/admin/invoice/item/' + payload.id, payload);
 }
 
-export async function deleteItem(id: string) {
-  return await del('/admin/invoice/item/' + id);
+export async function deleteItem(id: number[]) {
+  return await del('/admin/invoice/item/', {
+    data: {
+      ids: id,
+    },
+  });
 }

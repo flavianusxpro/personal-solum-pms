@@ -13,6 +13,7 @@ import { useDeleteItem, useGetItems } from '@/hooks/useItems';
 import { useModal } from '../../modal-views/use-modal';
 import toast from 'react-hot-toast';
 import debounce from 'lodash/debounce';
+import TableFooter from '../../ui/table-footer';
 
 // dynamic import
 const FilterElement = dynamic(
@@ -81,8 +82,8 @@ export default function ProductTable({
     },
   });
 
-  const onDeleteItem = useCallback((id: string) => {
-    mutateDelete(id, {
+  const onDeleteItem = useCallback((ids: number[]) => {
+    mutateDelete(ids, {
       onSuccess: () => {
         toast.success('Item deleted successfully');
         refetch();
@@ -200,6 +201,16 @@ export default function ProductTable({
             filters={filters}
             updateFilter={updateFilter}
             handleReset={handleReset}
+          />
+        }
+        tableFooter={
+          <TableFooter
+            checkedItems={selectedRowKeys}
+            handleDelete={(ids: string[]) => {
+              setSelectedRowKeys([]);
+              handleDelete(ids);
+              onDeleteItem(ids.map((id) => parseInt(id)));
+            }}
           />
         }
         className={
