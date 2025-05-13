@@ -61,7 +61,6 @@ const columns = [
       </>
     ),
   },
-
   {
     title: 'Quantity',
     dataIndex: 'qty',
