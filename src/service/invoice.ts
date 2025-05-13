@@ -25,6 +25,10 @@ export async function putCreateInvoice(payload: IPayloadCreateInvoice) {
   return await put('/admin/invoice/' + payload.id, payload);
 }
 
-export async function deleteInvoice(id: string) {
-  return await del(`/admin/invoice/${id}`);
+export async function deleteInvoice(ids: number[]) {
+  return await del(`/admin/invoice`, {
+    data: {
+      ids,
+    },
+  });
 }

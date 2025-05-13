@@ -55,8 +55,8 @@ export default function UsersTable() {
   });
 
   const onDeleteItem = useCallback(
-    (id: number[]) => {
-      mutateDelete(id, {
+    (ids: number[]) => {
+      mutateDelete(ids, {
         onSuccess: () => {
           toast.success('User deleted successfully.');
           refetch();

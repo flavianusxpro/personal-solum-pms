@@ -63,8 +63,8 @@ export default function InvoiceTableList() {
     },
   });
 
-  const onDeleteItem = useCallback((id: string) => {
-    mutateDelete(id, {
+  const onDeleteItem = useCallback((ids: number[]) => {
+    mutateDelete(ids, {
       onSuccess: () => {
         refetch();
         toast.success('Invoice deleted successfully');
@@ -198,7 +198,7 @@ export default function InvoiceTableList() {
             checkedItems={selectedRowKeys}
             handleDelete={(ids: string[]) => {
               setSelectedRowKeys([]);
-              handleDelete(ids);
+              onDeleteItem(ids.map((id) => parseInt(id)));
             }}
           >
             {/* <Button size="sm" className="dark:bg-gray-300 dark:text-gray-800">

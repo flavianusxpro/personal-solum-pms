@@ -84,7 +84,7 @@ type Columns = {
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
-  onDeleteItem: (id: string) => void;
+  onDeleteItem: (ids: number[]) => void;
   onHeaderCellClick: (value: string) => void;
   onChecked?: (id: string) => void;
 };
@@ -179,7 +179,7 @@ function RenderAction({
   onDeleteItem,
 }: {
   row: IRowType;
-  onDeleteItem: (id: string) => void;
+  onDeleteItem: (id: number[]) => void;
 }) {
   const { openModal, closeModal } = useModal();
 
@@ -262,7 +262,7 @@ function RenderAction({
       <DeletePopover
         title={`Delete the invoice`}
         description={`Are you sure you want to delete this #${row.id} invoice?`}
-        onDelete={() => onDeleteItem(row.id.toString())}
+        onDelete={() => onDeleteItem([row.id])}
       />
     </div>
   );
