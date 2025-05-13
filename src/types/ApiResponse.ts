@@ -411,10 +411,9 @@ interface Patient {
 }
 
 export interface IGetInvoiceByIdResponse extends ApiResponse {
-  success: boolean;
   data: {
     id: number;
-    clinicId: null;
+    clinicId: number;
     patientId: number;
     date: string;
     due_date: string;
@@ -426,6 +425,8 @@ export interface IGetInvoiceByIdResponse extends ApiResponse {
     total_amount: string;
     created_at: string;
     updated_at: string;
+    patient: Patient;
+    clinic: Clinic;
     items: Item[];
   };
 }

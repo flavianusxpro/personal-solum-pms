@@ -14,6 +14,7 @@ import { PiDownloadSimpleBold } from 'react-icons/pi';
 import { useReactToPrint } from 'react-to-print';
 import { useRef } from 'react';
 import { usePDF } from 'react-to-pdf';
+import Link from 'next/link';
 
 const pageHeader = {
   title: 'Invoice Details',
@@ -49,15 +50,34 @@ const columns = [
       item: IGetInvoiceByIdResponse['data']['items'][number]
     ) => (
       <>
-        <Title as="h6" className="mb-0.5 text-sm font-medium">
-          {item?.code} - {item?.name}
-        </Title>
-        <Text
-          as="p"
-          className="max-w-[250px] overflow-hidden truncate text-sm text-gray-500"
-        >
-          {item?.description}
-        </Text>
+        {item.name === 'Appointment' ? (
+          <>
+            <Link
+              href={routes.appointment.appointmentList}
+              className="mb-0.5 text-sm font-medium hover:underline"
+            >
+              {item?.code} - {item?.name}
+            </Link>
+            <Text
+              as="p"
+              className="max-w-[250px] overflow-hidden truncate text-sm text-gray-500"
+            >
+              {item?.description}
+            </Text>
+          </>
+        ) : (
+          <>
+            <Title as="h6" className="mb-0.5 text-sm font-medium">
+              {item?.code} - {item?.name}
+            </Title>
+            <Text
+              as="p"
+              className="max-w-[250px] overflow-hidden truncate text-sm text-gray-500"
+            >
+              {item?.description}
+            </Text>
+          </>
+        )}
       </>
     ),
   },
@@ -151,13 +171,16 @@ export default function InvoiceDetails({ id }: { id: string }) {
               From
             </Title>
             <Text className="mb-1.5 text-sm font-semibold uppercase">
-              REDQ, INC
+              {dataInvoice?.clinic.name}
             </Text>
-            <Text className="mb-1.5">Jerome Bell</Text>
-            <Text className="mb-1.5">
-              4140 Parker Rd. Allentown, <br /> New Mexico 31134
+            {/* <Text className="mb-1.5">Jerome Bell</Text> */}
+            <Text className="mb-1.5">{dataInvoice?.clinic.address}</Text>
+            <Text className="mb-4 sm:mb-6 md:mb-8">
+              {dataInvoice?.clinic.mobile_number}
             </Text>
-            <Text className="mb-4 sm:mb-6 md:mb-8">(302) 555-0107</Text>
+            <Text className="mb-4 sm:mb-6 md:mb-8">
+              {dataInvoice?.clinic.email}
+            </Text>
             <div>
               <Text className="mb-2 text-sm font-semibold">Creation Date</Text>
               <Text>
@@ -171,25 +194,23 @@ export default function InvoiceDetails({ id }: { id: string }) {
               Bill To
             </Title>
             <Text className="mb-1.5 text-sm font-semibold uppercase">
-              Patient ID: {dataInvoice?.patientId}
+              Patient
             </Text>
-            {/* <Text className="mb-1.5">Albert Flores</Text>
-          <Text className="mb-1.5">
-        2715 Ash Dr. San Jose, <br />
-        South Dakota 83475
-          </Text>
-          <Text className="mb-4 sm:mb-6 md:mb-8">(671) 555-0110</Text> */}
+            <Text className="mb-1.5">
+              {dataInvoice?.patient.first_name} {dataInvoice?.patient.last_name}
+            </Text>
+            <Text className="mb-1.5">
+              {dataInvoice?.patient.unit_number}{' '}
+              {dataInvoice?.patient.street_name}, <br />
+              {dataInvoice?.patient.suburb} {dataInvoice?.patient.postcode}
+            </Text>
+            <Text className="mb-4 sm:mb-6 md:mb-8">
+              {dataInvoice?.patient.mobile_number}
+            </Text>
             <div>
               <Text className="mb-2 text-sm font-semibold">Due Date</Text>
               <Text>{dayjs(dataInvoice?.due_date).format('MM DD, YYYY')}</Text>
             </div>
-          </div>
-
-          <div className="flex justify-end">
-            <QRCodeSVG
-              value={dataInvoice?.id.toString() as string}
-              className="h-28 w-28 lg:h-32 lg:w-32"
-            />
           </div>
         </div>
 
