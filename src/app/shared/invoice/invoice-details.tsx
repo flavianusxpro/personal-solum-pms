@@ -1,6 +1,5 @@
 'use client';
 
-import { QRCodeSVG } from 'qrcode.react';
 import { Badge, Title, Text, Loader, Button } from 'rizzui';
 import Table from '../ui/table';
 import { useGetInvoiceById } from '@/hooks/useInvoice';

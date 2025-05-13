@@ -9,6 +9,9 @@ import DateCell from '@core/ui/date-cell';
 import { ActionIcon, Badge, Checkbox, Text, Tooltip } from 'rizzui';
 import CreateEditModal from '../modal/create-edit-modal';
 import AvatarCard from '@/core/ui/avatar-card';
+import ActionTooltipButton from '../../ui/action-tooltip-button';
+import { PiQrCode } from 'react-icons/pi';
+import ShowQrModal from '../modal/qr-modal';
 
 type Columns = {
   data: IGetPharmachyListResponse['data'];
@@ -104,6 +107,17 @@ export const getColumns = ({
     width: 130,
     render: (_: string, row: Row) => (
       <div className="flex items-center justify-end gap-3 pe-4">
+        <ActionTooltipButton
+          tooltipContent="Show QR Code"
+          variant="outline"
+          onClick={() =>
+            openModal({
+              view: <ShowQrModal data={row} />,
+            })
+          }
+        >
+          <PiQrCode className="h-4 w-4" />
+        </ActionTooltipButton>
         <Tooltip
           size="sm"
           content={'Edit Pharmachy'}
