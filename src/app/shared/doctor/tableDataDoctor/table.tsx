@@ -12,6 +12,7 @@ import toast from 'react-hot-toast';
 import { useCopyToClipboard } from 'react-use';
 import debounce from 'lodash/debounce';
 import dayjs from 'dayjs';
+import TableFooter from '../../ui/table-footer';
 
 // dynamic import
 const FilterElement = dynamic(
@@ -59,8 +60,8 @@ export default function DoctorTable({}: {}) {
   });
 
   const onDeleteItem = useCallback(
-    (id: string) => {
-      mutateDeleteDoctor(id, {
+    (ids: number[]) => {
+      mutateDeleteDoctor(ids, {
         onSuccess: () => {
           refetch();
           toast.success('Delete doctor successfully');
@@ -110,6 +111,7 @@ export default function DoctorTable({}: {}) {
     selectedRowKeys,
     handleRowSelect,
     handleSelectAll,
+    setSelectedRowKeys,
   } = useTable(data?.data ?? [], params.perPage, filterStateValue);
 
   const columns = React.useMemo(
@@ -186,6 +188,15 @@ export default function DoctorTable({}: {}) {
             filters={filters}
             updateFilter={updateFilter}
             handleReset={handleReset}
+          />
+        }
+        tableFooter={
+          <TableFooter
+            checkedItems={selectedRowKeys}
+            handleDelete={(ids: string[]) => {
+              setSelectedRowKeys([]);
+              onDeleteItem(ids.map((id) => parseInt(id)));
+            }}
           />
         }
         className={

@@ -50,8 +50,12 @@ export async function putUpdateDoctor(payload: IPayloadCreateEditDoctor) {
   return await put<any>('/admin/doctor/' + payload.doctor_id, payload);
 }
 
-export async function deleteDoctor(id: string) {
-  return await del<any>(`/admin/doctor/${id}`);
+export async function deleteDoctor(id: number[]) {
+  return await del<any>(`/admin/doctor/`, {
+    data: {
+      ids: id,
+    },
+  });
 }
 
 export async function putSettingMeetingDoctor(
