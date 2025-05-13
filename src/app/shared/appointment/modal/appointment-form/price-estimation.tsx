@@ -32,7 +32,7 @@ const PriceEstimationCost = ({
   const appointmentType = formData?.appointment_type;
 
   function getFee() {
-    if (appointmentType.includes('follow up')) {
+    if (appointmentType.includes('FOLLOWUP')) {
       return formData?.followup_fee;
     } else if (appointmentType.includes('script renewal')) {
       return formData?.script_renewal_fee;
