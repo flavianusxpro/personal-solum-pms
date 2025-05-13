@@ -6,10 +6,13 @@ import { useTable } from '@core/hooks/use-table';
 import React, { useCallback, useState } from 'react';
 import { getColumns } from './columns';
 import { useModal } from '../../modal-views/use-modal';
+import { useAtom } from 'jotai';
+import { currencyAtom } from '@/store/currency';
 
 export default function CurrencyTable({}: {}) {
   const { openModal } = useModal();
   const [pageSize, setPageSize] = useState(10);
+  const [currencyData] = useAtom(currencyAtom);
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -36,14 +39,14 @@ export default function CurrencyTable({}: {}) {
     handleSelectAll,
     handleDelete,
     // handleReset,
-  } = useTable([], pageSize);
+  } = useTable(currencyData.data ?? [], pageSize);
 
   const onDeleteItem = useCallback((id: string) => {}, []);
 
   const columns = React.useMemo(
     () =>
       getColumns({
-        data: [],
+        data: currencyData.data ?? [],
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,

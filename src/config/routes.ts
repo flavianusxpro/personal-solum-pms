@@ -49,6 +49,7 @@ export const routes = {
     taxSettings: '/setting/tax',
     invoiceSettings: '/setting/invoice-settings',
     branch: '/setting/branch',
+    currency: '/setting/currency',
   },
 
   pharmachy: '/pharmachy',

@@ -4,9 +4,11 @@ import DeletePopover from '@/app/shared/ui/delete-popover';
 import { HeaderCell } from '@/app/shared/ui/table';
 import EyeIcon from '@core/components/icons/eye';
 import PencilIcon from '@core/components/icons/pencil';
-import { ActionIcon, Checkbox, Text, Tooltip } from 'rizzui';
+import { ActionIcon, Badge, Checkbox, Flex, Text, Tooltip } from 'rizzui';
 import CreateEditRoleModal from '../modal/create-edit-modal';
 import { Currency, CurrencyState } from '@/store/currency';
+import { useState } from 'react';
+import CSelect from '../../ui/select';
 
 type Columns = {
   data: CurrencyState['data'];
@@ -76,6 +78,13 @@ export const getColumns = ({
     width: 200,
     render: (name: string) => <Text className="font-medium">{name}</Text>,
   },
+  // {
+  //   title: <HeaderCell title="Status" />,
+  //   dataIndex: 'name',
+  //   key: 'name',
+  //   width: 200,
+  //   render: (name: string, row: Row) => <StatusSelect id={row.id} selectItem={row} />,
+  // },
   {
     // Need to avoid this issue -> <td> elements in a large <table> do not have table headers.
     title: <HeaderCell title="Actions" className="opacity-0" />,
@@ -126,3 +135,74 @@ export const getColumns = ({
     ),
   },
 ];
+
+function getScheduleStatusBadge(status: number | string) {
+  switch (status) {
+    case 2:
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="warning" renderAsDot />
+          <Text className="font-medium text-yellow-600">Pending</Text>
+        </Flex>
+      );
+    case 1:
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="info" renderAsDot />
+          <Text className="font-medium text-red-dark">Active</Text>
+        </Flex>
+      );
+    default:
+      return (
+        <div className="flex items-center">
+          <Badge renderAsDot className="bg-gray-400" />
+          <Text className="font-medium text-blue-600">{status}</Text>
+        </div>
+      );
+  }
+}
+
+const statusOptions = [
+  { label: 'Active', value: 1 },
+  { label: 'Inactive', value: 2 },
+];
+
+function StatusSelect({ selectItem, id }: { selectItem: number; id: number }) {
+  const selectItemValue = statusOptions.find(
+    (option) => option.value === selectItem
+  )?.value;
+  const [value, setValue] = useState(selectItemValue);
+
+  // const { mutate, isPending } = useUpdateAppointment();
+
+  const handleChange = (value: number) => {
+    setValue(value);
+    // mutate(
+    //   { id, status: value },
+    //   {
+    //     onSuccess: () => {
+    //       toast.success('Status updated successfully');
+    //     },
+    //     onError: (error: any) => {
+    //       toast.error(
+    //         error?.response?.data?.message || 'Error updating status'
+    //       );
+    //     },
+    //   }
+    // );
+  };
+
+  return (
+    <CSelect
+      className={'min-w-[140px]'}
+      dropdownClassName="h-auto"
+      placeholder="Select Status"
+      options={statusOptions}
+      value={value}
+      onChange={handleChange}
+      displayValue={(option: { value: number }) =>
+        getScheduleStatusBadge(option.value)
+      }
+    />
+  );
+}
