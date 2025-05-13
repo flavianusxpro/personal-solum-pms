@@ -15,6 +15,7 @@ import debounce from 'lodash/debounce';
 import { useModal } from '../../modal-views/use-modal';
 import toast from 'react-hot-toast';
 import dayjs from 'dayjs';
+import TableFooter from '../../ui/table-footer';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/patient/table/filter-element'),
@@ -83,8 +84,8 @@ export default function PatientTable() {
   });
 
   const onDeleteItem = useCallback(
-    (id: string) => {
-      mutateDeletePatient(id, {
+    (ids: number[]) => {
+      mutateDeletePatient(ids, {
         onSuccess: () => {
           refetch();
           toast.success('Patient deleted successfully');
@@ -221,6 +222,15 @@ export default function PatientTable() {
             filters={filters}
             updateFilter={updateFilter}
             handleReset={handleReset}
+          />
+        }
+        tableFooter={
+          <TableFooter
+            checkedItems={selectedRowKeys}
+            handleDelete={(ids: string[]) => {
+              setSelectedRowKeys([]);
+              onDeleteItem(ids.map((id) => parseInt(id)));
+            }}
           />
         }
         className={

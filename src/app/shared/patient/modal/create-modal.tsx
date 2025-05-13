@@ -17,17 +17,24 @@ import {
 } from '@/validators/patient-details.schema';
 import {
   useCreatePatient,
+  useGetAllPatients,
   useGetPatientProblem,
   useGetPatientTypes,
 } from '@/hooks/usePatient';
 import { useMemo, useState } from 'react';
 import dayjs from 'dayjs';
+import { DatePicker } from '@/core/ui/datepicker';
 
 export default function CreatePatienModal() {
   const { closeModal } = useModal();
 
   const [searchPatientProblem, setSearchPatientProblem] = useState('');
   const [searchPatientType, setSearchPatientType] = useState('');
+
+  const { refetch } = useGetAllPatients({
+    page: 1,
+    perPage: 10,
+  });
 
   const { data: dataPatientProblem } = useGetPatientProblem({
     search: searchPatientProblem,
@@ -57,17 +64,26 @@ export default function CreatePatienModal() {
 
   const onSubmit: SubmitHandler<PatientDetailsFormTypes> = (data) => {
     const payload: IPayloadCreateEditPatient = {
+      title: data.title,
       first_name: data.first_name,
       last_name: data.last_name as string,
       email: data.email,
       password: data.password,
       date_of_birth: data.date_of_birth as string,
-      gender: data.date_of_birth as string,
+      gender: data.gender as string,
       mobile_number: data.mobile_number as string,
       status: 1,
       timezone: data.timezone ?? 'Australia/Sydney',
       medicare_card_number: data.medicare_card as string,
-      medicare_expired_date: dayjs(data.medicare_expiry).format('DD MMMM YYYY'),
+      medicare_expired_date: dayjs(data.medicare_expiry).format('DD MM YYYY'),
+      street_name: data.street_name,
+      unit_number: data.unit_number,
+      suburb: data.suburb,
+      postcode: data.post_code,
+      state: data.state,
+      country: data.country,
+      potition_on_card: data.position_of_card,
+
       // setValue('patient_problem', dataPatient.patient_problem);
       // setValue('patient_type', dataPatient.patient_type);
     };
@@ -75,6 +91,7 @@ export default function CreatePatienModal() {
     mutateCreatePatient(payload, {
       onSuccess: () => {
         toast.success('Patient created successfully');
+        refetch();
         closeModal();
       },
       onError: (error) => {
@@ -96,7 +113,7 @@ export default function CreatePatienModal() {
         mode: 'onChange',
       }}
     >
-      {({ register, control, setValue, getValues, formState: { errors } }) => {
+      {({ register, control, setValue, watch, formState: { errors } }) => {
         return (
           <div className="flex flex-col gap-6 px-6 pt-6">
             <Flex justify="between" align="center" gap="4">
@@ -196,21 +213,29 @@ export default function CreatePatienModal() {
                   />
                 </FormGroup>
                 <Input
+                  type="number"
                   label="Position of Card"
                   placeholder="Position of Card"
                   {...register('position_of_card')}
                   error={errors.position_of_card?.message}
                   className="flex-grow"
                 />
-                <Input
-                  label="Expiry Date"
-                  type="date"
-                  placeholder="Expiry Date"
-                  {...register('medicare_expiry')}
+                <DatePicker
+                  inputProps={{
+                    label: 'Medicare Expiry Date',
+                  }}
+                  selected={watch('medicare_expiry')}
+                  onChange={(date) => {
+                    if (!date) return;
+                    setValue('medicare_expiry', date);
+                  }}
+                  showDateSelect={false}
+                  showMonthYearPicker
+                  minDate={new Date()}
+                  dateFormat="MM/YY"
                   error={errors.medicare_expiry?.message}
-                  className="flex-grow"
                 />
-                <FormGroup title="Patient Type" isLabel>
+                {/* <FormGroup title="Patient Type" isLabel>
                   <Controller
                     name="patient_type"
                     control={control}
@@ -240,7 +265,7 @@ export default function CreatePatienModal() {
                       />
                     )}
                   />
-                </FormGroup>
+                </FormGroup> */}
               </div>
 
               <div className="mb-10 flex flex-col gap-7">
@@ -277,31 +302,34 @@ export default function CreatePatienModal() {
                     className="flex-grow"
                   />
                 </FormGroup>
-                <FormGroup title="" isLabel={false}>
-                  <Flex justify="between" align="center" gap="4">
-                    <Controller
-                      name="state"
-                      control={control}
-                      render={({ field }) => (
-                        <CSelect
-                          {...field}
-                          label="State"
-                          placeholder="State"
-                          className="group relative z-0"
-                          options={stateOption}
-                          error={errors.state?.message as string}
-                        />
-                      )}
-                    />
-                    <Input
-                      label="Post Code"
-                      placeholder="Post Code"
-                      {...register('post_code')}
-                      error={errors.post_code?.message}
-                      className="flex-grow"
-                    />
-                  </Flex>
-                </FormGroup>
+                <Flex
+                  justify="between"
+                  className="mt-0.5"
+                  align="center"
+                  gap="4"
+                >
+                  <Controller
+                    name="state"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        label="State"
+                        placeholder="State"
+                        className="group relative z-0"
+                        options={stateOption}
+                        error={errors.state?.message as string}
+                      />
+                    )}
+                  />
+                  <Input
+                    label="Post Code"
+                    placeholder="Post Code"
+                    {...register('post_code')}
+                    error={errors.post_code?.message}
+                    className="flex-grow"
+                  />
+                </Flex>
                 <FormGroup title="Description" isLabel>
                   <Input
                     placeholder="Description"

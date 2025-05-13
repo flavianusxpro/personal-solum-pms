@@ -35,8 +35,12 @@ export async function putUpdatePatient(payload: IPayloadCreateEditPatient) {
   return await put<any>('/admin/patient/' + payload.patient_id, payload);
 }
 
-export async function deletePatient(id: string) {
-  return await del<any>(`/admin/patient/${id}`);
+export async function deletePatient(ids: number[]) {
+  return await del<any>(`/admin/patient`, {
+    data: {
+      ids,
+    },
+  });
 }
 
 export async function getPatientTypes(params: IParamGetPatientTypes) {

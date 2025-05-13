@@ -42,6 +42,7 @@ export default function PatientDetails({
     refetch: refetchGetDataPatient,
     isLoading: isLoadingGetDataPatient,
   } = useGetPatientById(id);
+
   const { data: dataPatientProblem } = useGetPatientProblem({
     search: searchPatientProblem,
   });
@@ -55,7 +56,7 @@ export default function PatientDetails({
     () =>
       dataPatientProblem?.map((item) => ({
         label: item.name,
-        value: item.id.toString(),
+        value: item.name,
       })),
     [dataPatientProblem]
   );
@@ -64,7 +65,7 @@ export default function PatientDetails({
     () =>
       dataPatientTypes?.map((item) => ({
         label: item.name,
-        value: item.id.toString(),
+        value: item.name,
       })),
     [dataPatientTypes]
   );
@@ -88,8 +89,8 @@ export default function PatientDetails({
       timezone: data.timezone ?? 'Australia/Sydney',
       country: data.country,
       potition_on_card: data.position_of_card,
-      patient_problem: Number(data.patient_problem),
-      patient_type: Number(data.patient_type),
+      patient_problem: data.patient_problem,
+      patient_type: data.patient_type,
       street_name: data.street_name,
       state: data.state,
       suburb: data.suburb,
@@ -104,7 +105,6 @@ export default function PatientDetails({
           refetchGetDataPatient();
         },
         onError: (error) => {
-          console.log('🚀 ~ PatientDetails ~ error:', error);
           const errorMessage =
             (error as any)?.response?.data?.message || 'An error occurred';
           toast.error(errorMessage);
@@ -135,8 +135,8 @@ export default function PatientDetails({
           medicare_expiry: dataPatient?.medicare_expired_date
             ? dayjs(dataPatient.medicare_expired_date).toDate()
             : undefined,
-          patient_problem: dataPatient?.patient_problem?.toString() || null,
-          patient_type: dataPatient?.patient_type?.toString() || null,
+          patient_problem: dataPatient?.patient_problem || undefined,
+          patient_type: dataPatient?.patient_type || undefined,
           position_of_card: dataPatient?.potition_on_card ?? '',
           country: dataPatient?.country ?? '',
           unit_number: dataPatient?.unit_number ?? '',

@@ -31,7 +31,7 @@ type Columns = {
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
-  onDeleteItem: (id: string) => void;
+  onDeleteItem: (id: number[]) => void;
   onHeaderCellClick: (value: string) => void;
   onChecked?: (id: string) => void;
 };
@@ -97,7 +97,7 @@ export const getColumns = ({
     width: 150,
     render: (value: string) => (
       <Text className="font-medium text-gray-700">
-        {value.charAt(0).toUpperCase() + value.slice(1)?.toLowerCase()}
+        {value?.charAt(0).toUpperCase() + value?.slice(1)?.toLowerCase()}
       </Text>
     ),
   },
@@ -175,7 +175,7 @@ function RenderAction({
   onDeleteItem,
 }: {
   row: Row;
-  onDeleteItem: (id: string) => void;
+  onDeleteItem: (id: number[]) => void;
 }) {
   const { openModal, closeModal } = useModal();
 
@@ -218,7 +218,7 @@ function RenderAction({
       <DeletePopover
         title={`Delete the Patient`}
         description={`Are you sure you want to delete this #${row.id} Patient?`}
-        onDelete={() => onDeleteItem(row?.patient_id?.toString())}
+        onDelete={() => onDeleteItem([row?.id])}
       />
     </div>
   );

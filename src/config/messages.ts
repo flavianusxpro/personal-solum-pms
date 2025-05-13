@@ -123,4 +123,5 @@ export const messages = {
   expiryDateIsRequired: 'Expiry date is required',
   useLimitIsRequired: 'Use limit is required',
   userLimitIsRequired: 'User limit is required',
+  dateOfBirthRequired: 'Date of Birth is required',
 };
