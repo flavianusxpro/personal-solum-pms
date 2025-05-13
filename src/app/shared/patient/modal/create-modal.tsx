@@ -122,7 +122,7 @@ export default function CreatePatienModal() {
                 <PiX className="h-6 w-6" />
               </ActionIcon>
             </Flex>
-            <div className="mb-10 grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
+            <div className="mb-16 grid max-h-dvh grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
               <div className="flex flex-col gap-7">
                 <FormGroup
                   title="Personal Info"
@@ -353,7 +353,6 @@ export default function CreatePatienModal() {
               isLoading={isPending}
               altBtnText="Cancel"
               submitBtnText="Save"
-              isSticky={false}
             />
           </div>
         );
