@@ -26,8 +26,8 @@ function DetailsEvents({ event }: { event: CalendarEvent }) {
       });
   }
 
-  function handleDelete(eventId: string) {
-    mutateDeleteAppointment(eventId, {
+  function handleDelete(eventId: number) {
+    mutateDeleteAppointment([eventId], {
       onSuccess: () => {
         toast.success('Event deleted successfully');
         closeModal();
@@ -116,7 +116,7 @@ function DetailsEvents({ event }: { event: CalendarEvent }) {
         <div className={cn('grid grid-cols-2 gap-4 pt-5')}>
           <Button
             variant="outline"
-            onClick={() => handleDelete(event.id as string)}
+            onClick={() => handleDelete(event.id as unknown as number)}
             isLoading={isPendingDeleteAppointment}
           >
             Delete
