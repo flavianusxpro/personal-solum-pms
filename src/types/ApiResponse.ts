@@ -353,6 +353,7 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
     payment: IPayment | null;
     patient: IPatient | null;
     doctor: IDoctor;
+    is_reschedule: boolean;
   }[];
 }
 

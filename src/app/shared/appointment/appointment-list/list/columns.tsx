@@ -166,7 +166,16 @@ export const GetColumns = ({
       dataIndex: 'status',
       key: 'status',
       width: 260,
-      render: (value: number, row: RowValue) => getScheduleStatusBadge(value),
+      render: (value: number, row: RowValue) => (
+        <>
+          {getScheduleStatusBadge(value)}
+          {row.is_reschedule && (
+            <Text className="text-xs font-medium text-gray-400">
+              (Rescheduled)
+            </Text>
+          )}
+        </>
+      ),
     },
     {
       title: (
@@ -207,6 +216,8 @@ function RenderAction({
   const { openModal, closeModal } = useModal();
 
   const isShowCancel = [1, 2, 3].includes(row.status);
+
+  const isShowReschedule = [3].includes(row.status);
 
   function handleCreateModal() {
     closeModal(),
@@ -278,10 +289,13 @@ function RenderAction({
             <FaRegNoteSticky className="mr-2 h-4 w-4" />
             Add Notes
           </Dropdown.Item>
-          <Dropdown.Item onClick={() => rescheduleModal(row)}>
-            <GrSchedules className="mr-2 h-4 w-4" />
-            Reschedule
-          </Dropdown.Item>
+          {isShowReschedule && (
+            <Dropdown.Item onClick={() => rescheduleModal(row)}>
+              <GrSchedules className="mr-2 h-4 w-4" />
+              Reschedule
+            </Dropdown.Item>
+          )}
+
           {isShowCancel && (
             <Dropdown.Item onClick={() => cancelModal(row)}>
               <MdOutlineFreeCancellation className="mr-2 h-4 w-4" />
