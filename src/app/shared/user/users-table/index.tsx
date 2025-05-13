@@ -18,6 +18,7 @@ const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
 const filterState = {
   role: '',
   status: null,
+  role_name: null,
 };
 
 export default function UsersTable() {
@@ -27,13 +28,16 @@ export default function UsersTable() {
     page: 1,
     perPage: 10,
     search: '',
-    ...filterStateValue,
   });
 
   const { data: dataUsers, refetch } = useGetUsers({
     ...params,
     q: JSON.stringify({
       name: params.search,
+      status: filterStateValue.status ? filterStateValue.status : undefined,
+      role_name: filterStateValue.role_name
+        ? filterStateValue.role_name
+        : undefined,
     }),
   });
   const { mutate: mutateDelete } = useDeleteUserById();
@@ -51,7 +55,7 @@ export default function UsersTable() {
   });
 
   const onDeleteItem = useCallback(
-    (id: string) => {
+    (id: number[]) => {
       mutateDelete(id, {
         onSuccess: () => {
           toast.success('User deleted successfully.');
@@ -70,7 +74,7 @@ export default function UsersTable() {
   );
 
   const updateFilter = useCallback(
-    (columnId: string, filterValue: string | any[]) => {
+    (columnId: string, filterValue: string | any[] | null) => {
       setFilterStateValue((prevState) => ({
         ...prevState,
         [columnId]: filterValue,
@@ -135,7 +139,7 @@ export default function UsersTable() {
 
   useEffect(() => {
     refetch();
-  }, [params, refetch]);
+  }, [params, refetch, filterStateValue]);
 
   return (
     <div className="">
@@ -191,6 +195,7 @@ export default function UsersTable() {
             handleDelete={(ids: string[]) => {
               setSelectedRowKeys([]);
               handleDelete(ids);
+              onDeleteItem(ids.map((id) => parseInt(id)));
             }}
           />
         }

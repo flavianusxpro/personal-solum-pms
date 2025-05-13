@@ -44,6 +44,6 @@ export async function putUpdateUserById(payload: IPayloadUpdateUser) {
   return put('/admin/user/' + payload.id, payload);
 }
 
-export async function deleteUserById(id: string) {
-  return del('/admin/user/' + id);
+export async function deleteUserById(ids: number[]) {
+  return del('/admin/user/', { data: { ids } });
 }

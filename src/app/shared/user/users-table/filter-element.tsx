@@ -1,10 +1,11 @@
 'use client';
 
-import { PiTrashDuotone, PiMagnifyingGlassBold } from 'react-icons/pi';
-import { Badge, Text, Title, Button, Input, cn } from 'rizzui';
+import { PiTrashDuotone } from 'react-icons/pi';
+import { Badge, Text, Title, Button, cn } from 'rizzui';
 import StatusField from '../../ui/controlled-table/status-field';
-import { ROLES } from '@/config/constants';
 import { useMedia } from '@core/hooks/use-media';
+import { useGetRoles } from '@/hooks/useRole';
+import { useMemo } from 'react';
 
 export const statusOptions = [
   {
@@ -24,14 +25,9 @@ export const statusOptions = [
 type FilterElementProps = {
   isFiltered: boolean;
   filters: { [key: string]: any };
-  updateFilter: (columnId: string, filterValue: string | any[]) => void;
+  updateFilter: (columnId: string, filterValue: string | any[] | null) => void;
   handleReset: () => void;
 };
-
-const roles = Object.entries(ROLES).map(([key, value]) => ({
-  value: key,
-  label: value,
-}));
 
 export default function FilterElement({
   isFiltered,
@@ -40,6 +36,19 @@ export default function FilterElement({
   updateFilter,
 }: FilterElementProps) {
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
+
+  const { data: dataRoles } = useGetRoles({
+    page: 1,
+    perPage: 100,
+  });
+
+  const roleOptions = useMemo(() => {
+    if (!dataRoles) return [];
+    return dataRoles?.map((item) => ({
+      value: item.name,
+      label: item.name,
+    }));
+  }, [dataRoles]);
 
   return (
     <>
@@ -66,6 +75,10 @@ export default function FilterElement({
           onChange={(value: string) => {
             updateFilter('status', value);
           }}
+          clearable
+          onClear={() => {
+            updateFilter('status', null);
+          }}
           getOptionValue={(option: { value: any }) => option.value}
           {...(isMediumScreen && {
             label: 'STATUS',
@@ -76,10 +89,14 @@ export default function FilterElement({
         <StatusField
           dropdownClassName="!z-10 h-auto"
           className="w-full @[35rem]:w-auto"
-          options={statusOptions}
-          value={filters['role']}
+          options={roleOptions}
+          value={filters['role_name']}
           onChange={(value: string) => {
-            updateFilter('role', value);
+            updateFilter('role_name', value);
+          }}
+          clearable
+          onClear={() => {
+            updateFilter('role_name', null);
           }}
           getOptionValue={(option: { value: any }) => option.value}
           {...(isMediumScreen && {
