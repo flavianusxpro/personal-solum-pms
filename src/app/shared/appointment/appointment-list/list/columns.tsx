@@ -110,6 +110,7 @@ export const GetColumns = ({
           name={`${row?.patient?.first_name} ${row?.patient?.last_name}`}
           description={row?.patient?.email}
           number={row?.patient?.mobile_number}
+          isFlag={true}
         />
       ),
     },

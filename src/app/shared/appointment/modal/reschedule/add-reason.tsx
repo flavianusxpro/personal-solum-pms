@@ -50,7 +50,7 @@ export default function AddReason() {
                 )}
               />
             </div>
-            <Footer />
+            <Footer goBackToStepNumber={1} />
           </>
         );
       }}

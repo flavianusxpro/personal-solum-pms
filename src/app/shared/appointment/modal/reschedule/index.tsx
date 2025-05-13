@@ -58,6 +58,7 @@ type FormDataType = {
   followup_fee: string;
   initial_fee: string;
   script_renewal_fee: string;
+  rescedule_by?: string;
   oldData?: {
     id?: number | null;
     clinicId?: number;
@@ -91,6 +92,7 @@ export const initialFormData = {
   followup_fee: '',
   initial_fee: '',
   script_renewal_fee: '',
+  rescedule_by: '',
   oldData: {
     id: null,
     clinicId: undefined,

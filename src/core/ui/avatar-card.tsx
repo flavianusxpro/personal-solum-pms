@@ -13,6 +13,7 @@ interface AvatarCardProps {
   nameClassName?: string;
   avatarProps?: AvatarProps;
   description?: string | number;
+  isFlag?: boolean;
 }
 
 export default function AvatarCard({
@@ -23,6 +24,7 @@ export default function AvatarCard({
   description,
   avatarProps,
   nameClassName,
+  isFlag = false,
 }: AvatarCardProps) {
   const [state, copyToClipboard] = useCopyToClipboard();
 
@@ -55,7 +57,7 @@ export default function AvatarCard({
             onClick={() => handleCopy(name)}
             className="cursor-pointer active:scale-[0.99]"
           />
-          <PiWarning className="h-4 w-5 text-yellow-700" />
+          {isFlag && <PiWarning className="h-4 w-5 text-red-600" />}
         </div>
         {description && (
           <div className="flex items-center gap-2">

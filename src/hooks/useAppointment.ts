@@ -4,6 +4,7 @@ import {
   getSummaryAppointments,
   postCancelAppointment,
   postCreateAppointment,
+  postRescheduleAppointmentByDate,
   putUpdateAppointment,
 } from '@/service/appointment';
 import { IParamGetAppointments } from '@/types/paramTypes';
@@ -44,5 +45,11 @@ export function useDeleteAppointment() {
 export function usePostCancelAppointment() {
   return useMutation({
     mutationFn: postCancelAppointment,
+  });
+}
+
+export function usePostRescheduleAppointmentByDate() {
+  return useMutation({
+    mutationFn: postRescheduleAppointmentByDate,
   });
 }

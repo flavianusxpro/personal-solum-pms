@@ -7,6 +7,9 @@ import { useAtom } from 'jotai';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { useStepperCancelAppointment } from '.';
 import { formRescheduleDataAtom } from './';
+import { usePostRescheduleAppointmentByDate } from '@/hooks/useAppointment';
+import dayjs from 'dayjs';
+import toast from 'react-hot-toast';
 
 interface FooterProps {
   className?: string;
@@ -24,8 +27,34 @@ export default function Footer({
 
   const [formData] = useAtom(formRescheduleDataAtom);
 
+  const { mutate: mutateRescheduleByDate } =
+    usePostRescheduleAppointmentByDate();
+
   function submitRescheduleAppointment() {
-    console.log('FormData', formData);
+    console.log('formData', formData);
+
+    if (formData.rescedule_by === 'date') {
+      mutateRescheduleByDate(
+        {
+          id: formData.id as number,
+          date: `${dayjs(formData.date).format('YYYY-MM-DD')} ${formData.doctorTime}`,
+        },
+        {
+          onSuccess: () => {
+            toast.success('Appointment rescheduled successfully');
+            closeModal();
+          },
+          onError: (error: any) => {
+            toast.error(
+              error?.response?.data?.message || 'Error rescheduling appointment'
+            );
+            console.error('Error rescheduling appointment:', error);
+          },
+        }
+      );
+    } else {
+      // Handle other reschedule methods if needed
+    }
   }
 
   return (
@@ -49,14 +78,20 @@ export default function Footer({
           Back
         </Button>
       )}
-      {step > 0 && (
+      {step > 0 && !isLastStep && (
+        <Button className="!w-auto" type={'submit'} rounded="lg">
+          {'Next'}
+        </Button>
+      )}
+
+      {isLastStep && (
         <Button
           className="!w-auto"
-          type={isLastStep ? 'button' : 'submit'}
+          variant="outline"
           rounded="lg"
           onClick={submitRescheduleAppointment}
         >
-          {isLastStep ? 'Submit' : 'Next'}
+          Submit
         </Button>
       )}
     </footer>

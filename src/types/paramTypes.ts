@@ -262,6 +262,12 @@ export interface IPayloadPostCancelAppoinment {
   reason: string;
 }
 
+export interface IPayloadPostRescheduleByDate {
+  id: number;
+  date: string;
+  note?: string;
+}
+
 export interface IPayloadPutUpdateAppoinment {
   id?: number;
   clinicId?: number;

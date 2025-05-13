@@ -90,7 +90,7 @@ const PriceEstimationCost = ({
           <div className="grid w-full grid-cols-1 gap-2">
             <Flex justify="between" align="center">
               <Text>Total Cost:</Text>
-              <Text>{getFee()}</Text>
+              <Text>{Number(getFee())}</Text>
             </Flex>
             <Flex justify="between" align="center">
               <Text>Sub Total:</Text>

@@ -7,6 +7,7 @@ import {
   IParamGetAppointments,
   IPayloadPostAppoinment,
   IPayloadPostCancelAppoinment,
+  IPayloadPostRescheduleByDate,
   IPayloadPutUpdateAppoinment,
 } from '@/types/paramTypes';
 
@@ -44,4 +45,10 @@ export async function postCancelAppointment(
   payload: IPayloadPostCancelAppoinment
 ) {
   return await post(`/admin/appointment/${payload.id}/cancel`, payload);
+}
+
+export async function postRescheduleAppointmentByDate(
+  payload: IPayloadPostRescheduleByDate
+) {
+  return await post(`/admin/appointment/${payload.id}/reschedule`, payload);
 }

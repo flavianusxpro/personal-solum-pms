@@ -30,17 +30,18 @@ export default function RescheduleConfirmation() {
         <div className="">
           <Text className="font-semibold">Last Schedule</Text>
           <Text>
-            Date & Time : {dayjs(formData?.date).format('MMM DD, YYYY')} -{' '}
-            {formData?.doctorTime}
+            Date & Time : {dayjs(formData.oldData?.date).format('MMM DD, YYYY')}{' '}
+            - {formData.oldData?.doctorTime}
           </Text>
+
           <Text>Doctor : {getDoctorName(formData.doctorId)}</Text>
         </div>
 
         <div className="">
           <Text className="font-semibold">New Schedule</Text>
           <Text>
-            Date & Time : {dayjs(formData.oldData?.date).format('MMM DD, YYYY')}{' '}
-            - {formData.oldData?.doctorTime}
+            Date & Time : {dayjs(formData?.date).format('MMM DD, YYYY')} -{' '}
+            {formData?.doctorTime}
           </Text>
           <Text> Doctor : {getDoctorName(formData.oldData?.doctorId)}</Text>
         </div>
