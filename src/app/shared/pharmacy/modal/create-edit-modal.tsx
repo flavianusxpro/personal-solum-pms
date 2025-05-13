@@ -143,7 +143,6 @@ export default function CreateEditModal({ data, isView }: IProps) {
         getValues,
         formState: { errors },
       }) => {
-        console.log('🚀 ~ CreateEditModal ~ errors:', errors);
         return (
           <div
             className={cn('flex flex-col gap-6 px-6 pt-6', isView && 'pb-6')}

@@ -6,8 +6,8 @@ import { useTable } from '@core/hooks/use-table';
 import React, { useCallback, useState } from 'react';
 import { getColumns } from './columns';
 import { useModal } from '../../modal-views/use-modal';
-import { useDeleteClinic, useGetAllClinics } from '@/hooks/useClinic';
 import { useDeletePharmachy, useGetPharmachyList } from '@/hooks/usePharmachy';
+import TableFooter from '../../ui/table-footer';
 
 export default function PharmachyTable({}: {}) {
   const { openModal } = useModal();
@@ -57,10 +57,9 @@ export default function PharmachyTable({}: {}) {
   } = useTable(data?.data ?? [], params.perPage);
 
   const onDeleteItem = useCallback(
-    (id: string) => {
+    (id: number[]) => {
       mutate(id, {
         onSuccess: () => {
-          handleDelete(id);
           refetch();
         },
         onError: (error: any) => {
@@ -71,7 +70,7 @@ export default function PharmachyTable({}: {}) {
         },
       });
     },
-    [handleDelete, mutate, refetch]
+    [mutate, refetch]
   );
 
   const columns = React.useMemo(
@@ -135,6 +134,16 @@ export default function PharmachyTable({}: {}) {
           setCheckedColumns,
           enableDrawerFilter: true,
         }}
+        tableFooter={
+          <TableFooter
+            checkedItems={selectedRowKeys}
+            handleDelete={(ids: string[]) => {
+              setSelectedRowKeys([]);
+              handleDelete(ids);
+              onDeleteItem(ids.map((id) => parseInt(id)));
+            }}
+          />
+        }
         className={
           'rounded-md border border-muted text-sm shadow-sm [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:h-60 [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:justify-center [&_.rc-table-row:last-child_td.rc-table-cell]:border-b-0 [&_thead.rc-table-thead]:border-t-0'
         }

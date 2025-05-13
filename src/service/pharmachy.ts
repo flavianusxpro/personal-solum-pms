@@ -21,6 +21,6 @@ export async function putUpdatePharmachy(payload: IPayloadCreateEditPharmachy) {
   return await put(`/admin/clinic/pharmacy/${payload.id}`, payload);
 }
 
-export async function deletePharmachy(id: string) {
-  return await del(`/admin/clinic/pharmacy/${id}`);
+export async function deletePharmachy(ids: number[]) {
+  return await del(`/admin/clinic/pharmacy/`, { data: { ids } });
 }
