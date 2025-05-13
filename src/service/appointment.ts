@@ -6,6 +6,7 @@ import {
 import {
   IParamGetAppointments,
   IPayloadPostAppoinment,
+  IPayloadPostCancelAppoinment,
   IPayloadPutUpdateAppoinment,
 } from '@/types/paramTypes';
 
@@ -37,4 +38,10 @@ export async function deleteAppointment(ids: number[]) {
       ids,
     },
   });
+}
+
+export async function postCancelAppointment(
+  payload: IPayloadPostCancelAppoinment
+) {
+  return await post(`/admin/appointment/${payload.id}/cancel`, payload);
 }

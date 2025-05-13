@@ -257,6 +257,11 @@ export interface IPayloadPostAppoinment {
   meeting_preference: string;
 }
 
+export interface IPayloadPostCancelAppoinment {
+  id: number;
+  reason: string;
+}
+
 export interface IPayloadPutUpdateAppoinment {
   id?: number;
   clinicId?: number;

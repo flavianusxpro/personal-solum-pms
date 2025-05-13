@@ -165,9 +165,7 @@ export const GetColumns = ({
       dataIndex: 'status',
       key: 'status',
       width: 260,
-      render: (value: number, row: RowValue) => (
-        <StatusSelect selectItem={value} id={row.id} />
-      ),
+      render: (value: number, row: RowValue) => getScheduleStatusBadge(value),
     },
     {
       title: (
@@ -206,6 +204,8 @@ function RenderAction({
   onDeleteItem: (id: number[]) => void;
 }) {
   const { openModal, closeModal } = useModal();
+
+  const isShowCancel = [1, 2, 3].includes(row.status);
 
   function handleCreateModal() {
     closeModal(),
@@ -281,10 +281,12 @@ function RenderAction({
             <GrSchedules className="mr-2 h-4 w-4" />
             Reschedule
           </Dropdown.Item>
-          <Dropdown.Item onClick={() => cancelModal(row)}>
-            <MdOutlineFreeCancellation className="mr-2 h-4 w-4" />
-            Cancel
-          </Dropdown.Item>
+          {isShowCancel && (
+            <Dropdown.Item onClick={() => cancelModal(row)}>
+              <MdOutlineFreeCancellation className="mr-2 h-4 w-4" />
+              Cancel
+            </Dropdown.Item>
+          )}
           <Dropdown.Item onClick={() => revertModal(row)}>
             <RxCountdownTimer className="mr-2 h-4 w-4" />
             Revert Back

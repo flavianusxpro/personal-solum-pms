@@ -2,6 +2,7 @@ import {
   deleteAppointment,
   getAppointmentList,
   getSummaryAppointments,
+  postCancelAppointment,
   postCreateAppointment,
   putUpdateAppointment,
 } from '@/service/appointment';
@@ -37,5 +38,11 @@ export function useUpdateAppointment() {
 export function useDeleteAppointment() {
   return useMutation({
     mutationFn: deleteAppointment,
+  });
+}
+
+export function usePostCancelAppointment() {
+  return useMutation({
+    mutationFn: postCancelAppointment,
   });
 }

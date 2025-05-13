@@ -11,6 +11,8 @@ import { PiCalendarCheckLight, PiMapPinLight, PiX } from 'react-icons/pi';
 import { ActionIcon, Flex, Textarea, Title } from 'rizzui';
 import { getPaymentStatusBadge } from '../../appointment-list/list/columns';
 import dayjs from 'dayjs';
+import { usePostCancelAppointment } from '@/hooks/useAppointment';
+import toast from 'react-hot-toast';
 
 export default function CancelForm({
   data,
@@ -18,24 +20,23 @@ export default function CancelForm({
   data: IGetAppointmentListResponse['data'][number];
 }) {
   const { closeModal } = useModal();
+  const { mutate, isPending } = usePostCancelAppointment();
 
-  const onSubmit: SubmitHandler<CancelAppointmentForm> = (data) => {
-    console.log('🚀 ~ onSubmit ~ data:', data);
-    // mutate(
-    // {
-    //     id: data.id,
-    //     note: data.note,
-    // },
-    // {
-    //     onSuccess: () => {
-    //     toast.success('Note updated successfully');
-    //     closeModal();
-    //     },
-    //     onError: (error) => {
-    //     toast.error('Failed to update note: ' + error.message);
-    //     },
-    // }
-    // );
+  const onSubmit: SubmitHandler<CancelAppointmentForm> = (formValues) => {
+    const payload = {
+      id: data.id,
+      reason: formValues.reason || '',
+    };
+
+    mutate(payload, {
+      onSuccess: () => {
+        toast.success('Appointment canceled successfully');
+        closeModal();
+      },
+      onError: (error: any) => {
+        toast.error(error?.response?.data?.message || 'Something went wrong');
+      },
+    });
   };
 
   return (
@@ -112,7 +113,7 @@ export default function CancelForm({
             />
             <FormFooter
               className="rounded-b-xl"
-              //   isLoading={isPending}
+              isLoading={isPending}
               altBtnText="Cancel"
               submitBtnText="Submit"
               isSticky={false}
