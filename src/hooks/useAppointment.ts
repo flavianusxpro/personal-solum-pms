@@ -36,8 +36,6 @@ export function useUpdateAppointment() {
 
 export function useDeleteAppointment() {
   return useMutation({
-    mutationFn: async (id: string) => {
-      return await deleteAppointment(id);
-    },
+    mutationFn: deleteAppointment,
   });
 }

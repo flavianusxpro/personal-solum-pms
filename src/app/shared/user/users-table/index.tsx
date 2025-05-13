@@ -194,7 +194,6 @@ export default function UsersTable() {
             checkedItems={selectedRowKeys}
             handleDelete={(ids: string[]) => {
               setSelectedRowKeys([]);
-              handleDelete(ids);
               onDeleteItem(ids.map((id) => parseInt(id)));
             }}
           />

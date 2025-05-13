@@ -31,6 +31,10 @@ export async function putUpdateAppointment(
   return await put<any>(`/admin/appointment/${payload.id}`, payload);
 }
 
-export async function deleteAppointment(id: string) {
-  return await del<any>(`/admin/appointment/${id}`);
+export async function deleteAppointment(ids: number[]) {
+  return await del<any>(`/admin/appointment`, {
+    data: {
+      ids,
+    },
+  });
 }

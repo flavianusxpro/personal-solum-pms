@@ -68,8 +68,8 @@ export default function AppointmentListTable() {
   });
 
   const onDeleteItem = useCallback(
-    (id: string) => {
-      mutate(id, {
+    (ids: number[]) => {
+      mutate(ids, {
         onSuccess: () => {
           toast.success('Appointment deleted successfully');
           refetch();
@@ -218,13 +218,13 @@ export default function AppointmentListTable() {
             checkedItems={selectedRowKeys}
             handleDelete={(ids: string[]) => {
               setSelectedRowKeys([]);
-              handleDelete(ids);
+              onDeleteItem(ids.map((id) => parseInt(id)));
             }}
           >
-            <Button size="sm" className="dark:bg-gray-300 dark:text-gray-800">
+            {/* <Button size="sm" className="dark:bg-gray-300 dark:text-gray-800">
               Download {selectedRowKeys.length}{' '}
               {selectedRowKeys.length > 1 ? 'Appointments' : 'Appointment'}
-            </Button>
+            </Button> */}
           </TableFooter>
         }
       />
