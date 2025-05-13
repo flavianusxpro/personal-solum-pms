@@ -73,14 +73,18 @@ const columns = [
     dataIndex: 'amount',
     key: 'amount',
     width: 200,
-    render: (value: string) => <Text className="font-medium">${value}</Text>,
+    render: (value: string) => (
+      <Text className="font-medium">${Number(value)}</Text>
+    ),
   },
   {
     title: 'Total',
     dataIndex: 'total_amount',
     key: 'total_amount',
     width: 200,
-    render: (value: string) => <Text className="font-medium">${value}</Text>,
+    render: (value: string) => (
+      <Text className="font-medium">${Number(value)}</Text>
+    ),
   },
 ] as any;
 
@@ -206,23 +210,23 @@ export default function InvoiceDetails({ id }: { id: string }) {
             <Text className="flex items-center justify-between border-b border-muted pb-3.5 lg:pb-5">
               Subtotal:{' '}
               <Text as="span" className="font-semibold">
-                ${dataInvoice?.amount}
+                ${Number(dataInvoice?.amount)}
               </Text>
             </Text>
             <Text className="flex items-center justify-between border-b border-muted py-3.5 lg:py-5">
               Tax Fee:
               <Text as="span" className="font-semibold">
-                {dataInvoice?.tax_fee}%
+                {Number(dataInvoice?.tax_fee)}%
               </Text>
             </Text>
             <Text className="flex items-center justify-between border-b border-muted py-3.5 lg:py-5">
               Other Fee:{' '}
               <Text as="span" className="font-semibold">
-                ${dataInvoice?.other_fee}
+                ${Number(dataInvoice?.other_fee)}
               </Text>
             </Text>
             <Text className="flex items-center justify-between pt-4 text-base font-semibold text-gray-900 lg:pt-5">
-              Total: <Text as="span">${dataInvoice?.total_amount}</Text>
+              Total: <Text as="span">${Number(dataInvoice?.total_amount)}</Text>
             </Text>
           </div>
         </div>

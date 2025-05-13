@@ -147,7 +147,7 @@ export const getColumns = ({
     dataIndex: 'total_amount',
     key: 'total_amount',
     width: 250,
-    render: (value: string) => `$${value}`,
+    render: (value: string) => `$${Number(value)}`,
   },
   {
     title: <HeaderCell title="PAYMENT STATUS" />,

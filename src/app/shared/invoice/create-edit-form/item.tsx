@@ -122,7 +122,7 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
       />
 
       <Input
-        value={itemPrice}
+        value={Number(itemPrice)}
         label="Price"
         type="number"
         prefix={'$'}
