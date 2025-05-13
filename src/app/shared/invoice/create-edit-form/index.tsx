@@ -238,7 +238,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
                         }
                         inputProps={{ label: 'Invoice Date' }}
                         popperPlacement="top-start"
-                        dateFormat="YYYY-MM-DD"
+                        dateFormat="DD-MM-YYYY"
                         error={errors.invoice_date?.message}
                         className="w-full"
                       />
@@ -258,7 +258,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
                         }
                         inputProps={{ label: 'Due Date' }}
                         popperPlacement="top-start"
-                        dateFormat="YYYY-MM-DD"
+                        dateFormat="DD-MM-YYYY"
                         error={errors.due_date?.message}
                         className="w-full"
                       />
