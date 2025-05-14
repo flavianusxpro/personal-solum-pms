@@ -5,10 +5,14 @@ import {
   postCreateClinic,
   putUpdateClinic,
 } from '@/service/clinic';
-import { getDoctorByClinic } from '@/service/doctor';
+import {
+  getDoctorByClinic,
+  postGetDoctorAvailabilityByClinic,
+} from '@/service/doctor';
 import {
   IParamGetAllClinic,
   IParamGetDoctorByClinic,
+  IParamsGetDoctorAvailability,
 } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -52,5 +56,14 @@ export function usePutUpdateClinic() {
 export function useDeleteClinic() {
   return useMutation({
     mutationFn: deleteClinic,
+  });
+}
+
+export function useGetDoctorAvailabilityByClinic(
+  payload: IParamsGetDoctorAvailability
+) {
+  return useQuery({
+    queryKey: ['doctor-availability-by-clinic'],
+    queryFn: async () => postGetDoctorAvailabilityByClinic(payload),
   });
 }

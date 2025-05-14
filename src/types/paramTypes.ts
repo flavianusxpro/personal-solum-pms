@@ -22,6 +22,13 @@ export interface IPayloadCheckout {
   amount: number;
 }
 
+export interface IParamsGetDoctorAvailability {
+  clinicId: number;
+  doctorId: number;
+  appointment_date: string;
+  appointment_type: string;
+}
+
 export interface IPayloadPostBookAppoinment {
   doctorId: number;
   clinicId: number;

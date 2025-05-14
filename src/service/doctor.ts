@@ -6,12 +6,14 @@ import {
   IGetDoctorByIdResponse,
   IGetSpecialistResponse,
   IGetTreatmentResponse,
+  IPostGetDoctorAvailabilityByClinicResponse,
 } from '@/types/ApiResponse';
 import {
   IParamGetAllDoctor,
   IParamGetDoctorByClinic,
   IParamGetSpecialists,
   IParamGetTreatments,
+  IParamsGetDoctorAvailability,
   IPayloadAssignDoctorToClinic,
   IPayloadCreateEditDoctor,
   IPayloadCreateEditTreatment,
@@ -27,6 +29,15 @@ export async function getDoctorByClinic(params: IParamGetDoctorByClinic) {
       params,
     }
   ).then((res) => res.data);
+}
+
+export async function postGetDoctorAvailabilityByClinic(
+  payload: IParamsGetDoctorAvailability
+) {
+  return await post<IPostGetDoctorAvailabilityByClinicResponse>(
+    '/patient/clinic/' + payload.clinicId + '/doctor/availability',
+    payload
+  );
 }
 
 export async function getDoctorList(params: IParamGetAllDoctor) {

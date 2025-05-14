@@ -797,3 +797,12 @@ export interface IGetPharmachyListResponse extends ApiResponseWithPagination {
     updated_at: string;
   }[];
 }
+
+export interface IPostGetDoctorAvailabilityByClinicResponse
+  extends ApiResponse {
+  success: boolean;
+  data: {
+    time: string;
+    available: boolean;
+  }[];
+}
