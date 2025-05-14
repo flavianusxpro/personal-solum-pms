@@ -1,68 +1,44 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import { CalendarEvent } from '@/types';
-import { PiMapPin, PiXBold } from 'react-icons/pi';
-import { FaPencil, FaUser, FaUserDoctor } from 'react-icons/fa6';
+import { PiCoffee, PiXBold } from 'react-icons/pi';
 import { ActionIcon, Button, Title } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { MdOutlineCalendarMonth } from 'react-icons/md';
-import { formatDate } from '@core/utils/format-date';
-import { useDeleteAppointment } from '@/hooks/useAppointment';
 import toast from 'react-hot-toast';
-import ScheduleForm from './schedule-form';
-import {
-  useGetDoctorById,
-  useUpdateSettingAppointmentDoctor,
-} from '@/hooks/useDoctor';
-import { Appointmentschedule } from '@/types/ApiResponse';
+import { useGetDoctorById } from '@/hooks/useDoctor';
+import { DoctorSchedule } from '@/types/ApiResponse';
+import { useDeleteSchedule, useGetListSchedule } from '@/hooks/useSchedule';
 import dayjs from 'dayjs';
-import { IPayloadSettingAppointmentDoctor } from '@/types/paramTypes';
+import EditScheduleForm from './edit-schedule-form';
 
 interface DetailsScheduleProps {
-  event: CalendarEvent;
-  schedule?: Appointmentschedule;
+  event: DoctorSchedule;
+  doctorId?: string;
 }
 
-function DetailsSchedule({ event, schedule }: DetailsScheduleProps) {
+function DetailsSchedule({ event, doctorId }: DetailsScheduleProps) {
   const { closeModal, openModal } = useModal();
 
-  const { data: dataDoctor } = useGetDoctorById(event.doctor ?? '');
-
-  const {
-    mutate: mutateUpdateAppointment,
-    isPending: isPendingUpdateAppointment,
-  } = useUpdateSettingAppointmentDoctor();
-
-  const days = schedule?.week.map((day) => {
-    return dayjs().day(day.day).format('dddd');
+  const { refetch } = useGetListSchedule({
+    doctorId: doctorId as string,
+    page: 1,
+    perPage: 100,
   });
 
-  const dailyBreaks = schedule?.dailyBreakTimes.map((breakTime) => {
-    return {
-      start: breakTime.startTime,
-      end: breakTime.endTime,
-    };
-  });
+  const { mutate: mutateDeleteSchedule, isPending: isPendingDeleteSchedule } =
+    useDeleteSchedule();
 
   function handleEditModal() {
     closeModal(),
       openModal({
-        view: <ScheduleForm isEdit doctorId={event?.doctor} />,
+        view: <EditScheduleForm event={event} doctorId={doctorId} />,
         customSize: '700px',
       });
   }
 
-  function handleDelete(eventId: string) {
-    const payloadSettingAppointment: IPayloadSettingAppointmentDoctor = {
-      doctor_id: event.doctor,
-      schedule: {
-        interval: '',
-        week: [],
-        dailyBreakTimes: [],
-      },
-    };
-
-    mutateUpdateAppointment(payloadSettingAppointment, {
+  function handleDelete(eventId: number) {
+    mutateDeleteSchedule([eventId], {
       onSuccess: () => {
+        refetch();
         toast.success('Schedule deleted successfully');
         closeModal();
       },
@@ -72,7 +48,6 @@ function DetailsSchedule({ event, schedule }: DetailsScheduleProps) {
         );
       },
     });
-    closeModal();
   }
 
   return (
@@ -93,11 +68,11 @@ function DetailsSchedule({ event, schedule }: DetailsScheduleProps) {
 
       <div>
         <ul className="mt-7 flex flex-col gap-[18px] text-gray-600">
-          <li className="flex gap-2">
+          {/* <li className="flex gap-2">
             <FaUserDoctor className="h-5 w-5" />
             <span>Doctor:</span>
             <span className="font-medium text-gray-1000">{`${dataDoctor?.first_name} ${dataDoctor?.last_name}`}</span>
-          </li>
+          </li> */}
           {/* <li className="flex gap-2">
             <FaPencil className="h-5 w-5" />
             <span>Description:</span>
@@ -108,32 +83,23 @@ function DetailsSchedule({ event, schedule }: DetailsScheduleProps) {
           <li className="flex gap-2">
             <MdOutlineCalendarMonth className="h-5 w-5" />
             <span>Event:</span>
-            <span className="font-medium text-gray-1000">
-              {days?.map((day, index) => (
-                <span key={index}>
-                  {day}
-                  {index < days.length - 1 ? ', ' : ''}
-                </span>
-              ))}
+            <span className="font-semibold">
+              {dayjs(event.start_date).format('hh:mm a')}
+            </span>
+            <span className="font-semibold">
+              - {dayjs(event.end_date).format('hh:mm a')}
             </span>
           </li>
-          {event.location && (
+          {event.break_times && event.break_times.length > 0 && (
             <li className="flex gap-2">
-              <PiMapPin className="h-5 w-5" />
-              <span>Address:</span>
-              <span className="font-medium text-gray-1000">
-                {event.location}
-              </span>
-            </li>
-          )}
-          {dailyBreaks && dailyBreaks.length > 0 && (
-            <li className="flex gap-2">
-              <PiMapPin className="h-5 w-5" />
+              <PiCoffee className="h-5 w-5" />
               <span>Break Times:</span>
-              {dailyBreaks.map((breakTime, index) => (
-                <span key={index} className="font-medium text-gray-1000">
-                  {breakTime.start} - {breakTime.end}
-                  {index < (event?.breakTimes?.length ?? 0) - 1 ? ', ' : ''}
+              {event.break_times.map((breakTime, index) => (
+                <span key={index} className="font-semibold">
+                  {`${dayjs(breakTime.start_date).format('hh:mm a')} - ${dayjs(
+                    breakTime.end_date
+                  ).format('hh:mm a')}`}
+                  {index < event.break_times.length - 1 && ','}
                 </span>
               ))}
             </li>
@@ -142,8 +108,8 @@ function DetailsSchedule({ event, schedule }: DetailsScheduleProps) {
         <div className={cn('grid grid-cols-2 gap-4 pt-5')}>
           <Button
             variant="outline"
-            onClick={() => handleDelete(event.id as string)}
-            isLoading={isPendingUpdateAppointment}
+            onClick={() => handleDelete(event.id as unknown as number)}
+            isLoading={isPendingDeleteSchedule}
           >
             Delete
           </Button>

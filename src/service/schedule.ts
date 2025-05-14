@@ -1,8 +1,9 @@
-import { get, post, put } from '@/app/api/api';
+import { del, get, post, put } from '@/app/api/api';
 import { IGetListScheduleResponse } from '@/types/ApiResponse';
 import {
   IParamGetListSchedule,
   IPayloadPostCreateSchedule,
+  IPayloadPutUpdateSchedule,
 } from '@/types/paramTypes';
 
 export async function getlistSchedule(params: IParamGetListSchedule) {
@@ -19,6 +20,10 @@ export async function postCreateSchedule(payload: IPayloadPostCreateSchedule) {
   return post<any>('admin/schedule', payload);
 }
 
-export async function putUpdateSchedule(payload: IPayloadPostCreateSchedule) {
+export async function putUpdateSchedule(payload: IPayloadPutUpdateSchedule) {
   return put<any>(`admin/schedule/${payload.id}`, payload);
+}
+
+export async function deleteSchedule(ids: number[]) {
+  return del<any>(`admin/schedule/`, { data: { ids } });
 }

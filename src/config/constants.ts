@@ -163,24 +163,24 @@ export const timeZoneOption = [
 
 export const weekIntervalOption = [
   {
-    label: 'Every Week',
-    value: 'every-week',
-  },
-  {
     label: '1 Week',
-    value: '1 week',
+    value: 'one-week',
   },
   {
     label: '2 Weeks',
-    value: '2 weeks',
+    value: 'two-weeks',
   },
   {
     label: '3 Weeks',
-    value: '3 weeks',
+    value: 'three-weeks',
   },
   {
     label: '4 Weeks',
-    value: '4 weeks',
+    value: 'four-weeks',
+  },
+  {
+    label: 'Custom',
+    value: 'custom',
   },
 ];
 

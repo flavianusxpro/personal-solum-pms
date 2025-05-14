@@ -221,18 +221,28 @@ export interface IParamGetListSchedule extends IParamGetDataWithPagination {
 }
 
 export interface IPayloadPostCreateSchedule {
-  id?: string;
+  id?: number;
   doctorId: number;
-  title: string;
-  description: string;
+  description?: string;
+  dates: Date[];
+}
+export interface IPayloadPutUpdateSchedule {
+  id?: number;
+  doctorId: number;
+  description?: string;
   start_date: string;
   end_date: string;
-  break_times?: Breaktime[];
+  break_times: Breaktime[];
 }
-
 interface Breaktime {
   start_date: string;
   end_date: string;
+}
+
+interface Date {
+  start_date: string;
+  end_date: string;
+  break_times: Breaktime[];
 }
 
 export interface IPayloadPostForgotPassword {

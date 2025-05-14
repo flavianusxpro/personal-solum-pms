@@ -116,6 +116,22 @@ interface Appointmentduration {
   followup: number;
 }
 
+export interface DoctorSchedule {
+  doctor?: string;
+  id: number;
+  description: string;
+  start_date: Date;
+  end_date: Date;
+  break_times: BreakTime[];
+  created_at: string;
+  updated_at: string;
+}
+
+interface BreakTime {
+  start_date: string;
+  end_date: string;
+}
+
 export interface IGetProfileResponse extends ApiResponse {
   data: {
     id: number;
@@ -561,7 +577,7 @@ export interface IGetListScheduleResponse extends ApiResponseWithPagination {
     description: string;
     start_date: string;
     end_date: string;
-    break_times: string;
+    break_times: BreakTime[];
     created_at: string;
     updated_at: string;
   }[];

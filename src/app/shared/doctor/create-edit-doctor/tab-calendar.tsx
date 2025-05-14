@@ -8,17 +8,17 @@ import {
   View,
 } from 'react-big-calendar';
 import dayjs from 'dayjs';
-import { useCallback, useMemo, useState } from 'react';
-import { CalendarEvent } from '@/core/types';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useModal } from '../../modal-views/use-modal';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import { useParams } from 'next/navigation';
 import ModalButton from '../../ui/modal-button/modal-button';
-import ScheduleForm from '../../event-calendar/schedule-form';
-import { Flex } from 'rizzui';
+import CreateScheduleForm from '../../event-calendar/create-schedule-form';
+import { Flex, Loader } from 'rizzui';
 import { useGetDoctorById } from '@/hooks/useDoctor';
-import { Appointmentschedule } from '@/types/ApiResponse';
+import { DoctorSchedule } from '@/types/ApiResponse';
 import DetailsSchedule from '../../event-calendar/details-schedule';
+import { useGetListSchedule } from '@/hooks/useSchedule';
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -38,62 +38,32 @@ export default function TabCalendar({
   const id = useParams<{ id: string }>().id;
   const { openModal } = useModal();
   const { colorPresetName } = useColorPresetName();
+
   const [dateRange, setDateRange] = useState({
     from: dayjs().startOf('month').toDate(),
     to: dayjs().endOf('month').toDate(),
   });
 
-  const { data: dataDoctor } = useGetDoctorById(id);
+  const { data: dataEvent } = useGetListSchedule({
+    doctorId: id,
+    page: 1,
+    perPage: 100,
+  });
 
-  const schedule = useMemo(() => {
-    try {
-      return dataDoctor?.setting?.schedule
-        ? (JSON.parse(dataDoctor.setting.schedule) as Appointmentschedule)
-        : undefined;
-    } catch (error) {
-      return undefined;
-    }
-  }, [dataDoctor?.setting?.schedule]);
-
-  const calendarEvent: CalendarEvent[] = useMemo(() => {
-    if (!schedule) return [];
-
-    const events: CalendarEvent[] = [];
-    const startOfRange = dayjs(dateRange.from);
-    const endOfRange = dayjs(dateRange.to);
-
-    for (const scheduleItem of schedule?.week || []) {
-      let currentDate = startOfRange.clone();
-
-      while (currentDate.isBefore(endOfRange, 'day')) {
-        if (currentDate.day() === scheduleItem.day) {
-          const startTime = currentDate
-            .set('hour', parseInt(scheduleItem.startTime.split(':')[0], 10))
-            .set('minute', parseInt(scheduleItem.startTime.split(':')[1], 10))
-            .toDate();
-
-          const endTime = currentDate
-            .set('hour', parseInt(scheduleItem.endTime.split(':')[0], 10))
-            .set('minute', parseInt(scheduleItem.endTime.split(':')[1], 10))
-            .toDate();
-
-          events.push({
-            id: `${scheduleItem.day}-${currentDate.toISOString()}`,
-            title: `Schedule for Day ${scheduleItem.day}`,
-            start: startTime,
-            end: endTime,
-            allDay: false,
-            description: '',
-            doctor: id,
-          });
-        }
-
-        currentDate = currentDate.add(1, 'day');
-      }
-    }
-
-    return events;
-  }, [id, schedule, dateRange]);
+  const events = useMemo(() => {
+    if (!dataEvent) return [];
+    return dataEvent.map((event) => ({
+      title: event.title,
+      id: Number(event.id),
+      start_date: new Date(event.start_date),
+      end_date: new Date(event.end_date),
+      allDay: false,
+      description: event.description,
+      break_times: event.break_times,
+      created_at: event.created_at,
+      updated_at: event.updated_at,
+    }));
+  }, [dataEvent]);
 
   const { views, scrollToTime, formats } = useMemo(
     () => ({
@@ -118,13 +88,23 @@ export default function TabCalendar({
   );
 
   const handleSelectEvent = useCallback(
-    (event: CalendarEvent) => {
+    (event: DoctorSchedule) => {
       openModal({
-        view: <DetailsSchedule schedule={schedule} event={event} />,
+        view: <DetailsSchedule doctorId={id} event={event} />,
         customSize: '500px',
       });
     },
-    [openModal]
+    [id, openModal]
+  );
+
+  const handleSelectSlot = useCallback(
+    ({ start, end }: { start: Date; end: Date }) => {
+      openModal({
+        view: <CreateScheduleForm doctorId={id} start={start} />,
+        customSize: '650px',
+      });
+    },
+    [id, openModal]
   );
 
   const onNavigate = useCallback(
@@ -144,20 +124,22 @@ export default function TabCalendar({
       <Flex className="flex w-full items-center justify-end">
         <ModalButton
           label="Create Schedule"
-          view={<ScheduleForm doctorId={id} />}
+          view={<CreateScheduleForm doctorId={id} />}
           customSize="600px"
           className="mb-5 mt-0"
         />
       </Flex>
+
       <Calendar
         localizer={localizer}
-        events={calendarEvent}
+        events={events}
         views={views}
         formats={formats}
-        startAccessor="start"
-        endAccessor="end"
+        startAccessor="start_date"
+        endAccessor="end_date"
         dayLayoutAlgorithm="no-overlap"
         onSelectEvent={handleSelectEvent}
+        onSelectSlot={handleSelectSlot}
         selectable
         scrollToTime={scrollToTime}
         className={cn(

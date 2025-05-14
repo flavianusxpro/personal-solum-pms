@@ -1,4 +1,5 @@
 import {
+  deleteSchedule,
   getlistSchedule,
   postCreateSchedule,
   putUpdateSchedule,
@@ -6,12 +7,13 @@ import {
 import {
   IParamGetListSchedule,
   IPayloadPostCreateSchedule,
+  IPayloadPutUpdateSchedule,
 } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 export function useGetListSchedule(params: IParamGetListSchedule) {
   return useQuery({
-    queryKey: ['getListSchedule', params],
+    queryKey: ['getListSchedule' + params],
     queryFn: () => getlistSchedule(params),
   });
 }
@@ -27,7 +29,13 @@ export function usePostCreateSchedule() {
 export function usePutUpdateSchedule() {
   return useMutation({
     mutationKey: ['putUpdateSchedule'],
-    mutationFn: (payload: IPayloadPostCreateSchedule) =>
+    mutationFn: (payload: IPayloadPutUpdateSchedule) =>
       putUpdateSchedule(payload),
+  });
+}
+
+export function useDeleteSchedule() {
+  return useMutation({
+    mutationFn: deleteSchedule,
   });
 }

@@ -160,6 +160,7 @@ export default function PatientDetails({
         watch,
         formState: { errors },
       }) => {
+        console.log('🚀 ~ errors:', errors);
         return (
           <>
             <div className="mb-10 grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
