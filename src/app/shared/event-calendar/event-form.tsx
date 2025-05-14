@@ -108,60 +108,53 @@ export default function EventForm({
       </Text>
     );
 
-    if (isNewEvent) {
-      mutateCreateSchedule(
-        {
-          title: data.title,
-          description: data.description ?? '',
-          start_date: dayjs(data.startDate).format('YYYY-MM-DD HH:mm'),
-          end_date: dayjs(data.endDate).format('YYYY-MM-DD HH:mm'),
-          doctorId: Number(data.doctor),
-          break_times: data.breakTimes?.map((date) => ({
-            start_date: dayjs(date.start).format('YYYY-MM-DD HH:mm'),
-            end_date: dayjs(date.end).format('YYYY-MM-DD HH:mm'),
-          })),
-        },
-        {
-          onSuccess: () => {
-            toast.success('Event Created Successfully');
-            refetch();
-            closeModal();
-          },
-          onError: (error: any) => {
-            toast.error(
-              error?.response?.data?.message ?? 'Something went wrong'
-            );
-          },
-        }
-      );
-    } else {
-      mutateUpdateSchedule(
-        {
-          id: event?.id,
-          title: data.title,
-          description: data.description ?? '',
-          start_date: dayjs(data.startDate).format('YYYY-MM-DD HH:mm'),
-          end_date: dayjs(data.endDate).format('YYYY-MM-DD HH:mm'),
-          doctorId: Number(data.doctor),
-          break_times: data.breakTimes?.map((date) => ({
-            start_date: dayjs(date.start).format('YYYY-MM-DD HH:mm'),
-            end_date: dayjs(date.end).format('YYYY-MM-DD HH:mm'),
-          })),
-        },
-        {
-          onSuccess: () => {
-            toast.success('Event Updated Successfully');
-            refetch();
-            closeModal();
-          },
-          onError: (error: any) => {
-            toast.error(
-              error?.response?.data?.message ?? 'Something went wrong'
-            );
-          },
-        }
-      );
-    }
+    // if (isNewEvent) {
+    //   mutateCreateSchedule(
+    //     {
+    //       description: data.description ?? '',
+    //       end_date: dayjs(data.endDate).format('YYYY-MM-DD HH:mm'),
+    //       doctorId: Number(data.doctor),
+    //       break_times: data.breakTimes?.map((date) => ({
+    //         start_date: dayjs(date.start).format('YYYY-MM-DD HH:mm'),
+    //         end_date: dayjs(date.end).format('YYYY-MM-DD HH:mm'),
+    //       })),
+    //     },
+    //     {
+    //       onSuccess: () => {
+    //         toast.success('Event Created Successfully');
+    //         refetch();
+    //         closeModal();
+    //       },
+    //       onError: (error: any) => {
+    //         toast.error(
+    //           error?.response?.data?.message ?? 'Something went wrong'
+    //         );
+    //       },
+    //     }
+    //   );
+    // } else {
+    //   mutateUpdateSchedule(
+    //     {
+    //       title: data.title,
+    //       description: data.description ?? '',
+    //       start_date: dayjs(data.startDate).format('YYYY-MM-DD HH:mm'),
+    //       end_date: dayjs(data.endDate).format('YYYY-MM-DD HH:mm'),
+    //       doctorId: Number(data.doctor),
+    //     },
+    //     {
+    //       onSuccess: () => {
+    //         toast.success('Event Updated Successfully');
+    //         refetch();
+    //         closeModal();
+    //       },
+    //       onError: (error: any) => {
+    //         toast.error(
+    //           error?.response?.data?.message ?? 'Something went wrong'
+    //         );
+    //       },
+    //     }
+    //   );
+    // }
   };
 
   return (
