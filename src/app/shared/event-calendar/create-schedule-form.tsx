@@ -122,19 +122,16 @@ export default function CreateScheduleForm({
     control,
     name: 'dates',
   });
-  console.log('🚀 ~ weekFields:', weekFields);
 
   const {
     fields: dailyBreakFields,
     append: appendDailyBreakField,
     update: updateDailyBreakField,
     remove: removeDailyBreakTime,
-    replace: replaceDailyBreakField,
   } = useFieldArray({
     control,
     name: 'dailyBreakTimes',
   });
-  console.log('🚀 ~ dailyBreakFields:', dailyBreakFields);
 
   const onSubmit: SubmitHandler<DoctorScheduleFormType> = (data) => {
     const interval = data.interval; // one-week, two-weeks, three-weeks, four-weeks, custom
