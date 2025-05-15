@@ -63,6 +63,7 @@ export const routes = {
     appointmentList: '/appointment/list',
   },
   calendar: '/calendar',
+  globalCalendar: '/global-calendar',
   forms: {
     profileSettings: '/forms/profile-settings',
     notificationPreference: '/forms/profile-settings/notification',

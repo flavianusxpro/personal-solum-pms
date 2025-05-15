@@ -73,6 +73,12 @@ export const adminMenuItems = [
     permissionReadName: ['calendar'],
   },
   {
+    name: 'Global Calendar (coming soon)',
+    href: routes.globalCalendar,
+    icon: <PiCalendar />,
+    permissionReadName: ['calendar'],
+  },
+  {
     name: 'Patients',
     href: routes.patient.dashboard,
     icon: <PiUserCirclePlus />,

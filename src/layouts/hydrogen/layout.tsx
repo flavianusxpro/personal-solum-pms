@@ -21,6 +21,7 @@ export default function HydrogenLayout({
       routes.forms.profileSettings,
       routes.pharmachy,
       routes.requestCallBack,
+      routes.globalCalendar,
     ],
     []
   );
