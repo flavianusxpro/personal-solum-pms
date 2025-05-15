@@ -2,12 +2,15 @@ import cn from '@/core/utils/class-names';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import { ActionIcon, Tooltip } from 'rizzui';
 
-export default function ActionButton({
+export default function ActionTooltipButton({
   className,
   children,
+  tooltipContent,
   onClick,
   variant,
   buttonSize = 'sm',
+  tooltipSize = 'sm',
+  tootlipColor = 'invert',
 }: {
   className?: string;
   children?: React.ReactNode;
@@ -38,7 +41,14 @@ export default function ActionButton({
         className
       )}
     >
-      <span>{children}</span>
+      <Tooltip
+        size={tooltipSize}
+        color={tootlipColor}
+        content={tooltipContent}
+        placement="top"
+      >
+        <span>{children}</span>
+      </Tooltip>
     </ActionIcon>
   );
 }

@@ -28,7 +28,17 @@ export const getColumns = ({ data, openModal }: Columns) => {
     dataIndex: name,
     key: name,
     width: 200,
-    render: (value: string) => <Text className="font-medium">{value}</Text>,
+    render: (value: string) => (
+      <>
+        {value ? (
+          <div className="w-fit rounded-md bg-cyan-100 p-2">
+            <Text className="font-medium">{value}</Text>
+          </div>
+        ) : (
+          '-'
+        )}
+      </>
+    ),
   }));
 
   return [baseColumn, ...doctorColumns];

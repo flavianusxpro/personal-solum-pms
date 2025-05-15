@@ -3,7 +3,7 @@
 import { Button, Text } from 'rizzui';
 
 interface TableHeaderProps {
-  checkedItems?: string[];
+  checkedItems: string[];
   isCustomHeader?: boolean;
 }
 

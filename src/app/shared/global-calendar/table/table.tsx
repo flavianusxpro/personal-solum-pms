@@ -9,21 +9,60 @@ import { useGetAppointments } from '@/hooks/useAppointment';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 import TableHeader from '../../ui/table-header';
 import CSelect from '../../ui/select';
-import { Flex } from 'rizzui';
+import { Flex, Input, Loader } from 'rizzui';
+import { PiArrowLeft, PiArrowRight } from 'react-icons/pi';
+import dayjs from 'dayjs';
+import ActionButton from '../../ui/action-tooltip-button';
+import { useGetAllClinics } from '@/hooks/useClinic';
 
 export default function GlobalCalendarTable({}: {}) {
   const { openModal } = useModal();
   const [pageSize] = useState(100);
+  const [selectedDate, setSelectedDate] = useState(
+    dayjs().format('YYYY-MM-DD')
+  );
+  const [selectedBranch, setSelectedBranch] = useState<number | null>(null);
 
-  const {
-    data,
-    isLoading: isLoadingGetRoles,
-    refetch,
-  } = useGetAppointments({
+  const { data, isLoading: isLoadingGetAppointments } = useGetAppointments({
     page: 1,
     perPage: pageSize,
     sort: 'DESC',
   });
+
+  const { data: dataClinics } = useGetAllClinics({
+    page: 1,
+    perPage: 100,
+    sort: 'DESC',
+    role: 'admin',
+  });
+
+  const clinicOptions = useMemo(() => {
+    if (dataClinics?.data) {
+      return dataClinics.data.map((clinic) => ({
+        label: clinic.name,
+        value: clinic.id,
+      }));
+    }
+    return [];
+  }, [dataClinics]);
+
+  function previousDate() {
+    setSelectedDate((prevDate) => {
+      const prevDateObj = dayjs(prevDate);
+      return prevDateObj.isValid()
+        ? prevDateObj.subtract(1, 'day').format('YYYY-MM-DD')
+        : dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+    });
+  }
+
+  function nextDate() {
+    setSelectedDate((prevDate) => {
+      const prevDateObj = dayjs(prevDate);
+      return prevDateObj.isValid()
+        ? prevDateObj.add(1, 'day').format('YYYY-MM-DD')
+        : dayjs().add(1, 'day').format('YYYY-MM-DD');
+    });
+  }
 
   function getTimeSlots(
     startTime: string,
@@ -84,44 +123,63 @@ export default function GlobalCalendarTable({}: {}) {
     return formatAppointments(data?.data ?? []);
   }, [data?.data, formatAppointments]);
 
-  // const { isLoading, tableData } = useTable([], pageSize);
-
   const columns = React.useMemo(
     () =>
       getColumns({
-        data: formatAppointments(data?.data ?? []),
+        data: tableData,
         openModal,
       }),
-    [data?.data, formatAppointments, openModal]
+    [openModal, tableData]
   );
-
-  const { visibleColumns } = useColumn(columns);
 
   return (
     <div>
-      {tableData && tableData?.length > 0 && (
+      {tableData && columns && tableData?.length > 0 && columns.length > 0 ? (
         <ControlledTable
-          // isLoading={isLoading }
+          isLoading={isLoadingGetAppointments}
           showLoadingText={true}
           data={tableData}
           // @ts-ignore
-          columns={visibleColumns}
+          columns={columns}
           className={
             'rounded-md border border-muted text-sm shadow-sm [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:h-60 [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:justify-center [&_.rc-table-row:last-child_td.rc-table-cell]:border-b-0 [&_thead.rc-table-thead]:border-t-0'
           }
           tableHeader={
-            <TableHeader>
+            <TableHeader isCustomHeader checkedItems={[]}>
               <CSelect
+                value={selectedBranch}
                 className="w-40"
                 placeholder="Select Branch"
-                options={[]}
-                onChange={() => {}}
+                options={clinicOptions}
+                onChange={(val: number) => setSelectedBranch(val)}
               />
 
-              <Flex></Flex>
+              <Flex className="w-fit" align="center">
+                <ActionButton
+                  variant="outline"
+                  tooltipContent=""
+                  onClick={previousDate}
+                >
+                  <PiArrowLeft className="text-muted-foreground" size={20} />
+                </ActionButton>
+                <Input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(event) => setSelectedDate(event.target.value)}
+                />
+                <ActionButton
+                  onClick={nextDate}
+                  variant="outline"
+                  tooltipContent=""
+                >
+                  <PiArrowRight className="text-muted-foreground" size={20} />
+                </ActionButton>
+              </Flex>
             </TableHeader>
           }
         />
+      ) : (
+        <Loader />
       )}
     </div>
   );
