@@ -100,7 +100,7 @@ export default function TabCalendar({
   const handleSelectSlot = useCallback(
     ({ start, end }: { start: Date; end: Date }) => {
       openModal({
-        view: <CreateScheduleForm doctorId={id} start={start} />,
+        view: <CreateScheduleForm doctorId={id} start={start} end={end} />,
         customSize: '650px',
       });
     },

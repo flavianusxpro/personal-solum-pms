@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 export const doctorScheduleFormSchema = z.object({
-  interval: z.string().min(1, { message: 'Interval is required' }),
   description: z.string().optional(),
   dates: z.array(
     z.object({

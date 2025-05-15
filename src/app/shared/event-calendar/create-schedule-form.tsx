@@ -34,18 +34,31 @@ interface CreateScheduleProps {
   isEdit?: boolean;
   doctorId: string;
   start?: Date;
+  end?: Date;
 }
 
 export default function CreateScheduleForm({
   doctorId,
   isEdit,
   start,
+  end,
 }: CreateScheduleProps) {
   const { closeModal } = useModal();
   const startDay = dayjs(start).hour(9).minute(0).toDate();
-  const endDay = dayjs(start).hour(17).minute(0).toDate();
+  const endDay = dayjs(end).hour(17).minute(0).toDate();
 
-  const weekInitialValue = [
+  const [selectedDateRange, setSelectedDaterange] = useState({
+    start_date: startDay,
+    end_date: endDay,
+  });
+  const [interval, setInterval] = useState(start ? 'custom' : 'one-week');
+
+  const weekInitialValue: {
+    label: string;
+    day: number;
+    start_date?: Date;
+    end_date?: Date;
+  }[] = [
     {
       label: 'Monday',
       day: 1,
@@ -82,9 +95,30 @@ export default function CreateScheduleForm({
     },
     {
       label: 'Sunday',
-      day: 7,
+      day: 0,
     },
   ];
+
+  function selectedInitialWeek() {
+    const { start_date, end_date } = selectedDateRange;
+
+    if (!start_date || !end_date) return;
+
+    const startDateValue = dayjs(start_date).toDate();
+    const endDateValue = dayjs(end_date).toDate();
+
+    let selectedDay = dayjs(start_date).day(); // 0 (Sunday) - 6 (Saturday)
+
+    const selectedDays = weekInitialValue
+      .filter((item) => item.day === selectedDay)
+      .map((item) => ({
+        ...item,
+        start_date: startDateValue,
+        end_date: endDateValue,
+      }));
+
+    return selectedDays;
+  }
 
   const { mutate, isPending } = usePostCreateSchedule();
   const { refetch } = useGetListSchedule({
@@ -106,11 +140,12 @@ export default function CreateScheduleForm({
     handleSubmit,
     watch,
     register,
+    setValue,
     formState: { errors },
   } = useForm<DoctorScheduleFormType>({
+    mode: 'all',
     defaultValues: {
-      interval: 'one-week',
-      dates: weekInitialValue,
+      dates: interval !== 'custom' ? weekInitialValue : selectedInitialWeek(),
     },
   });
 
@@ -134,16 +169,6 @@ export default function CreateScheduleForm({
   });
 
   const onSubmit: SubmitHandler<DoctorScheduleFormType> = (data) => {
-    const interval = data.interval; // one-week, two-weeks, three-weeks, four-weeks, custom
-    const intervalMapping: Record<string, number> = {
-      'one-week': 1,
-      'two-weeks': 2,
-      'three-weeks': 3,
-      'four-weeks': 4,
-    };
-
-    const weeksToRepeat = intervalMapping[interval] || 1; // Default to 1 week if custom or undefined
-
     function dateRange() {
       const startDate = dayjs(data.dates[0].start_date);
       let endDate: dayjs.Dayjs;
@@ -157,7 +182,11 @@ export default function CreateScheduleForm({
       } else if (interval === 'four-weeks') {
         endDate = startDate.add(4, 'week');
       } else {
-        endDate = startDate.add(weeksToRepeat, 'week');
+        // For custom, use the end date from the form
+        const customEndDate = selectedDateRange.end_date;
+        endDate = customEndDate
+          ? dayjs(customEndDate)
+          : startDate.add(1, 'week');
       }
 
       return {
@@ -181,7 +210,7 @@ export default function CreateScheduleForm({
     let current = dayjs(start_range).clone();
 
     while (current.isBefore(end_range) || current.isSame(end_range, 'day')) {
-      const adjustedDay = current.day() === 0 ? 7 : current.day(); // Convert Sunday (0) to 7
+      const adjustedDay = current.day();
 
       validTemplateDates.forEach((templateDate) => {
         if (templateDate.day === adjustedDay) {
@@ -230,7 +259,7 @@ export default function CreateScheduleForm({
     const payloadSettingAppointment: IPayloadPostCreateSchedule = {
       doctorId: Number(doctorId),
       description: data.description || '',
-      dates: payloadDates,
+      dates: payloadDates.slice(0, -1), // Remove the last index
     };
 
     mutate(payloadSettingAppointment, {
@@ -319,6 +348,13 @@ export default function CreateScheduleForm({
     });
   }
 
+  function handleChangeInterval(value: string) {
+    if (value !== 'custom') {
+      replaceWeekField(weekInitialValue);
+    }
+    setInterval(value);
+  }
+
   return (
     <div className="m-auto p-4 md:px-7 md:py-10">
       <div className="mb-6 flex items-center justify-between">
@@ -339,18 +375,13 @@ export default function CreateScheduleForm({
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-1 gap-5 @container [&_label]:font-medium"
       >
-        <Controller
-          control={control}
-          name="interval"
-          render={({ field }) => (
-            <CSelect
-              {...field}
-              label="Repeat Schedule"
-              options={weekIntervalOption}
-              className={'w-fit'}
-              labelClassName="font-semibold"
-            />
-          )}
+        <CSelect
+          value={interval}
+          onChange={handleChangeInterval}
+          label="Repeat Schedule"
+          options={weekIntervalOption}
+          className={'w-fit'}
+          labelClassName="font-semibold"
         />
 
         {weekFields.map((item, index) => (
@@ -417,7 +448,7 @@ export default function CreateScheduleForm({
                     <PiPlusBold className="h-[18px] w-[18px]" />
                   </ActionTooltipButton>
                 )}
-                {item.start_date && (
+                {item.start_date && !start && (
                   <ActionTooltipButton
                     onClick={() => handleCopyTimeToAllDays(index)}
                     tooltipContent="Copy time to all days"
