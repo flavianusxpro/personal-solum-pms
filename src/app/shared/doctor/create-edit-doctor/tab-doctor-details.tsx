@@ -120,7 +120,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
       email: data.email,
       date_of_birth: data.date_of_birth as string,
       gender: data.gender as string,
-      mobile_number: data.mobile_number as string,
+      mobile_number: ('+' + data.mobile_number) as string,
       description: data.about,
       language: data.language,
     };
@@ -156,7 +156,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
           last_name: dataDoctor?.last_name ?? '',
           email: dataDoctor?.email ?? '',
           gender: dataDoctor?.gender ?? '',
-          mobile_number: dataDoctor?.mobile_number ?? '',
+          mobile_number: dataDoctor?.mobile_number?.replace('+', '') ?? '',
           date_of_birth: dataDoctor?.date_of_birth ?? '',
           country: dataDoctor?.country ?? '',
           street_name: dataDoctor?.street_name ?? '',

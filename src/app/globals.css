@@ -1419,7 +1419,7 @@ div[style='z-index: 1000001;'],
 }
 
 .react-calendar__tile--now {
-  @apply border border-solid border-gray-950 bg-green-200 text-gray-950;
+  @apply border border-solid border-gray-950 bg-blue-200 text-gray-950;
 }
 .react-calendar__month-view__days__day--weekend {
   @apply !text-red-dark;

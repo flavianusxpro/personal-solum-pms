@@ -54,7 +54,7 @@ export default function CreatePatienModal() {
       password: data.password,
       date_of_birth: data.date_of_birth as string,
       gender: data.gender as string,
-      mobile_number: data.mobile_number as string,
+      mobile_number: ('+' + data.mobile_number) as string,
       status: 1,
       timezone: data.timezone ?? 'Australia/Sydney',
       medicare_card_number: data.medicare_card as string,

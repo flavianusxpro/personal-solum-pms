@@ -98,6 +98,7 @@ export default function CreatDoctorModal() {
       clinic_ids: data.clinic_ids.map((item) => parseInt(item)),
       doctor: {
         ...data,
+        mobile_number: '+' + data.mobile_number,
         specialist_type: data.specialist_type.map((item) => parseInt(item)),
         treatment_type: data.treatment_type.map((item) => parseInt(item)),
       },

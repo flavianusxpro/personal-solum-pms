@@ -85,7 +85,7 @@ export default function PatientDetails({
       medicare_expired_date: dayjs(data.medicare_expiry).format(
         'DD MM YYYY'
       ) as string,
-      mobile_number: data.mobile_number as string,
+      mobile_number: ('+' + data.mobile_number) as string,
       status: 1,
       timezone: data.timezone ?? 'Australia/Sydney',
       country: data.country,
@@ -131,7 +131,7 @@ export default function PatientDetails({
           last_name: dataPatient?.last_name ?? '',
           email: dataPatient?.email ?? '',
           gender: dataPatient?.gender ?? '',
-          mobile_number: dataPatient?.mobile_number ?? '',
+          mobile_number: dataPatient?.mobile_number?.replace('+', '') ?? '',
           date_of_birth: dataPatient?.date_of_birth ?? '',
           medicare_card: dataPatient?.medicare_card_number ?? '',
           medicare_expiry: dataPatient?.medicare_expired_date
