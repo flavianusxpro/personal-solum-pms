@@ -26,6 +26,7 @@ import QuillLoader from '@/core/components/loader/quill-loader';
 import SelectLoader from '@/core/components/loader/select-loader';
 import Divider from '@/app/shared/ui/divider';
 import { useMemo } from 'react';
+import { PhoneNumber } from '@/core/ui/phone-input';
 
 const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
   ssr: false,
@@ -229,12 +230,19 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
                   />
                 </FormGroup>
                 <FormGroup title="Phone Number" isLabel>
-                  <Input
-                    placeholder="Phone Number"
-                    {...register('mobile_number')}
-                    error={errors.mobile_number?.message}
-                    className="flex-grow"
-                    disabled={isView}
+                  <Controller
+                    name="mobile_number"
+                    control={control}
+                    render={({ field }) => (
+                      <PhoneNumber
+                        {...field}
+                        country="au"
+                        preferredCountries={['au']}
+                        placeholder="Phone Number"
+                        error={errors.mobile_number?.message}
+                        disabled={isView}
+                      />
+                    )}
                   />
                 </FormGroup>
 

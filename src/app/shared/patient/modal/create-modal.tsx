@@ -24,6 +24,7 @@ import {
 import { useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { DatePicker } from '@/core/ui/datepicker';
+import { PhoneNumber } from '@/core/ui/phone-input';
 
 export default function CreatePatienModal() {
   const { closeModal } = useModal();
@@ -168,11 +169,18 @@ export default function CreatePatienModal() {
                   />
                 </FormGroup>
                 <FormGroup title="Phone Number" isLabel>
-                  <Input
-                    placeholder="Phone Number"
-                    {...register('mobile_number')}
-                    error={errors.mobile_number?.message}
-                    className="flex-grow"
+                  <Controller
+                    name="mobile_number"
+                    control={control}
+                    render={({ field }) => (
+                      <PhoneNumber
+                        {...field}
+                        country="au"
+                        preferredCountries={['au']}
+                        placeholder="Phone Number"
+                        error={errors.mobile_number?.message}
+                      />
+                    )}
                   />
                 </FormGroup>
 

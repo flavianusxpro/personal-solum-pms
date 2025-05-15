@@ -23,6 +23,7 @@ import dynamic from 'next/dynamic';
 import { useGetRoles } from '@/hooks/useRole';
 import { useGetAllClinics } from '@/hooks/useClinic';
 import { error } from 'console';
+import { PhoneNumber } from '@/core/ui/phone-input';
 
 const MultySelect = dynamic(
   () => import('rizzui').then((mod) => mod.MultiSelect),
@@ -181,11 +182,18 @@ export default function CreatDoctorModal() {
                   />
                 </FormGroup>
                 <FormGroup title="Phone Number" isLabel>
-                  <Input
-                    placeholder="Phone Number"
-                    {...register('mobile_number')}
-                    error={errors.mobile_number?.message}
-                    className="flex-grow"
+                  <Controller
+                    name="mobile_number"
+                    control={control}
+                    render={({ field }) => (
+                      <PhoneNumber
+                        {...field}
+                        country="au"
+                        preferredCountries={['au']}
+                        placeholder="Phone Number"
+                        error={errors.mobile_number?.message}
+                      />
+                    )}
                   />
                 </FormGroup>
 
