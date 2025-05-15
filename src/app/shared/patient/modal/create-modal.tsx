@@ -44,24 +44,6 @@ export default function CreatePatienModal() {
   });
   const { mutate: mutateCreatePatient, isPending } = useCreatePatient();
 
-  const patientProblemOptions = useMemo(
-    () =>
-      dataPatientProblem?.map((item) => ({
-        label: item.name,
-        value: item.id.toString(),
-      })),
-    [dataPatientProblem]
-  );
-
-  const patientTypeOptions = useMemo(
-    () =>
-      dataPatientTypes?.map((item) => ({
-        label: item.name,
-        value: item.id.toString(),
-      })),
-    [dataPatientTypes]
-  );
-
   const onSubmit: SubmitHandler<PatientDetailsFormTypes> = (data) => {
     const payload: IPayloadCreateEditPatient = {
       title: data.title,
@@ -83,9 +65,7 @@ export default function CreatePatienModal() {
       state: data.state,
       country: data.country,
       potition_on_card: data.position_of_card,
-
-      // setValue('patient_problem', dataPatient.patient_problem);
-      // setValue('patient_type', dataPatient.patient_type);
+      patient_type: 'New Patient',
     };
 
     mutateCreatePatient(payload, {
@@ -122,7 +102,7 @@ export default function CreatePatienModal() {
                 <PiX className="h-6 w-6" />
               </ActionIcon>
             </Flex>
-            <div className="mb-16 grid max-h-dvh grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
+            <div className="mb-40 grid max-h-dvh grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
               <div className="flex flex-col gap-7">
                 <FormGroup
                   title="Personal Info"
@@ -173,6 +153,7 @@ export default function CreatePatienModal() {
                         label=""
                         placeholder="Select Gender"
                         options={genderOption}
+                        error={errors?.gender?.message}
                       />
                     )}
                   />
@@ -234,6 +215,7 @@ export default function CreatePatienModal() {
                   minDate={new Date()}
                   dateFormat="MM/YY"
                   error={errors.medicare_expiry?.message}
+                  placeholderText="MM/YY"
                 />
                 {/* <FormGroup title="Patient Type" isLabel>
                   <Controller

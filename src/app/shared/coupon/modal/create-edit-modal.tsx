@@ -187,7 +187,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
                     placeholder="Select Type"
                     options={[
                       { value: 'general', label: 'General' },
-                      { value: 'pharmachy', label: 'Pharmachy' },
+                      { value: 'pharmacy', label: 'Pharmacy' },
                       { value: 'user', label: 'User' },
                       { value: 'product', label: 'Product' },
                     ]}
@@ -196,15 +196,15 @@ export default function CreateEditModal({ data, isView }: IProps) {
                   />
                 )}
               />
-              {watch('select_type') === 'pharmachy' && (
+              {watch('select_type') === 'pharmacy' && (
                 <Controller
                   control={control}
                   name="target_id"
                   render={({ field }) => (
                     <CSelect
                       {...field}
-                      label="Select Pharmachy"
-                      placeholder="Select Pharmachy"
+                      label="Select Pharmacy"
+                      placeholder="Select Pharmacy"
                       options={pharmachyOptions}
                       error={errors.target_id?.message}
                       disabled={isView}

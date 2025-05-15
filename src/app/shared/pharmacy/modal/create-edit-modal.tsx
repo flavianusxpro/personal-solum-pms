@@ -185,9 +185,9 @@ export default function CreateEditModal({ data, isView }: IProps) {
                 )}
               />
               <Input
-                label="Pharmachy Name"
+                label="Pharmacy Name"
                 {...register('name')}
-                placeholder="Pharmachy Name"
+                placeholder="Pharmacy Name"
                 className="w-full"
                 error={errors.name?.message}
                 disabled={isView}

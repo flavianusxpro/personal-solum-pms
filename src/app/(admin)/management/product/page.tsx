@@ -6,11 +6,11 @@ import ModalButton from '@/app/shared/ui/modal-button/modal-button';
 import CreateEditItemModal from '@/app/shared/product/modal/create-edit-modal';
 
 const pageHeader = {
-  title: 'Products',
+  title: 'Product & Service',
   breadcrumb: [
     {
       href: routes.management.product.list,
-      name: 'Products',
+      name: 'Product & Service',
     },
     {
       name: 'List',

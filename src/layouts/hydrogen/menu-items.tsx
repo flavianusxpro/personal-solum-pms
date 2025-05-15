@@ -97,7 +97,7 @@ export const adminMenuItems = [
     ],
   },
   {
-    name: 'Pharmachy',
+    name: 'Pharmacy',
     href: routes.pharmachy,
     icon: <PiHospital />,
     permissionReadName: ['setting'],
@@ -115,7 +115,7 @@ export const adminMenuItems = [
     permissionReadName: ['management'],
     dropdownItems: [
       {
-        name: 'Products',
+        name: 'Product & Service',
         href: routes.management.product.list,
         icon: <PiBoundingBox />,
       },

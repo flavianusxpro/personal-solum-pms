@@ -37,7 +37,7 @@ export default function Page() {
           >
             <Button as="span" className="w-full @lg:w-auto">
               <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
-              Add Pharmachy
+              Add Pharmacy
             </Button>
           </Button>
         </div>

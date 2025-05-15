@@ -52,7 +52,7 @@ export const routes = {
     currency: '/setting/currency',
   },
 
-  pharmachy: '/pharmachy',
+  pharmachy: '/pharmacy',
 
   bookAppointment: '/bookings',
   consentForm: '/form/consent-form',

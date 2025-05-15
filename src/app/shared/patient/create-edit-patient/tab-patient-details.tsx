@@ -82,7 +82,7 @@ export default function PatientDetails({
       gender: data.gender as string,
       medicare_card_number: data.medicare_card as string,
       medicare_expired_date: dayjs(data.medicare_expiry).format(
-        'MMMM YYYY'
+        'DD MM YYYY'
       ) as string,
       mobile_number: data.mobile_number as string,
       status: 1,
@@ -96,6 +96,7 @@ export default function PatientDetails({
       suburb: data.suburb,
       postcode: data.post_code,
       unit_number: data.unit_number,
+      photo: data.avatar,
     };
 
     if (id) {
@@ -145,10 +146,7 @@ export default function PatientDetails({
           suburb: dataPatient?.suburb ?? '',
           state: dataPatient?.state ?? '',
           post_code: dataPatient?.postcode ?? '',
-          avatar: {
-            name: `${dataPatient?.first_name}`,
-            url: dataPatient?.photo || undefined,
-          },
+          avatar: dataPatient?.photo || undefined,
         },
       }}
     >
@@ -160,7 +158,6 @@ export default function PatientDetails({
         watch,
         formState: { errors },
       }) => {
-        console.log('🚀 ~ errors:', errors);
         return (
           <>
             <div className="mb-10 grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">

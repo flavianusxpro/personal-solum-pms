@@ -32,7 +32,7 @@ export const navItems = [
   },
   {
     value: 'documentation',
-    label: 'Documentations',
+    label: 'Correspondence',
   },
   {
     value: 'assign',
@@ -59,12 +59,12 @@ export default function CreateEditPatient({
 
   const pageHeader = {
     title: id
-      ? `${dataPatient?.first_name ?? '-'} ${dataPatient?.last_name ?? '-'}`
-      : 'Create Doctor',
+      ? `${dataPatient?.first_name ?? '-'} ${dataPatient?.last_name ?? '-'} (${dataPatient?.patient_type})`
+      : 'Create Patient',
     breadcrumb: [
       {
         href: routes.patient.dashboard,
-        name: 'Patients',
+        name: 'Patient',
       },
       {
         name: 'Account Settings',

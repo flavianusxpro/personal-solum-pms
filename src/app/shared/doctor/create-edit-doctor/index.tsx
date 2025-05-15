@@ -30,11 +30,11 @@ export const navItems = [
   },
   {
     value: 'billing',
-    label: 'Report Billing',
+    label: 'Billing Report',
   },
   {
     value: 'requirement',
-    label: 'Requirement',
+    label: 'Compliance',
   },
   {
     value: 'calendar',

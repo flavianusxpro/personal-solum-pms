@@ -28,17 +28,13 @@ export const patientDetailsFormSchema = z.object({
   description: z.string().optional(),
   notes: z.string().optional(),
 
-  medicare_card: z
-    .string()
-    .min(10)
-    .max(13, { message: messages.maxLength })
-    .optional(),
-  medicare_expiry: z.date().optional(),
+  medicare_card: z.string().min(10).max(13, { message: messages.maxLength }),
+  medicare_expiry: z.date(),
   position_of_card: z
     .string()
     .max(2, { message: messages.maxLength })
     .optional(),
-  avatar: fileSchema.optional(),
+  avatar: z.string().optional(),
   password: z.string().optional(),
   timezone: z.string().optional(),
   patient_type: z.string().optional(),

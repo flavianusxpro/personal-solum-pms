@@ -76,6 +76,7 @@ export interface IPayloadCreateEditPatient {
   emergency_relationship?: string;
   patient_problem?: string;
   patient_type?: string;
+  photo?: string;
 }
 
 export interface IPayloadCreateEditDoctor {
