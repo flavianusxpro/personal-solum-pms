@@ -172,7 +172,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
           language: dataDoctor?.language
             ? (JSON.parse(dataDoctor.language) as (string | undefined)[])
             : [],
-          avatar: dataDoctor?.photo ? { url: dataDoctor.photo } : null,
+          avatar: dataDoctor?.photo,
         },
       }}
     >

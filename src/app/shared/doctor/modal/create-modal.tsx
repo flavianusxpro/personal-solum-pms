@@ -134,7 +134,7 @@ export default function CreatDoctorModal() {
                 <PiX className="h-6 w-6" />
               </ActionIcon>
             </Flex>
-            <div className="mb-10 grid grid-cols-1 gap-x-7 gap-y-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-x-7 gap-y-4">
               <div className="flex flex-col gap-7">
                 <FormGroup
                   title="Personal Info"
@@ -415,7 +415,6 @@ export default function CreatDoctorModal() {
               isLoading={isPending}
               altBtnText="Cancel"
               submitBtnText="Save"
-              isSticky={false}
             />
           </div>
         );
