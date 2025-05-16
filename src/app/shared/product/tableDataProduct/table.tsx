@@ -159,7 +159,7 @@ export default function ProductTable({
         variant={variant}
         isLoading={isLoading || isLoadingGetItems}
         showLoadingText={true}
-        data={tableData}
+        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         // expandable={{

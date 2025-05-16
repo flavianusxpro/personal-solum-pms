@@ -102,7 +102,7 @@ export default function RequestCallBackTable({}: {}) {
       <ControlledTable
         isLoading={isLoading || isLoadingGetRoles}
         showLoadingText={true}
-        data={tableData}
+        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{

@@ -74,7 +74,7 @@ export default function BillingHistoryTable({
     <div className={className}>
       <ControlledTable
         isLoading={isLoading}
-        data={tableData}
+        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         scroll={{ x: 1300 }}

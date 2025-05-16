@@ -187,6 +187,11 @@ export const adminMenuItems = [
         href: routes.setting.branch,
         icon: <PiUser />,
       },
+      {
+        name: 'Currency',
+        href: routes.setting.currency,
+        icon: <PiUser />,
+      },
     ],
   },
 ];

@@ -87,7 +87,7 @@ export default function AppointmentHistoryTable({
     >
       <ControlledTable
         isLoading={isLoading || isLoadingGetAppointments}
-        data={tableData}
+        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         scroll={{ x: 1300 }}

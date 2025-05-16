@@ -145,7 +145,7 @@ export default function UsersTable() {
     <div className="">
       <ControlledTable
         variant="modern"
-        data={tableData}
+        data={tableData ?? []}
         isLoading={isLoading}
         showLoadingText={true}
         // @ts-ignore

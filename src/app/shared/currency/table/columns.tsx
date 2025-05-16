@@ -5,58 +5,25 @@ import { HeaderCell } from '@/app/shared/ui/table';
 import EyeIcon from '@core/components/icons/eye';
 import PencilIcon from '@core/components/icons/pencil';
 import { ActionIcon, Badge, Checkbox, Flex, Text, Tooltip } from 'rizzui';
-import CreateEditRoleModal from '../modal/create-edit-modal';
-import { Currency, CurrencyState } from '@/store/currency';
-import { useState } from 'react';
+import CreateEditModal from '../modal/create-edit-modal';
+import {
+  Currency,
+  CurrencyState,
+  setActiveCurrencyAtom,
+} from '@/store/currency';
+import { useCallback, useMemo, useState } from 'react';
 import CSelect from '../../ui/select';
+import { useAtom } from 'jotai';
 
 type Columns = {
   data: CurrencyState['data'];
-  sortConfig?: any;
-  handleSelectAll: any;
-  checkedItems: string[];
   onDeleteItem: (id: string) => void;
-  onHeaderCellClick: (value: string) => void;
-  onChecked?: (id: string) => void;
   openModal: (props: any) => void;
 };
 
 type Row = Currency;
 
-export const getColumns = ({
-  data,
-  sortConfig,
-  checkedItems,
-  onDeleteItem,
-  onHeaderCellClick,
-  handleSelectAll,
-  onChecked,
-  openModal,
-}: Columns) => [
-  {
-    title: (
-      <div className="ps-2">
-        <Checkbox
-          title={'Select All'}
-          onChange={handleSelectAll}
-          checked={checkedItems.length === data.length}
-          className="cursor-pointer"
-        />
-      </div>
-    ),
-    dataIndex: 'checked',
-    key: 'checked',
-    width: 30,
-    render: (_: any, row: any) => (
-      <div className="inline-flex ps-2">
-        <Checkbox
-          className="cursor-pointer"
-          checked={checkedItems.includes(row.id)}
-          {...(onChecked && { onChange: () => onChecked(row.id) })}
-        />
-      </div>
-    ),
-  },
+export const getColumns = ({ data, onDeleteItem, openModal }: Columns) => [
   {
     title: <HeaderCell title="CODE" />,
     dataIndex: 'code',
@@ -73,18 +40,18 @@ export const getColumns = ({
   },
   {
     title: <HeaderCell title="SYMBOL" />,
-    dataIndex: 'name',
-    key: 'name',
+    dataIndex: 'symbol',
+    key: 'symbol',
     width: 200,
     render: (name: string) => <Text className="font-medium">{name}</Text>,
   },
-  // {
-  //   title: <HeaderCell title="Status" />,
-  //   dataIndex: 'name',
-  //   key: 'name',
-  //   width: 200,
-  //   render: (name: string, row: Row) => <StatusSelect id={row.id} selectItem={row} />,
-  // },
+  {
+    title: <HeaderCell title="Status" />,
+    dataIndex: 'name',
+    key: 'name',
+    width: 200,
+    render: (_: string, row: Row) => <StatusSelect selectItem={row} />,
+  },
   {
     // Need to avoid this issue -> <td> elements in a large <table> do not have table headers.
     title: <HeaderCell title="Actions" className="opacity-0" />,
@@ -105,7 +72,7 @@ export const getColumns = ({
             className="hover:text-gray-700"
             onClick={() =>
               openModal({
-                view: <CreateEditRoleModal data={row} />,
+                view: <CreateEditModal data={row} />,
               })
             }
           >
@@ -116,7 +83,7 @@ export const getColumns = ({
           <ActionIcon
             onClick={() =>
               openModal({
-                view: <CreateEditRoleModal isView data={row} />,
+                view: <CreateEditModal isView data={row} />,
               })
             }
             size="sm"
@@ -141,15 +108,15 @@ function getScheduleStatusBadge(status: number | string) {
     case 2:
       return (
         <Flex gap="1" align="center">
-          <Badge color="warning" renderAsDot />
-          <Text className="font-medium text-yellow-600">Pending</Text>
+          <Badge color="danger" renderAsDot />
+          <Text className="font-medium text-red-dark">Inactive</Text>
         </Flex>
       );
     case 1:
       return (
         <Flex gap="1" align="center">
-          <Badge color="info" renderAsDot />
-          <Text className="font-medium text-red-dark">Active</Text>
+          <Badge color="success" renderAsDot />
+          <Text className="font-medium text-green-500">Active</Text>
         </Flex>
       );
     default:
@@ -167,29 +134,16 @@ const statusOptions = [
   { label: 'Inactive', value: 2 },
 ];
 
-function StatusSelect({ selectItem, id }: { selectItem: number; id: number }) {
+function StatusSelect({ selectItem }: { selectItem: Row }) {
   const selectItemValue = statusOptions.find(
-    (option) => option.value === selectItem
+    (option) => option.value === (selectItem.isActive !== true ? 2 : 1)
   )?.value;
-  const [value, setValue] = useState(selectItemValue);
-
-  // const { mutate, isPending } = useUpdateAppointment();
+  const [_, setActiveStatus] = useAtom(setActiveCurrencyAtom);
 
   const handleChange = (value: number) => {
-    setValue(value);
-    // mutate(
-    //   { id, status: value },
-    //   {
-    //     onSuccess: () => {
-    //       toast.success('Status updated successfully');
-    //     },
-    //     onError: (error: any) => {
-    //       toast.error(
-    //         error?.response?.data?.message || 'Error updating status'
-    //       );
-    //     },
-    //   }
-    // );
+    if (setActiveStatus) {
+      setActiveStatus(selectItem);
+    }
   };
 
   return (
@@ -198,8 +152,8 @@ function StatusSelect({ selectItem, id }: { selectItem: number; id: number }) {
       dropdownClassName="h-auto"
       placeholder="Select Status"
       options={statusOptions}
-      value={value}
-      onChange={handleChange}
+      value={selectItemValue}
+      onChange={(val: number) => handleChange(val)}
       displayValue={(option: { value: number }) =>
         getScheduleStatusBadge(option.value)
       }

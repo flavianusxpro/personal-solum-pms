@@ -11,6 +11,7 @@ export interface Currency {
   decimal_digits: number;
   rounding: number;
   name_plural: string;
+  isActive: boolean;
 }
 
 export interface CurrencyState {
@@ -29,6 +30,7 @@ export const defaultCurrency: CurrencyState = {
       decimal_digits: 2,
       rounding: 0,
       name_plural: 'Australian dollars',
+      isActive: true,
     },
     {
       id: '2',
@@ -39,6 +41,7 @@ export const defaultCurrency: CurrencyState = {
       decimal_digits: 0,
       rounding: 0,
       name_plural: 'Indonesian rupiahs',
+      isActive: false,
     },
     {
       id: '3',
@@ -49,6 +52,7 @@ export const defaultCurrency: CurrencyState = {
       decimal_digits: 2,
       rounding: 0,
       name_plural: 'United States dollars',
+      isActive: false,
     },
     {
       id: '4',
@@ -59,9 +63,20 @@ export const defaultCurrency: CurrencyState = {
       decimal_digits: 2,
       rounding: 0,
       name_plural: 'euros',
+      isActive: false,
     },
   ],
-  active: null,
+  active: {
+    id: '1',
+    name: 'Australian Dollar',
+    code: 'AUD',
+    symbol: '$',
+    symbol_native: '$',
+    decimal_digits: 2,
+    rounding: 0,
+    name_plural: 'Australian dollars',
+    isActive: true,
+  },
 };
 
 // Original atom.
@@ -78,9 +93,15 @@ export const setActiveCurrencyAtom = atom(
   null,
   (get, set, newCurrency: Currency) => {
     const currency = get(currencyAtom);
+    const updatedData = currency.data.map((item) =>
+      item.id === newCurrency.id
+        ? { ...item, isActive: true }
+        : { ...item, isActive: false }
+    );
     const updatedCurrency = {
       ...currency,
-      active: newCurrency,
+      data: updatedData,
+      active: { ...newCurrency, isActive: true },
     };
     set(currencyAtom, updatedCurrency);
   }
@@ -95,6 +116,22 @@ export const addCurrencyAtom = atom(null, (get, set, newCurrency: Currency) => {
   };
   set(currencyAtom, updatedCurrency);
 });
+
+// Atom to update existing currency.
+export const updateCurrencyAtom = atom(
+  null,
+  (get, set, updatedCurrency: Currency) => {
+    const currency = get(currencyAtom);
+    const updatedCurrencyList = currency.data.map((currency) =>
+      currency.id === updatedCurrency.id ? updatedCurrency : currency
+    );
+    const updatedCurrencyState = {
+      ...currency,
+      data: updatedCurrencyList,
+    };
+    set(currencyAtom, updatedCurrencyState);
+  }
+);
 
 // Atom to remove currency.
 export const removeCurrencyAtom = atom(null, (get, set, currencyId: string) => {

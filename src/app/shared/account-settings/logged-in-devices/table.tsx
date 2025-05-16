@@ -76,7 +76,7 @@ export default function LoggedInDevices({
     <div className={className}>
       <ControlledTable
         isLoading={isLoading}
-        data={tableData}
+        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         variant="modern"

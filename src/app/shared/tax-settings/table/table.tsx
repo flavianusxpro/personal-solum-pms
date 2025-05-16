@@ -121,7 +121,7 @@ export default function TaxSettingTable({}: {}) {
       <ControlledTable
         isLoading={isLoading || isLoadingGetTaxes}
         showLoadingText={true}
-        data={tableData}
+        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{

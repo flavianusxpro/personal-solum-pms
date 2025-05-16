@@ -173,7 +173,7 @@ export default function AppointmentListTable() {
         variant="modern"
         isLoading={isLoading || isLoadingGetAppointments}
         showLoadingText={true}
-        data={tableData}
+        data={tableData ?? []}
         scroll={{
           x: 1560,
         }}

@@ -173,7 +173,7 @@ export default function PatientTable() {
     <div>
       <ControlledTable
         variant="modern"
-        data={tableData}
+        data={tableData ?? []}
         isLoading={isLoading || isLoadingGetAllPatients}
         showLoadingText={true}
         // @ts-ignore

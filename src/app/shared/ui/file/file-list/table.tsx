@@ -81,7 +81,7 @@ export default function FileListTable({ className }: { className?: string }) {
       <ControlledTable
         isLoading={isLoading}
         showLoadingText={true}
-        data={tableData}
+        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         scroll={{ x: 1300 }}

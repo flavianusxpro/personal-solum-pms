@@ -13,7 +13,11 @@ import {
   CreateCurrencyInputForm,
   createCurrencySchema,
 } from '@/validators/create-currency.schema';
-import { addCurrencyAtom, Currency } from '@/store/currency';
+import {
+  addCurrencyAtom,
+  Currency,
+  updateCurrencyAtom,
+} from '@/store/currency';
 import { useSetAtom } from 'jotai';
 
 interface CreateEditSmsTemplateModalProps {
@@ -21,16 +25,27 @@ interface CreateEditSmsTemplateModalProps {
   isView?: boolean;
 }
 
-export default function CreateEditRoleModal({
+export default function CreateEditModal({
   data,
   isView,
 }: CreateEditSmsTemplateModalProps) {
   const { closeModal } = useModal();
   const setAddCurrency = useSetAtom(addCurrencyAtom);
+  const setUpdateCurrency = useSetAtom(updateCurrencyAtom);
 
   const onSubmit: SubmitHandler<CreateCurrencyInputForm> = (formValues) => {
-    console.log('🚀 ~ formValues:', formValues);
     if (data?.id) {
+      setUpdateCurrency({
+        ...formValues,
+        id: data.id,
+        symbol_native: data.symbol_native,
+        rounding: data.rounding,
+        name_plural: data.name_plural,
+        decimal_digits: data.decimal_digits,
+        isActive: data.isActive,
+      });
+      toast.success('Currency updated successfully');
+      closeModal();
       return;
     }
 
@@ -41,6 +56,7 @@ export default function CreateEditRoleModal({
       rounding: 0,
       name_plural: '',
       decimal_digits: 0,
+      isActive: false,
     };
     setAddCurrency(newData);
 
@@ -56,7 +72,11 @@ export default function CreateEditRoleModal({
       className="@container"
       useFormProps={{
         mode: 'onChange',
-        defaultValues: {},
+        defaultValues: {
+          name: data?.name || '',
+          code: data?.code || '',
+          symbol: data?.symbol || '',
+        },
       }}
     >
       {({ register, control, watch, formState: { errors } }) => {
@@ -64,7 +84,7 @@ export default function CreateEditRoleModal({
           <div className="flex flex-col gap-6 px-6 pt-6">
             <Flex justify="between" align="center" gap="4">
               <Title className="text-lg">
-                {isView ? 'View' : data ? 'Update' : 'Create'} Role
+                {isView ? 'View' : data ? 'Update' : 'Create'} Currency
               </Title>
               <ActionIcon variant="text" onClick={closeModal} className="">
                 <PiX className="h-6 w-6" />
@@ -72,10 +92,10 @@ export default function CreateEditRoleModal({
             </Flex>
             <Input
               label="Currency Code"
-              {...register('name')}
-              placeholder="Currency Name"
+              {...register('code')}
+              placeholder="Currency Code"
               className="w-full"
-              error={errors.name?.message}
+              error={errors.code?.message}
               disabled={isView}
             />
             <Input
@@ -88,10 +108,10 @@ export default function CreateEditRoleModal({
             />
             <Input
               label="Currency Symbol"
-              {...register('name')}
-              placeholder="Currency Name"
+              {...register('symbol')}
+              placeholder="Currency Symbol"
               className="w-full"
-              error={errors.name?.message}
+              error={errors.symbol?.message}
               disabled={isView}
             />
 

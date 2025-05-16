@@ -108,7 +108,7 @@ export default function UpcomingAppointmentTable({
     >
       <ControlledTable
         variant="modern"
-        data={tableData}
+        data={tableData ?? []}
         isLoading={isLoading}
         showLoadingText={true}
         // @ts-ignore

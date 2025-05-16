@@ -150,7 +150,7 @@ export default function DoctorTable({}: {}) {
       <ControlledTable
         isLoading={isLoading || isLoadingGetAllDoctors}
         showLoadingText={true}
-        data={tableData}
+        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{

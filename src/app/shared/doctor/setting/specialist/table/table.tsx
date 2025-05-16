@@ -110,7 +110,7 @@ export default function SpecialistTable({}: {}) {
       <ControlledTable
         isLoading={isLoading || isLoadingGetSpecialists}
         showLoadingText={true}
-        data={tableData}
+        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{

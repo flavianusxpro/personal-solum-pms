@@ -104,7 +104,7 @@ export default function TreatmentTable({}: {}) {
       <ControlledTable
         isLoading={isLoading || isLoadingGetTreatments}
         showLoadingText={true}
-        data={tableData}
+        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{

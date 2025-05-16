@@ -92,7 +92,7 @@ export default function BillingHistoryTable({
     >
       <ControlledTable
         isLoading={isLoading || isLoadingGetInvoices}
-        data={tableData}
+        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         scroll={{ x: 1300 }}

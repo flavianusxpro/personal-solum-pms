@@ -149,7 +149,7 @@ export default function GlobalCalendarTable({}: {}) {
         <ControlledTable
           isLoading={isLoadingGetAppointments}
           showLoadingText={true}
-          data={tableData}
+          data={tableData ?? []}
           // @ts-ignore
           columns={columns}
           className={

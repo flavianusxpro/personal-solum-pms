@@ -64,7 +64,7 @@ export default function ActivityTable({ className }: { className?: string }) {
     >
       <ControlledTable
         isLoading={isLoading}
-        data={tableData}
+        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         scroll={{ x: 1300 }}

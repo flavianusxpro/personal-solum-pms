@@ -138,7 +138,7 @@ export default function BasicTableWidget({
       >
         <ControlledTable
           isLoading={isLoading}
-          data={tableData}
+          data={tableData ?? []}
           columns={visibleColumns}
           scroll={scroll}
           sticky={sticky}

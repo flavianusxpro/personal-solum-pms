@@ -104,7 +104,7 @@ export default function EmailTemplateTable({}: {}) {
       <ControlledTable
         isLoading={isLoading || isLoadingGetAllTemplate}
         showLoadingText={true}
-        data={tableData}
+        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{
