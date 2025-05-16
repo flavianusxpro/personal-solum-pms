@@ -2,13 +2,14 @@
 import { routes } from '@/config/routes';
 import PageHeader from '../../ui/page-header';
 import { TabButton } from '../../ui/tab-button';
-import { startTransition, useState } from 'react';
+import { startTransition, useEffect, useState } from 'react';
 import SimpleBar from 'simplebar-react';
 import UserDetails from './tab-user-details';
 import TabPassword from './tab-password';
 import TabActivity from './tab-activity';
 import { useParams } from 'next/navigation';
 import { useGetUserById } from '@/hooks/useUser';
+import useQueryParams from '@/core/hooks/use-query-params';
 
 export const navItems = [
   {
@@ -27,6 +28,9 @@ export const navItems = [
 
 export default function EditUser({ isView = false }: { isView?: boolean }) {
   const id = useParams().id as string;
+  const query = useQueryParams().getParams();
+  const isTabPassword = query.tab === 'password';
+  const isTabActivity = query.tab === 'activity';
 
   const [tab, setTab] = useState(navItems[0].value);
 
@@ -50,6 +54,16 @@ export default function EditUser({ isView = false }: { isView?: boolean }) {
       },
     ],
   };
+
+  useEffect(() => {
+    if (isTabPassword) {
+      setTab('password');
+    } else if (isTabActivity) {
+      setTab('activity');
+    } else {
+      setTab('user');
+    }
+  }, [isTabPassword, isTabActivity]);
 
   return (
     <>

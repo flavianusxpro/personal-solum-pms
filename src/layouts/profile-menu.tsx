@@ -67,21 +67,6 @@ function ProfileMenuPopover({ children }: React.PropsWithChildren<{}>) {
   );
 }
 
-const menuItems = [
-  {
-    name: 'My Profile',
-    href: routes.profile,
-  },
-  {
-    name: 'Account Settings',
-    href: routes.forms.profileSettings,
-  },
-  {
-    name: 'Activity Log',
-    href: '#',
-  },
-];
-
 function DropdownMenu() {
   const router = useRouter();
 
@@ -91,6 +76,27 @@ function DropdownMenu() {
     await signOut({ redirect: false }); // Prevent automatic re-render
     router.replace(routes.signIn); // Redirect immediately
   };
+
+  const menuItems = [
+    {
+      name: 'My Profile',
+      href: dataProfile?.id
+        ? routes.user.edit(`${dataProfile.id.toString()}`)
+        : '#',
+    },
+    {
+      name: 'Password',
+      href: dataProfile?.id
+        ? routes.user.edit(`${dataProfile.id.toString()}?tab=password`)
+        : '#',
+    },
+    {
+      name: 'Activity Log',
+      href: dataProfile?.id
+        ? routes.user.edit(`${dataProfile.id.toString()}?tab=activity`)
+        : '#',
+    },
+  ];
 
   return (
     <div className="w-64 text-left rtl:text-right">
