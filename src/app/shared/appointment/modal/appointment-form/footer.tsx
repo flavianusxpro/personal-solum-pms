@@ -45,7 +45,11 @@ export default function Footer({ className }: FooterProps) {
 
     if (isEdit) {
       mutateUpdate(
-        { ...payload, id: formData.id as number },
+        {
+          ...payload,
+          id: formData.id as number,
+          patient_problem: formData.patient_problem,
+        },
         {
           onSuccess: () => {
             closeModal();

@@ -270,7 +270,7 @@ export interface IPayloadPostAppoinment {
   note?: string;
   appointment_type: string;
   patient_type: string;
-  patient_problem: string;
+  patient_problem: string[];
   payment_id?: string;
   meeting_preference: string;
 }
@@ -292,7 +292,7 @@ export interface IPayloadPutUpdateAppoinment {
   doctorId?: number;
   patientId?: number;
   patient_type?: string;
-  patient_problem?: string;
+  patient_problem?: string[];
   status?: number;
   appointment_type?: string;
   note?: string;
