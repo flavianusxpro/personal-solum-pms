@@ -356,8 +356,8 @@ export default function CreateScheduleForm({
   }
 
   return (
-    <div className="m-auto p-4 md:px-7 md:py-10">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="max-h-[90vh] overflow-y-auto rounded-xl bg-white @container">
+      <div className="sticky top-0 z-10 flex justify-between bg-white px-6 py-4">
         <Title as="h3" className="text-lg">
           {isEdit ? 'Update Schedule' : 'Create a New Schedule'}
         </Title>
@@ -367,13 +367,13 @@ export default function CreateScheduleForm({
           onClick={() => closeModal()}
           className="p-0 text-gray-500 hover:!text-gray-900"
         >
-          <PiXBold className="h-[18px] w-[18px]" />
+          <PiXBold className="h-[20px] w-[20px]" />
         </ActionIcon>
       </div>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="grid grid-cols-1 gap-5 @container [&_label]:font-medium"
+        className="grid grid-cols-1 gap-5 px-6 @container [&_label]:font-medium"
       >
         <CSelect
           value={interval}
@@ -566,7 +566,11 @@ export default function CreateScheduleForm({
           </>
         ))}
 
-        <div className={cn('col-span-full grid grid-cols-2 gap-4 pt-5')}>
+        <div
+          className={cn(
+            'sticky bottom-0 col-span-full grid grid-cols-2 gap-4 bg-white py-2'
+          )}
+        >
           <Button
             variant="outline"
             className="w-full @xl:w-auto dark:hover:border-gray-400"
