@@ -10,6 +10,7 @@ import { IPayloadPostAppoinment } from '@/types/paramTypes';
 import { useAtom } from 'jotai';
 import { formDataAtom } from '.';
 import dayjs from 'dayjs';
+import { currencyAtom } from '@/store/currency';
 
 const STEP = {
   ESTIMATE_COST: 'estimate-cost',
@@ -26,6 +27,7 @@ const PriceEstimationCost = ({
 }) => {
   const { closeModal } = useModal();
 
+  const [currencyData] = useAtom(currencyAtom);
   const [formData] = useAtom(formDataAtom);
   const [step, setStep] = React.useState(STEP.ESTIMATE_COST);
 
@@ -90,11 +92,14 @@ const PriceEstimationCost = ({
           <div className="grid w-full grid-cols-1 gap-2">
             <Flex justify="between" align="center">
               <Text>Total Cost:</Text>
-              <Text>{Number(getFee())}</Text>
+              <Text>
+                {currencyData.active.symbol}
+                {Number(getFee())}
+              </Text>
             </Flex>
             <Flex justify="between" align="center">
               <Text>Sub Total:</Text>
-              <Text>$-</Text>
+              <Text>{currencyData.active.symbol}-</Text>
             </Flex>
             <Flex justify="between" align="center">
               <Text>Coupon:</Text>
@@ -102,7 +107,7 @@ const PriceEstimationCost = ({
             </Flex>
             <Flex justify="between" align="center">
               <Text>Merchant Fee:</Text>
-              <Text>$-</Text>
+              <Text>{currencyData.active.symbol}-</Text>
             </Flex>
             <Flex justify="between" align="center">
               <Text>Coupon:</Text>

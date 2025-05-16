@@ -12,7 +12,6 @@ export default function CurrencyTable({}: {}) {
   const { openModal } = useModal();
   const [, removeCurrency] = useAtom(removeCurrencyAtom);
   const [currencyData] = useAtom(currencyAtom);
-  console.log('🚀 ~ CurrencyTable ~ currencyData:', currencyData);
 
   const onDeleteItem = useCallback(
     (id: string) => {

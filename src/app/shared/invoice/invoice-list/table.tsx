@@ -11,6 +11,8 @@ import { useDeleteInvoice, useGetInvoices } from '@/hooks/useInvoice';
 import toast from 'react-hot-toast';
 import debounce from 'lodash/debounce';
 import dayjs from 'dayjs';
+import { currencyAtom } from '@/store/currency';
+import { useAtom } from 'jotai';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/invoice/invoice-list/filter-element'),
@@ -31,6 +33,8 @@ const filterState = {
 };
 
 export default function InvoiceTableList() {
+  const [currencyData] = useAtom(currencyAtom);
+
   const [filterStateValue, setFilterStateValue] = useState(filterState);
   const [params, setParams] = useState({
     page: 1,
@@ -128,6 +132,7 @@ export default function InvoiceTableList() {
         onDeleteItem,
         onChecked: handleRowSelect,
         handleSelectAll,
+        currencyData: currencyData.active,
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [

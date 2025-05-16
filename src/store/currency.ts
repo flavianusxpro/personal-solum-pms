@@ -16,7 +16,7 @@ export interface Currency {
 
 export interface CurrencyState {
   data: Currency[];
-  active: Currency | null;
+  active: Currency;
 }
 
 export const defaultCurrency: CurrencyState = {

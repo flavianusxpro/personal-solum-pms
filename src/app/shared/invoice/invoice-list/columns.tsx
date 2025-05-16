@@ -29,6 +29,7 @@ import { GrSchedules } from 'react-icons/gr';
 import RefundForm from '../modal/refund-form';
 import ActionTooltipButton from '../../ui/action-tooltip-button';
 import { PiCheckBold } from 'react-icons/pi';
+import { Currency } from '@/store/currency';
 
 type IRowType = IGetInvoiceListResponse['data'][number];
 
@@ -87,6 +88,7 @@ type Columns = {
   onDeleteItem: (ids: number[]) => void;
   onHeaderCellClick: (value: string) => void;
   onChecked?: (id: string) => void;
+  currencyData: Currency;
 };
 
 export const getColumns = ({
@@ -97,6 +99,7 @@ export const getColumns = ({
   onHeaderCellClick,
   handleSelectAll,
   onChecked,
+  currencyData,
 }: Columns) => [
   {
     title: (
@@ -147,7 +150,7 @@ export const getColumns = ({
     dataIndex: 'total_amount',
     key: 'total_amount',
     width: 250,
-    render: (value: string) => `$${Number(value)}`,
+    render: (value: string) => `${currencyData.symbol}${Number(value)}`,
   },
   {
     title: <HeaderCell title="PAYMENT STATUS" />,

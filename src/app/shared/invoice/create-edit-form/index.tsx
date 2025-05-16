@@ -25,9 +25,12 @@ import {
 import { useRouter } from 'next/navigation';
 import { routes } from '@/config/routes';
 import { useGetTaxes } from '@/hooks/useTax';
+import { currencyAtom } from '@/store/currency';
+import { useAtom } from 'jotai';
 
 export default function CreateEditInvoice({ id }: { id?: string }) {
   const router = useRouter();
+  const [currencyData] = useAtom(currencyAtom);
 
   const [isLoading, setLoading] = useState(false);
 
@@ -323,12 +326,15 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
                 <Flex justify="end" className="pt-6">
                   <div className="w-1/3">
                     <Text className="mb-2 flex items-center justify-between text-base font-semibold text-gray-900">
-                      Subtotal: <Text as="span">$ {totalItemAmount}</Text>
+                      Subtotal:{' '}
+                      <Text as="span">
+                        {currencyData.active.symbol} {totalItemAmount}
+                      </Text>
                     </Text>
                     <Text className="flex w-2/3 items-center justify-between text-sm text-gray-900">
                       Include discount:{' '}
                       <Text as="span" className="text-gray-500">
-                        $ 0
+                        {currencyData.active.symbol} 0
                       </Text>
                     </Text>
                     {/* {selectedTax?.label && (
@@ -341,7 +347,10 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
                     )} */}
 
                     <Text className="mt-2 flex items-center justify-between text-base font-semibold text-gray-900">
-                      Total: <Text as="span">$ {totalAmount}</Text>
+                      Total:{' '}
+                      <Text as="span">
+                        {currencyData.active.symbol} {totalAmount}
+                      </Text>
                     </Text>
                   </div>
                 </Flex>

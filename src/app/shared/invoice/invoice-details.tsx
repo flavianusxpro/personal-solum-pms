@@ -14,6 +14,8 @@ import { useReactToPrint } from 'react-to-print';
 import { useRef } from 'react';
 import { usePDF } from 'react-to-pdf';
 import Link from 'next/link';
+import { currencyAtom } from '@/store/currency';
+import { useAtom } from 'jotai';
 
 const pageHeader = {
   title: 'Invoice Details',
@@ -32,85 +34,94 @@ const pageHeader = {
   ],
 };
 
-const columns = [
-  {
-    title: '#',
-    dataIndex: 'id',
-    key: 'id',
-    width: 50,
-  },
-  {
-    title: 'Item',
-    dataIndex: 'code',
-    key: 'code',
-    width: 250,
-    render: (
-      _: string,
-      item: IGetInvoiceByIdResponse['data']['items'][number]
-    ) => (
-      <>
-        {item.name === 'Appointment' ? (
-          <>
-            <Link
-              href={routes.appointment.appointmentList}
-              className="mb-0.5 text-sm font-medium hover:underline"
-            >
-              {item?.code} - {item?.name}
-            </Link>
-            <Text
-              as="p"
-              className="max-w-[250px] overflow-hidden truncate text-sm text-gray-500"
-            >
-              {item?.description}
-            </Text>
-          </>
-        ) : (
-          <>
-            <Title as="h6" className="mb-0.5 text-sm font-medium">
-              {item?.code} - {item?.name}
-            </Title>
-            <Text
-              as="p"
-              className="max-w-[250px] overflow-hidden truncate text-sm text-gray-500"
-            >
-              {item?.description}
-            </Text>
-          </>
-        )}
-      </>
-    ),
-  },
-  {
-    title: 'Quantity',
-    dataIndex: 'qty',
-    key: 'qty',
-    width: 200,
-  },
-  {
-    title: 'Unit Price',
-    dataIndex: 'amount',
-    key: 'amount',
-    width: 200,
-    render: (value: string) => (
-      <Text className="font-medium">${Number(value)}</Text>
-    ),
-  },
-  {
-    title: 'Total',
-    dataIndex: 'total_amount',
-    key: 'total_amount',
-    width: 200,
-    render: (value: string) => (
-      <Text className="font-medium">${Number(value)}</Text>
-    ),
-  },
-] as any;
-
 function InvoiceDetailsListTable({
   data,
 }: {
   data?: IGetInvoiceByIdResponse['data']['items'];
 }) {
+  const [currencyData] = useAtom(currencyAtom);
+
+  const columns = [
+    {
+      title: '#',
+      dataIndex: 'id',
+      key: 'id',
+      width: 50,
+    },
+    {
+      title: 'Item',
+      dataIndex: 'code',
+      key: 'code',
+      width: 250,
+      render: (
+        _: string,
+        item: IGetInvoiceByIdResponse['data']['items'][number]
+      ) => (
+        <>
+          {item.name === 'Appointment' ? (
+            <>
+              <Link
+                href={routes.appointment.appointmentList}
+                className="mb-0.5 text-sm font-medium hover:underline"
+              >
+                {item?.code} - {item?.name}
+              </Link>
+              <Text
+                as="p"
+                className="max-w-[250px] overflow-hidden truncate text-sm text-gray-500"
+              >
+                {item?.description}
+              </Text>
+            </>
+          ) : (
+            <>
+              <Title as="h6" className="mb-0.5 text-sm font-medium">
+                {item?.code} - {item?.name}
+              </Title>
+              <Text
+                as="p"
+                className="max-w-[250px] overflow-hidden truncate text-sm text-gray-500"
+              >
+                {item?.description}
+              </Text>
+            </>
+          )}
+        </>
+      ),
+    },
+    {
+      title: 'Quantity',
+      dataIndex: 'qty',
+      key: 'qty',
+      width: 200,
+    },
+    {
+      title: 'Unit Price',
+      dataIndex: 'amount',
+      key: 'amount',
+      width: 200,
+      render: (value: string) => (
+        <Text className="font-medium">
+          {currencyData.active.symbol}
+
+          {Number(value)}
+        </Text>
+      ),
+    },
+    {
+      title: 'Total',
+      dataIndex: 'total_amount',
+      key: 'total_amount',
+      width: 200,
+      render: (value: string) => (
+        <Text className="font-medium">
+          {currencyData.active.symbol}
+
+          {Number(value)}
+        </Text>
+      ),
+    },
+  ] as any;
   return (
     <Table
       data={data}
@@ -124,6 +135,8 @@ function InvoiceDetailsListTable({
 }
 
 export default function InvoiceDetails({ id }: { id: string }) {
+  const [currencyData] = useAtom(currencyAtom);
+
   const { data: dataInvoice, isLoading } = useGetInvoiceById(id);
   const contentRef = useRef<HTMLDivElement | null>(
     null
@@ -229,7 +242,8 @@ export default function InvoiceDetails({ id }: { id: string }) {
             <Text className="flex items-center justify-between border-b border-muted pb-3.5 lg:pb-5">
               Subtotal:{' '}
               <Text as="span" className="font-semibold">
-                ${Number(dataInvoice?.amount)}
+                {currencyData.active.symbol}
+                {Number(dataInvoice?.amount)}
               </Text>
             </Text>
             <Text className="flex items-center justify-between border-b border-muted py-3.5 lg:py-5">
@@ -245,7 +259,12 @@ export default function InvoiceDetails({ id }: { id: string }) {
               </Text>
             </Text>
             <Text className="flex items-center justify-between pt-4 text-base font-semibold text-gray-900 lg:pt-5">
-              Total: <Text as="span">${Number(dataInvoice?.total_amount)}</Text>
+              Total:{' '}
+              <Text as="span">
+                {' '}
+                {currencyData.active.symbol}
+                {Number(dataInvoice?.total_amount)}
+              </Text>
             </Text>
           </div>
         </div>

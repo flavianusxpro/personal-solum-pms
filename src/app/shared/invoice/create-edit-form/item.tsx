@@ -20,6 +20,8 @@ import {
 } from 'rizzui';
 import { InvoiceFormInput } from '@/validators/create-invoice.schema';
 import { IGetAllItemsResponse } from '@/types/ApiResponse';
+import { useAtom } from 'jotai';
+import { currencyAtom } from '@/store/currency';
 
 interface InvoiceItemProps {
   field: NonNullable<InvoiceFormInput['items']>[number];
@@ -48,6 +50,8 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
   setValue,
   taxFeeOptions,
 }) => {
+  const [currencyData] = useAtom(currencyAtom);
+
   const selectedItem = watch(`items.${index}.item`)?.split(' - ')[0];
   const findedItem = dataItems?.find((item) => item.code === selectedItem);
   const itemPrice = findedItem?.price ?? 0;
@@ -125,7 +129,7 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
         value={Number(itemPrice)}
         label="Price"
         type="number"
-        prefix={'$'}
+        prefix={currencyData.active.symbol}
         placeholder="select item"
         className="w-1/2"
         disabled
@@ -149,7 +153,7 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
         value={totalAmount()}
         label="Total"
         type="number"
-        prefix={'$'}
+        prefix={currencyData.active.symbol}
         placeholder="select item"
         className="w-1/2"
         disabled
