@@ -116,7 +116,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
       validationSchema={createPharmachySchema}
       // resetValues={reset}
       onSubmit={onSubmit}
-      className="@container"
+      className="max-h-[90vh] overflow-y-auto rounded-xl bg-white @container"
       useFormProps={{
         mode: 'onChange',
         defaultValues: {
@@ -144,10 +144,13 @@ export default function CreateEditModal({ data, isView }: IProps) {
         formState: { errors },
       }) => {
         return (
-          <div
-            className={cn('flex flex-col gap-6 px-6 pt-6', isView && 'pb-6')}
-          >
-            <Flex justify="between" align="center" gap="4">
+          <div className={cn('flex flex-col gap-6 pt-6', isView && 'pb-6')}>
+            <Flex
+              className="sticky top-0 z-10 bg-white px-6 py-4"
+              justify="between"
+              align="center"
+              gap="4"
+            >
               <Title className="text-lg">
                 {isView ? 'View' : data ? 'Update' : 'Create'} Pharmachy
               </Title>
@@ -156,7 +159,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
               </ActionIcon>
             </Flex>
 
-            <Grid columns="2">
+            <Grid className="px-6" columns="2">
               <Flex justify="center" align="center" className="col-span-2">
                 <FormGroup title="Logo" isLabel className="text-center">
                   <AvatarUpload
@@ -283,7 +286,6 @@ export default function CreateEditModal({ data, isView }: IProps) {
                 isLoading={isPendingCreate || isPendingUpdate}
                 altBtnText="Cancel"
                 submitBtnText="Save"
-                isSticky={false}
               />
             )}
           </div>

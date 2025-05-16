@@ -24,6 +24,7 @@ import { useGetRoles } from '@/hooks/useRole';
 import { useGetAllClinics } from '@/hooks/useClinic';
 import { error } from 'console';
 import { PhoneNumber } from '@/core/ui/phone-input';
+import FormHeader from '@/core/components/form-header';
 
 const MultySelect = dynamic(
   () => import('rizzui').then((mod) => mod.MultiSelect),
@@ -129,18 +130,9 @@ export default function CreatDoctorModal() {
     >
       {({ register, control, formState: { errors } }) => {
         return (
-          <div className="flex flex-col gap-6 pt-6">
-            <Flex
-              className="sticky top-0 z-10 bg-white px-6 py-4"
-              justify="between"
-              align="center"
-              gap="4"
-            >
-              <Title className="text-lg">Create Doctor</Title>
-              <ActionIcon variant="text" onClick={closeModal} className="">
-                <PiX className="h-6 w-6" />
-              </ActionIcon>
-            </Flex>
+          <div className="flex flex-col gap-6 pt-2">
+            <FormHeader title="Create Doctor" />
+
             <div className="grid grid-cols-1 gap-x-7 gap-y-4 px-6">
               <div className="flex flex-col gap-7">
                 <FormGroup

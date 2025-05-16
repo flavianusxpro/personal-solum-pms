@@ -30,7 +30,7 @@ export default function Page() {
             onClick={() => {
               openModal({
                 view: <CreateEditCouponModal />,
-                size: 'xl',
+                customSize: '600px',
               });
             }}
             className="w-full @lg:w-auto"

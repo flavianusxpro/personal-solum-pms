@@ -37,7 +37,7 @@ export default function DoctorPage() {
             onClick={() => {
               openModal({
                 view: <CreateDoctorModal />,
-                size: 'xl',
+                customSize: '600px',
               });
             }}
             className="w-full @lg:w-auto"

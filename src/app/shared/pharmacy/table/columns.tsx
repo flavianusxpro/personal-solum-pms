@@ -113,6 +113,7 @@ export const getColumns = ({
           onClick={() =>
             openModal({
               view: <ShowQrModal data={row} />,
+              customSize: '600px',
             })
           }
         >
@@ -131,6 +132,7 @@ export const getColumns = ({
             onClick={() =>
               openModal({
                 view: <CreateEditModal data={row} />,
+                customSize: '600px',
               })
             }
           >
@@ -147,6 +149,7 @@ export const getColumns = ({
             onClick={() =>
               openModal({
                 view: <CreateEditModal isView data={row} />,
+                customSize: '600px',
               })
             }
             size="sm"

@@ -148,6 +148,7 @@ export const getColumns = ({
             onClick={() =>
               openModal({
                 view: <CreateEditItemModal data={row} />,
+                customSize: '600px',
               })
             }
           >
@@ -167,6 +168,7 @@ export const getColumns = ({
             onClick={() =>
               openModal({
                 view: <CreateEditItemModal isView data={row} />,
+                customSize: '600px',
               })
             }
           >

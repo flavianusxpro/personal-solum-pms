@@ -93,6 +93,7 @@ export const getColumns = ({
             onClick={() =>
               openModal({
                 view: <CreateEditRoleModal data={row} />,
+                customSize: '600px',
               })
             }
           >

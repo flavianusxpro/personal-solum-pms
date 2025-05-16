@@ -30,7 +30,7 @@ export default function Page() {
             onClick={() => {
               openModal({
                 view: <CreateEditSmsTemplateModal />,
-                size: 'xl',
+                customSize: '600px',
               });
             }}
             className="w-full @lg:w-auto"

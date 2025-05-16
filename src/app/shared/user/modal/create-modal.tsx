@@ -21,6 +21,7 @@ import {
 } from '@/validators/create-user.schema';
 import { useGetAllClinics } from '@/hooks/useClinic';
 import { useGetRoles } from '@/hooks/useRole';
+import FormHeader from '@/core/components/form-header';
 
 const MultySelect = dynamic(
   () => import('rizzui').then((mod) => mod.MultiSelect),
@@ -97,17 +98,11 @@ export default function CreateUserModal() {
       }}
     >
       {({ register, control, setValue, getValues, formState: { errors } }) => {
-        console.log('🚀 ~ CreatDoctorModal ~ errors:', errors);
-
         return (
-          <div className="flex flex-col gap-6 px-6 pt-6">
-            <Flex justify="between" align="center" gap="4">
-              <Title>Create User</Title>
-              <ActionIcon variant="text" onClick={closeModal} className="">
-                <PiX className="h-6 w-6" />
-              </ActionIcon>
-            </Flex>
-            <div className="grid grid-cols-1 gap-x-7 gap-y-4">
+          <div className="flex flex-col gap-6 pt-2">
+            <FormHeader title="Create User" />
+
+            <div className="grid grid-cols-1 gap-x-7 gap-y-4 px-6">
               <FormGroup title="Name" isLabel>
                 <Input
                   placeholder="Name"

@@ -36,7 +36,7 @@ export default function PatientPageHeader() {
           onClick={() => {
             openModal({
               view: <CreatePatientModal />,
-              size: 'xl',
+              customSize: '600px',
             });
           }}
           className="w-full @lg:w-auto"
