@@ -122,21 +122,26 @@ export default function CreatDoctorModal() {
       validationSchema={doctorDetailsFormSchema}
       // resetValues={reset}
       onSubmit={onSubmit}
-      className="@container"
+      className="max-h-[90vh] overflow-y-auto rounded-xl bg-white @container"
       useFormProps={{
         mode: 'onChange',
       }}
     >
       {({ register, control, formState: { errors } }) => {
         return (
-          <div className="flex flex-col gap-6 px-6 pt-6">
-            <Flex justify="between" align="center" gap="4">
+          <div className="flex flex-col gap-6 pt-6">
+            <Flex
+              className="sticky top-0 z-10 bg-white px-6 py-4"
+              justify="between"
+              align="center"
+              gap="4"
+            >
               <Title className="text-lg">Create Doctor</Title>
               <ActionIcon variant="text" onClick={closeModal} className="">
                 <PiX className="h-6 w-6" />
               </ActionIcon>
             </Flex>
-            <div className="grid grid-cols-1 gap-x-7 gap-y-4">
+            <div className="grid grid-cols-1 gap-x-7 gap-y-4 px-6">
               <div className="flex flex-col gap-7">
                 <FormGroup
                   title="Personal Info"
