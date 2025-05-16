@@ -2,7 +2,7 @@
 
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { useColumn } from '@core/hooks/use-column';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { getColumns } from './columns';
 import { useModal } from '../../modal-views/use-modal';
 import { useGetAppointments } from '@/hooks/useAppointment';
@@ -23,10 +23,17 @@ export default function GlobalCalendarTable({}: {}) {
   );
   const [selectedBranch, setSelectedBranch] = useState<number | null>(null);
 
-  const { data, isLoading: isLoadingGetAppointments } = useGetAppointments({
+  const {
+    data,
+    isLoading: isLoadingGetAppointments,
+    refetch,
+  } = useGetAppointments({
     page: 1,
     perPage: pageSize,
     sort: 'DESC',
+    from: selectedDate,
+    to: selectedDate,
+    // branchId: selectedBranch,
   });
 
   const { data: dataClinics } = useGetAllClinics({
@@ -131,6 +138,10 @@ export default function GlobalCalendarTable({}: {}) {
       }),
     [openModal, tableData]
   );
+
+  useEffect(() => {
+    refetch();
+  }, [selectedDate, selectedBranch, refetch]);
 
   return (
     <div>
