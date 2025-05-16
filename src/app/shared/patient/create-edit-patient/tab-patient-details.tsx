@@ -25,6 +25,12 @@ import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
 import { DatePicker } from '@/core/ui/datepicker';
 import { PhoneNumber } from '@/core/ui/phone-input';
+import dynamic from 'next/dynamic';
+
+const MultiSelect = dynamic(
+  () => import('rizzui').then((mod) => mod.MultiSelect),
+  { ssr: false }
+);
 
 export default function PatientDetails({
   nextTab,
@@ -52,6 +58,16 @@ export default function PatientDetails({
   });
 
   const { mutate: mutateUpdatePatient, isPending } = useUpdatePatient();
+
+  const parsedPatientProblem: string[] =
+    typeof dataPatient?.patient_problem === 'string'
+      ? (dataPatient.patient_problem as string)
+          .slice(1, -1)
+          .split('","')
+          .map((s) => s.replace(/^"|"$/g, ''))
+      : Array.isArray(dataPatient?.patient_problem)
+        ? dataPatient.patient_problem
+        : [];
 
   const patientProblemOptions = useMemo(
     () =>
@@ -137,7 +153,7 @@ export default function PatientDetails({
           medicare_expiry: dataPatient?.medicare_expired_date
             ? dayjs(dataPatient.medicare_expired_date).toDate()
             : undefined,
-          patient_problem: dataPatient?.patient_problem || undefined,
+          patient_problem: parsedPatientProblem,
           patient_type: dataPatient?.patient_type || undefined,
           position_of_card: dataPatient?.potition_on_card ?? '',
           country: dataPatient?.country ?? '',
@@ -316,7 +332,7 @@ export default function PatientDetails({
                     name="patient_problem"
                     control={control}
                     render={({ field }) => (
-                      <CSelect
+                      <MultiSelect
                         {...field}
                         label=""
                         placeholder="Select Patient Type"

@@ -88,16 +88,15 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     return [];
   }, [dataDoctor]);
 
-  // const treatmentTypeDefaultValues = useMemo(() => {
-  //   if (!dataDoctor?.treatment_type) return [];
-  //   const parsedTreatmentType = JSON.parse(
-  //     dataDoctor.treatment_type
-  //   ) as number[];
-  //   if (Array.isArray(parsedTreatmentType)) {
-  //     return parsedTreatmentType.map((item) => item.toString());
-  //   }
-  //   return [];
-  // }, [dataDoctor]);
+  const treatmentTypeDefaultValues: string[] =
+    typeof dataDoctor?.treatment_type === 'string'
+      ? (dataDoctor.treatment_type as string)
+          .slice(1, -1)
+          .split('","')
+          .map((s) => s.replace(/^"|"$/g, ''))
+      : Array.isArray(dataDoctor?.treatment_type)
+        ? dataDoctor.treatment_type
+        : [];
 
   const onSubmit: SubmitHandler<DoctorDetailsFormTypes> = (data) => {
     const payload: IPayloadCreateEditDoctor = {
@@ -167,8 +166,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
           address_line_2: dataDoctor?.address_line_2 ?? '',
           about: dataDoctor?.description ?? '',
           medical_interest: dataDoctor?.medical_interest ?? '',
-          // treatment_type: treatmentTypeDefaultValues,
-          treatment_type: dataDoctor?.treatment_type,
+          treatment_type: treatmentTypeDefaultValues,
           specialist_type: specialistTypeDefaultValues,
           language: dataDoctor?.language
             ? (JSON.parse(dataDoctor.language) as (string | undefined)[])
@@ -370,15 +368,6 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
 
             <div className="section-container">
               <FormGroup title="Treatment Type" isLabel>
-                <Input
-                  placeholder="Treatment Type"
-                  {...register('treatment_type')}
-                  error={errors.treatment_type?.message}
-                  className="flex-grow"
-                  disabled={isView}
-                />
-              </FormGroup>
-              {/* <FormGroup title="Treatment Type" isLabel>
                 <Controller
                   name="treatment_type"
                   control={control}
@@ -393,7 +382,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
                     />
                   )}
                 />
-              </FormGroup> */}
+              </FormGroup>
               <FormGroup title="Specialist Type" isLabel>
                 <Controller
                   name="specialist_type"

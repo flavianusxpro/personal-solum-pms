@@ -74,7 +74,7 @@ export interface IPayloadCreateEditPatient {
   emergency_mobile_number?: string;
   emergency_email?: string;
   emergency_relationship?: string;
-  patient_problem?: string;
+  patient_problem?: string[];
   patient_type?: string;
   photo?: string;
 }
@@ -108,7 +108,7 @@ export interface IPayloadCreateEditDoctor {
   country?: string;
   state?: string;
   // treatment_type?: number[];
-  treatment_type?: string;
+  treatment_type?: string[];
   specialist_type?: number[];
   medical_interest?: string;
   language?: string[];

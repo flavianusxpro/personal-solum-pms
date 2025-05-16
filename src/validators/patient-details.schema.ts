@@ -38,7 +38,7 @@ export const patientDetailsFormSchema = z.object({
   password: z.string().optional(),
   timezone: z.string().optional(),
   patient_type: z.string().optional(),
-  patient_problem: z.string().optional(),
+  patient_problem: z.array(z.string()).optional(),
 });
 
 // generate form types from zod validation schema

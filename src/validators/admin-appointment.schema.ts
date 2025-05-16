@@ -22,7 +22,7 @@ export const appointmentBookSchema = {
     patient_type: z.string().min(1, {
       message: 'Patient type is required',
     }),
-    patient_problem: z.string().min(1, {
+    patient_problem: z.array(z.string()).min(1, {
       message: 'Patient problem is required',
     }),
     note: z.string().optional(),

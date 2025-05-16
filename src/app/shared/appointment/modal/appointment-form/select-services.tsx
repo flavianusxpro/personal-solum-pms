@@ -20,6 +20,11 @@ import { useGetAppointments } from '@/hooks/useAppointment';
 import { useGetAllClinics } from '@/hooks/useClinic';
 import dayjs from 'dayjs';
 
+const MultiSelect = dynamic(
+  () => import('rizzui').then((mod) => mod.MultiSelect),
+  { ssr: false }
+);
+
 const Textarea = dynamic(() => import('rizzui').then((mod) => mod.Textarea), {
   ssr: false,
   loading: () => (
@@ -112,9 +117,19 @@ export default function AppointmentServices() {
 
   useEffect(() => {
     if (lastAppointment) {
+      const parsedPatientProblem: string[] =
+        typeof lastAppointment?.patient_problem === 'string'
+          ? (lastAppointment.patient_problem as string)
+              .slice(1, -1)
+              .split('","')
+              .map((s) => s.replace(/^"|"$/g, ''))
+          : Array.isArray(lastAppointment?.patient_problem)
+            ? lastAppointment.patient_problem
+            : [];
+
       setValue('appointment_type', lastAppointment.type);
       setValue('patient_type', lastAppointment.patient_type);
-      setValue('patient_problem', lastAppointment.patient_problem);
+      setValue('patient_problem', parsedPatientProblem);
       setValue('note', lastAppointment.note || '');
     }
   }, [lastAppointment, setFormData, setValue]);
@@ -165,7 +180,7 @@ export default function AppointmentServices() {
           control={control}
           name="patient_problem"
           render={({ field }) => (
-            <CSelect
+            <MultiSelect
               {...field}
               className="col-span-full md:col-span-1"
               labelClassName="font-medium text-gray-1000 dark:text-white"

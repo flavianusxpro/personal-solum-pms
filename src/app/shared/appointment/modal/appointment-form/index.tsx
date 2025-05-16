@@ -56,7 +56,7 @@ type FormDataType = {
   note: string;
   appointment_type: string;
   patient_type: string;
-  patient_problem: string;
+  patient_problem: string[];
   meeting_preference: string;
   followup_fee: string;
   initial_fee: string;
@@ -73,7 +73,7 @@ export const initialFormData = {
   note: '',
   appointment_type: '',
   patient_type: '',
-  patient_problem: '',
+  patient_problem: [],
   meeting_preference: '',
   followup_fee: '',
   initial_fee: '',
@@ -149,6 +149,16 @@ export default function CreateUpdateAppointmentForm({
   useEffect(() => {
     resetLocation();
     if (data) {
+      const parsedPatientProblem: string[] =
+        typeof data?.patient_problem === 'string'
+          ? (data.patient_problem as string)
+              .slice(1, -1)
+              .split('","')
+              .map((s) => s.replace(/^"|"$/g, ''))
+          : Array.isArray(data?.patient_problem)
+            ? data.patient_problem
+            : [];
+
       setFormData({
         id: data?.id,
         appointment_type: data?.type,
@@ -159,7 +169,7 @@ export default function CreateUpdateAppointmentForm({
         meeting_preference: '',
         note: data?.note || '',
         patient_id: data?.patientId,
-        patient_problem: data?.patient_problem,
+        patient_problem: parsedPatientProblem,
         patient_type: data?.patient_type,
         followup_fee: '',
         initial_fee: '',

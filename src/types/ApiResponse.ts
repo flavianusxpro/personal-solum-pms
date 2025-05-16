@@ -200,7 +200,7 @@ export interface IGetPatientByIdResponse extends ApiResponse {
     medicare_card_number: string;
     medicare_expired_date: string;
     patient_type: string | null;
-    patient_problem: string | null;
+    patient_problem: string[] | null;
     emergency_first_name: null;
     emergency_last_name: null;
     emergency_mobile_number: null;

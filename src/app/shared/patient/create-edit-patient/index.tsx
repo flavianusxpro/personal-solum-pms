@@ -59,7 +59,7 @@ export default function CreateEditPatient({
 
   const pageHeader = {
     title: id
-      ? `${dataPatient?.first_name ?? '-'} ${dataPatient?.last_name ?? '-'} (${dataPatient?.patient_type})`
+      ? `${dataPatient?.first_name ?? '-'} ${dataPatient?.last_name ?? '-'} ${dataPatient?.patient_type ? `(${dataPatient?.patient_type})` : ''}`
       : 'Create Patient',
     breadcrumb: [
       {
