@@ -49,6 +49,12 @@ export const adminMenuItems = [
     permissionReadName: ['dashboard'],
   },
   {
+    name: 'Global Calendar (coming soon)',
+    href: routes.globalCalendar,
+    icon: <PiCalendar />,
+    permissionReadName: ['calendar'],
+  },
+  {
     name: 'Dashboard',
     href: routes.appointment.dashboard,
     icon: <PiHouse />,
@@ -69,12 +75,6 @@ export const adminMenuItems = [
   {
     name: 'Calendars',
     href: routes.calendar,
-    icon: <PiCalendar />,
-    permissionReadName: ['calendar'],
-  },
-  {
-    name: 'Global Calendar (coming soon)',
-    href: routes.globalCalendar,
     icon: <PiCalendar />,
     permissionReadName: ['calendar'],
   },
