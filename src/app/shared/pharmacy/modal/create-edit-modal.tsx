@@ -30,6 +30,8 @@ import {
   createPharmachySchema,
 } from '@/validators/create-pharmachy.schema';
 import { useMemo } from 'react';
+import { PhoneNumber } from '@/core/ui/phone-input';
+import { stateOption } from '@/config/constants';
 
 interface IProps {
   data?: IGetPharmachyListResponse['data'][number];
@@ -71,7 +73,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
       url_logo: formValues.url_logo,
       dispense_email: formValues.dispense_email,
       billing_email: formValues.billing_email,
-      phone: formValues.phone,
+      phone: ('+' + formValues.phone) as string,
       address_line_1: formValues.address_line_1,
       address_line_2: formValues.address_line_2,
       city: formValues.city,
@@ -124,7 +126,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
           url_logo: data?.url_logo || '',
           dispense_email: data?.dispense_email,
           billing_email: data?.billing_email,
-          phone: data?.phone,
+          phone: data?.phone?.replace('+', '') ?? '',
           address_line_1: data?.address_line_1,
           address_line_2: data?.address_line_2,
           city: data?.city,
@@ -205,14 +207,19 @@ export default function CreateEditModal({ data, isView }: IProps) {
                 disabled={isView}
               />
 
-              <Input
-                type="number"
-                label="Phone Number"
-                {...register('phone')}
-                placeholder="Mobile Number"
-                className="w-full"
-                error={errors.phone?.message}
-                disabled={isView}
+              <Controller
+                name="phone"
+                control={control}
+                render={({ field }) => (
+                  <PhoneNumber
+                    {...field}
+                    country="au"
+                    label="Phone Number"
+                    preferredCountries={['au']}
+                    placeholder="Phone Number"
+                    error={errors.phone?.message}
+                  />
+                )}
               />
               <Input
                 label="Billing Email"
@@ -239,14 +246,6 @@ export default function CreateEditModal({ data, isView }: IProps) {
                 disabled={isView}
               />
               <Input
-                label="Address Line 1"
-                {...register('address_line_1')}
-                placeholder="Address Line 1"
-                className="w-full"
-                error={errors.address_line_1?.message}
-                disabled={isView}
-              />
-              <Input
                 label="Address Line 2"
                 {...register('address_line_2')}
                 placeholder="Address Line 2"
@@ -262,15 +261,23 @@ export default function CreateEditModal({ data, isView }: IProps) {
                 error={errors.city?.message}
                 disabled={isView}
               />
-              <Input
-                label="State"
-                {...register('state')}
-                placeholder="State"
-                className="w-full"
-                error={errors.state?.message}
-                disabled={isView}
+              <Controller
+                name="state"
+                control={control}
+                render={({ field }) => (
+                  <CSelect
+                    {...field}
+                    label="State"
+                    placeholder="State"
+                    className="group relative z-0"
+                    options={stateOption}
+                    error={errors.state?.message as string}
+                  />
+                )}
               />
+
               <Input
+                type="number"
                 label="Postcode"
                 {...register('postcode')}
                 placeholder="Postcode"

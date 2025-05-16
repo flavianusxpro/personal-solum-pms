@@ -8,9 +8,12 @@ import { getColumns } from './columns';
 import { useModal } from '../../modal-views/use-modal';
 import { useDeletePharmachy, useGetPharmachyList } from '@/hooks/usePharmachy';
 import TableFooter from '../../ui/table-footer';
+import { useCopyToClipboard } from 'react-use';
+import toast from 'react-hot-toast';
 
 export default function PharmachyTable({}: {}) {
   const { openModal } = useModal();
+  const [state, copyToClipboard] = useCopyToClipboard();
 
   const [params, setParams] = useState({
     page: 1,
@@ -34,6 +37,11 @@ export default function PharmachyTable({}: {}) {
       handleSort(value);
     },
   });
+
+  const handleCopy = (text: string | number) => {
+    copyToClipboard(String(text));
+    toast.success('Copied to clipboard');
+  };
 
   const {
     isLoading,
@@ -84,6 +92,7 @@ export default function PharmachyTable({}: {}) {
         onChecked: handleRowSelect,
         handleSelectAll,
         openModal,
+        handleCopy: handleCopy,
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [

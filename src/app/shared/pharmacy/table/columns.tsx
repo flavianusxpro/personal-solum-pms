@@ -10,7 +10,7 @@ import { ActionIcon, Badge, Checkbox, Text, Tooltip } from 'rizzui';
 import CreateEditModal from '../modal/create-edit-modal';
 import AvatarCard from '@/core/ui/avatar-card';
 import ActionTooltipButton from '../../ui/action-tooltip-button';
-import { PiQrCode } from 'react-icons/pi';
+import { PiCopy, PiQrCode } from 'react-icons/pi';
 import ShowQrModal from '../modal/qr-modal';
 
 type Columns = {
@@ -22,6 +22,7 @@ type Columns = {
   onHeaderCellClick: (value: string) => void;
   onChecked?: (id: string) => void;
   openModal: (props: any) => void;
+  handleCopy: (text: string | number) => void;
 };
 
 type Row = IGetPharmachyListResponse['data'][number];
@@ -35,6 +36,7 @@ export const getColumns = ({
   handleSelectAll,
   onChecked,
   openModal,
+  handleCopy,
 }: Columns) => [
   {
     title: (
@@ -69,15 +71,10 @@ export const getColumns = ({
   },
   {
     title: <HeaderCell title="ADDRESS" />,
-    dataIndex: 'address',
-    key: 'address',
+    dataIndex: 'address_line_1',
+    key: 'address_line_1',
     width: 200,
-    render: (_: string, row: Row) => (
-      <div>
-        <Text>Address Line 1: {row.address_line_1 ?? '-'}</Text>
-        <Text>Address Line 2: {row.address_line_2 ?? '-'}</Text>
-      </div>
-    ),
+    render: (value: string) => value,
   },
   {
     title: <HeaderCell title="PHONE NUMBER" />,
@@ -91,14 +88,30 @@ export const getColumns = ({
     dataIndex: 'billing_email',
     key: 'billing_email',
     width: 100,
-    render: (value: string) => value,
+    render: (value: string) => (
+      <div className="flex items-center gap-2">
+        <Text className="text-[13px] text-gray-500">{value}</Text>
+        <PiCopy
+          onClick={() => handleCopy(value)}
+          className="cursor-pointer active:scale-[0.99]"
+        />
+      </div>
+    ),
   },
   {
     title: <HeaderCell title="DISPENSE EMAIL" />,
     dataIndex: 'dispense_email',
     key: 'dispense_email',
     width: 100,
-    render: (value: string) => value,
+    render: (value: string) => (
+      <div className="flex items-center gap-2">
+        <Text className="text-[13px] text-gray-500">{value}</Text>
+        <PiCopy
+          onClick={() => handleCopy(value)}
+          className="cursor-pointer active:scale-[0.99]"
+        />
+      </div>
+    ),
   },
   {
     title: <HeaderCell title="Actions" className="opacity-0" />,
