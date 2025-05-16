@@ -43,6 +43,7 @@ export const routes = {
     communication: '/setting/communication',
     payment: '/setting/payment',
     notificationReminder: '/setting/notification-reminder',
+    smsNotificationReminder: '/setting/sms-notification-reminder',
     emailTemplate: '/setting/email-template',
     smsTemplate: '/setting/sms-template',
     roles: '/setting/roles',

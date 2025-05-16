@@ -30,8 +30,12 @@ const menuItems: menuInterface[] = [
     value: routes.setting.payment,
   },
   {
-    label: 'Notification & Reminder',
+    label: 'Email Notification & Reminder',
     value: routes.setting.notificationReminder,
+  },
+  {
+    label: 'Sms Notification & Reminder',
+    value: routes.setting.smsNotificationReminder,
   },
   {
     label: 'Invoice Settings',
