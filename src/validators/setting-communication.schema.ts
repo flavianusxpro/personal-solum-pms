@@ -12,6 +12,7 @@ export const settingCommunicationFormSchema = z.object({
   twillio_status: z.boolean().optional(),
   twillio_id_key: z.string().optional(),
   twillio_pass_key: z.string().optional(),
+  twillio_phone_number: z.string().optional(),
   aws_status: z.boolean().optional(),
   aws_id_key: z.string().optional(),
   aws_pass_key: z.string().optional(),

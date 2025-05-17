@@ -23,6 +23,7 @@ import CSelect from '@/core/ui/select';
 import cn from '@/core/utils/class-names';
 import StatusCard from '@/app/shared/ui/status-card';
 import { IoChevronDownCircleOutline } from 'react-icons/io5';
+import { PhoneNumber } from '@/core/ui/phone-input';
 
 const types: SelectOption[] = [
   {
@@ -218,6 +219,21 @@ export default function Communication() {
                         {...register('twillio_pass_key')}
                         error={errors.twillio_pass_key?.message}
                         className="flex-grow"
+                      />
+
+                      <Controller
+                        name="twillio_phone_number"
+                        control={control}
+                        render={({ field }) => (
+                          <PhoneNumber
+                            {...field}
+                            label="Twilio Phone Number"
+                            country="au"
+                            preferredCountries={['au']}
+                            placeholder="Phone Number"
+                            error={errors.twillio_phone_number?.message}
+                          />
+                        )}
                       />
                     </Flex>
                   </StatusCard>
