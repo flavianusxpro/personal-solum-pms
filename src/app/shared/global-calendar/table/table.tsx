@@ -92,6 +92,7 @@ export default function GlobalCalendarTable({}: {}) {
   const formatAppointments = useCallback(
     (data: IGetAppointmentListResponse['data']) => {
       const timeSlots = getTimeSlots('09:00', '17:00', 15);
+
       const doctors = Array.from(
         new Set(
           data.map((item) =>
@@ -101,9 +102,9 @@ export default function GlobalCalendarTable({}: {}) {
       );
 
       const result = timeSlots.map((time) => {
-        const slot: any = { time };
+        const slot: Record<string, any> = { time };
         doctors.forEach((doc) => {
-          slot[doc] = ''; // initialize each doctor column
+          slot[doc] = ''; // initialize doctor field with empty string
         });
         return slot;
       });
@@ -112,12 +113,13 @@ export default function GlobalCalendarTable({}: {}) {
         const doctorName =
           `${item.doctor?.first_name || ''} ${item.doctor?.last_name || ''}`.trim();
         const appointmentTime = new Date(item.date);
-        const timeStr = appointmentTime.toTimeString().slice(0, 5); // HH:MM
+        const timeStr = appointmentTime.toTimeString().slice(0, 5); // Format: HH:MM
         const slot = result.find((r) => r.time === timeStr);
-        if (slot) {
-          slot[doctorName] = item.patient
-            ? `${item.patient.first_name} ${item.patient.last_name}`
-            : 'Unknown Patient';
+
+        if (slot && item.patient) {
+          slot[doctorName] =
+            `${item.patient.first_name} ${item.patient.last_name}`;
+          slot['type'] = item.type || ''; // additional sibling field
         }
       });
 
