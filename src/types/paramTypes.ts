@@ -133,6 +133,8 @@ export interface IParamGetUsers extends IParamGetDataWithPagination {}
 export interface IParamGetTaxes extends IParamGetDataWithPagination {}
 export interface IParamsGetItems extends IParamGetDataWithPagination {}
 export interface IParamsGetPharmachies extends IParamGetDataWithPagination {}
+export interface IParamsPatientNotes extends IParamGetDataWithPagination {}
+export interface IParamsPatientFlags extends IParamGetDataWithPagination {}
 export interface IParamGetAppointments extends IParamGetDataWithPagination {
   doctorId?: number;
   patientId?: number;
@@ -475,4 +477,17 @@ export interface IPayloadCreateEditPharmachy {
   state: string;
   postcode: string;
   url_logo?: string;
+}
+
+export interface IPayloadPasientNote {
+  id?: number;
+  patient_id: number;
+  description: string;
+}
+
+export interface IPayloadPasientFlag {
+  id?: number;
+  patient_id: string;
+  category: string;
+  description: string;
 }

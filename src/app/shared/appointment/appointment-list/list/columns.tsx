@@ -41,6 +41,7 @@ const statusOptions = [
   { label: 'Confirmed', value: 3 },
   { label: 'Finished', value: 4 },
   { label: 'Cancelled', value: 5 },
+  { label: 'Rescheduled', value: 6 },
 ];
 
 type RowValue = IGetAppointmentListResponse['data'][number];
@@ -239,7 +240,7 @@ function RenderAction({
   function addNotesModal() {
     closeModal(),
       openModal({
-        view: <AddNotesForm />,
+        view: <AddNotesForm patient_id={row.paymentId} />,
         customSize: '600px',
       });
   }

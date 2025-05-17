@@ -124,4 +124,6 @@ export const messages = {
   useLimitIsRequired: 'Use limit is required',
   userLimitIsRequired: 'User limit is required',
   dateOfBirthRequired: 'Date of Birth is required',
+  noteIsRequired: 'Note is required',
+  required: (field: string) => `${field} is required`,
 };

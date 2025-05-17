@@ -183,7 +183,7 @@ function RenderAction({
   function handleRedFlagModal() {
     closeModal(),
       openModal({
-        view: <RedFlagForm />,
+        view: <RedFlagForm patient_id={row.patient_id} />,
         customSize: '600px',
       });
   }

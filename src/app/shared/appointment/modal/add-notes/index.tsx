@@ -1,34 +1,40 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import FormFooter from '@/core/components/form-footer';
 import { Form } from '@/core/ui/form';
+import { useCreatePatientNote } from '@/hooks/usePatientNote';
 import {
   AddAppointmentNotesForm,
   addAppointmentNotesSchema,
 } from '@/validators/add-appointment-notes.schema';
 import { Controller, SubmitHandler } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { PiX } from 'react-icons/pi';
 import { ActionIcon, Flex, Textarea, Title } from 'rizzui';
 
-export default function AddNotesForm() {
+export default function AddNotesForm({ patient_id }: { patient_id: number }) {
   const { closeModal } = useModal();
 
+  const { mutate } = useCreatePatientNote();
+
   const onSubmit: SubmitHandler<AddAppointmentNotesForm> = (data) => {
-    console.log('🚀 ~ onSubmit ~ data:', data);
-    // mutate(
-    // {
-    //     id: data.id,
-    //     note: data.note,
-    // },
-    // {
-    //     onSuccess: () => {
-    //     toast.success('Note updated successfully');
-    //     closeModal();
-    //     },
-    //     onError: (error) => {
-    //     toast.error('Failed to update note: ' + error.message);
-    //     },
-    // }
-    // );
+    mutate(
+      {
+        description: data.notes,
+        patient_id,
+      },
+      {
+        onSuccess: () => {
+          toast.success('Patient note created successfully');
+          closeModal();
+        },
+        onError: (error: any) => {
+          toast.error(
+            'Error creating patient note, ',
+            error.response?.data.message
+          );
+        },
+      }
+    );
   };
 
   return (

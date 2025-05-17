@@ -4,7 +4,9 @@ import { fileSchema, validateEmail } from './common-rules';
 
 // form zod validation schema
 export const addAppointmentNotesSchema = z.object({
-  notes: z.string().optional(),
+  notes: z.string().min(1, {
+    message: messages.noteIsRequired,
+  }),
 });
 
 // generate form types from zod validation schema

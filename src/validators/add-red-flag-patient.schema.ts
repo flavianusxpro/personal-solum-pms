@@ -4,7 +4,12 @@ import { fileSchema, validateEmail } from './common-rules';
 
 // form zod validation schema
 export const addRedFlagPatientSchema = z.object({
-  notes: z.string().optional(),
+  category: z.string().min(1, {
+    message: messages.required('Category'),
+  }),
+  description: z.string().min(1, {
+    message: messages.required('Description'),
+  }),
 });
 
 // generate form types from zod validation schema

@@ -4,34 +4,38 @@ import { Form } from '@/core/ui/form';
 import { ActionIcon, Flex, Input, Textarea, Title } from 'rizzui';
 import { PiX } from 'react-icons/pi';
 import FormFooter from '@/core/components/form-footer';
-import { AddRedFlagPatientForm } from '@/validators/add-red-flag-patient.schema';
-import { addAppointmentNotesSchema } from '@/validators/add-appointment-notes.schema';
+import {
+  AddRedFlagPatientForm,
+  addRedFlagPatientSchema,
+} from '@/validators/add-red-flag-patient.schema';
+import { useCreatePatientFLag } from '@/hooks/usePatientFlag';
+import toast from 'react-hot-toast';
 
-export default function RedFlagForm() {
+export default function RedFlagForm({ patient_id }: { patient_id: string }) {
   const { closeModal } = useModal();
-
+  const { mutate } = useCreatePatientFLag();
   const onSubmit: SubmitHandler<AddRedFlagPatientForm> = (data) => {
-    console.log('🚀 ~ onSubmit ~ data:', data);
-    // mutate(
-    // {
-    //     id: data.id,
-    //     note: data.note,
-    // },
-    // {
-    //     onSuccess: () => {
-    //     toast.success('Note updated successfully');
-    //     closeModal();
-    //     },
-    //     onError: (error) => {
-    //     toast.error('Failed to update note: ' + error.message);
-    //     },
-    // }
-    // );
+    mutate(
+      {
+        patient_id,
+        description: data.description,
+        category: data.category,
+      },
+      {
+        onSuccess: () => {
+          toast.success('Patient red flag created successfully');
+          closeModal();
+        },
+        onError: (error: any) => {
+          toast.error(error?.response?.data?.message || 'Something went wrong');
+        },
+      }
+    );
   };
 
   return (
     <Form<AddRedFlagPatientForm>
-      validationSchema={addAppointmentNotesSchema}
+      validationSchema={addRedFlagPatientSchema}
       // resetValues={reset}
       onSubmit={onSubmit}
       className="@container"
@@ -50,19 +54,21 @@ export default function RedFlagForm() {
             </Flex>
 
             <Input
-              {...register('notes')}
+              {...register('category')}
               label="Category"
               placeholder="Category"
+              error={errors.category?.message}
             />
 
             <Controller
-              name="notes"
+              name="description"
               control={control}
               render={({ field }) => (
                 <Textarea
                   {...field}
                   label="Description"
                   placeholder="description"
+                  error={errors.description?.message}
                 />
               )}
             />
