@@ -18,6 +18,7 @@ import CSelect from '../ui/select';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
 import { useGetAppointments } from '@/hooks/useAppointment';
 import CreateUpdateAppointmentForm from '../appointment/modal/appointment-form';
+import { getRowAppointment } from '../global-calendar/table/columns';
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -143,6 +144,10 @@ export default function EventCalendarView() {
       </div>
 
       <Calendar
+        components={{
+          eventWrapper: ({ event }) =>
+            getRowAppointment(event.title, event?.data?.type as string),
+        }}
         localizer={localizer}
         events={events}
         views={views}

@@ -33,32 +33,32 @@ export const getColumns = ({ data, openModal }: Columns) => {
     dataIndex: name,
     key: name,
     width: 200,
-    render: (value: string, data: Row) => getRowAppointment(value, data),
+    render: (value: string, data: Row) => getRowAppointment(value, data.type),
   }));
 
   return [baseColumn, ...doctorColumns];
 };
 
-function getRowAppointment(value: string, data: Row) {
+export function getRowAppointment(value: string, type: string) {
   let bgColor = '';
-  switch (data.type) {
+  switch (type) {
     case 'INITIAL':
-      bgColor = 'bg-green-300';
+      bgColor = 'bg-green-600';
       break;
     case 'FOLLOWUP':
-      bgColor = 'bg-blue-300';
+      bgColor = 'bg-blue-600';
       break;
     case 'SCRIPT_RENEWAL':
-      bgColor = 'bg-yellow-300';
+      bgColor = 'bg-yellow-600';
       break;
     default:
-      bgColor = '';
+      bgColor = 'bg-pink-600';
       break;
   }
 
   return (
     <div className={cn('w-fit rounded-md p-2', bgColor)}>
-      <Text className="font-medium">{value ?? '-'}</Text>
+      <Text className="font-medium text-white">{value ?? '-'}</Text>
     </div>
   );
 }
