@@ -111,7 +111,7 @@ export const GetColumns = ({
           name={`${row?.patient?.first_name} ${row?.patient?.last_name}`}
           description={row?.patient?.email}
           number={row?.patient?.mobile_number}
-          isFlag={true}
+          warning={row.note}
         />
       ),
     },
@@ -240,7 +240,7 @@ function RenderAction({
   function addNotesModal() {
     closeModal(),
       openModal({
-        view: <AddNotesForm patient_id={row.paymentId} />,
+        view: <AddNotesForm patient_id={row.patientId} />,
         customSize: '600px',
       });
   }

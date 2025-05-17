@@ -97,8 +97,8 @@ export const getColumns = ({
     key: 'gender',
     width: 150,
     render: (value: string) => (
-      <Text className="font-medium text-gray-700">
-        {value?.charAt(0).toUpperCase() + value?.slice(1)?.toLowerCase()}
+      <Text className="font-medium capitalize text-gray-700">
+        {value?.toLowerCase() ?? '-'}
       </Text>
     ),
   },
@@ -183,7 +183,7 @@ function RenderAction({
   function handleRedFlagModal() {
     closeModal(),
       openModal({
-        view: <RedFlagForm patient_id={row.patient_id} />,
+        view: <RedFlagForm patient_id={row.id.toString()} />,
         customSize: '600px',
       });
   }

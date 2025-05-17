@@ -5,20 +5,29 @@ import dynamic from 'next/dynamic';
 import { useTable } from '@core/hooks/use-table';
 import { Button } from 'rizzui';
 import { useColumn } from '@core/hooks/use-column';
-import FileFilters from '@/app/shared/ui/file/file-filters';
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
-import { allFilesData } from '@/data/all-files';
 import { getColumns } from './columns';
 import TableHeader from '@/app/shared/ui/table-header';
 import ModalButton from '@/app/shared/ui/modal-button/modal-button';
-import NoteForm from '../modal/add-note';
+import FlagForm from '../modal/add-flag';
 import FormGroup from '@/app/shared/ui/form-group';
+import { useGetPatientFlags } from '@/hooks/usePatientFlag';
+import { useModal } from '@/app/shared/modal-views/use-modal';
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
 });
 
 export default function ListTable({ className }: { className?: string }) {
-  const [pageSize, setPageSize] = useState(10);
+  const { openModal } = useModal();
+  const [params, setParams] = useState({
+    page: 1,
+    perPage: 10,
+  });
+
+  const { data: dataFlags } = useGetPatientFlags({
+    page: params.page,
+    perPage: params.perPage,
+  });
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -47,18 +56,19 @@ export default function ListTable({ className }: { className?: string }) {
     handleRowSelect,
     handleSelectAll,
     handleDelete,
-  } = useTable(allFilesData, pageSize);
+  } = useTable(dataFlags?.data ?? [], params.perPage);
 
   const columns = useMemo(
     () =>
       getColumns({
-        data: allFilesData,
+        data: dataFlags?.data ?? [],
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
         onDeleteItem,
         onChecked: handleRowSelect,
         handleSelectAll,
+        openModal,
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -69,6 +79,7 @@ export default function ListTable({ className }: { className?: string }) {
       onDeleteItem,
       handleRowSelect,
       handleSelectAll,
+      openModal,
     ]
   );
 
@@ -89,15 +100,19 @@ export default function ListTable({ className }: { className?: string }) {
         tableLayout="auto"
         rowKey={(record) => record.id}
         paginatorOptions={{
-          pageSize,
-          setPageSize,
+          pageSize: params.perPage,
+          setPageSize: (pageSize: number) =>
+            setParams((prev) => ({ ...prev, perPage: pageSize })),
           total: totalItems,
-          current: currentPage,
-          onChange: (page: number) => handlePaginate(page),
+          current: params.page,
+          onChange: (page: number) => {
+            setParams((prev) => ({ ...prev, page }));
+            handlePaginate(page);
+          },
         }}
         tableHeader={
           <TableHeader isCustomHeader checkedItems={[]}>
-            <ModalButton view={<NoteForm />} />
+            <ModalButton view={<FlagForm />} />
           </TableHeader>
         }
         tableFooter={

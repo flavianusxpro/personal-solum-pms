@@ -1,4 +1,4 @@
-import { Text, Avatar, AvatarProps } from 'rizzui';
+import { Text, Avatar, AvatarProps, Tooltip, ActionIcon } from 'rizzui';
 import cn from '../utils/class-names';
 import { PiCopy, PiWarning } from 'react-icons/pi';
 import { useCopyToClipboard } from 'react-use';
@@ -13,7 +13,7 @@ interface AvatarCardProps {
   nameClassName?: string;
   avatarProps?: AvatarProps;
   description?: string | number;
-  isFlag?: boolean;
+  warning?: string | null;
 }
 
 export default function AvatarCard({
@@ -24,7 +24,7 @@ export default function AvatarCard({
   description,
   avatarProps,
   nameClassName,
-  isFlag = false,
+  warning,
 }: AvatarCardProps) {
   const [state, copyToClipboard] = useCopyToClipboard();
 
@@ -57,7 +57,20 @@ export default function AvatarCard({
             onClick={() => handleCopy(name)}
             className="cursor-pointer active:scale-[0.99]"
           />
-          {isFlag && <PiWarning className="h-4 w-5 text-red-600" />}
+          {warning && (
+            <Tooltip content={warning} placement="top" color="invert" size="sm">
+              <ActionIcon
+                variant="text"
+                size="sm"
+                className={cn(
+                  (className = 'hover:!border-gray-900 hover:text-gray-700'),
+                  className
+                )}
+              >
+                <PiWarning className="h-4 w-5 text-red-600" />
+              </ActionIcon>
+            </Tooltip>
+          )}
         </div>
         {description && (
           <div className="flex items-center gap-2">

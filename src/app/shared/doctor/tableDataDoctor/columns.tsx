@@ -113,10 +113,8 @@ export const getColumns = ({
     key: 'gender',
     width: 150,
     render: (value: string) => (
-      <Text className="font-medium text-gray-700">
-        {value
-          ? value.charAt(0).toUpperCase() + value.slice(1).toLocaleLowerCase()
-          : '-'}
+      <Text className="font-medium capitalize text-gray-700">
+        {value?.toLowerCase() ?? '-'}
       </Text>
     ),
   },

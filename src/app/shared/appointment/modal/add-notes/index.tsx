@@ -1,6 +1,7 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import FormFooter from '@/core/components/form-footer';
 import { Form } from '@/core/ui/form';
+import { useGetAppointments } from '@/hooks/useAppointment';
 import { useCreatePatientNote } from '@/hooks/usePatientNote';
 import {
   AddAppointmentNotesForm,
@@ -15,6 +16,10 @@ export default function AddNotesForm({ patient_id }: { patient_id: number }) {
   const { closeModal } = useModal();
 
   const { mutate } = useCreatePatientNote();
+  const { refetch } = useGetAppointments({
+    page: 1,
+    perPage: 10,
+  });
 
   const onSubmit: SubmitHandler<AddAppointmentNotesForm> = (data) => {
     mutate(
@@ -24,6 +29,7 @@ export default function AddNotesForm({ patient_id }: { patient_id: number }) {
       },
       {
         onSuccess: () => {
+          refetch();
           toast.success('Patient note created successfully');
           closeModal();
         },

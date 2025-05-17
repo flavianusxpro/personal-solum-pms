@@ -8,6 +8,7 @@ export default function ActionButton({
   onClick,
   variant,
   buttonSize = 'sm',
+  tooltipContent,
 }: {
   className?: string;
   children?: React.ReactNode;
@@ -28,17 +29,19 @@ export default function ActionButton({
   const { colorPresetName } = useColorPresetName();
 
   return (
-    <ActionIcon
-      variant={variant}
-      onClick={onClick}
-      size={buttonSize}
-      className={cn(
-        (className = 'hover:!border-gray-900 hover:text-gray-700'),
-        colorPresetName === 'dark' && 'bg-slate-800',
-        className
-      )}
-    >
-      <span>{children}</span>
-    </ActionIcon>
+    <Tooltip size="sm" content={tooltipContent} placement="top" color="invert">
+      <ActionIcon
+        variant={variant}
+        onClick={onClick}
+        size={buttonSize}
+        className={cn(
+          (className = 'hover:!border-gray-900 hover:text-gray-700'),
+          colorPresetName === 'dark' && 'bg-slate-800',
+          className
+        )}
+      >
+        <span>{children}</span>
+      </ActionIcon>
+    </Tooltip>
   );
 }

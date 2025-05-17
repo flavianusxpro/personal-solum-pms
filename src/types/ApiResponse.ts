@@ -806,3 +806,15 @@ export interface IPostGetDoctorAvailabilityByClinicResponse
     available: boolean;
   }[];
 }
+
+export interface IGetPatientFlagResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    patientId: number;
+    category: string;
+    description: string;
+    created_by: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+}

@@ -1,8 +1,9 @@
 import { del, get, post, put } from '@/app/api/api';
+import { IGetPatientFlagResponse } from '@/types/ApiResponse';
 import { IParamsPatientFlags, IPayloadPasientFlag } from '@/types/paramTypes';
 
 export async function getPatientFlags(params: IParamsPatientFlags) {
-  return await get('admin/patient/flag', { params });
+  return await get<IGetPatientFlagResponse>('admin/patient/flag', { params });
 }
 
 export async function postCreatePatientFlag(payload: IPayloadPasientFlag) {

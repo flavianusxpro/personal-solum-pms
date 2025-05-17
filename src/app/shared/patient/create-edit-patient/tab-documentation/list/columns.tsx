@@ -1,33 +1,41 @@
 'use client';
 
-import Image from 'next/image';
 import dayjs from 'dayjs';
-import { PiPencil, PiShareFat, PiTrashSimple } from 'react-icons/pi';
-import { Title, Text, Checkbox, ActionIcon, Tooltip } from 'rizzui';
+import { Text, Checkbox, ModalSize } from 'rizzui';
 import { HeaderCell } from '@/app/shared/ui/table';
-import Favorite from '@/app/shared/ui/file/favorite';
 import ActionTooltipButton from '@/app/shared/ui/action-button';
 import PencilIcon from '@/core/components/icons/pencil';
 import DeletePopover from '@/app/shared/ui/delete-popover';
+import { IGetPatientFlagResponse } from '@/types/ApiResponse';
+import FlagForm from '../modal/add-flag';
 
+type Row = IGetPatientFlagResponse['data'][number];
 type Columns = {
-  data: any[];
+  data: IGetPatientFlagResponse['data'];
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
   onDeleteItem: (id: string) => void;
   onHeaderCellClick: (value: string) => void;
   onChecked?: (id: string) => void;
+  openModal?: ({
+    view,
+    customSize,
+    size,
+  }: {
+    view: React.ReactNode;
+    customSize?: string;
+    size?: ModalSize;
+  }) => void;
 };
 
 export const getColumns = ({
   data,
-  sortConfig,
   checkedItems,
   onDeleteItem,
-  onHeaderCellClick,
   handleSelectAll,
   onChecked,
+  openModal,
 }: Columns) => [
   {
     title: (
@@ -53,58 +61,39 @@ export const getColumns = ({
     ),
   },
   {
-    title: <HeaderCell title="Name" />,
-    dataIndex: 'file',
-    key: 'file',
+    title: <HeaderCell title="Category" />,
+    dataIndex: 'category',
+    key: 'category',
     width: 420,
-    render: (file: any, row: any) => (
-      <div className="flex items-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100">
-          <Image
-            src={file.avatar}
-            className="aspect-square"
-            width={26}
-            height={26}
-            alt=""
-          />
-        </div>
-        <div className="ml-3 rtl:ml-0 rtl:mr-3">
-          <Title as="h6" className="mb-0.5 !text-sm font-medium">
-            {file.name}
-          </Title>
-        </div>
-      </div>
-    ),
+    render: (value: string) => value,
   },
   {
-    title: <HeaderCell title="Size" />,
-    dataIndex: 'size',
-    key: 'size',
+    title: <HeaderCell title="Description" />,
+    dataIndex: 'description',
+    key: 'description',
     width: 130,
-    render: (value: any) => <span className="text-gray-500">{value}</span>,
+    render: (value: string) => value,
   },
   {
     title: <HeaderCell title="Type" />,
-    dataIndex: 'type',
-    key: 'type',
+    dataIndex: 'category',
+    key: 'category',
     width: 130,
     render: (value: any) => (
       <span className="capitalize text-gray-500">{value}</span>
     ),
   },
   {
-    title: (
-      <HeaderCell
-        title="Uploaded"
-        sortable
-        ascending={
-          sortConfig?.direction === 'asc' && sortConfig?.key === 'dueDate'
-        }
-      />
-    ),
-    onHeaderCell: () => onHeaderCellClick('modified'),
-    dataIndex: 'modified',
-    key: 'modified',
+    title: <HeaderCell title="Created By" />,
+    dataIndex: 'created_by',
+    key: 'created_by',
+    width: 200,
+    render: (value: string) => value,
+  },
+  {
+    title: <HeaderCell title="Created At" />,
+    dataIndex: 'created_at',
+    key: 'created_at',
     width: 200,
     render: (value: Date) => (
       <>
@@ -119,15 +108,23 @@ export const getColumns = ({
     dataIndex: 'action',
     key: 'action',
     width: 100,
-    render: (_: string, row: any) => (
+    render: (_: string, row: Row) => (
       <div className="relative flex items-center justify-end gap-3">
-        <ActionTooltipButton tooltipContent="Edit" variant="outline">
+        <ActionTooltipButton
+          onClick={() => {
+            openModal?.({
+              view: <FlagForm flagData={row} />,
+            });
+          }}
+          tooltipContent="Edit"
+          variant="outline"
+        >
           <PencilIcon className="h-4 w-4" />
         </ActionTooltipButton>
         <DeletePopover
           title={`Delete the Patient`}
           description={`Are you sure you want to delete this #${row.id} Patient?`}
-          onDelete={() => onDeleteItem(row?.id)}
+          onDelete={() => onDeleteItem(row?.id.toString())}
         />
       </div>
     ),
