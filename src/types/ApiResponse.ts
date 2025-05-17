@@ -724,6 +724,8 @@ export interface IGetEmailNotificationSettingsResponse extends ApiResponse {
     forgot_password_email_html: null;
     birthday_email_status: boolean;
     birthday_email_html: null;
+    reminder_email_status: boolean;
+    reminder_email_html: null;
   };
 }
 
@@ -737,6 +739,8 @@ export interface IGetSmsNotificationSettingsResponse extends ApiResponse {
     account_created_sms_text: null;
     payment_confirmation_sms_status: boolean;
     payment_confirmation_sms_text: null;
+    reminder_sms_status: boolean;
+    reminder_sms_text: null;
   };
 }
 

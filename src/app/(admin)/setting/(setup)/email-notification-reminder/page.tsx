@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { Flex, Loader, Text, Textarea } from 'rizzui';
+import { Flex, Loader } from 'rizzui';
 import {
   settingNotificationReminderFormSchema,
   SettingNotificationReminderFormTypes,
@@ -16,15 +16,10 @@ import StatusCard from '@/app/shared/ui/status-card';
 import { IoChevronDownCircleOutline } from 'react-icons/io5';
 import {
   useGetEmailNotificationSettings,
-  useGetSmsNotificationSettings,
   useUpdateEmailNotificationSettings,
-  useUpdateSmsNotificationSettings,
 } from '@/hooks/useNotification';
-import {
-  IPayloadUpdateEmailNotificationSettings,
-  IPayloadUpdateSmsNotificationSettings,
-} from '@/types/paramTypes';
-import { useGetEmailTemplates, useGetSmsTemplates } from '@/hooks/useTemplate';
+import { IPayloadUpdateEmailNotificationSettings } from '@/types/paramTypes';
+import { useGetEmailTemplates } from '@/hooks/useTemplate';
 import { useMemo, useState } from 'react';
 import CSelect from '@/app/shared/ui/select';
 
@@ -33,43 +28,26 @@ const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
 });
 
 export default function Setup() {
-  const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
-  const [showReschedule, setShowReschedule] = useState(false);
   const { data: dataEmailTemplates } = useGetEmailTemplates({
     page: 1,
     perPage: 100,
   });
-  const { data: dataSmsTemplates } = useGetSmsTemplates({
-    page: 1,
-    perPage: 100,
-  });
+
   const {
     data: dataEmailNotificationSettings,
     isLoading: isLoadingGetEmailNotification,
   } = useGetEmailNotificationSettings();
-  const {
-    data: dataSmsNotificationSettings,
-    isLoading: isLoadingGetSmsNotification,
-  } = useGetSmsNotificationSettings();
 
-  const { mutate: mutateUpdateEmailNotification } =
-    useUpdateEmailNotificationSettings();
-  const { mutate: mutateUpdateSmsNotification } =
-    useUpdateSmsNotificationSettings();
+  const {
+    mutate: mutateUpdateEmailNotification,
+    isPending: isPendingEmailNotification,
+  } = useUpdateEmailNotificationSettings();
 
   const emailTemplateOptions = useMemo(() => {
     if (!dataEmailTemplates) return [];
     return dataEmailTemplates.map((template) => ({
       label: template.name,
       value: template.html,
-    }));
-  }, [dataEmailTemplates]);
-
-  const smsTemplateOptions = useMemo(() => {
-    if (!dataSmsTemplates) return [];
-    return dataSmsTemplates.map((template) => ({
-      label: template.name,
-      value: template.text,
     }));
   }, [dataEmailTemplates]);
 
@@ -97,19 +75,8 @@ export default function Setup() {
         data.payment_confirmation_email_html || '',
       reschedule_email_status: data.reschedule_email_status || false,
       reschedule_email_html: data.reschedule_email_html || '',
-    };
-
-    const smsPayload: IPayloadUpdateSmsNotificationSettings = {
-      booking_confirmation_sms_status:
-        data?.booking_confirmation_sms_status || false,
-      booking_confirmation_sms_text: data?.booking_confirmation_sms_text || '',
-      reschedule_sms_status: data.reschedule_sms_status || false,
-      reschedule_sms_text: data.reschedule_sms_text || '',
-      account_created_sms_status: data.account_created_sms_status || false,
-      account_created_sms_text: data.account_created_sms_text || '',
-      payment_confirmation_sms_status:
-        data.payment_confirmation_sms_status || false,
-      payment_confirmation_sms_text: data?.payment_confirmation_sms_text || '',
+      reminder_email_html: data.reminder_email_html || '',
+      reminder_email_status: data.reminder_email_status || false,
     };
 
     mutateUpdateEmailNotification(emailPayload, {
@@ -122,20 +89,9 @@ export default function Setup() {
         );
       },
     });
-
-    mutateUpdateSmsNotification(smsPayload, {
-      onSuccess: () => {
-        toast.success('SMS notification settings updated successfully');
-      },
-      onError: (error: any) => {
-        toast.error(
-          `Error updating SMS notification settings: ${error?.response?.data?.message}`
-        );
-      },
-    });
   };
 
-  if (isLoadingGetEmailNotification || isLoadingGetSmsNotification) {
+  if (isLoadingGetEmailNotification) {
     return <Loader />;
   }
 
@@ -151,24 +107,19 @@ export default function Setup() {
           booking_confirmation_email_html:
             dataEmailNotificationSettings?.booking_confirmation_email_html ||
             '',
-          booking_confirmation_sms_text:
-            dataSmsNotificationSettings?.booking_confirmation_sms_text || '',
+
           reschedule_email_status:
             dataEmailNotificationSettings?.reschedule_email_status || false,
           reschedule_email_html:
             dataEmailNotificationSettings?.reschedule_email_html || '',
-          account_created_sms_status:
-            dataSmsNotificationSettings?.account_created_sms_status || false,
+
           account_created_email_html:
             dataEmailNotificationSettings?.account_created_email_html || '',
-          account_created_sms_text:
-            dataSmsNotificationSettings?.account_created_sms_text || '',
+
           booking_confirmation_email_status:
             dataEmailNotificationSettings?.booking_confirmation_email_status ||
             false,
-          booking_confirmation_sms_status:
-            dataSmsNotificationSettings?.booking_confirmation_sms_status ||
-            false,
+
           account_verification_email_status:
             dataEmailNotificationSettings?.account_verification_email_status ||
             false,
@@ -180,6 +131,12 @@ export default function Setup() {
             '',
           birthday_email_html:
             dataEmailNotificationSettings?.birthday_email_html || '',
+          birthday_email_status:
+            dataEmailNotificationSettings?.birthday_email_status || false,
+          reminder_email_html:
+            dataEmailNotificationSettings?.reminder_email_html || '',
+          reminder_email_status:
+            dataEmailNotificationSettings?.reminder_email_status || false,
         },
       }}
     >
@@ -410,15 +367,40 @@ export default function Setup() {
 
             <StatusCard
               icon={<IoChevronDownCircleOutline />}
-              meetName="Coming Soon"
+              meetName="Reminder"
+              content="Reminder for upcoming appointments"
+              onSwitchChange={(checked) => {
+                setValue('reminder_email_status', checked);
+              }}
+              switchValue={watch('reminder_email_status')}
               className="mb-10"
-              disabled
             >
-              <></>
+              <Flex justify="end" className="">
+                <CSelect
+                  searchable
+                  placeholder="Select Template"
+                  options={emailTemplateOptions}
+                  onChange={(value: string) =>
+                    setValue('reminder_email_html', value)
+                  }
+                  className="w-fit"
+                />
+              </Flex>
+              <Controller
+                name="reminder_email_html"
+                control={control}
+                render={({ field }) => (
+                  <QuillEditor
+                    {...field}
+                    label="Email Template"
+                    className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
+                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                  />
+                )}
+              />
             </StatusCard>
-
             <FormFooter
-              // isLoading={isLoading}
+              isLoading={isPendingEmailNotification}
               altBtnText="Cancel"
               submitBtnText="Save"
             />

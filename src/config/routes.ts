@@ -42,7 +42,7 @@ export const routes = {
     setup: '/setting/setup',
     communication: '/setting/communication',
     payment: '/setting/payment',
-    notificationReminder: '/setting/notification-reminder',
+    notificationReminder: '/setting/email-notification-reminder',
     smsNotificationReminder: '/setting/sms-notification-reminder',
     emailTemplate: '/setting/email-template',
     smsTemplate: '/setting/sms-template',

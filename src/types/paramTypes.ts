@@ -389,6 +389,8 @@ export interface IPayloadUpdateSmsNotificationSettings {
   account_created_sms_text: string;
   payment_confirmation_sms_status: boolean;
   payment_confirmation_sms_text: string;
+  reminder_sms_status: boolean;
+  reminder_sms_text: string;
 }
 
 export interface IPayloadUpdateEmailNotificationSettings {
@@ -406,6 +408,8 @@ export interface IPayloadUpdateEmailNotificationSettings {
   forgot_password_email_html: string;
   birthday_email_status: boolean;
   birthday_email_html: string;
+  reminder_email_status: boolean;
+  reminder_email_html: string;
 }
 
 export interface IPayloadCreateEditEmailTemplate {
