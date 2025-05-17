@@ -191,8 +191,9 @@ export const GetColumns = ({
       key: 'status',
       width: 260,
       onHeaderCell: () => onHeaderCellClick('status'),
-      render: (status: number | string, row: RowValue) =>
-        getPaymentStatusBadge(row?.payment?.status || 1),
+      render: (status: number | string, row: RowValue) => (
+        <StatusSelect id={row.id} selectItem={row.status} />
+      ),
     },
     {
       title: <></>,
