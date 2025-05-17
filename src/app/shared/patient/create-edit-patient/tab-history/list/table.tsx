@@ -11,7 +11,6 @@ import { allFilesData } from '@/data/all-files';
 import { getColumns } from './columns';
 import TableHeader from '@/app/shared/ui/table-header';
 import ModalButton from '@/app/shared/ui/modal-button/modal-button';
-import NoteForm from '../modal/add-note';
 import FormGroup from '@/app/shared/ui/form-group';
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
@@ -76,7 +75,7 @@ export default function ListTable({ className }: { className?: string }) {
 
   return (
     <div className={className}>
-      <FormGroup title="Correspondence" className="mb-5" />
+      <FormGroup title="History" className="mb-5" />
 
       <ControlledTable
         isLoading={isLoading}
@@ -95,11 +94,6 @@ export default function ListTable({ className }: { className?: string }) {
           current: currentPage,
           onChange: (page: number) => handlePaginate(page),
         }}
-        tableHeader={
-          <TableHeader isCustomHeader checkedItems={[]}>
-            <ModalButton view={<NoteForm />} />
-          </TableHeader>
-        }
         tableFooter={
           <TableFooter
             checkedItems={selectedRowKeys}

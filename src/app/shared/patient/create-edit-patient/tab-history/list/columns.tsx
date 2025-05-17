@@ -7,8 +7,6 @@ import { Title, Text, Checkbox, ActionIcon, Tooltip } from 'rizzui';
 import { HeaderCell } from '@/app/shared/ui/table';
 import Favorite from '@/app/shared/ui/file/favorite';
 import ActionTooltipButton from '@/app/shared/ui/action-button';
-import PencilIcon from '@/core/components/icons/pencil';
-import DeletePopover from '@/app/shared/ui/delete-popover';
 
 type Columns = {
   data: any[];
@@ -112,24 +110,6 @@ export const getColumns = ({
           {dayjs(value).format('DD MMM YYYY')}
         </Text>
       </>
-    ),
-  },
-  {
-    title: <></>,
-    dataIndex: 'action',
-    key: 'action',
-    width: 100,
-    render: (_: string, row: any) => (
-      <div className="relative flex items-center justify-end gap-3">
-        <ActionTooltipButton tooltipContent="Edit" variant="outline">
-          <PencilIcon className="h-4 w-4" />
-        </ActionTooltipButton>
-        <DeletePopover
-          title={`Delete the Patient`}
-          description={`Are you sure you want to delete this #${row.id} Patient?`}
-          onDelete={() => onDeleteItem(row?.id)}
-        />
-      </div>
     ),
   },
 ];
