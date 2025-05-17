@@ -148,6 +148,7 @@ export default function EventCalendarView() {
           eventWrapper: ({ event }) =>
             getRowAppointment(event.title, event?.data?.type as string),
         }}
+        step={15}
         localizer={localizer}
         events={events}
         views={views}

@@ -169,7 +169,7 @@ export const GetColumns = ({
       width: 260,
       render: (value: number, row: RowValue) => (
         <>
-          {getScheduleStatusBadge(value)}
+          <StatusSelect id={row.id} selectItem={row.status} />
           {row.is_reschedule && (
             <Text className="text-xs font-medium text-gray-400">
               (Rescheduled)
@@ -192,9 +192,8 @@ export const GetColumns = ({
       key: 'status',
       width: 260,
       onHeaderCell: () => onHeaderCellClick('status'),
-      render: (status: number | string, row: RowValue) => (
-        <StatusSelect id={row.id} selectItem={row.status} />
-      ),
+      render: (status: number | string, row: RowValue) =>
+        getPaymentStatusBadge(status),
     },
     {
       title: <></>,

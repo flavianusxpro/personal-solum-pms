@@ -187,15 +187,15 @@ export default function Setup() {
         return (
           <>
             <FormGroup
-              title="Notification"
+              title="Email Notification"
               description="Notification provider is used to send email notifications"
               className="mb-10 pt-7 @2xl:pt-9 @3xl:pt-11"
             />
 
             <StatusCard
               icon={<IoChevronDownCircleOutline />}
-              meetName="Email Booking Confirmation"
-              content="Email notification for booking confirmation"
+              meetName="Booking Confirmation"
+              content="Notification for booking confirmation"
               onSwitchChange={(checked) => {
                 setValue('booking_confirmation_email_status', checked);
               }}
@@ -403,8 +403,8 @@ export default function Setup() {
             </StatusCard>
 
             <FormGroup
-              title="Reminder"
-              description="Notification provider is used to send email and SMS notifications"
+              title="Email Reminder"
+              description="Notification provider is used to send email notifications"
               className="mb-10 mt-4 border-t border-t-slate-300 pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
             />
 
