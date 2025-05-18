@@ -822,3 +822,19 @@ export interface IGetPatientFlagResponse extends ApiResponseWithPagination {
     updated_at: string;
   }[];
 }
+
+export interface IGetCouponsResponse extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    name: string;
+    code: string;
+    description: string;
+    discount_type: string;
+    discount_amount: string;
+    expiry_date: string;
+    patient_limit_use: number;
+    limit: number;
+    category: string;
+    restrict_patient: number[];
+  }[];
+}

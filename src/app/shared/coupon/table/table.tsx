@@ -6,24 +6,25 @@ import { useTable } from '@core/hooks/use-table';
 import React, { useCallback, useState } from 'react';
 import { getColumns } from './columns';
 import { useModal } from '../../modal-views/use-modal';
-import { useDeleteClinic, useGetAllClinics } from '@/hooks/useClinic';
+import { useDeleteCoupon, useGetCoupons } from '@/hooks/useCoupon';
 
 export default function CouponTable({}: {}) {
   const { openModal } = useModal();
-  const [pageSize, setPageSize] = useState(10);
+  const [params, setParams] = useState({
+    page: 1,
+    perPage: 10,
+  });
 
   const {
     data,
     isLoading: isLoadingGetRoles,
     refetch,
-  } = useGetAllClinics({
-    page: 1,
-    perPage: pageSize,
-    sort: 'DESC',
-    role: 'admin',
+  } = useGetCoupons({
+    page: params.page,
+    perPage: params.perPage,
   });
 
-  const { mutate } = useDeleteClinic();
+  const { mutate } = useDeleteCoupon();
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -50,11 +51,11 @@ export default function CouponTable({}: {}) {
     handleSelectAll,
     handleDelete,
     // handleReset,
-  } = useTable(data?.data ?? [], pageSize);
+  } = useTable(data?.data ?? [], params.perPage);
 
   const onDeleteItem = useCallback(
     (id: string) => {
-      mutate(id, {
+      mutate([Number(id)], {
         onSuccess: () => {
           handleDelete(id);
           refetch();
@@ -106,11 +107,14 @@ export default function CouponTable({}: {}) {
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{
-          pageSize,
-          setPageSize,
+          pageSize: params.page,
+          setPageSize: () => setParams((prev) => ({ ...prev, page: 1 })),
           total: totalItems,
-          current: currentPage,
-          onChange: (page: number) => handlePaginate(page),
+          current: params.page,
+          onChange: (page: number) => {
+            setParams((prev) => ({ ...prev, page }));
+            handlePaginate(page);
+          },
         }}
         filterOptions={{
           searchTerm,

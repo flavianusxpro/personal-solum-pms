@@ -150,6 +150,11 @@ export interface IParamGetInvoices extends IParamGetDataWithPagination {
   doctorId?: number;
   patientId?: number;
 }
+export interface IParamsGetCoupons extends IParamGetDataWithPagination {
+  type?: string;
+  status?: string;
+  category?: string;
+}
 
 export interface IPayloadSettingMeetingDoctor {
   doctor_id: string;
@@ -494,4 +499,19 @@ export interface IPayloadPasientFlag {
   patient_id: string;
   category: string;
   description: string;
+}
+
+export interface IPayloadCreateUpdateCoupon {
+  id?: number;
+  name: string;
+  type: string;
+  description: string;
+  code: string;
+  discount_type: string;
+  discount_amount: number;
+  expiry_date: string;
+  patient_limit_use: number;
+  limit: number;
+  category: string;
+  restrict_patient: number[];
 }

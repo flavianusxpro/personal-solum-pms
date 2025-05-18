@@ -12,6 +12,7 @@ export const createCouponSchema = z.object({
   name: z.string().min(1, { message: messages.couponNameIsRequired }),
   code: z.string().min(1, { message: messages.couponCodeIsRequired }),
   value: z.string().min(1, { message: messages.valueIsRequired }),
+  restrict_patient: z.array(z.string()).optional(),
 
   expiry_date: z.string().min(1, { message: messages.expiryDateIsRequired }),
   use_limit: z.string().min(1, { message: messages.useLimitIsRequired }),

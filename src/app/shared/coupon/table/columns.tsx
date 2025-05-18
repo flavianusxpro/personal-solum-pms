@@ -2,16 +2,14 @@
 
 import DeletePopover from '@/app/shared/ui/delete-popover';
 import { HeaderCell } from '@/app/shared/ui/table';
-import { IGetAllClinicForPatientResponse } from '@/types/ApiResponse';
+import { IGetCouponsResponse } from '@/types/ApiResponse';
 import EyeIcon from '@core/components/icons/eye';
 import PencilIcon from '@core/components/icons/pencil';
-import DateCell from '@core/ui/date-cell';
 import { ActionIcon, Badge, Checkbox, Text, Tooltip } from 'rizzui';
 import CreateEditModal from '../modal/create-edit-modal';
-import AvatarCard from '@/core/ui/avatar-card';
 
 type Columns = {
-  data: IGetAllClinicForPatientResponse['data'];
+  data: IGetCouponsResponse['data'];
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
@@ -21,7 +19,7 @@ type Columns = {
   openModal: (props: any) => void;
 };
 
-type Row = IGetAllClinicForPatientResponse['data'][number];
+type Row = IGetCouponsResponse['data'][number];
 
 export const getColumns = ({
   data,
@@ -83,7 +81,7 @@ export const getColumns = ({
     dataIndex: 'discount',
     key: 'discount',
     width: 100,
-    render: (value: string) => value,
+    render: (value: string, row: Row) => value,
   },
   {
     title: <HeaderCell title="STATUS" />,

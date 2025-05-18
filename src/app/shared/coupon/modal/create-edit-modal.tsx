@@ -6,23 +6,10 @@ import { Form } from '@core/ui/form';
 import { ActionIcon, Flex, Grid, Input, Loader, Title } from 'rizzui';
 import { useModal } from '../../modal-views/use-modal';
 import { PiX } from 'react-icons/pi';
-import dynamic from 'next/dynamic';
-import { IGetAllClinicForPatientResponse } from '@/types/ApiResponse';
+import { IGetCouponsResponse } from '@/types/ApiResponse';
 
-import {
-  useGetAllClinics,
-  usePostCreateClinic,
-  usePutUpdateClinic,
-} from '@/hooks/useClinic';
-import {
-  CreateBranchForm,
-  createBranchSchema,
-} from '@/validators/create-branch.schema';
+import { usePostCreateClinic, usePutUpdateClinic } from '@/hooks/useClinic';
 import CSelect from '../../ui/select';
-import AvatarUpload from '@/core/ui/file-upload/avatar-upload';
-import { IPayloadCreateUpdateClinic } from '@/types/paramTypes';
-import toast from 'react-hot-toast';
-import FormGroup from '../../ui/form-group';
 import cn from '@/core/utils/class-names';
 import {
   CreateCouponForm,
@@ -32,28 +19,34 @@ import { useGetPharmachyList } from '@/hooks/usePharmachy';
 import { useGetUsers } from '@/hooks/useUser';
 import { useGetItems } from '@/hooks/useItems';
 import { useMemo } from 'react';
+import { useGetCoupons } from '@/hooks/useCoupon';
+import { useGetAllPatients } from '@/hooks/usePatient';
+import dynamic from 'next/dynamic';
 
 interface IProps {
-  data?: IGetAllClinicForPatientResponse['data'][number];
+  data?: IGetCouponsResponse['data'][number];
   isView?: boolean;
 }
+
+const MultiSelect = dynamic(
+  () => import('rizzui').then((mod) => mod.MultiSelect),
+  { ssr: false }
+);
 
 export default function CreateEditModal({ data, isView }: IProps) {
   const { closeModal } = useModal();
 
-  // const { refetch } = useGetAllClinics({
-  //   page: 1,
-  //   perPage: 10,
-  //   sort: 'DESC',
-  //   role: 'admin',
-  // });
+  const { refetch } = useGetCoupons({
+    page: 1,
+    perPage: 10,
+  });
 
   const { data: dataPharmachies } = useGetPharmachyList({
     page: 1,
     perPage: 10,
     sort: 'DESC',
   });
-  const { data: dataUsers } = useGetUsers({
+  const { data: dataPatients } = useGetAllPatients({
     page: 1,
     perPage: 100,
     sort: 'DESC',
@@ -77,13 +70,13 @@ export default function CreateEditModal({ data, isView }: IProps) {
     }));
   }, [dataPharmachies]);
 
-  const userOptions = useMemo(() => {
-    if (!dataUsers) return [];
-    return dataUsers?.users.map((item) => ({
-      value: item.id,
-      label: item.name,
+  const patientOptions = useMemo(() => {
+    if (!dataPatients) return [];
+    return dataPatients?.data.map((item) => ({
+      value: item.id.toString(),
+      label: item.first_name + ' ' + item.last_name,
     }));
-  }, [dataUsers]);
+  }, [dataPatients]);
 
   const productOptions = useMemo(() => {
     if (!dataProducts) return [];
@@ -161,7 +154,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
           >
             <Flex justify="between" align="center" gap="4">
               <Title className="text-lg">
-                {isView ? 'View' : data ? 'Update' : 'Create'} Branch
+                {isView ? 'View' : data ? 'Update' : 'Create'} Coupon
               </Title>
               <ActionIcon variant="text" onClick={closeModal} className="">
                 <PiX className="h-6 w-6" />
@@ -188,7 +181,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
                     options={[
                       { value: 'general', label: 'General' },
                       { value: 'pharmacy', label: 'Pharmacy' },
-                      { value: 'user', label: 'User' },
+                      { value: 'patient', label: 'Patient' },
                       { value: 'product', label: 'Product' },
                     ]}
                     error={errors.select_type?.message}
@@ -213,17 +206,17 @@ export default function CreateEditModal({ data, isView }: IProps) {
                 />
               )}
 
-              {watch('select_type') === 'user' && (
+              {watch('select_type') === 'patient' && (
                 <Controller
                   control={control}
-                  name="target_id"
+                  name="restrict_patient"
                   render={({ field }) => (
-                    <CSelect
+                    <MultiSelect
                       {...field}
-                      label="Select User"
-                      placeholder="Select User"
-                      options={userOptions}
-                      error={errors.target_id?.message}
+                      label="Select Patient"
+                      placeholder="Select Patient"
+                      options={patientOptions}
+                      error={errors.restrict_patient?.message}
                       disabled={isView}
                     />
                   )}
