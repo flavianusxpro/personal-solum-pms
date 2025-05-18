@@ -826,6 +826,7 @@ export interface IGetPatientFlagResponse extends ApiResponseWithPagination {
 export interface IGetCouponsResponse extends ApiResponseWithPagination {
   data: {
     id: number;
+    type: string;
     name: string;
     code: string;
     description: string;

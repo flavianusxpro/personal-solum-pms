@@ -7,9 +7,12 @@ import React, { useCallback, useState } from 'react';
 import { getColumns } from './columns';
 import { useModal } from '../../modal-views/use-modal';
 import { useDeleteCoupon, useGetCoupons } from '@/hooks/useCoupon';
+import { useAtom } from 'jotai';
+import { currencyAtom } from '@/store/currency';
 
 export default function CouponTable({}: {}) {
   const { openModal } = useModal();
+  const [currency] = useAtom(currencyAtom);
   const [params, setParams] = useState({
     page: 1,
     perPage: 10,
@@ -82,6 +85,7 @@ export default function CouponTable({}: {}) {
         onChecked: handleRowSelect,
         handleSelectAll,
         openModal,
+        symbol: currency?.active.symbol,
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [

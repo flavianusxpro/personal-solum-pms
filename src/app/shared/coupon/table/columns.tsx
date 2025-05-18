@@ -17,6 +17,7 @@ type Columns = {
   onHeaderCellClick: (value: string) => void;
   onChecked?: (id: string) => void;
   openModal: (props: any) => void;
+  symbol?: string;
 };
 
 type Row = IGetCouponsResponse['data'][number];
@@ -30,6 +31,7 @@ export const getColumns = ({
   handleSelectAll,
   onChecked,
   openModal,
+  symbol,
 }: Columns) => [
   {
     title: (
@@ -78,10 +80,16 @@ export const getColumns = ({
   },
   {
     title: <HeaderCell title="Discount" />,
-    dataIndex: 'discount',
-    key: 'discount',
+    dataIndex: 'discount_amount',
+    key: 'discount_amount',
     width: 100,
-    render: (value: string, row: Row) => value,
+    render: (value: string, row: Row) => (
+      <>
+        {row.discount_type === 'fix' && symbol}
+        {value}
+        {row.discount_type === 'percent' && '%'}
+      </>
+    ),
   },
   {
     title: <HeaderCell title="STATUS" />,
