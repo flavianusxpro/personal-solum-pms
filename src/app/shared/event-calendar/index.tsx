@@ -9,7 +9,6 @@ import {
   NavigateAction,
   View,
 } from 'react-big-calendar';
-import EventForm from '@/app/shared/event-calendar/event-form';
 import DetailsEvents from '@/app/shared/event-calendar/details-event';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import cn from '@core/utils/class-names';
@@ -19,11 +18,10 @@ import { useGetAllDoctors } from '@/hooks/useDoctor';
 import { useGetAppointments } from '@/hooks/useAppointment';
 import CreateUpdateAppointmentForm from '../appointment/modal/appointment-form';
 import { getRowAppointment } from '../global-calendar/table/columns';
+import { PiInfo } from 'react-icons/pi';
+import ActionTooltipButton from '../ui/action-button';
 
 const localizer = dayjsLocalizer(dayjs);
-
-const calendarToolbarClassName =
-  '[&_.rbc-toolbar_.rbc-toolbar-label]:whitespace-nowrap [&_.rbc-toolbar_.rbc-toolbar-label]:my-2 [&_.rbc-toolbar]:flex [&_.rbc-toolbar]:flex-col [&_.rbc-toolbar]:items-center @[56rem]:[&_.rbc-toolbar]:flex-row [&_.rbc-btn-group_button:hover]:bg-gray-300 [&_.rbc-btn-group_button]:duration-200 [&_.rbc-btn-group_button.rbc-active:hover]:bg-gray-600 dark:[&_.rbc-btn-group_button.rbc-active:hover]:bg-gray-300 [&_.rbc-btn-group_button.rbc-active:hover]:text-gray-50 dark:[&_.rbc-btn-group_button.rbc-active:hover]:text-gray-900 [@media(max-width:375px)]:[&_.rbc-btn-group:last-child_button]:!px-2.5 [&_.rbc-toolbar_>_*:last-child_>_button:focus]:!bg-primary [&_.rbc-toolbar_>_*:last-child_>_button:focus]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button:focus]:!text-gray-900 [&_.rbc-toolbar_>_*:last-child_>_button:hover]:!text-gray-900 dark:[&_.rbc-toolbar_>_*:last-child_>_button:hover]:!bg-gray-300 [&_.rbc-toolbar_>_*:last-child_>_button:hover]:!bg-gray-300 [&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!bg-primary-dark [&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-900';
 
 const rtcEventClassName =
   '[&_.rbc-event]:!text-gray-0 dark:[&_.rbc-event]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:focus]:!text-gray-0';
@@ -126,21 +124,35 @@ export default function EventCalendarView() {
   );
 
   useEffect(() => {
-    if (selectDoctor) {
+    if (selectDoctor || selectDoctor === null) {
       refetch();
     }
   }, [selectDoctor, refetch]);
 
   return (
     <div className="@container">
-      <div className="mb-4 flex w-1/4">
+      <div className="mb-4 flex w-1/4 items-center gap-4">
         <CSelect
           searchable
           label="Select Doctor"
           options={doctorOptions}
           value={selectDoctor}
+          clearable
+          placeholder="All Doctors"
+          onClear={() => setSelectDoctor(null)}
           onChange={(e: number) => setSelectDoctor(e)}
         />
+        <ActionTooltipButton
+          tooltipContent={`
+            🟢: Initial,
+            🔵: Follow Up,
+            🟡: Script Renewal,
+            👛: Reschedule,
+            `}
+          variant="text"
+        >
+          <PiInfo className="mt-8 h-8 w-8 text-gray-500" />
+        </ActionTooltipButton>
       </div>
 
       <Calendar
