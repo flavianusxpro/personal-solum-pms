@@ -515,3 +515,18 @@ export interface IPayloadCreateUpdateCoupon {
   category: string;
   restrict_patient: number[];
 }
+
+export interface IPayloadUpdateTwilioConfig {
+  account_id: string;
+  auth_token: string;
+  from_number: string;
+}
+
+export interface IPayloadUpdateSmtpConfig {
+  smtp_host: string;
+  smtp_port: string;
+  smtp_username: string;
+  smtp_password: string;
+  secure_type: string;
+  mail_from: string;
+}

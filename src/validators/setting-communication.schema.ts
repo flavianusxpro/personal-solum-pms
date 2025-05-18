@@ -1,18 +1,21 @@
 import { z } from 'zod';
+import { validateEmail } from './common-rules';
 
 // form zod validation schema
 export const settingCommunicationFormSchema = z.object({
-  email_server: z.string().optional(),
-  email_address: z.string().optional(),
-  email_port: z.string().optional(),
-  security_type: z.string().optional(),
-  email_password: z.string().optional(),
+  smtp_host: z.string().optional(),
+  smtp_email_address: validateEmail.optional(),
+  smtp_port: z.string().optional(),
+  smtp_security_type: z.string().optional(),
+  smtp_username: z.string().optional(),
+  smtp_password: z.string().optional(),
 
   sms_provider_status: z.boolean().optional(),
   twillio_status: z.boolean().optional(),
   twillio_id_key: z.string().optional(),
-  twillio_pass_key: z.string().optional(),
+  twillio_auth_token: z.string().optional(),
   twillio_phone_number: z.string().optional(),
+
   aws_status: z.boolean().optional(),
   aws_id_key: z.string().optional(),
   aws_pass_key: z.string().optional(),

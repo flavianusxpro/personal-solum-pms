@@ -24,46 +24,92 @@ import cn from '@/core/utils/class-names';
 import StatusCard from '@/app/shared/ui/status-card';
 import { IoChevronDownCircleOutline } from 'react-icons/io5';
 import { PhoneNumber } from '@/core/ui/phone-input';
+import { useGetTwilioConfig, useUpdateTwilioConfig } from '@/hooks/useTwilio';
+import {
+  IPayloadUpdateSmtpConfig,
+  IPayloadUpdateTwilioConfig,
+} from '@/types/paramTypes';
+import { useGetSmtpConfig, useUpdateSmtpConfig } from '@/hooks/useSmpt';
 
 const types: SelectOption[] = [
   {
     label: 'SSL',
-    value: 'SSL',
+    value: 'ssl',
   },
   {
     label: 'TLS',
-    value: 'TLS',
+    value: 'tls',
   },
   {
     label: 'STARTTLS',
-    value: 'STARTTLS',
+    value: 'starttls',
   },
   {
     label: 'No Security',
-    value: 'No Security',
+    value: 'no-security',
   },
 ];
 
-const Select = dynamic(() => import('rizzui').then((mod) => mod.Select), {
-  ssr: false,
-  loading: () => (
-    <div className="grid h-10 place-content-center">
-      <Loader variant="spinner" />
-    </div>
-  ),
-});
-
-const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
-  ssr: false,
-});
-
 export default function Communication() {
+  const { data: dataSmtp, isLoading: isLoadingGetSmtp } = useGetSmtpConfig();
+  const { data: dataTwilio, isLoading: isLoadingGetTwilio } =
+    useGetTwilioConfig();
+
+  const { mutate: mutateUpdateSmtp, isPending: isPendingUpdateSmtp } =
+    useUpdateSmtpConfig();
+  const { mutate: mutateUpdateTwilio, isPending: isPendingUpdateTwilio } =
+    useUpdateTwilioConfig();
+
   const onSubmit: SubmitHandler<SettingCommunicationFormTypes> = (data) => {
-    toast.success(<Text as="b">Successfully added!</Text>);
     console.log('Profile settings data ->', {
       ...data,
     });
+    const payloadTwilioConfig: IPayloadUpdateTwilioConfig = {
+      account_id: data.twillio_id_key || '',
+      auth_token: data.twillio_auth_token || '',
+      from_number: data.twillio_phone_number || '',
+    };
+
+    const payloadSmtpConfig: IPayloadUpdateSmtpConfig = {
+      smtp_host: data.smtp_host || '',
+      mail_from: data.smtp_email_address || '',
+      smtp_port: data.smtp_port || '',
+      secure_type: data.smtp_security_type || '',
+      smtp_username: data.smtp_username || '',
+      smtp_password: data.smtp_password || '',
+    };
+
+    mutateUpdateSmtp(payloadSmtpConfig, {
+      onSuccess: () => {
+        toast.success('SMTP configuration updated successfully');
+      },
+      onError: (error: any) => {
+        toast.error(
+          'Failed to update SMTP configuration: ' + error.response.data.message
+        );
+      },
+    });
+
+    mutateUpdateTwilio(payloadTwilioConfig, {
+      onSuccess: () => {
+        toast.success('Twilio configuration updated successfully');
+      },
+      onError: (error: any) => {
+        toast.error(
+          'Failed to update Twilio configuration: ' +
+            error.response.data.message
+        );
+      },
+    });
   };
+
+  if (isLoadingGetTwilio || isLoadingGetSmtp) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <Form<SettingCommunicationFormTypes>
@@ -73,14 +119,24 @@ export default function Communication() {
       className="@container"
       useFormProps={{
         mode: 'onChange',
-        defaultValues: {},
+        defaultValues: {
+          smtp_host: dataSmtp?.data.smtp_host || '',
+          smtp_port: dataSmtp?.data.smtp_port || '',
+          smtp_email_address: dataSmtp?.data.mail_from || '',
+          smtp_security_type: dataSmtp?.data.secure_type || '',
+          smtp_username: dataSmtp?.data.smtp_username || '',
+          smtp_password: dataSmtp?.data.smtp_password || '',
+          twillio_id_key: dataTwilio?.data.account_id || '',
+          twillio_auth_token: dataTwilio?.data.auth_token || '',
+          twillio_phone_number: dataTwilio?.data.from_number || '',
+        },
       }}
     >
       {({ register, control, setValue, watch, formState: { errors } }) => {
         return (
           <>
             <FormGroup
-              title="SMTP Configuration (not connected yet)"
+              title="SMTP Configuration"
               description="SMTP configuration is used to send email notifications"
               className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
             />
@@ -88,14 +144,14 @@ export default function Communication() {
             <div className="mb-10 grid grid-cols-2 gap-7 divide-y divide-dashed divide-gray-200 @2xl:gap-9 @3xl:gap-11">
               <div>
                 <FormGroup
-                  title="Email Server"
+                  title="Host"
                   className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
                   isLabel
                 >
                   <Input
-                    placeholder="Email Server"
-                    {...register('email_server')}
-                    error={errors.email_server?.message}
+                    placeholder="Host"
+                    {...register('smtp_host')}
+                    error={errors.smtp_host?.message}
                     className="flex-grow"
                   />
                 </FormGroup>
@@ -107,8 +163,8 @@ export default function Communication() {
                 >
                   <Input
                     placeholder="Email Address"
-                    {...register('email_address')}
-                    error={errors.email_address?.message}
+                    {...register('smtp_email_address')}
+                    error={errors.smtp_email_address?.message}
                     className="flex-grow"
                   />
                 </FormGroup>
@@ -119,9 +175,10 @@ export default function Communication() {
                   isLabel
                 >
                   <Input
+                    type="number"
                     placeholder="Email Port"
-                    {...register('email_port')}
-                    error={errors.email_port?.message}
+                    {...register('smtp_port')}
+                    error={errors.smtp_port?.message}
                     className="flex-grow"
                   />
                 </FormGroup>
@@ -134,27 +191,39 @@ export default function Communication() {
                 >
                   <Controller
                     control={control}
-                    name="security_type"
+                    name="smtp_security_type"
                     render={({ field }) => (
                       <CSelect
                         {...field}
                         placeholder="Select Type"
                         options={types}
                         className="col-span-full"
-                        error={errors?.security_type?.message as string}
+                        error={errors?.smtp_security_type?.message as string}
                       />
                     )}
                   />
                 </FormGroup>
                 <FormGroup
-                  title="Email Password"
+                  title="Username"
                   className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
                   isLabel
                 >
                   <Input
-                    placeholder="Email Password"
-                    {...register('email_password')}
-                    error={errors.email_password?.message}
+                    placeholder="Smtp Username"
+                    {...register('smtp_username')}
+                    error={errors.smtp_username?.message}
+                    className="flex-grow"
+                  />
+                </FormGroup>
+                <FormGroup
+                  title="Password"
+                  className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                  isLabel
+                >
+                  <Input
+                    placeholder="Smtp Password"
+                    {...register('smtp_password')}
+                    error={errors.smtp_password?.message}
                     className="flex-grow"
                   />
                 </FormGroup>
@@ -162,7 +231,7 @@ export default function Communication() {
             </div>
 
             <FormGroup
-              title="SMS Provider (not connected yet)"
+              title="SMS Provider"
               description="SMS provider is used to send SMS notifications"
               className="mb-10 mt-4 border-t border-t-slate-300 pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
             >
@@ -197,7 +266,7 @@ export default function Communication() {
                 <div className="mt-6 grid grid-cols-1 gap-4">
                   <StatusCard
                     icon={<IoChevronDownCircleOutline />}
-                    meetName="Twilio (not connected yet)"
+                    meetName="Twilio"
                     content="Twilio"
                     onSwitchChange={(checked) => {
                       setValue('twillio_status', checked);
@@ -214,10 +283,10 @@ export default function Communication() {
                       />
 
                       <Input
-                        label="Twilio Pass Key"
-                        placeholder="Twilio Pass Key"
-                        {...register('twillio_pass_key')}
-                        error={errors.twillio_pass_key?.message}
+                        label="Twilio Auth Token"
+                        placeholder="Twilio Auth Token"
+                        {...register('twillio_auth_token')}
+                        error={errors.twillio_auth_token?.message}
                         className="flex-grow"
                       />
 
@@ -330,7 +399,7 @@ export default function Communication() {
             </FormGroup>
 
             <FormFooter
-              // isLoading={isLoading}
+              isLoading={isPendingUpdateTwilio || isPendingUpdateSmtp}
               altBtnText="Cancel"
               submitBtnText="Save"
             />

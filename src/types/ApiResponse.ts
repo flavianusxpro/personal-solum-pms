@@ -854,3 +854,28 @@ export interface IGetCouponsResponse extends ApiResponseWithPagination {
     restrict_patient: number[];
   }[];
 }
+
+export interface IGetTwilioConfigResponse extends ApiResponse {
+  data: {
+    account_id: null;
+    auth_token: null;
+    from_number: null;
+    id: number;
+    created_at: string;
+    updated_at: string;
+  };
+}
+
+export interface IGetSmtpConfigResponse extends ApiResponse {
+  data: {
+    id: number;
+    smtp_host: string;
+    smtp_port: string;
+    smtp_username: string;
+    smtp_password: string;
+    secure_type: string;
+    mail_from: string;
+    created_at: string;
+    updated_at: string;
+  };
+}
