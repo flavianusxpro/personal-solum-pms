@@ -9,7 +9,14 @@ import TableAvatar from '@core/ui/avatar-card';
 import DateCell from '@core/ui/date-cell';
 import Link from 'next/link';
 import { PiCopy } from 'react-icons/pi';
-import { ActionIcon, Badge, Checkbox, Text, Tooltip } from 'rizzui';
+import {
+  ActionIcon,
+  Badge,
+  Checkbox,
+  SelectOption,
+  Text,
+  Tooltip,
+} from 'rizzui';
 
 function getStatusBadge(status: string) {
   switch (status.toLowerCase()) {
@@ -53,6 +60,7 @@ type Columns = {
   onHeaderCellClick: (value: string) => void;
   onChecked?: (id: string) => void;
   handleCopy: (text: string | number) => void;
+  dataSpecialistsOptions?: SelectOption[];
 };
 
 export const getColumns = ({
@@ -64,6 +72,7 @@ export const getColumns = ({
   handleSelectAll,
   onChecked,
   handleCopy,
+  dataSpecialistsOptions,
 }: Columns) => [
   {
     title: (
@@ -144,54 +153,13 @@ export const getColumns = ({
   },
   {
     title: <HeaderCell title="SPECIALIST" />,
-    dataIndex: 'specialist',
-    key: 'specialist',
+    dataIndex: 'specialist_type',
+    key: 'specialist_type',
     width: 150,
-    render: (value: string) => (
-      <Text className="font-medium text-gray-700">{value}</Text>
-    ),
+    render: (value: string) =>
+      getSpecialistDoctor(value, dataSpecialistsOptions),
   },
-  // {
-  //   title: (
-  //     <HeaderCell
-  //       title="Phone"
-  //       sortable
-  //       ascending={
-  //         sortConfig?.direction === 'asc' && sortConfig?.key === 'createdAt'
-  //       }
-  //     />
-  //   ),
-  //   onHeaderCell: () => onHeaderCellClick('createdAt'),
-  //   dataIndex: 'createdAt',
-  //   key: 'createdAt',
-  //   width: 200,
-  //   render: (value: Date) => <DateCell clock={true} date={value} />,
-  // },
-  // {
-  //   title: (
-  //     <HeaderCell
-  //       title="Modified"
-  //       sortable
-  //       ascending={
-  //         sortConfig?.direction === 'asc' && sortConfig?.key === 'updatedAt'
-  //       }
-  //     />
-  //   ),
-  //   onHeaderCell: () => onHeaderCellClick('updatedAt'),
-  //   dataIndex: 'updatedAt',
-  //   key: 'updatedAt',
-  //   width: 200,
-  //   render: (value: Date) => <DateCell clock={true} date={value} />,
-  // },
-  // {
-  //   title: <HeaderCell title="Status" />,
-  //   dataIndex: 'status',
-  //   key: 'status',
-  //   width: 140,
-  //   render: (value: string) => getStatusBadge(value),
-  // },
   {
-    // Need to avoid this issue -> <td> elements in a large <table> do not have table headers.
     title: <HeaderCell title="Actions" className="opacity-0" />,
     dataIndex: 'action',
     key: 'action',
@@ -241,3 +209,45 @@ export const getColumns = ({
     ),
   },
 ];
+
+function getSpecialistDoctor(
+  specialist: string | number[],
+  dataSpecialistsOptions?: SelectOption[]
+) {
+  // specialist is like "[15]" or can be an array of numbers
+  const parsedSpecialist: number[] =
+    typeof specialist === 'string'
+      ? (JSON.parse(specialist) as number[])
+      : (specialist as number[]);
+
+  if (
+    !parsedSpecialist ||
+    !Array.isArray(parsedSpecialist) ||
+    parsedSpecialist.length === 0
+  )
+    return <Text>-</Text>;
+
+  const specialistOptions = parsedSpecialist
+    .slice(0, 2)
+    .map((spec: number) =>
+      dataSpecialistsOptions?.find((option) => option.value === spec)
+    )
+    .filter(Boolean) as SelectOption[];
+
+  const hasMoreSpecialists = parsedSpecialist.length > 2;
+
+  return (
+    <div className="flex flex-col">
+      {specialistOptions.map((specialistOption, index) => (
+        <Text key={index} className="font-medium text-gray-700">
+          {specialistOption?.label || '-'}
+        </Text>
+      ))}
+      {hasMoreSpecialists && (
+        <Text className="text-xs text-gray-500">
+          +{parsedSpecialist.length - 2} more
+        </Text>
+      )}
+    </div>
+  );
+}

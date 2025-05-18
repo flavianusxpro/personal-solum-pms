@@ -2,7 +2,11 @@
 
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { getColumns } from '@/app/shared/doctor/tableDataDoctor/columns';
-import { useDeleteDoctor, useGetAllDoctors } from '@/hooks/useDoctor';
+import {
+  useDeleteDoctor,
+  useGetAllDoctors,
+  useGetSpecialists,
+} from '@/hooks/useDoctor';
 import { useColumn } from '@core/hooks/use-column';
 import { useTable } from '@core/hooks/use-table';
 import dynamic from 'next/dynamic';
@@ -51,7 +55,20 @@ export default function DoctorTable({}: {}) {
     q: JSON.stringify({ name: params.search }),
   });
 
+  const { data: dataSpecialists } = useGetSpecialists({
+    page: 1,
+    perPage: 100,
+  });
+
   const { mutate: mutateDeleteDoctor } = useDeleteDoctor();
+
+  const dataSpecialistsOptions = React.useMemo(() => {
+    if (!dataSpecialists) return [];
+    return dataSpecialists?.data?.map((item) => ({
+      label: item.name,
+      value: item.id,
+    }));
+  }, [dataSpecialists]);
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -125,6 +142,7 @@ export default function DoctorTable({}: {}) {
         onChecked: handleRowSelect,
         handleSelectAll,
         handleCopy,
+        dataSpecialistsOptions,
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
