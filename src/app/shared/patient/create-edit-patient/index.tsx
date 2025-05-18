@@ -8,7 +8,7 @@ import PatientDetails from './tab-patient-details';
 import TabPassword from './tab-password';
 import TabEmergencyContact from './tab-emergency-contact';
 import TabBillingAppointments from './tab-billing-appointment';
-import TabDocumentation from './tab-documentation';
+import TabNotesFlags from './tab-notes-flag';
 import TabAssign from './tab-assign';
 import { useParams } from 'next/navigation';
 import { useGetPatientById } from '@/hooks/usePatient';
@@ -32,8 +32,12 @@ export const navItems = [
     label: 'Billing & Appointments',
   },
   {
+    value: 'notes-flags',
+    label: 'Notes & Flags',
+  },
+  {
     value: 'documentation',
-    label: 'Correspondence',
+    label: 'Documentation',
   },
   {
     value: 'assign',
@@ -104,7 +108,7 @@ export default function CreateEditPatient({
         {tab === 'password' && <TabPassword isView={isView} />}
         {tab === 'emergency' && <TabEmergencyContact isView={isView} />}
         {tab === 'billing' && <TabBillingAppointments isView={isView} />}
-        {tab === 'documentation' && <TabDocumentation isView={isView} />}
+        {tab === 'notes-flags' && <TabNotesFlags isView={isView} />}
         {tab === 'assign' && <TabAssign isView={isView} />}
         {tab === 'history' && <TabHistory isView={isView} />}
       </div>

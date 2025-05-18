@@ -17,9 +17,9 @@ import CSelect from '../ui/select';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
 import { useGetAppointments } from '@/hooks/useAppointment';
 import CreateUpdateAppointmentForm from '../appointment/modal/appointment-form';
-import { getRowAppointment } from '../global-calendar/table/columns';
 import { PiInfo } from 'react-icons/pi';
 import ActionTooltipButton from '../ui/action-button';
+import { Text } from 'rizzui';
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -129,6 +129,30 @@ export default function EventCalendarView() {
     }
   }, [selectDoctor, refetch]);
 
+  function getRowAppointment(value: string, type: string) {
+    let bgColor = '';
+    switch (type) {
+      case 'INITIAL':
+        bgColor = 'bg-green-600';
+        break;
+      case 'FOLLOWUP':
+        bgColor = 'bg-blue-600';
+        break;
+      case 'SCRIPT_RENEWAL':
+        bgColor = 'bg-yellow-600';
+        break;
+      default:
+        bgColor = 'bg-pink-600';
+        break;
+    }
+
+    return (
+      <div className={cn('w-full rounded-md border px-1', bgColor)}>
+        <Text className="text-sm text-white">{value ?? '-'}</Text>
+      </div>
+    );
+  }
+
   return (
     <div className="@container">
       <div className="mb-4 flex w-1/4 items-center gap-4">
@@ -160,6 +184,7 @@ export default function EventCalendarView() {
           eventWrapper: ({ event }) =>
             getRowAppointment(event.title, event?.data?.type as string),
         }}
+        timeslots={4}
         step={15}
         localizer={localizer}
         events={events}

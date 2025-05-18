@@ -51,8 +51,11 @@ export function getRowAppointment(value: string, type: string) {
     case 'SCRIPT_RENEWAL':
       bgColor = 'bg-yellow-600';
       break;
-    default:
+    case 'RESCHEDULED':
       bgColor = 'bg-pink-600';
+      break;
+    default:
+      bgColor = '';
       break;
   }
 

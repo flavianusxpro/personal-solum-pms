@@ -3,7 +3,7 @@
 import ListTable from './list/table';
 import Stats from './stats';
 
-export default function TabDocumentation({
+export default function TabNotesFlags({
   isView = false,
 }: {
   isView?: boolean;
