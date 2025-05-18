@@ -32,7 +32,7 @@ export default function EventCalendarView() {
   const { openModal } = useModal();
   const { colorPresetName } = useColorPresetName();
 
-  const [selectDoctor, setSelectDoctor] = useState<string | null>(null);
+  const [selectDoctor, setSelectDoctor] = useState<number | null>(null);
 
   const { data: dataDoctor } = useGetAllDoctors({
     page: 1,
@@ -42,7 +42,7 @@ export default function EventCalendarView() {
   const { data: dataAppointment, refetch } = useGetAppointments({
     page: 1,
     perPage: 100,
-    doctorName: selectDoctor || undefined,
+    doctorId: selectDoctor as number,
   });
 
   const events: CalendarEvent[] = useMemo(() => {
@@ -71,7 +71,7 @@ export default function EventCalendarView() {
     if (!dataDoctor) return [];
     return dataDoctor.data.map((doctor) => ({
       label: doctor.first_name + ' ' + doctor.last_name,
-      value: doctor.first_name,
+      value: doctor.id,
     }));
   }, [dataDoctor]);
 
@@ -139,7 +139,7 @@ export default function EventCalendarView() {
           label="Select Doctor"
           options={doctorOptions}
           value={selectDoctor}
-          onChange={(e: string) => setSelectDoctor(e)}
+          onChange={(e: number) => setSelectDoctor(e)}
         />
       </div>
 
