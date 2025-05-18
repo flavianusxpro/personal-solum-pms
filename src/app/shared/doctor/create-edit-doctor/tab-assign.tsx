@@ -8,7 +8,10 @@ import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
 import { FieldError, Flex, Loader } from 'rizzui';
 import { useParams } from 'next/navigation';
-import { usePostAssignDoctorToClinic } from '@/hooks/useDoctor';
+import {
+  useGetDoctorById,
+  usePostAssignDoctorToClinic,
+} from '@/hooks/useDoctor';
 import { useMemo } from 'react';
 import { useGetAllClinics } from '@/hooks/useClinic';
 import {
@@ -32,7 +35,7 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
     perPage: 50,
     role: 'admin',
   });
-
+  const { data: dataDoctor } = useGetDoctorById(id);
   const { mutate, isPending } = usePostAssignDoctorToClinic();
 
   const clinicsOptions = useMemo(() => {
@@ -42,6 +45,11 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
       value: clinic.id.toString(),
     }));
   }, [dataClinics]);
+
+  const selectedClinics = useMemo(() => {
+    if (!dataDoctor) return [];
+    return dataDoctor.user.clinics.map((clinic) => clinic.id.toString());
+  }, [dataDoctor]);
 
   const onSubmit: SubmitHandler<AssignClinicTypes> = (data) => {
     mutate(
@@ -67,6 +75,9 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
       className="@container"
       useFormProps={{
         mode: 'all',
+        defaultValues: {
+          clinic: selectedClinics,
+        },
       }}
     >
       {({ control, watch, formState: { errors } }) => {

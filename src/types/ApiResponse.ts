@@ -279,9 +279,24 @@ export interface IGetDoctorByIdResponse extends ApiResponse {
     updated_at: string;
     clinics: Clinic[];
     setting: Setting;
+    user: User;
   };
 }
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  roleId: number;
+  doctorId: number;
+  status: number;
+  sharing_doctors: null;
+  gender: null;
+  created_at: string;
+  updated_at: string;
+  clinics: Clinic[];
+}
 interface Setting {
   id: number;
   doctorId: number;
