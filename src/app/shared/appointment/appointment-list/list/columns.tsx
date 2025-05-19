@@ -193,7 +193,7 @@ export const GetColumns = ({
       width: 260,
       onHeaderCell: () => onHeaderCellClick('status'),
       render: (status: number | string, row: RowValue) =>
-        getPaymentStatusBadge(status),
+        getPaymentStatusBadge(row.payment?.status),
     },
     {
       title: <></>,
@@ -351,7 +351,7 @@ function RenderAction({
   );
 }
 
-export function getPaymentStatusBadge(status: number | string) {
+export function getPaymentStatusBadge(status: number | string | undefined) {
   switch (status) {
     case 2:
       return (
@@ -386,6 +386,20 @@ export function getPaymentStatusBadge(status: number | string) {
 
 function getScheduleStatusBadge(status: number | string) {
   switch (status) {
+    case 7:
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="warning" renderAsDot />
+          <Text className="font-medium text-green-dark">No Show</Text>
+        </Flex>
+      );
+    case 6:
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="info" renderAsDot />
+          <Text className="font-medium text-green-500">On Going</Text>
+        </Flex>
+      );
     case 5:
       return (
         <Flex gap="1" align="center">
@@ -397,21 +411,21 @@ function getScheduleStatusBadge(status: number | string) {
       return (
         <Flex gap="1" align="center">
           <Badge color="success" renderAsDot />
-          <Text className="font-medium text-green-dark">Finished</Text>
+          <Text className="font-medium text-green-dark">Completed</Text>
         </Flex>
       );
     case 3:
       return (
         <Flex gap="1" align="center">
           <Badge color="info" renderAsDot />
-          <Text className="font-medium text-blue-500">Confirmed</Text>
+          <Text className="font-medium text-blue-500">Checked In</Text>
         </Flex>
       );
     case 2:
       return (
         <Flex gap="1" align="center">
+          <Text className="font-medium text-yellow-600">Scheduled</Text>
           <Badge color="warning" renderAsDot />
-          <Text className="font-medium text-yellow-600">Pending</Text>
         </Flex>
       );
     case 1:

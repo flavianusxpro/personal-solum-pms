@@ -70,6 +70,13 @@ function getPaymentStatusBadge(status: number) {
           <Text className="text-gray-dark ms-2 font-medium">Void</Text>
         </div>
       );
+    case 5:
+      return (
+        <div className="flex items-center">
+          <Badge color="secondary" renderAsDot />
+          <Text className="text-gray-dark ms-2 font-medium">Refund</Text>
+        </div>
+      );
     default:
       return (
         <div className="flex items-center">
