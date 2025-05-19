@@ -13,20 +13,26 @@ import FlagForm from '../modal/add-flag';
 import FormGroup from '@/app/shared/ui/form-group';
 import { useGetPatientFlags } from '@/hooks/usePatientFlag';
 import { useModal } from '@/app/shared/modal-views/use-modal';
+import { useParams } from 'next/navigation';
+import { useGetPatientById } from '@/hooks/usePatient';
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
 });
 
 export default function ListTable({ className }: { className?: string }) {
+  const id = useParams().id as string;
   const { openModal } = useModal();
   const [params, setParams] = useState({
     page: 1,
     perPage: 10,
   });
 
+  const { data: dataPatient } = useGetPatientById(id);
+
   const { data: dataFlags } = useGetPatientFlags({
     page: params.page,
     perPage: params.perPage,
+    patientId: dataPatient?.id as number,
   });
 
   const onHeaderCellClick = (value: string) => ({

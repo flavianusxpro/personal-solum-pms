@@ -134,7 +134,9 @@ export interface IParamGetTaxes extends IParamGetDataWithPagination {}
 export interface IParamsGetItems extends IParamGetDataWithPagination {}
 export interface IParamsGetPharmachies extends IParamGetDataWithPagination {}
 export interface IParamsPatientNotes extends IParamGetDataWithPagination {}
-export interface IParamsPatientFlags extends IParamGetDataWithPagination {}
+export interface IParamsPatientFlags extends IParamGetDataWithPagination {
+  patientId: number;
+}
 export interface IParamGetAppointments extends IParamGetDataWithPagination {
   doctorId?: number;
   patientId?: number;
