@@ -1,52 +1,63 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { PiTrashDuotone } from 'react-icons/pi';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Title } from 'rizzui';
 import { GetColumns } from '@/app/shared/appointment/appointment-list/list/columns';
-import ControlledTable from '@/app/shared/controlled-table/index';
+import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { useMedia } from '@core/hooks/use-media';
 import { useTable } from '@core/hooks/use-table';
-import { getDateRangeStateValues } from '@core/utils/get-formatted-date';
-import { appointmentTypes } from '@/data/appointment-data';
 import { useColumn } from '@core/hooks/use-column';
 import cn from '@core/utils/class-names';
-import DateFiled from '@/app/shared/controlled-table/date-field';
-import StatusField from '@/app/shared/controlled-table/status-field';
+import {
+  useDeleteAppointment,
+  useGetAppointments,
+} from '@/hooks/useAppointment';
+import { useModal } from '@/app/shared/modal-views/use-modal';
+import toast from 'react-hot-toast';
+import debounce from 'lodash/debounce';
 
-const TableFooter = dynamic(() => import('@/app/shared/table-footer'), {
+const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
 });
-
-const filterState = {
-  date: [null, null],
-  status: '',
-  paymentMethod: '',
-};
-
-export const appointmentTypesOptions = Object.entries(appointmentTypes).map(
-  ([value, label]) => ({ label, value })
+const FilterElement = dynamic(
+  () => import('@/app/shared/appointment/appointment-list/list/filter-element'),
+  { ssr: false }
 );
 
-const statusOptions = [
-  {
-    value: 'Paid',
-    label: 'Paid',
-  },
-  {
-    value: 'Unpaid',
-    label: 'Unpaid',
-  },
-  {
-    value: 'Refunded',
-    label: 'Refunded',
-  },
-];
+const filterState = {
+  payment_status: null,
+  status: null,
+  by_reschedule: null,
+};
 
-export default function AppointmentListTable({ data = [] }: { data: any[] }) {
-  const [pageSize, setPageSize] = useState(10);
+export default function AppointmentListTable() {
+  const { isOpen } = useModal();
+
+  const [filterStateValue, setFilterStateValue] = useState(filterState);
   const [_, setCheckedItems] = useState<string[]>([]);
+  const [params, setParams] = useState({
+    page: 1,
+    perPage: 10,
+    search: '',
+  });
+
+  const {
+    data: dataAppointments,
+    isLoading: isLoadingGetAppointments,
+    refetch,
+  } = useGetAppointments({
+    page: params.page,
+    perPage: params.perPage,
+    q: JSON.stringify({
+      patientName: params.search,
+    }),
+    status: filterStateValue?.status || undefined,
+    payment_status: filterStateValue?.payment_status || undefined,
+    by_reschedule: filterStateValue?.by_reschedule || undefined,
+  });
+
+  const { mutate } = useDeleteAppointment();
 
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
 
@@ -56,10 +67,30 @@ export default function AppointmentListTable({ data = [] }: { data: any[] }) {
     },
   });
 
-  const onDeleteItem = useCallback((id: string) => {
-    handleDelete(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const onDeleteItem = useCallback(
+    (ids: number[]) => {
+      mutate(ids, {
+        onSuccess: () => {
+          toast.success('Appointment deleted successfully');
+          refetch();
+        },
+        onError: (error: any) => {
+          console.error('Failed to delete appointment:', error);
+          toast.error(
+            'Failed to delete appointment: ' + error.response.data.message
+          );
+        },
+      });
+    },
+    [mutate, refetch]
+  );
+
+  const handlerSearch = debounce((value: string) => {
+    setParams((prevState) => ({
+      ...prevState,
+      search: value,
+    }));
+  }, 1000);
 
   const onChecked = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -72,6 +103,16 @@ export default function AppointmentListTable({ data = [] }: { data: any[] }) {
     }
   };
 
+  const updateFilter = useCallback(
+    (columnId: string, filterValue: string | number | any[] | null) => {
+      setFilterStateValue((prevState) => ({
+        ...prevState,
+        [columnId]: filterValue,
+      }));
+    },
+    []
+  );
+
   const {
     isLoading,
     isFiltered,
@@ -80,7 +121,7 @@ export default function AppointmentListTable({ data = [] }: { data: any[] }) {
     totalItems,
     handlePaginate,
     filters,
-    updateFilter,
+    // updateFilter,
     searchTerm,
     handleSearch,
     sortConfig,
@@ -91,12 +132,12 @@ export default function AppointmentListTable({ data = [] }: { data: any[] }) {
     handleRowSelect,
     setSelectedRowKeys,
     selectedRowKeys,
-  } = useTable(data, pageSize, filterState);
+  } = useTable(dataAppointments?.data ?? [], params.perPage, filterStateValue);
 
   const columns = useMemo(
     () =>
       GetColumns({
-        data: data,
+        data: dataAppointments?.data,
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -117,6 +158,10 @@ export default function AppointmentListTable({ data = [] }: { data: any[] }) {
   const { visibleColumns, checkedColumns, setCheckedColumns } =
     useColumn(columns);
 
+  useEffect(() => {
+    refetch();
+  }, [isOpen, refetch, filterStateValue, params]);
+
   return (
     <div
       className={cn(
@@ -126,27 +171,32 @@ export default function AppointmentListTable({ data = [] }: { data: any[] }) {
     >
       <ControlledTable
         variant="modern"
-        isLoading={isLoading}
+        isLoading={isLoading || isLoadingGetAppointments}
         showLoadingText={true}
-        data={tableData}
+        data={tableData ?? []}
         scroll={{
           x: 1560,
         }}
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{
-          pageSize,
-          setPageSize,
-          total: totalItems,
+          pageSize: params.perPage,
+          setPageSize: (page) => setParams({ ...params, perPage: page }),
+          total: dataAppointments?.count,
           current: currentPage,
-          onChange: (page: number) => handlePaginate(page),
+          onChange: (page: number) => {
+            handlePaginate(page);
+            setParams({ ...params, page });
+          },
         }}
         filterOptions={{
           searchTerm,
           onSearchClear: () => {
             handleSearch('');
+            handlerSearch('');
           },
           onSearchChange: (event) => {
+            handlerSearch(event.target.value);
             handleSearch(event.target.value);
           },
           hasSearched: isFiltered,
@@ -156,102 +206,25 @@ export default function AppointmentListTable({ data = [] }: { data: any[] }) {
         }}
         className="rounded-md border border-muted text-sm shadow-sm [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:h-60 [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:justify-center [&_.rc-table-row:last-child_td.rc-table-cell]:border-b-0 [&_thead.rc-table-thead]:border-t-0"
         filterElement={
-          <div
-            className={cn(
-              'flex',
-              isMediumScreen ? 'flex-col gap-6' : 'flex-row items-center gap-3'
-            )}
-          >
-            {!isMediumScreen && (
-              <Title
-                as="h3"
-                className="rizzui-title-h3 pe-4 text-base font-semibold sm:text-lg"
-              >
-                All Appointment
-              </Title>
-            )}
-
-            <DateFiled
-              selected={getDateRangeStateValues(filters['date'][0])}
-              startDate={getDateRangeStateValues(filters['date'][0]) as Date}
-              endDate={getDateRangeStateValues(filters['date'][1]) as Date}
-              selectsRange
-              className="w-full"
-              dateFormat="dd MMM yyyy"
-              onChange={(dates: [Date | null, Date | null]) => {
-                updateFilter('date', dates);
-              }}
-              placeholderText="Select created date"
-              {...(isMediumScreen && {
-                inputProps: {
-                  label: 'Created Date',
-                  labelClassName: 'font-medium text-gray-700',
-                },
-              })}
-              maxDate={new Date()}
-            />
-            <StatusField
-              dropdownClassName="!z-10 h-auto"
-              className="w-full min-w-[170px] @[35rem]:w-auto"
-              placeholder="Select type"
-              options={appointmentTypesOptions}
-              value={filters['appointType']}
-              onChange={(value: string) => {
-                updateFilter('appointType', value);
-              }}
-              getOptionValue={(option: { value: any }) => option.value}
-              displayValue={(selected: string) =>
-                appointmentTypesOptions.find(
-                  (option) => option.label === selected
-                )?.label ?? ''
-              }
-              placement="bottom-start"
-              {...(isMediumScreen && {
-                label: 'APPOINT TYPE',
-                labelClassName: 'font-medium text-gray-700',
-              })}
-            />
-            <StatusField
-              dropdownClassName="!z-10 h-auto"
-              className="w-full @[35rem]:w-auto"
-              options={statusOptions}
-              value={filters['appointStatus']}
-              onChange={(value: string) => {
-                updateFilter('appointStatus', value);
-              }}
-              getOptionValue={(option: { value: any }) => option.value}
-              {...(isMediumScreen && {
-                label: 'APPOINT STATUS',
-                labelClassName: 'font-medium text-gray-700',
-              })}
-            />
-
-            {isFiltered ? (
-              <Button
-                size="sm"
-                onClick={() => {
-                  handleReset();
-                }}
-                className="h-8 bg-gray-200/70"
-                variant="flat"
-              >
-                <PiTrashDuotone className="me-1.5 h-[17px] w-[17px]" /> Clear
-              </Button>
-            ) : null}
-          </div>
+          <FilterElement
+            isFiltered={isFiltered}
+            filters={filters}
+            updateFilter={updateFilter}
+            handleReset={handleReset}
+          />
         }
         tableFooter={
           <TableFooter
             checkedItems={selectedRowKeys}
             handleDelete={(ids: string[]) => {
               setSelectedRowKeys([]);
-              handleDelete(ids);
+              onDeleteItem(ids.map((id) => parseInt(id)));
             }}
           >
-            <Button size="sm" className="dark:bg-gray-300 dark:text-gray-800">
+            {/* <Button size="sm" className="dark:bg-gray-300 dark:text-gray-800">
               Download {selectedRowKeys.length}{' '}
               {selectedRowKeys.length > 1 ? 'Appointments' : 'Appointment'}
-            </Button>
+            </Button> */}
           </TableFooter>
         }
       />

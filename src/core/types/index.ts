@@ -77,12 +77,17 @@ export type PosProduct = {
 };
 export interface CalendarEvent {
   id?: string;
+  doctor: string;
   start: Date;
   end: Date;
   allDay?: boolean;
   title: string;
   description?: string;
   location?: string;
+  breakTimes?: {
+    start: Date;
+    end: Date;
+  }[];
 }
 
 export interface FlightingCardProps {

@@ -1,12 +1,13 @@
 'use client';
 
-import { Title, Text, Avatar, Button, Popover } from 'rizzui';
+import { Title, Text, Avatar, Button, Popover, Flex } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { routes } from '@/config/routes';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useProfile } from '@/hooks/useProfile';
 
 export default function ProfileMenu({
   buttonClassName,
@@ -66,40 +67,51 @@ function ProfileMenuPopover({ children }: React.PropsWithChildren<{}>) {
   );
 }
 
-const menuItems = [
-  {
-    name: 'My Profile',
-    href: routes.profile,
-  },
-  {
-    name: 'Account Settings',
-    href: routes.forms.profileSettings,
-  },
-  {
-    name: 'Activity Log',
-    href: '#',
-  },
-];
-
 function DropdownMenu() {
   const router = useRouter();
+
+  const { data: dataProfile, isSuccess } = useProfile();
+
   const handleSignOut = async () => {
     await signOut({ redirect: false }); // Prevent automatic re-render
     router.replace(routes.signIn); // Redirect immediately
   };
 
+  const menuItems = [
+    {
+      name: 'My Profile',
+      href: dataProfile?.id
+        ? routes.user.edit(`${dataProfile.id.toString()}`)
+        : '#',
+    },
+    {
+      name: 'Password',
+      href: dataProfile?.id
+        ? routes.user.edit(`${dataProfile.id.toString()}?tab=password`)
+        : '#',
+    },
+    {
+      name: 'Activity Log',
+      href: dataProfile?.id
+        ? routes.user.edit(`${dataProfile.id.toString()}?tab=activity`)
+        : '#',
+    },
+  ];
+
   return (
     <div className="w-64 text-left rtl:text-right">
-      <div className="flex items-center border-b border-gray-300 px-6 pb-5 pt-6">
+      <div className="flex flex-col items-center border-b border-gray-300 px-6 pb-5 pt-6">
         <Avatar
           src="https://isomorphic-furyroad.s3.amazonaws.com/public/avatars/avatar-11.webp"
-          name="Albert Flores"
+          name={dataProfile?.name || ''}
         />
-        <div className="ms-3">
-          <Title as="h6" className="font-semibold">
-            Albert Flores
+        <div className="ms-3 mt-2">
+          <Title as="h6" className="text-center font-semibold">
+            {dataProfile?.name || ''}
           </Title>
-          <Text className="text-gray-600">flores@doe.io</Text>
+          <Text className="text-center text-sm text-gray-600">
+            {dataProfile?.email || ''}
+          </Text>
         </div>
       </div>
       <div className="grid px-3.5 py-3.5 font-medium text-gray-700">

@@ -1,20 +1,19 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
+import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 import dayjs from 'dayjs';
 import { PiCalendarCheckLight, PiMapPinLight, PiXBold } from 'react-icons/pi';
-import { Text, ActionIcon, Title, Button } from 'rizzui';
+import { ActionIcon, Title, Button } from 'rizzui';
+import { getPaymentStatusBadge } from './columns';
 
 export default function AppointmentDetails({
   data,
-  onDelete,
   onEdit,
 }: {
-  data?: any;
-  onDelete: () => void;
+  data?: IGetAppointmentListResponse['data'][number];
   onEdit: () => void;
 }) {
   const { closeModal } = useModal();
 
-  console.log(data, 'doctor');
   return (
     <div className="block">
       <div className="flex items-center justify-between border-b border-gray-200 p-5 md:p-7">
@@ -38,44 +37,40 @@ export default function AppointmentDetails({
           as="h3"
           className="mb-5 font-lexend text-lg font-medium md:text-xl"
         >
-          Appointment with {data?.doctor?.name}
+          Appointment with {data?.doctor?.first_name} {data?.doctor?.last_name}
         </Title>
-        <Text className="mb-5 leading-relaxed">
-          The passage experienced a surge in popularity during the 1960s when
-          Letraset used it on their dry-transfer sheets, and again during the
-          90s as desktop publishers bundled the text with their software. Today
-          it&apos;s seen all around the web; on templates, websites, and stock
-          designs. Use our generator to get your own, or read on for the
-          authoritative history of lorem ipsum.
-        </Text>
-        <Text className="mb-5 leading-relaxed">
-          The passage experienced a surge in popularity during the 1960s when
-          Letraset used it on their dry-transfer sheets, and again during the
-          90s as desktop publishers bundled the text with their software. Learn
-          more at www.ictexpo.com
-        </Text>
         <ul className="mt-7 space-y-4 text-xs sm:text-sm">
           <li className="flex items-center">
             <PiCalendarCheckLight className="me-2 hidden w-5 shrink-0 text-xl" />
-            Appointment Start:{' '}
+            Appointment Date:{' '}
             <span className="ps-2 font-medium text-gray-1000">
-              {dayjs(data.date).format('DD MMM, YYYY h:mm A')}
-            </span>
-          </li>
-          <li className="flex items-center">
-            <PiCalendarCheckLight className="me-2 hidden w-5 shrink-0 text-xl" />
-            Appointment End:{' '}
-            <span className="ps-2 font-medium text-gray-1000">
-              {dayjs(data.date)
-                .add(data.duration / 60, 'h')
-                .format('DD MMM, YYYY h:mm A')}
+              {dayjs(data?.date).format('DD MMM, YYYY h:mm A')}
             </span>
           </li>
           <li className="flex items-center">
             <PiMapPinLight className="me-2 hidden w-5 shrink-0 text-xl" />
-            Address:{' '}
+            Appointment Type:{' '}
             <span className="ps-2 font-medium text-gray-1000">
-              {data.address}
+              {data?.type}
+            </span>
+          </li>
+          <li className="flex items-center">
+            <PiMapPinLight className="me-2 hidden w-5 shrink-0 text-xl" />
+            Payment Status:{' '}
+            <span className="ps-2 font-medium text-gray-1000">
+              {getPaymentStatusBadge(data?.payment?.status || 1)}
+            </span>
+          </li>
+          <li className="flex items-center">
+            Patient Notes:{' '}
+            <span className="ps-2 font-medium text-gray-1000">
+              {data?.note ?? '-'}
+            </span>
+          </li>
+          <li className="flex items-center">
+            Patient Symtom History:{' '}
+            <span className="ps-2 font-medium text-gray-1000">
+              {data?.patient_problem ?? '-'}
             </span>
           </li>
         </ul>
@@ -83,9 +78,9 @@ export default function AppointmentDetails({
           <Button
             variant="solid"
             className="min-w-[80px]"
-            onClick={(e) => (onDelete(), closeModal())}
+            onClick={(e) => closeModal()}
           >
-            Delete
+            Close
           </Button>
         </div>
       </div>

@@ -9,9 +9,10 @@ interface CNumberInputProps {
   suffix?: string;
   type?: 'text' | 'tel' | 'password' | undefined;
   formatType?: 'pattern' | 'numeric' | 'custom';
-  value: 'string' | number | 'null';
+  value?: string | number | 'null';
   onChange: (value: number | null) => void;
   helperText?: string;
+  disabled?: boolean;
 }
 
 export default function CNumberInput({

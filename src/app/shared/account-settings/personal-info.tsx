@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { SubmitHandler } from 'react-hook-form';
 import toast from 'react-hot-toast';
 // import { PiClock, PiEnvelopeSimple } from 'react-icons/pi';
-import FormGroup from '@/app/shared/form-group';
+import FormGroup from '@/app/shared/ui/form-group';
 import {
   defaultValues,
   personalInfoFormSchema,
@@ -93,58 +93,57 @@ export default function PersonalInfoView() {
                 </FormGroup>
               </div>
               <div>
-                {
-                  localStorage.getItem('role') === 'doctor' ? (
-                    <>
-                      <FormGroup
-                        title="Specialist"
-                        className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
-                      >
-                        <Input
-                          placeholder="Specialist"
-                          {...register('first_name')}
-                          error={errors.first_name?.message}
-                          className="flex-grow"
-                        />
-                      </FormGroup>
-                      <FormGroup
-                        title="Gender"
-                        className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
-                      >
-                        <Input
-                          placeholder="Gender"
-                          {...register('first_name')}
-                          error={errors.first_name?.message}
-                          className="flex-grow"
-                        />
-                      </FormGroup>
-                    </>
-                  ) :
-                    <>
-                      <FormGroup
-                        title="Medicare Card"
-                        className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
-                      >
-                        <Input
-                          placeholder="Medicare Card"
-                          {...register('first_name')}
-                          error={errors.first_name?.message}
-                          className="flex-grow"
-                        />
-                      </FormGroup>
-                      <FormGroup
-                        title="IHI Number"
-                        className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
-                      >
-                        <Input
-                          placeholder="IHI Number"
-                          {...register('first_name')}
-                          error={errors.first_name?.message}
-                          className="flex-grow"
-                        />
-                      </FormGroup>
-                    </>
-                }
+                {localStorage.getItem('role') === 'doctor' ? (
+                  <>
+                    <FormGroup
+                      title="Specialist"
+                      className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                    >
+                      <Input
+                        placeholder="Specialist"
+                        {...register('first_name')}
+                        error={errors.first_name?.message}
+                        className="flex-grow"
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      title="Gender"
+                      className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                    >
+                      <Input
+                        placeholder="Gender"
+                        {...register('first_name')}
+                        error={errors.first_name?.message}
+                        className="flex-grow"
+                      />
+                    </FormGroup>
+                  </>
+                ) : (
+                  <>
+                    <FormGroup
+                      title="Medicare Card"
+                      className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                    >
+                      <Input
+                        placeholder="Medicare Card"
+                        {...register('first_name')}
+                        error={errors.first_name?.message}
+                        className="flex-grow"
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      title="IHI Number"
+                      className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                    >
+                      <Input
+                        placeholder="IHI Number"
+                        {...register('first_name')}
+                        error={errors.first_name?.message}
+                        className="flex-grow"
+                      />
+                    </FormGroup>
+                  </>
+                )}
                 <FormGroup
                   title="First Name"
                   className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
@@ -511,6 +510,6 @@ export default function PersonalInfoView() {
           </>
         );
       }}
-    </Form >
+    </Form>
   );
 }

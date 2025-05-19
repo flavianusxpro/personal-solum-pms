@@ -6,7 +6,7 @@ import { SubmitHandler, Controller } from 'react-hook-form';
 // import { PiClock, PiEnvelopeSimple } from 'react-icons/pi';
 import { Form } from '@core/ui/form';
 import { Loader, Text, Input, Textarea } from 'rizzui';
-import FormGroup from '@/app/shared/form-group';
+import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import {
   defaultValues,

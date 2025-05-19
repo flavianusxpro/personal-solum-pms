@@ -246,6 +246,11 @@ export function useTable<T extends AnyObject>(
     setData(initialData);
   }, [initialData]);
 
+  useEffect(() => {
+    if (!initialFilterState) return;
+    setFilters(initialFilterState);
+  }, [initialFilterState]);
+
   // useTable returns
   return {
     isLoading,

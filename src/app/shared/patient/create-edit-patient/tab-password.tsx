@@ -1,28 +1,41 @@
 'use client';
 
-import { useState } from 'react';
-import { Button, Text, Input, Password, Flex } from 'rizzui';
+import { Button, Password, Flex } from 'rizzui';
 import { SubmitHandler } from 'react-hook-form';
 import { Form } from '@core/ui/form';
-import { resetPasswordSchema } from '@/validators/reset-password.schema';
 import {
   changePasswordSchema,
   ChangePasswordSchema,
 } from '@/validators/change-password.schema';
-import FormGroup from '../../form-group';
+import FormGroup from '../../ui/form-group';
+import { useUpdatePassword } from '@/hooks/useProfile';
+import toast from 'react-hot-toast';
+import { useParams } from 'next/navigation';
+import { useUpdatePatient } from '@/hooks/usePatient';
 
-const initialValues = {
-  email: '',
-  password: '',
-  confirmPassword: '',
-};
+export default function TabPassword({ isView = false }: { isView?: boolean }) {
+  const id = useParams<{ id: string }>().id;
 
-export default function TabPassword() {
-  const [reset, setReset] = useState({});
+  const { mutate: mutateUpdatePatient, isPending } = useUpdatePatient();
 
   const onSubmit: SubmitHandler<ChangePasswordSchema> = (data) => {
-    console.log(data);
-    setReset(initialValues);
+    mutateUpdatePatient(
+      {
+        patient_id: id ?? undefined,
+        password: data.newPassword,
+      },
+      {
+        onSuccess: () => {
+          toast.success('Password updated successfully');
+        },
+        onError: (error: any) => {
+          console.error('Error updating password:', error);
+          toast.error(
+            'Failed to update password: ' + error.response?.data?.message
+          );
+        },
+      }
+    );
   };
 
   return (
@@ -30,64 +43,60 @@ export default function TabPassword() {
       <FormGroup title="Password" className="" />
       <Form<ChangePasswordSchema>
         validationSchema={changePasswordSchema}
-        resetValues={reset}
         onSubmit={onSubmit}
         useFormProps={{
           mode: 'onChange',
-          defaultValues: initialValues,
         }}
         className="pt-1.5"
       >
-        {({ register, formState: { errors } }) => (
-          <div className="mt-4">
-            <div className="border-y border-dashed border-muted py-10">
-              <FormGroup title="Current Password">
-                <Password
-                  placeholder="Enter your current password"
-                  size="lg"
-                  className="[&>label>span]:font-medium"
-                  inputClassName="text-sm"
-                  {...register('currentPassword')}
-                  error={errors.currentPassword?.message}
-                />
-              </FormGroup>
+        {({ register, formState: { errors } }) => {
+          return (
+            <div className="mt-4">
+              <div className="border-y border-dashed border-muted py-10">
+                <FormGroup title="New Password" isLabel>
+                  <Password
+                    placeholder="Enter your new password"
+                    size="lg"
+                    className="[&>label>span]:font-medium"
+                    inputClassName="text-sm"
+                    {...register('newPassword')}
+                    error={errors.newPassword?.message}
+                    disabled={isView}
+                  />
+                </FormGroup>
+              </div>
+              <div className="border-b border-dashed border-muted py-10">
+                <FormGroup title="Confirm New Password" isLabel>
+                  <Password
+                    placeholder="Enter confirm new password"
+                    size="lg"
+                    className="[&>label>span]:font-medium"
+                    inputClassName="text-sm"
+                    {...register('confirmPassword')}
+                    error={errors.confirmPassword?.message}
+                    disabled={isView}
+                  />
+                </FormGroup>
+              </div>
+              <div className="w-full">
+                <Flex gap="3" justify="end" className="mt-6">
+                  <Button className="mt-2" variant="outline">
+                    Cancel
+                  </Button>
+                  {!isView && (
+                    <Button
+                      isLoading={isPending}
+                      className="mt-2"
+                      type="submit"
+                    >
+                      Reset Password
+                    </Button>
+                  )}
+                </Flex>
+              </div>
             </div>
-            <div className="border-b border-dashed border-muted py-10">
-              <FormGroup title="New Password">
-                <Password
-                  placeholder="Enter your new password"
-                  size="lg"
-                  className="[&>label>span]:font-medium"
-                  inputClassName="text-sm"
-                  {...register('newPassword')}
-                  error={errors.newPassword?.message}
-                />
-              </FormGroup>
-            </div>
-            <div className="border-b border-dashed border-muted py-10">
-              <FormGroup title="Confirm New Password">
-                <Password
-                  placeholder="Enter confirm new password"
-                  size="lg"
-                  className="[&>label>span]:font-medium"
-                  inputClassName="text-sm"
-                  {...register('confirmPassword')}
-                  error={errors.confirmPassword?.message}
-                />
-              </FormGroup>
-            </div>
-            <div className="w-full">
-              <Flex gap="3" justify="end" className="mt-6">
-                <Button className="mt-2" variant="outline">
-                  Cancel
-                </Button>
-                <Button className="mt-2" type="submit">
-                  Reset Password
-                </Button>
-              </Flex>
-            </div>
-          </div>
-        )}
+          );
+        }}
       </Form>
 
       <div className="mx-auto mt-10 w-full max-w-screen-2xl">

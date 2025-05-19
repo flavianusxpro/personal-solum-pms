@@ -11,13 +11,8 @@ const Redirect = () => {
   const { data } = useSession();
 
   useEffect(() => {
-    if (data?.user?.role === ROLES.Administrator) {
-      return router.push(routes.appointment.dashboard);
-    }
-    if (data?.user?.role === ROLES.Patient) {
-      return router.push(routes.myDashboard);
-    }
-  }, [data?.user, router]);
+    return router.push(routes.appointment.dashboard);
+  }, [data?.role?.name, data?.user, router]);
 
   return (
     <div className="flex h-screen flex-col items-center justify-center">

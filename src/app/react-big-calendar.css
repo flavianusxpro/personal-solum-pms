@@ -563,7 +563,6 @@ button.rbc-input::-moz-focus-inner {
   left: 0;
   position: absolute;
   right: 0;
-  margin-right: 10px;
   top: 0;
 }
 .rbc-day-slot .rbc-events-container.rbc-rtl {

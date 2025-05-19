@@ -1,18 +1,28 @@
 import {
   getPatientById,
   getPatientList,
+  getPatientProblem,
+  getPatientTypes,
   postCreatePatient,
-  putCreatePatient,
+  putUpdatePatient,
+  putUpdateAssignDoctor,
+  deletePatient,
 } from '@/service/patient';
-import { IParamGetAllPatient, IPayloadCreatePatient } from '@/types/paramTypes';
+import {
+  IParamGetAllPatient,
+  IParamGetPatientProblem,
+  IParamGetPatientTypes,
+  IPayloadCreateEditPatient,
+  IPayloadUpdateAssignDoctor,
+} from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 export function useGetAllPatients(params: IParamGetAllPatient) {
   return useQuery({
-    queryKey: ['patients'],
-    queryFn: async () => {
-      return await getPatientList(params);
-    },
+    queryKey: ['patients' + params],
+    queryFn: async () => getPatientList(params),
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 10, // 10 minutes
   });
 }
 
@@ -23,12 +33,14 @@ export function useGetPatientById(id: string) {
       return await getPatientById(id);
     },
     enabled: !!id,
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
   });
 }
 
 export function useCreatePatient() {
   return useMutation({
-    mutationFn: async (payload: IPayloadCreatePatient) => {
+    mutationFn: async (payload: IPayloadCreateEditPatient) => {
       return await postCreatePatient(payload);
     },
   });
@@ -36,8 +48,42 @@ export function useCreatePatient() {
 
 export function useUpdatePatient() {
   return useMutation({
-    mutationFn: async (payload: IPayloadCreatePatient) => {
-      return await putCreatePatient(payload);
+    mutationFn: async (payload: IPayloadCreateEditPatient) => {
+      return await putUpdatePatient(payload);
+    },
+  });
+}
+
+export function useDeletePatient() {
+  return useMutation({
+    mutationFn: deletePatient,
+  });
+}
+
+export function useGetPatientTypes(params: IParamGetPatientTypes) {
+  return useQuery({
+    queryKey: ['patientTypes'],
+    queryFn: async () => {
+      return await getPatientTypes(params);
+    },
+    staleTime: 1000 * 60 * 10, // 10 minutes
+  });
+}
+
+export function useGetPatientProblem(params: IParamGetPatientProblem) {
+  return useQuery({
+    queryKey: ['patientProblem'],
+    queryFn: async () => {
+      return await getPatientProblem(params);
+    },
+    staleTime: 1000 * 60 * 10, // 10 minutes
+  });
+}
+
+export function useUpdateAssignDoctor() {
+  return useMutation({
+    mutationFn: async (payload: IPayloadUpdateAssignDoctor) => {
+      return await putUpdateAssignDoctor(payload);
     },
   });
 }

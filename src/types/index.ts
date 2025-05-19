@@ -1,4 +1,5 @@
 import { CouponType } from '@/config/enums';
+import { IGetAppointmentListResponse } from './ApiResponse';
 
 export interface ResponseAPI<T = any> {
   success: boolean;
@@ -85,13 +86,20 @@ export type PosProduct = {
   discount?: number;
 };
 export interface CalendarEvent {
+  title: string;
   id?: string;
+  doctor: string;
   start: Date;
   end: Date;
   allDay?: boolean;
-  title: string;
+  patient?: string;
   description?: string;
   location?: string;
+  breakTimes?: {
+    start: Date;
+    end: Date;
+  }[];
+  data?: IGetAppointmentListResponse['data'][number];
 }
 
 export interface FlightingCardProps {

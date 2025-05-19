@@ -7,64 +7,33 @@ import DropdownAction from '@core/components/charts/dropdown-action';
 import { PiCalendarBlank, PiCheckBold } from 'react-icons/pi';
 import DateCell from '@core/ui/date-cell';
 import SimpleBar from 'simplebar-react';
-
-const data = [
-  {
-    id: 1,
-    patient: 'Martha Freese',
-    doctor: 'Dr. Cameron Will',
-    date: '2022-11-10T06:22:01.621Z',
-  },
-  {
-    id: 2,
-    patient: 'Gina Vanleuven',
-    doctor: 'Dr. Inez Delima',
-    date: '2022-11-10T06:22:01.621Z',
-  },
-  {
-    id: 3,
-    patient: 'Pearl Torres',
-    doctor: 'Dr. Quinn Ellison',
-    date: '2022-11-10T06:22:01.621Z',
-  },
-  {
-    id: 4,
-    patient: 'Alice Hinson',
-    doctor: 'Dr. Cameron Will',
-    date: '2022-11-10T06:22:01.621Z',
-  },
-  {
-    id: 5,
-    patient: 'Torres Pearl',
-    doctor: 'Dr. Quinn Ellison',
-    date: '2022-11-10T06:22:01.621Z',
-  },
-];
-const COLORS = ['#2B7F75', '#FFD66B', '#64CCC5', '#176B87'];
-
-const viewOptions = [
-  {
-    value: 'All',
-    label: 'All',
-  },
-  {
-    value: 'Cancer',
-    label: 'Cancer',
-  },
-  {
-    value: 'Pregnancy',
-    label: 'Pregnancy',
-  },
-  {
-    value: 'Dentist',
-    label: 'Dentist',
-  },
-];
+import { useGetAppointments } from '@/hooks/useAppointment';
+import dayjs from 'dayjs';
+import { useMemo } from 'react';
 
 export default function AppointmentTodo({ className }: { className?: string }) {
   function handleChange(viewType: string) {
     console.log('viewType', viewType);
   }
+
+  const { data: dataAppointment } = useGetAppointments({
+    from: dayjs().format('YYYY-MM-DD'),
+    to: dayjs().format('YYYY-MM-DD'),
+    page: 1,
+    perPage: 10,
+  });
+
+  const dataAppointmentToday = useMemo(() => {
+    return dataAppointment?.data.map((item) => {
+      return {
+        id: item.id,
+        patient:
+          item.patient?.first_name + ' ' + (item.patient?.last_name ?? '-'),
+        doctor: item.doctor?.first_name + ' ' + (item.doctor?.last_name ?? '-'),
+        date: item.date,
+      };
+    });
+  }, [dataAppointment]);
 
   return (
     <WidgetCard
@@ -72,21 +41,11 @@ export default function AppointmentTodo({ className }: { className?: string }) {
       titleClassName="text-gray-800 sm:text-lg font-inter"
       headerClassName="items-center"
       className={cn('overflow-hidden bg-gray-50 @container', className)}
-      action={
-        <DropdownAction
-          inPortal={false}
-          className="rounded-lg border"
-          options={viewOptions}
-          onChange={handleChange}
-          selectClassName="min-w-[120px]"
-          prefixIconClassName="hidden"
-        />
-      }
     >
       <div className="mt-7 h-[22rem]">
         <SimpleBar className="relative -mx-3 -my-2 h-full w-[calc(100%+24px)]">
           <div className="relative before:absolute before:start-9 before:top-3 before:z-0 before:h-[calc(100%-24px)] before:w-1 before:translate-x-0.5 before:bg-gray-200">
-            {data.map((item) => (
+            {dataAppointmentToday?.map((item) => (
               <AdvancedCheckbox
                 name="currency"
                 value="pound"

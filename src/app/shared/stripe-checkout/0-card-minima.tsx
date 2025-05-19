@@ -1,8 +1,4 @@
-// This example shows you how to set up React Stripe.js and use Elements.
-// Learn how to accept a payment using the official Stripe docs.
-// https://stripe.com/docs/payments/accept-a-payment#web
-
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   loadStripe,
   StripeError,
@@ -15,17 +11,10 @@ import {
   ElementsConsumer,
 } from '@stripe/react-stripe-js';
 
-import { Button, Text } from 'rizzui';
+import { Button } from 'rizzui';
 import toast from 'react-hot-toast';
-import {
-  useBookAppoinment,
-  useOneTimePayment,
-} from '@/hooks/useBookAppoinment';
-import bookAppointmentAtom from '@/store/book-appointment';
+import { useOneTimePayment } from '@/hooks/useBookAppoinment';
 import { useAtom } from 'jotai';
-import { useRouter } from 'next/navigation';
-import { routes } from '@/config/routes';
-import { step3Button } from '@/config/constants';
 
 function CheckoutForm({
   elements,
@@ -34,16 +23,12 @@ function CheckoutForm({
 }: {
   elements: StripeElements | null;
   stripe: Stripe | null;
-  onSuccess: () => void;
+  onSuccess: (paymentId: string) => void;
 }) {
-  const router = useRouter();
   const [error, setError] = useState<StripeError | null>(null);
-  const [bookAppointmentValue] = useAtom(bookAppointmentAtom);
 
   const { mutate: mutateOneTimePayment, isPending: isPendingOneTimePayment } =
     useOneTimePayment();
-  const { mutate: mutateBookAppointment, isPending: isPendingBookAppoinment } =
-    useBookAppoinment();
 
   useEffect(() => {
     if (error?.message) {
@@ -53,7 +38,6 @@ function CheckoutForm({
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     // Block native form submission.
-    const appointmentType = step3Button.includes('Follow up');
     event.preventDefault();
 
     if (!stripe || !elements) {
@@ -84,27 +68,7 @@ function CheckoutForm({
         {
           onSuccess: (response) => {
             toast.success('Payment successful');
-            mutateBookAppointment(
-              {
-                doctorId: bookAppointmentValue.doctor?.id as number,
-                patient_problem: bookAppointmentValue.step3 as string,
-                patient_type: bookAppointmentValue.step1 as string,
-                additional_information: {},
-                date: `${bookAppointmentValue.appointmentDate} ${bookAppointmentValue.doctor?.doctorTime?.split(' ')[0]}`,
-                payment_id: response.data.id,
-                clinicId: bookAppointmentValue.clinic?.id as number,
-                appointment_type: appointmentType ? 'FOLLOWUP' : 'INITIAL',
-              },
-              {
-                onSuccess: () => {
-                  toast.success('Booking successful');
-                  onSuccess();
-                },
-                onError: (error: any) => {
-                  toast.error('Booking failed: ' + error.response.data.message);
-                },
-              }
-            );
+            onSuccess(response.data.id);
           },
           onError: (error: any) => {
             console.log('🚀 ~ handleSubmit ~ error:', error);
@@ -134,28 +98,29 @@ function CheckoutForm({
           },
         }}
       />
+      {error && <div style={{ color: 'red' }}>{error?.message}</div>}
       <div className="mt-4 w-full text-center">
         <Button
-          isLoading={isPendingBookAppoinment || isPendingOneTimePayment}
+          isLoading={isPendingOneTimePayment}
           type="submit"
           disabled={!stripe}
         >
           Pay Now
         </Button>
       </div>
-      {error && <div style={{ color: 'red' }}>{error?.message}</div>}
     </form>
   );
 }
 
-function InjectedCheckoutForm({ onSuccess }: { onSuccess: () => void }) {
+function InjectedCheckoutForm({
+  onSuccess,
+}: {
+  onSuccess: (paymentId: string) => void;
+}) {
   return (
     <ElementsConsumer>
       {({ elements, stripe }) => (
         <>
-          <Text fontWeight="bold" className="text-xl">
-            Payment
-          </Text>
           <CheckoutForm
             onSuccess={onSuccess}
             elements={elements}
@@ -171,7 +136,11 @@ function InjectedCheckoutForm({ onSuccess }: { onSuccess: () => void }) {
 // recreating the `Stripe` object on every render.
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY as string);
 
-const CardMinimal0 = ({ onSuccess }: { onSuccess: () => void }) => {
+const CardMinimal0 = ({
+  onSuccess,
+}: {
+  onSuccess: (paymentId: string) => void;
+}) => {
   return (
     <Elements stripe={stripePromise}>
       <InjectedCheckoutForm onSuccess={onSuccess} />

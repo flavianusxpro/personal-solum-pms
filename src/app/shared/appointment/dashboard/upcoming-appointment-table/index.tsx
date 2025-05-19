@@ -4,7 +4,7 @@ import WidgetCard from '@core/components/cards/widget-card';
 import { useCallback, useState, useMemo } from 'react';
 import { useColumn } from '@core/hooks/use-column';
 import { useTable } from '@core/hooks/use-table';
-import ControlledTable from '@/app/shared/controlled-table/index';
+import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { PiMagnifyingGlassBold } from 'react-icons/pi';
 import { Input } from 'rizzui';
 import { appointmentData } from '@/data/appointment-data';
@@ -108,7 +108,7 @@ export default function UpcomingAppointmentTable({
     >
       <ControlledTable
         variant="modern"
-        data={tableData}
+        data={tableData ?? []}
         isLoading={isLoading}
         showLoadingText={true}
         // @ts-ignore

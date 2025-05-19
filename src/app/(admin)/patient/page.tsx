@@ -1,50 +1,10 @@
-import Link from 'next/link';
-import { routes } from '@/config/routes';
-import { Button } from 'rizzui';
-// import PageHeader from '@/app/shared/page-header';
-import { PiPlusBold } from 'react-icons/pi';
-import { orderData } from '@/data/order-data';
-import { metaObject } from '@/config/site.config';
-import ExportButton from '@/app/shared/export-button';
-import PageHeader from '@/app/shared/page-header';
 import PatientList from '../../shared/patient/PatientList';
-
-export const metadata = {
-  ...metaObject('Patients'),
-};
-
-const pageHeader = {
-  title: 'Patients',
-  breadcrumb: [
-    {
-      href: routes.eCommerce.orders,
-      name: 'Patients',
-    },
-    {
-      name: 'List',
-    },
-  ],
-};
+import PatientPageHeader from './page-header';
 
 export default function PatientPage() {
   return (
     <>
-      <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
-        <div className="mt-4 flex items-center gap-3 @lg:mt-0">
-          <ExportButton
-            data={orderData}
-            fileName="order_data"
-            header="Order ID,Name,Email,Avatar,Items,Price,Status,Created At,Updated At"
-          />
-          <Link href={routes.patient.create} className="w-full @lg:w-auto">
-            <Button as="span" className="w-full @lg:w-auto">
-              <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
-              Add Patient
-            </Button>
-          </Link>
-        </div>
-      </PageHeader>
-
+      <PatientPageHeader />
       <PatientList />
     </>
   );

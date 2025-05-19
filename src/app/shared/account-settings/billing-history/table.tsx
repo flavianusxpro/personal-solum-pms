@@ -5,9 +5,9 @@ import { useColumn } from '@core/hooks/use-column';
 import { getColumns } from '@/app/shared/account-settings/billing-history/columns';
 import { useTable } from '@core/hooks/use-table';
 import { Button } from 'rizzui';
-import TableFooter from '@/app/shared/table-footer';
+import TableFooter from '@/app/shared/ui/table-footer';
 import { exportToCSV } from '@core/utils/export-to-csv';
-import ControlledTable from '@/app/shared/controlled-table/index';
+import ControlledTable from '@/app/shared/ui/controlled-table/index';
 
 export default function BillingHistoryTable({
   className,
@@ -74,7 +74,7 @@ export default function BillingHistoryTable({
     <div className={className}>
       <ControlledTable
         isLoading={isLoading}
-        data={tableData}
+        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         scroll={{ x: 1300 }}

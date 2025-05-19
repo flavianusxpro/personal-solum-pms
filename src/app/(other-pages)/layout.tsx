@@ -22,6 +22,7 @@ export default function OtherPagesLayout({
   return (
     <div className="flex min-h-screen flex-col bg-[#F8FAFC] dark:bg-gray-50">
       {/* sticky top header  */}
+      {children}
       <div className="sticky top-0 z-40 px-6 py-5 backdrop-blur-lg lg:backdrop-blur-none xl:px-10 xl:py-8">
         <div
           className={cn(
@@ -49,7 +50,6 @@ export default function OtherPagesLayout({
           )}
         </div>
       </div>
-      {children}
       <SocialItems />
     </div>
   );

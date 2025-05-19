@@ -16,7 +16,7 @@ import {
   ProfileFormTypes,
 } from '@/validators/profile-settings.schema';
 import { roles } from '@/data/forms/my-details';
-import FormGroup from '@/app/shared/form-group';
+import FormGroup from '@/app/shared/ui/form-group';
 import Link from 'next/link';
 import FormFooter from '@core/components/form-footer';
 import UploadZone from '@core/ui/file-upload/upload-zone';

@@ -3,7 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { env } from '@/env.mjs';
 import { pagesOptions } from './pages-options';
-import { post } from '../../api';
+import { post } from '../../../../config/api';
 import { SignInApiResponse } from '@/types/ApiResponse';
 
 export const authOptions: NextAuthOptions = {
@@ -20,19 +20,16 @@ export const authOptions: NextAuthOptions = {
       return {
         ...session,
         accessToken: token.accessToken,
-        user: {
-          ...session.user,
-          accessToken: token.accessToken,
-          role: token.role,
-          id: token.idToken as string,
+        role: {
+          ...token.role,
         },
       };
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       if (user) {
         token.accessToken = user.accessToken;
-        token.role = user.role;
         token.idToken = user.id;
+        token.role = user.role;
       }
       return token;
     },
@@ -44,26 +41,30 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: 'Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
-        role: { label: 'Role', type: 'text' },
       },
       async authorize(credentials) {
-        const role = credentials?.role;
         const payload = {
           email: credentials?.email,
           password: credentials?.password,
         };
-        const url =
-          role === 'admin' ? 'admin/auth/login' : 'patient/auth/login';
+        const url = 'admin/auth/login';
 
         try {
           const response = await post<SignInApiResponse>(url, payload);
 
           if (response.success && response.data) {
-            return {
-              ...response.data,
-              role: response?.data?.role?.name ?? 'patient',
-              accessToken: response?.data?.access_token,
-            } as any;
+            if (response.data.role) {
+              return {
+                id: (response.data.role?.id ?? 0).toString(),
+                accessToken: response.data.access_token,
+                role: {
+                  id: response.data.role?.id ?? 0,
+                  name: response.data.role?.name ?? 'patient',
+                  created_at: response.data.role?.created_at ?? '',
+                  updated_at: response.data.role?.updated_at ?? '',
+                },
+              };
+            }
           }
         } catch (error) {
           throw new Error('Invalid credentials');

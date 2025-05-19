@@ -4,6 +4,7 @@ export const CART_KEY = 'isomorphic-cart';
 export const POS_CART_KEY = 'isomorphic-pos-cart';
 export const DUMMY_ID = 'FC6723757651DB74';
 export const CHECKOUT = 'isomorphic-checkout';
+export const CURRENCY = 'isomorphic-currency';
 export const CURRENCY_CODE = 'USD';
 export const LOCALE = 'en';
 export const CURRENCY_OPTIONS = {
@@ -31,16 +32,11 @@ export const ROW_PER_PAGE_OPTIONS = [
 ];
 
 export const ROLES = {
-  Administrator: 'administrator',
+  SuperAdmin: 'superadmin',
+  Admin: 'administrator',
   Patient: 'patient',
-  Manager: 'Manager',
-  Sales: 'Sales',
-  Support: 'Support',
-  Developer: 'Developer',
-  HRD: 'HR Department',
-  RestrictedUser: 'Restricted User',
-  Customer: 'Customer',
-} as const;
+  Doctor: 'doctor',
+};
 
 export const patientTitle: SelectOption[] = [
   { label: 'Mr', value: 'mr' },
@@ -131,4 +127,64 @@ export const doctorsOption = [
   { label: 'Dr. Emily Johnson', value: 'dr-emily-johnson' },
   { label: 'Dr. Michael Brown', value: 'dr-michael-brown' },
   { label: 'Dr. Sarah Davis', value: 'dr-sarah-davis' },
+];
+
+export const doctorTypeOption = [
+  { label: 'General Practitioner', value: 'general-practitioner' },
+  { label: 'Specialist', value: 'specialist' },
+  { label: 'Surgeon', value: 'surgeon' },
+  { label: 'Pediatrician', value: 'pediatrician' },
+  { label: 'Dermatologist', value: 'dermatologist' },
+  { label: 'Psychiatrist', value: 'psychiatrist' },
+  { label: 'Cardiologist', value: 'cardiologist' },
+  { label: 'Orthopedic Surgeon', value: 'orthopedic-surgeon' },
+  { label: 'Gynecologist', value: 'gynecologist' },
+  { label: 'Ophthalmologist', value: 'ophthalmologist' },
+  { label: 'ENT Specialist', value: 'ent-specialist' },
+  { label: 'Neurologist', value: 'neurologist' },
+];
+
+export const languageOption = [
+  { label: 'English', value: 'english' },
+  { label: 'Indonesia', value: 'indonesia' },
+];
+
+export const timeZoneOption = [
+  { label: 'UTC-12:00', value: 'Etc/GMT+12' },
+  { label: 'UTC-11:00', value: 'Etc/GMT+11' },
+  { label: 'UTC-10:00', value: 'Etc/GMT+10' },
+  { label: 'UTC-09:00', value: 'Etc/GMT+9' },
+  { label: 'UTC-08:00', value: 'Etc/GMT+8' },
+  { label: 'UTC-07:00', value: 'Etc/GMT+7' },
+  { label: 'UTC-06:00', value: 'Etc/GMT+6' },
+  { label: 'UTC-05:00', value: 'Etc/GMT+5' },
+  { label: 'UTC-04:00', value: 'Etc/GMT+4' },
+];
+
+export const weekIntervalOption = [
+  {
+    label: '1 Week',
+    value: 'one-week',
+  },
+  {
+    label: '2 Weeks',
+    value: 'two-weeks',
+  },
+  {
+    label: '3 Weeks',
+    value: 'three-weeks',
+  },
+  {
+    label: '4 Weeks',
+    value: 'four-weeks',
+  },
+  {
+    label: 'Custom',
+    value: 'custom',
+  },
+];
+
+export const taxFeeOptions = [
+  { label: 'GST - 10%', value: 10 },
+  { label: 'No GST - 0%', value: 0 },
 ];

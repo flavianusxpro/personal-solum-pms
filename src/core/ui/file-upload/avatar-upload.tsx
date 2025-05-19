@@ -9,6 +9,8 @@ import cn from '../../utils/class-names';
 import { PiPencilSimple } from 'react-icons/pi';
 import { LoadingSpinner } from './upload-zone';
 import { FileWithPath } from 'react-dropzone';
+import useUploadImage from '@/hooks/useUploadFile';
+import toast from 'react-hot-toast';
 
 interface UploadZoneProps {
   name: string;
@@ -16,6 +18,8 @@ interface UploadZoneProps {
   setValue?: any;
   className?: string;
   error?: string;
+  disabled?: boolean;
+  path_name?: 'patient' | 'doctor';
 }
 
 export default function AvatarUpload({
@@ -24,10 +28,14 @@ export default function AvatarUpload({
   className,
   getValues,
   setValue,
+  disabled,
+  path_name,
 }: UploadZoneProps) {
   const [files, setFiles] = useState<File[]>([]);
 
   const formValue = getValues(name);
+
+  const { mutate, isPending } = useUploadImage();
 
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[]) => {
@@ -38,7 +46,22 @@ export default function AvatarUpload({
           })
         ),
       ]);
-      // startUpload(files);
+      mutate(
+        {
+          image: acceptedFiles[0],
+          path_name: '/image/' + path_name,
+        },
+        {
+          onSuccess: (res) => {
+            setValue(name, res.data.public_url);
+            toast.success('Upload success');
+          },
+          onError: (error: any) => {
+            toast.error('Upload failed: ' + error.response.data.message);
+            console.error(error);
+          },
+        }
+      );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [files]
@@ -61,21 +84,17 @@ export default function AvatarUpload({
               <Image
                 fill
                 alt="user avatar"
-                src={formValue?.url}
+                src={formValue}
                 className="rounded-full"
               />
             </figure>
             <div
               {...getRootProps()}
               className={cn(
-                'absolute inset-0 grid place-content-center rounded-full bg-black/70'
+                'absolute inset-0 grid cursor-pointer place-content-center rounded-full opacity-0 transition-opacity duration-300 ease-in-out hover:bg-black/70 hover:opacity-100'
               )}
             >
-              {false ? (
-                <LoadingSpinner />
-              ) : (
-                <PiPencilSimple className="h-5 w-5 text-white" />
-              )}
+              <PiPencilSimple className="h-5 w-5 text-white" />
 
               <input {...getInputProps()} />
             </div>
@@ -88,10 +107,12 @@ export default function AvatarUpload({
             )}
           >
             <input {...getInputProps()} />
-            <UploadIcon className="mx-auto h-12 w-12" />
 
-            {false ? (
-              <Loader variant="spinner" className="justify-center" />
+            {isPending ? (
+              <>
+                <UploadIcon className="mx-auto h-12 w-12" />
+                <Loader variant="spinner" className="justify-center" />
+              </>
             ) : (
               <Text className="font-medium">Drop or select file</Text>
             )}

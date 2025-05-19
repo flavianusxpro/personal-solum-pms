@@ -2,41 +2,42 @@ import { z } from 'zod';
 import { messages } from '@/config/messages';
 
 export const invoiceFormSchema = z.object({
-  fromName: z.string().min(1, { message: messages.nameIsRequired }),
-  fromAddress: z.string().min(1, { message: messages.addressIsRequired }),
-  fromPhone: z.string().optional(),
-  toName: z.string().min(1, { message: messages.nameIsRequired }),
-  toAddress: z.string().min(1, { message: messages.addressIsRequired }),
-  toPhone: z.string().optional(),
-  invoiceNumber: z.string({
-    required_error: 'This field is required',
-  }),
-  createDate: z.date({
-    required_error: messages.createDateIsRequired,
-  }),
-  dueDate: z.date({
-    required_error: messages.dueDateIsRequired,
-  }),
-  status: z.string({
-    required_error: messages.statusIsRequired,
-  }),
-  shipping: z.coerce
+  patientId: z
     .number()
-    .min(1, { message: messages.shippingPriceIsRequired }),
-  discount: z.coerce.number().min(1, { message: messages.discountIsRequired }),
-  taxes: z.coerce.number().min(1, { message: messages.taxIsRequired }),
-  items: z.array(
-    z.object({
-      item: z.string().min(1, { message: messages.itemNameIsRequired }),
-      description: z.string().min(1, { message: messages.itemDescIsRequired }),
-      quantity: z.coerce
-        .number()
-        .min(1, { message: messages.itemQtyIsRequired }),
-      price: z.coerce
-        .number()
-        .min(1, { message: messages.itemPriceIsRequired }),
-    })
-  ),
+    .min(1, { message: messages.patientRequired })
+    .nullable(),
+  invoice_date: z
+    .date({ required_error: messages.invoiceDateRequired })
+    .nullable(),
+  due_date: z.date({ required_error: messages.dueDateIsRequired }).nullable(),
+  invoice_number: z.string().optional(),
+  reference: z.string().optional(),
+  branding_theme: z.string().optional(),
+  note: z.string().optional().nullable(),
+  fee: z.number().optional(),
+  total_amount: z.number().min(0, { message: messages.nonNegative }),
+  items: z
+    .array(
+      z.object({
+        item: z
+          .string({ required_error: messages.itemIsRequired })
+          .refine((val) => val !== null, { message: messages.itemIsRequired }),
+        description: z.string().optional(),
+        amount: z.number().min(0, { message: messages.nonNegative }).nullable(),
+        qty: z
+          .number()
+          .min(1, { message: messages.itemQtyIsRequired })
+          .nullable(),
+        total_amount: z
+          .number()
+          .min(0, { message: messages.nonNegative })
+          .nullable(),
+      })
+    )
+    .min(1, { message: messages.itemIsRequired })
+    .nullable(),
+  taxFee: z.number().min(0, { message: messages.nonNegative }).optional(),
+  otherFee: z.string().min(0, { message: messages.nonNegative }).optional(),
 });
 
 // generate form types from zod validation schema

@@ -1,14 +1,13 @@
 'use client';
 
-import Link from 'next/link';
 import { PiPlusBold } from 'react-icons/pi';
 import { routes } from '@/config/routes';
 import { Button } from 'rizzui';
-import PageHeader from '@/app/shared/page-header';
-import ExportButton from '@/app/shared/export-button';
+import PageHeader from '@/app/shared/ui/page-header';
+import ExportButton from '@/app/shared/ui/export-button';
 import { appointmentData } from '@/data/appointment-data';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import CreateUpdateAppointmentForm from '@/app/shared/appointment/appointment-list/appointment-form';
+import CreateUpdateAppointmentForm from '@/app/shared/appointment/modal/appointment-form';
 
 const pageHeader = {
   title: 'Appointment List',
@@ -33,7 +32,7 @@ export default function AppointmentListPageHeader({ className }: HeaderProps) {
     closeModal(),
       openModal({
         view: <CreateUpdateAppointmentForm />,
-        customSize: '700px',
+        customSize: '600px',
       });
   }
   return (

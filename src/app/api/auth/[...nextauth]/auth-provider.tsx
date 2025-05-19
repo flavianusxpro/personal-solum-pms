@@ -16,14 +16,23 @@ export default function AuthProvider({
 }
 
 export function ProtectedLayout({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
 
-  const whitelist = useMemo(() => [routes.signIn, routes.bookAppointment], []);
+  const blacklist = useMemo(
+    () => [
+      routes.signIn,
+      routes.bookAppointment,
+      routes.auth.signUp,
+      routes.auth.forgotPassword,
+      routes.accessDenied,
+    ],
+    []
+  );
 
   useEffect(() => {
-    if (status === 'unauthenticated' && !whitelist.includes(pathname)) {
+    if (status === 'unauthenticated' && !blacklist.includes(pathname)) {
       const isSignInPage = pathname.includes(routes.signIn);
 
       const url = !isSignInPage
@@ -32,7 +41,7 @@ export function ProtectedLayout({ children }: { children: React.ReactNode }) {
 
       router.push(url);
     }
-  }, [status, router, pathname, whitelist]);
+  }, [status, router, pathname, blacklist]);
 
   if (status === 'loading') return <p>Loading...</p>;
 

@@ -1,7 +1,7 @@
 'use client';
 
-import PageHeader from '@/app/shared/page-header';
-import PrintButton from '@/app/shared/print-button';
+import PageHeader from '@/app/shared/ui/page-header';
+import PrintButton from '@/app/shared/ui/print-button';
 import { routes } from '@/config/routes';
 import InvoiceBuilder from '@core/components/invoice-builder';
 import { useReactToPrint } from 'react-to-print';
@@ -13,7 +13,7 @@ const pageHeader = {
   title: 'Invoice Builder',
   breadcrumb: [
     {
-      href: routes.eCommerce.dashboard,
+      href: routes.invoice.home,
       name: 'Home',
     },
     {

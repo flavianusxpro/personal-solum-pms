@@ -1,8 +1,7 @@
 import { routes } from '@/config/routes';
-import PageHeader from '@/app/shared/page-header';
-import ImportButton from '@/app/shared/import-button';
-import CreateInvoice from '@/app/shared/invoice/create-invoice';
+import PageHeader from '@/app/shared/ui/page-header';
 import { metaObject } from '@/config/site.config';
+import CreateEditInvoice from '@/app/shared/invoice/create-edit-form';
 
 export const metadata = {
   ...metaObject('Edit Invoice'),
@@ -12,7 +11,7 @@ const pageHeader = {
   title: 'Edit Invoice',
   breadcrumb: [
     {
-      href: routes.eCommerce.dashboard,
+      href: routes.invoice.home,
       name: 'Home',
     },
     {
@@ -25,14 +24,20 @@ const pageHeader = {
   ],
 };
 
-export default function InvoiceEditPage() {
+interface InvoiceEditPageProps {
+  params: { id: string };
+}
+
+export default function InvoiceEditPage({ params }: InvoiceEditPageProps) {
+  const { id } = params;
+
   return (
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
-        <ImportButton title="Upload File" className="mt-4 @lg:mt-0" />
+        {/* <ImportButton title="Upload File" className="mt-4 @lg:mt-0" /> */}
       </PageHeader>
 
-      <CreateInvoice />
+      <CreateEditInvoice id={id} />
     </>
   );
 }

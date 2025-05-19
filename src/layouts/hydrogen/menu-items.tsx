@@ -1,6 +1,5 @@
 import { routes } from '@/config/routes';
 import dynamic from 'next/dynamic';
-import { PiDoorOpen } from 'react-icons/pi';
 
 // Dynamic imports untuk ikon yang digunakan
 const PiHouse = dynamic(() =>
@@ -31,89 +30,168 @@ const PiGear = dynamic(() =>
   import('react-icons/pi').then((mod) => mod.PiGear)
 );
 
+const PiBriefcase = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiBriefcase)
+);
+
+const PiDoorOpen = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiDoorOpen)
+);
+
+const PiHospital = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiHospital)
+);
+
 // Note: do not add href in the label object, it is rendering as label
 export const adminMenuItems = [
   {
     name: 'Overview',
+    permissionReadName: ['dashboard'],
   },
   {
     name: 'Dashboard',
     href: routes.appointment.dashboard,
     icon: <PiHouse />,
+    permissionReadName: ['dashboard'],
+  },
+  {
+    name: 'Global Calendar (coming soon)',
+    href: routes.globalCalendar,
+    icon: <PiCalendar />,
+    permissionReadName: ['calendar'],
   },
   {
     name: 'Invoice',
     href: routes.invoice.home,
     icon: <PiCurrencyDollarDuotone />,
+    permissionReadName: ['invoice'],
   },
   {
     name: 'Appointment',
     href: routes.appointment.appointmentList,
     icon: <PiCalendarDuotone />,
+    permissionReadName: ['appointment'],
+  },
+  {
+    name: 'Calendars',
+    href: routes.calendar,
+    icon: <PiCalendar />,
+    permissionReadName: ['calendar'],
   },
   {
     name: 'Patients',
     href: routes.patient.dashboard,
     icon: <PiUserCirclePlus />,
+    permissionReadName: ['patient'],
   },
   {
     name: 'Doctors',
-    href: routes.doctor.dashboard,
     icon: <PiUserFocus />,
+    href: routes.doctor.dashboard,
+    permissionReadName: ['doctor'],
+    dropdownItems: [
+      {
+        name: 'Doctor List',
+        href: routes.doctor.dashboard,
+        icon: <PiUser />,
+      },
+      {
+        name: 'Setting',
+        href: routes.doctor.setting,
+        icon: <PiUser />,
+      },
+    ],
   },
   {
-    name: 'Calendars',
-    href: routes.eventCalendar,
-    icon: <PiCalendar />,
+    name: 'Pharmacy',
+    href: routes.pharmachy,
+    icon: <PiHospital />,
+    permissionReadName: ['setting'],
   },
   {
     name: 'Users',
     href: routes.user.dashboard,
     icon: <PiUser />,
+    permissionReadName: ['user'],
   },
   {
-    name: 'Products',
-    href: routes.product.dashboard,
+    name: 'Management',
+    href: routes.management.dashboard,
     icon: <PiBoundingBox />,
+    permissionReadName: ['management'],
+    dropdownItems: [
+      {
+        name: 'Product & Service',
+        href: routes.management.product.list,
+        icon: <PiBoundingBox />,
+      },
+    ],
+  },
+  {
+    name: 'Marketing',
+    href: routes.marketing,
+    icon: <PiBriefcase />,
+    permissionReadName: ['marketing'],
+    dropdownItems: [
+      {
+        name: 'Coupon (coming soon)',
+        href: routes.marketing.coupon,
+        icon: <PiBoundingBox />,
+      },
+      {
+        name: 'Email Marketing (coming soon)',
+        href: routes.management.product.list,
+        icon: <PiBoundingBox />,
+      },
+      {
+        name: 'Sms Marketing (coming soon)',
+        href: routes.management.product.list,
+        icon: <PiBoundingBox />,
+      },
+    ],
+  },
+  {
+    name: 'Request Call Back (cooming soon)',
+    href: routes.requestCallBack,
+    icon: <PiDoorOpen />,
+    permissionReadName: ['management'],
   },
   {
     name: 'Settings',
     href: routes.setting.setup,
     icon: <PiGear />,
-  },
-];
-export const patientMenuItems = [
-  {
-    name: 'Overview',
-  },
-  {
-    name: 'Dashboard',
-    href: routes.myDashboard,
-    icon: <PiHouse />,
-  },
-  {
-    name: 'My Appointment',
-    icon: <PiCurrencyDollarDuotone />,
-    href: routes.myAppointment.dashboard,
-  },
-  {
-    name: 'My Family',
-    href: routes.myFamily.dashboard,
-    icon: <PiCalendarDuotone />,
-  },
-  {
-    name: 'Payment Methods',
-    href: routes.paymentMethods,
-    icon: <PiUserCirclePlus />,
-  },
-  {
-    name: 'My Account Details',
-    href: routes.myAccountDetails,
-    icon: <PiUser />,
-  },
-  {
-    name: 'Sign Out',
-    isButton: true,
-    icon: <PiDoorOpen />,
+    permissionReadName: ['setting'],
+    dropdownItems: [
+      {
+        name: 'Setup',
+        href: routes.setting.setup,
+        icon: <PiUser />,
+      },
+      {
+        name: 'Email Template',
+        href: routes.setting.emailTemplate,
+        icon: <PiUser />,
+      },
+      {
+        name: 'SMS Template',
+        href: routes.setting.smsTemplate,
+        icon: <PiUser />,
+      },
+      {
+        name: 'Roles',
+        href: routes.setting.roles,
+        icon: <PiUser />,
+      },
+      {
+        name: 'Branch',
+        href: routes.setting.branch,
+        icon: <PiUser />,
+      },
+      {
+        name: 'Currency',
+        href: routes.setting.currency,
+        icon: <PiUser />,
+      },
+    ],
   },
 ];

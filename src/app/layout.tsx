@@ -1,13 +1,15 @@
 import { Toaster } from 'react-hot-toast';
 import { getServerSession } from 'next-auth/next';
-import { QueryClient } from '@tanstack/react-query';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import AuthProvider, {
   ProtectedLayout,
 } from '@/app/api/auth/[...nextauth]/auth-provider';
 import GlobalDrawer from '@/app/shared/drawer-views/container';
 import GlobalModal from '@/app/shared/modal-views/container';
-import { JotaiProvider, ThemeProvider } from '@/app/shared/theme-provider';
+import {
+  JotaiProvider,
+  ThemeProvider,
+} from '@/app/shared/providers/theme-provider';
 import { siteConfig } from '@/config/site.config';
 import { inter, lexendDeca } from '@/app/fonts';
 import cn from '@core/utils/class-names';

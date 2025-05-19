@@ -1,27 +1,42 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { CalendarEvent } from '@/types';
 import { PiMapPin, PiXBold } from 'react-icons/pi';
-import { ActionIcon, Button, Text, Title } from 'rizzui';
+import { FaPencil, FaUser, FaUserDoctor } from 'react-icons/fa6';
+import { ActionIcon, Button, Title } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { MdOutlineCalendarMonth } from 'react-icons/md';
-import useEventCalendar from '@core/hooks/use-event-calendar';
 import { formatDate } from '@core/utils/format-date';
-import EventForm from '@/app/shared/event-calendar/event-form';
+import { useDeleteAppointment } from '@/hooks/useAppointment';
+import toast from 'react-hot-toast';
+import CreateUpdateAppointmentForm from '../appointment/modal/appointment-form';
 
 function DetailsEvents({ event }: { event: CalendarEvent }) {
-  const { deleteEvent } = useEventCalendar();
-  const { openModal, closeModal } = useModal();
+  console.log('🚀 ~ DetailsEvents ~ event:', event);
+  const { closeModal, openModal } = useModal();
+
+  const {
+    mutate: mutateDeleteAppointment,
+    isPending: isPendingDeleteAppointment,
+  } = useDeleteAppointment();
 
   function handleEditModal() {
     closeModal(),
       openModal({
-        view: <EventForm event={event} />,
-        customSize: '650px',
+        view: <CreateUpdateAppointmentForm data={event.data} />,
+        customSize: '700px',
       });
   }
 
-  function handleDelete(eventID: string) {
-    deleteEvent(eventID);
+  function handleDelete(eventId: number) {
+    mutateDeleteAppointment([eventId], {
+      onSuccess: () => {
+        toast.success('Event deleted successfully');
+        closeModal();
+      },
+      onError: (error: any) => {
+        toast.error('Failed to delete event: ' + error.response.data.message);
+      },
+    });
     closeModal();
   }
 
@@ -42,14 +57,24 @@ function DetailsEvents({ event }: { event: CalendarEvent }) {
       </div>
 
       <div>
-        <Title as="h4" className="text-lg font-medium xl:text-xl xl:leading-7">
-          {event.title}
-        </Title>
-        {event.description && (
-          <Text className="mt-3 xl:leading-6">{event.description}</Text>
-        )}
-
         <ul className="mt-7 flex flex-col gap-[18px] text-gray-600">
+          <li className="flex gap-2">
+            <FaUser className="h-5 w-5" />
+            <span>Patient:</span>
+            <span className="font-medium text-gray-1000">{event.patient}</span>
+          </li>
+          <li className="flex gap-2">
+            <FaUserDoctor className="h-5 w-5" />
+            <span>Doctor:</span>
+            <span className="font-medium text-gray-1000">{event.doctor}</span>
+          </li>
+          <li className="flex gap-2">
+            <FaPencil className="h-5 w-5" />
+            <span>Description:</span>
+            <span className="font-medium text-gray-1000">
+              {event.description}
+            </span>
+          </li>
           <li className="flex gap-2">
             <MdOutlineCalendarMonth className="h-5 w-5" />
             <span>Event Start:</span>
@@ -58,14 +83,14 @@ function DetailsEvents({ event }: { event: CalendarEvent }) {
               {formatDate(event.start, 'h:mm A')}
             </span>
           </li>
-          <li className="flex gap-2">
+          {/* <li className="flex gap-2">
             <MdOutlineCalendarMonth className="h-5 w-5" />
             <span>Event End:</span>
             <span className="font-medium text-gray-1000">
               {formatDate(event.end, 'MMMM D, YYYY')} at{' '}
               {formatDate(event.end, 'h:mm A')}
             </span>
-          </li>
+          </li> */}
           {event.location && (
             <li className="flex gap-2">
               <PiMapPin className="h-5 w-5" />
@@ -75,11 +100,25 @@ function DetailsEvents({ event }: { event: CalendarEvent }) {
               </span>
             </li>
           )}
+          {event.breakTimes && event.breakTimes.length > 0 && (
+            <li className="flex gap-2">
+              <PiMapPin className="h-5 w-5" />
+              <span>Break Times:</span>
+              {event.breakTimes.map((breakTime, index) => (
+                <span key={index} className="font-medium text-gray-1000">
+                  {formatDate(breakTime.start, 'h:mm A')} -{' '}
+                  {formatDate(breakTime.end, 'h:mm A')}
+                  {index < (event?.breakTimes?.length ?? 0) - 1 ? ', ' : ''}
+                </span>
+              ))}
+            </li>
+          )}
         </ul>
         <div className={cn('grid grid-cols-2 gap-4 pt-5')}>
           <Button
             variant="outline"
-            onClick={() => handleDelete(event.id as string)}
+            onClick={() => handleDelete(event.id as unknown as number)}
+            isLoading={isPendingDeleteAppointment}
           >
             Delete
           </Button>

@@ -1,17 +1,22 @@
 'use client';
 
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
 import { PiCaretDownBold, PiCaretUpBold } from 'react-icons/pi';
-import ControlledTable from '@/app/shared/controlled-table/index';
+import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { ActionIcon } from 'rizzui';
 import cn from '@core/utils/class-names';
 import ExpandedOrderRow from '@/app/shared/patient/table/expanded-row';
 import { getColumns } from './columns';
-import { useGetAllPatients } from '@/hooks/usePatient';
-// dynamic import
+import { useDeletePatient, useGetAllPatients } from '@/hooks/usePatient';
+import debounce from 'lodash/debounce';
+import { useModal } from '../../modal-views/use-modal';
+import toast from 'react-hot-toast';
+import dayjs from 'dayjs';
+import TableFooter from '../../ui/table-footer';
+
 const FilterElement = dynamic(
   () => import('@/app/shared/patient/table/filter-element'),
   { ssr: false }
@@ -39,17 +44,38 @@ function CustomExpandIcon(props: any) {
 
 const filterState = {
   createdAt: [null, null],
-  updatedAt: [null, null],
-  status: '',
+  status: null,
+  condition: null,
 };
 
-export default function PatientTable({ className }: { className?: string }) {
-  const [pageSize, setPageSize] = useState(10);
-
-  const { data, isLoading: isLoadingGetAllPatients } = useGetAllPatients({
+export default function PatientTable() {
+  const [filterStateValue, setFilterStateValue] = useState(filterState);
+  const [params, setParams] = useState({
     page: 1,
-    perPage: pageSize,
+    perPage: 10,
+    search: '',
   });
+
+  const {
+    data,
+    isLoading: isLoadingGetAllPatients,
+    refetch,
+  } = useGetAllPatients({
+    page: params.page,
+    perPage: params.perPage,
+    from: filterStateValue?.createdAt?.[0]
+      ? dayjs(filterStateValue?.createdAt?.[0]).format('YYYY-MM-DD')
+      : undefined,
+    to: filterStateValue?.createdAt?.[1]
+      ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
+      : undefined,
+    q: JSON.stringify({
+      name: params.search,
+      status: filterStateValue?.status || undefined,
+    }),
+  });
+
+  const { mutate: mutateDeletePatient } = useDeletePatient();
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -57,20 +83,52 @@ export default function PatientTable({ className }: { className?: string }) {
     },
   });
 
-  const onDeleteItem = useCallback((id: string) => {
-    handleDelete(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onDeleteItem = useCallback(
+    (ids: number[]) => {
+      mutateDeletePatient(ids, {
+        onSuccess: () => {
+          refetch();
+          toast.success('Patient deleted successfully');
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message ||
+              error?.message ||
+              'Something went wrong'
+          );
+        },
+      });
+    },
+    [mutateDeletePatient, refetch]
+  );
+
+  const updateFilter = useCallback(
+    (columnId: string, filterValue: string | number | any[] | null) => {
+      setFilterStateValue((prevState) => ({
+        ...prevState,
+        [columnId]: filterValue,
+      }));
+    },
+    []
+  );
+
+  const handleReset = useCallback(() => {
+    setFilterStateValue(filterState);
   }, []);
+
+  const handlerSearch = debounce((value: string) => {
+    setParams((prevState) => ({
+      ...prevState,
+      search: value,
+    }));
+  }, 1000);
 
   const {
     isLoading,
     isFiltered,
     tableData,
-    currentPage,
-    totalItems,
     handlePaginate,
     filters,
-    updateFilter,
     searchTerm,
     handleSearch,
     sortConfig,
@@ -79,14 +137,12 @@ export default function PatientTable({ className }: { className?: string }) {
     setSelectedRowKeys,
     handleRowSelect,
     handleSelectAll,
-    handleDelete,
-    handleReset,
-  } = useTable(data ?? [], pageSize, filterState);
+  } = useTable(data?.data ?? [], params.perPage, filterStateValue);
 
   const columns = React.useMemo(
     () =>
       getColumns({
-        data: data ?? [],
+        data: data?.data ?? [],
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -103,19 +159,23 @@ export default function PatientTable({ className }: { className?: string }) {
       onDeleteItem,
       handleRowSelect,
       handleSelectAll,
-      data,
     ]
   );
 
   const { visibleColumns, checkedColumns, setCheckedColumns } =
     useColumn(columns);
 
+  useEffect(() => {
+    refetch();
+  }, [params, refetch, filterStateValue]);
+
   return (
-    <div className={cn(className)}>
+    <div>
       <ControlledTable
+        variant="modern"
+        data={tableData ?? []}
         isLoading={isLoading || isLoadingGetAllPatients}
         showLoadingText={true}
-        data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
         expandable={{
@@ -125,18 +185,29 @@ export default function PatientTable({ className }: { className?: string }) {
           ),
         }}
         paginatorOptions={{
-          pageSize,
-          setPageSize,
-          total: totalItems,
-          current: currentPage,
-          onChange: (page: number) => handlePaginate(page),
+          pageSize: params.perPage,
+          setPageSize: (pageSize: number) =>
+            setParams((prevState) => ({
+              ...prevState,
+              perPage: pageSize,
+            })),
+          total: data?.count,
+          current: params.page,
+          onChange: (page: number) => {
+            setParams((prevState) => ({
+              ...prevState,
+              page: page,
+            }));
+          },
         }}
         filterOptions={{
           searchTerm,
           onSearchClear: () => {
             handleSearch('');
+            handlerSearch('');
           },
           onSearchChange: (event) => {
+            handlerSearch(event.target.value);
             handleSearch(event.target.value);
           },
           hasSearched: isFiltered,
@@ -144,14 +215,22 @@ export default function PatientTable({ className }: { className?: string }) {
           columns,
           checkedColumns,
           setCheckedColumns,
-          enableDrawerFilter: true,
         }}
         filterElement={
           <FilterElement
-            isFiltered={isFiltered}
+            isFiltered={false}
             filters={filters}
             updateFilter={updateFilter}
             handleReset={handleReset}
+          />
+        }
+        tableFooter={
+          <TableFooter
+            checkedItems={selectedRowKeys}
+            handleDelete={(ids: string[]) => {
+              setSelectedRowKeys([]);
+              onDeleteItem(ids.map((id) => parseInt(id)));
+            }}
           />
         }
         className={

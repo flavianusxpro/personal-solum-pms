@@ -1,11 +1,17 @@
+'use client';
 import Image from 'next/image';
 import { Button, Title } from 'rizzui';
 import ForbiddenImg from '@public/403img.svg';
 import ForbiddenTwoImg from '@public/forbidden-two.png';
 import { PiHouseLineBold } from 'react-icons/pi';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function AccessDenied() {
+  const router = useRouter();
+  const handleBack = () => {
+    router.push('/');
+  };
   return (
     <div className="flex grow items-center px-6 xl:px-10">
       <div className="mx-auto text-center">
@@ -32,16 +38,14 @@ export default function AccessDenied() {
           <br className="hidden xs:inline-block" />
           Please contact your site administrator to request access.
         </p>
-        <Link href={'/'}>
-          <Button
-            size="xl"
-            as="span"
-            className="mt-8 h-12 px-4 xl:h-14 xl:px-6"
-          >
-            <PiHouseLineBold className="mr-1.5 text-lg" />
-            Back to home
-          </Button>
-        </Link>
+        <Button
+          size="xl"
+          onClick={handleBack}
+          className="mt-8 h-12 px-4 xl:h-14 xl:px-6"
+        >
+          <PiHouseLineBold className="mr-1.5 text-lg" />
+          Back
+        </Button>
       </div>
     </div>
   );

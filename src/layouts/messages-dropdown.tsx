@@ -26,7 +26,7 @@ function MessagesList({
           Messages
         </Title>
         <Link
-          href={routes.support.inbox}
+          href={routes.accessDenied}
           onClick={() => setIsOpen(false)}
           className="hover:underline"
         >

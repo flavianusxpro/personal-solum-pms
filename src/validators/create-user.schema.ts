@@ -1,16 +1,14 @@
 import { z } from 'zod';
 import { messages } from '@/config/messages';
-import { validateConfirmPassword, validateEmail, validatePassword } from './common-rules';
+import { validateEmail } from './common-rules';
 
 // form zod validation schema
 export const createUserSchema = z.object({
-  fullName: z.string().min(1, { message: messages.fullNameIsRequired }),
+  name: z.string().min(1, { message: messages.fullNameIsRequired }),
   email: validateEmail,
-  password: validatePassword,
-  password_confirmation: validateConfirmPassword,
-  role: z.string().min(1, { message: messages.roleIsRequired }),
-  permissions: z.string().min(1, { message: messages.permissionIsRequired }),
-  status: z.string().min(1, { message: messages.statusIsRequired }),
+  password: z.string().min(6, { message: messages.passwordIsRequired }),
+  roleId: z.number().min(1, { message: messages.roleIsRequired }),
+  clinic_ids: z.array(z.string()),
 });
 
 // generate form types from zod validation schema

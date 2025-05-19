@@ -2,10 +2,10 @@
 
 import { Controller, SubmitHandler } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import FormGroup from '@/app/shared/form-group';
+import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { Flex, Input } from 'rizzui';
+import { Flex, Input, Loader, Textarea } from 'rizzui';
 import AvatarUpload from '@core/ui/file-upload/avatar-upload';
 import CSelect from '@/core/ui/select';
 import { genderOption, stateOption } from '@/config/constants';
@@ -14,66 +14,124 @@ import {
   PatientDetailsFormTypes,
 } from '@/validators/patient-details.schema';
 import {
-  useCreatePatient,
   useGetPatientById,
+  useGetPatientProblem,
+  useGetPatientTypes,
   useUpdatePatient,
 } from '@/hooks/usePatient';
-import { IPayloadCreatePatient } from '@/types/paramTypes';
+import { IPayloadCreateEditPatient } from '@/types/paramTypes';
 import { useParams } from 'next/navigation';
 import dayjs from 'dayjs';
+import { useMemo, useState } from 'react';
+import { DatePicker } from '@/core/ui/datepicker';
+import { PhoneNumber } from '@/core/ui/phone-input';
+import dynamic from 'next/dynamic';
 
-export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
+const MultiSelect = dynamic(
+  () => import('rizzui').then((mod) => mod.MultiSelect),
+  { ssr: false }
+);
+
+export default function PatientDetails({
+  nextTab,
+  isView,
+}: {
+  nextTab: () => void;
+  isView?: boolean;
+}) {
   const id = useParams<{ id: string }>().id;
 
-  const { data: dataPatient } = useGetPatientById(id);
-  const { mutate: mutateCreatePatient } = useCreatePatient();
-  const { mutate: mutateUpdatePatient } = useUpdatePatient();
+  const [searchPatientProblem, setSearchPatientProblem] = useState('');
+  const [searchPatientType, setSearchPatientType] = useState('');
+
+  const {
+    data: dataPatient,
+    refetch: refetchGetDataPatient,
+    isLoading: isLoadingGetDataPatient,
+  } = useGetPatientById(id);
+
+  const { data: dataPatientProblem } = useGetPatientProblem({
+    search: searchPatientProblem,
+  });
+  const { data: dataPatientTypes } = useGetPatientTypes({
+    search: searchPatientType,
+  });
+
+  const { mutate: mutateUpdatePatient, isPending } = useUpdatePatient();
+
+  const parsedPatientProblem: string[] =
+    typeof dataPatient?.patient_problem === 'string'
+      ? (dataPatient.patient_problem as string)
+          .slice(1, -1)
+          .split('","')
+          .map((s) => s.replace(/^"|"$/g, ''))
+      : Array.isArray(dataPatient?.patient_problem)
+        ? dataPatient.patient_problem
+        : [];
+
+  const patientProblemOptions = useMemo(
+    () =>
+      dataPatientProblem?.map((item) => ({
+        label: item.name,
+        value: item.name,
+      })),
+    [dataPatientProblem]
+  );
+
+  const patientTypeOptions = useMemo(
+    () =>
+      dataPatientTypes?.map((item) => ({
+        label: item.name,
+        value: item.name,
+      })),
+    [dataPatientTypes]
+  );
 
   const onSubmit: SubmitHandler<PatientDetailsFormTypes> = (data) => {
-    const payload: IPayloadCreatePatient = {
+    const payload: IPayloadCreateEditPatient = {
       patient_id: id ?? undefined,
+      title: data.title,
       first_name: data.first_name,
       last_name: data.last_name as string,
       email: data.email,
       password: data.password as string,
-      address: '',
       date_of_birth: data.date_of_birth as string,
-      gender: data.date_of_birth as string,
+      gender: data.gender as string,
       medicare_card_number: data.medicare_card as string,
       medicare_expired_date: dayjs(data.medicare_expiry).format(
-        'DD MMMM YYYY'
+        'DD MM YYYY'
       ) as string,
-      mobile_number: data.mobile_number as string,
+      mobile_number: ('+' + data.mobile_number) as string,
       status: 1,
       timezone: data.timezone ?? 'Australia/Sydney',
+      country: data.country,
+      potition_on_card: data.position_of_card,
+      patient_problem: data.patient_problem,
+      patient_type: data.patient_type,
+      street_name: data.street_name,
+      state: data.state,
+      suburb: data.suburb,
+      postcode: data.post_code,
+      unit_number: data.unit_number,
+      photo: data.avatar,
     };
 
     if (id) {
       return mutateUpdatePatient(payload, {
         onSuccess: () => {
           toast.success('Patient updated successfully');
+          refetchGetDataPatient();
         },
         onError: (error) => {
-          console.log('🚀 ~ PatientDetails ~ error:', error);
           const errorMessage =
             (error as any)?.response?.data?.message || 'An error occurred';
           toast.error(errorMessage);
         },
       });
     }
-
-    mutateCreatePatient(payload, {
-      onSuccess: () => {
-        toast.success('Patient created successfully');
-      },
-      onError: (error) => {
-        console.log('🚀 ~ PatientDetails ~ error:', error);
-        const errorMessage =
-          (error as any)?.response?.data?.message || 'An error occurred';
-        toast.error(errorMessage);
-      },
-    });
   };
+
+  if (isLoadingGetDataPatient) return <Loader size="lg" />;
 
   return (
     <Form<PatientDetailsFormTypes>
@@ -82,30 +140,41 @@ export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
       onSubmit={onSubmit}
       className="@container"
       useFormProps={{
-        mode: 'onChange',
+        mode: 'all',
+        defaultValues: {
+          title: dataPatient?.title ?? '',
+          first_name: dataPatient?.first_name ?? '',
+          last_name: dataPatient?.last_name ?? '',
+          email: dataPatient?.email ?? '',
+          gender: dataPatient?.gender ?? '',
+          mobile_number: dataPatient?.mobile_number?.replace('+', '') ?? '',
+          date_of_birth: dataPatient?.date_of_birth ?? '',
+          medicare_card: dataPatient?.medicare_card_number ?? '',
+          medicare_expiry: dataPatient?.medicare_expired_date
+            ? dayjs(dataPatient.medicare_expired_date).toDate()
+            : undefined,
+          patient_problem: parsedPatientProblem,
+          patient_type: dataPatient?.patient_type || undefined,
+          position_of_card: dataPatient?.potition_on_card ?? '',
+          country: dataPatient?.country ?? '',
+          unit_number: dataPatient?.unit_number ?? '',
+          street_name: dataPatient?.street_name ?? '',
+          // description: dataPatient?.description ?? '',
+          suburb: dataPatient?.suburb ?? '',
+          state: dataPatient?.state ?? '',
+          post_code: dataPatient?.postcode ?? '',
+          avatar: dataPatient?.photo || undefined,
+        },
       }}
     >
-      {({ register, control, setValue, getValues, formState: { errors } }) => {
-        if (dataPatient) {
-          setValue('first_name', dataPatient.first_name);
-          setValue('last_name', dataPatient.last_name);
-          setValue('email', dataPatient.email);
-          setValue('mobile_number', dataPatient.mobile_number);
-          setValue('date_of_birth', dataPatient.date_of_birth);
-          setValue('medicare_card', dataPatient.medicare_card_number);
-          setValue(
-            'medicare_expiry',
-            dayjs(dataPatient.medicare_expired_date).format('YYYY-MM-DD')
-          );
-          // setValue('position_of_card', dataPatient.position_of_card);
-          // setValue('country', dataPatient.country);
-          // setValue('street', dataPatient.street);
-          // setValue('suburb', dataPatient.suburb);
-          // setValue('state', dataPatient.state);
-          // setValue('post_code', dataPatient.post_code);
-          // setValue('avatar', dataPatient.avatar);
-        }
-
+      {({
+        register,
+        control,
+        setValue,
+        getValues,
+        watch,
+        formState: { errors },
+      }) => {
         return (
           <>
             <div className="mb-10 grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
@@ -114,23 +183,45 @@ export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
                   title="Personal Info"
                   className="grid-cols-12 gap-4"
                 />
-                <FormGroup title="First Name">
+                <FormGroup title="Title" isLabel>
+                  <Controller
+                    name="title"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        label=""
+                        placeholder="Select Title"
+                        options={[
+                          { label: 'Mr', value: 'Mr' },
+                          { label: 'Mrs', value: 'Mrs' },
+                          { label: 'Ms', value: 'Ms' },
+                        ]}
+                        error={errors.title?.message as string}
+                        disabled={isView}
+                      />
+                    )}
+                  />
+                </FormGroup>
+                <FormGroup title="First Name" isLabel>
                   <Input
                     placeholder="First Name"
                     {...register('first_name')}
                     error={errors.first_name?.message}
                     className="flex-grow"
+                    disabled={isView}
                   />
                 </FormGroup>
-                <FormGroup title="Last Name">
+                <FormGroup title="Last Name" isLabel>
                   <Input
                     placeholder="Last Name"
                     {...register('last_name')}
                     error={errors.last_name?.message}
                     className="flex-grow"
+                    disabled={isView}
                   />
                 </FormGroup>
-                <FormGroup title="Gender">
+                <FormGroup title="Gender" isLabel>
                   <Controller
                     name="gender"
                     control={control}
@@ -140,42 +231,54 @@ export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
                         label=""
                         placeholder="Select Gender"
                         options={genderOption}
+                        disabled={isView}
                       />
                     )}
                   />
                 </FormGroup>
-                <FormGroup title="Birth of Date">
+                <FormGroup title="Birth of Date" isLabel>
                   <Input
                     placeholder="Birth of Dae"
                     type="date"
                     {...register('date_of_birth')}
                     error={errors.date_of_birth?.message}
+                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
-                <FormGroup title="Phone Number">
-                  <Input
-                    placeholder="Phone Number"
-                    {...register('mobile_number')}
-                    error={errors.mobile_number?.message}
-                    className="flex-grow"
+                <FormGroup title="Phone Number" isLabel>
+                  <Controller
+                    name="mobile_number"
+                    control={control}
+                    render={({ field }) => (
+                      <PhoneNumber
+                        {...field}
+                        country="au"
+                        preferredCountries={['au']}
+                        placeholder="Phone Number"
+                        error={errors.mobile_number?.message}
+                        disabled={isView}
+                      />
+                    )}
                   />
                 </FormGroup>
 
-                <FormGroup title="Email">
+                <FormGroup title="Email" isLabel>
                   <Input
                     placeholder="Email"
                     {...register('email')}
                     error={errors.email?.message}
+                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
 
-                <FormGroup title="Medicare Card">
+                <FormGroup title="Medicare Card" isLabel>
                   <Input
                     placeholder="Medicare Card"
                     {...register('medicare_card')}
                     error={errors.medicare_card?.message}
+                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
@@ -186,27 +289,68 @@ export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
                       placeholder="Position of Card"
                       {...register('position_of_card')}
                       error={errors.position_of_card?.message}
-                      labelClassName="text-base"
+                      disabled={isView}
                       className="flex-grow"
                     />
-                    <Input
-                      label="Expiry Date"
-                      type="date"
-                      placeholder="Expiry Date"
-                      {...register('medicare_expiry')}
+                    <DatePicker
+                      inputProps={{
+                        label: 'Medicare Expiry Date',
+                      }}
+                      selected={watch('medicare_expiry')}
+                      onChange={(date) => {
+                        if (!date) return;
+                        setValue('medicare_expiry', date);
+                      }}
+                      showDateSelect={false}
+                      showMonthYearPicker
+                      minDate={new Date()}
+                      dateFormat="MM/YY"
                       error={errors.medicare_expiry?.message}
-                      className="flex-grow"
-                      labelClassName="text-base"
                     />
                   </Flex>
                 </FormGroup>
 
-                <FormGroup title="Your Photo">
+                <FormGroup title="Patient Type" isLabel>
+                  <Controller
+                    name="patient_type"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        label=""
+                        placeholder="Select Patient Type"
+                        options={patientTypeOptions ?? []}
+                        disabled={isView}
+                        error={errors.patient_type?.message as string}
+                      />
+                    )}
+                  />
+                </FormGroup>
+
+                <FormGroup title="Patient Problem" isLabel>
+                  <Controller
+                    name="patient_problem"
+                    control={control}
+                    render={({ field }) => (
+                      <MultiSelect
+                        {...field}
+                        label=""
+                        placeholder="Select Patient Type"
+                        options={patientProblemOptions ?? []}
+                        disabled={isView}
+                        error={errors.patient_problem?.message as string}
+                      />
+                    )}
+                  />
+                </FormGroup>
+
+                <FormGroup title="Your Photo" isLabel>
                   <div className="flex flex-col gap-6 @container @3xl:col-span-2">
                     <AvatarUpload
                       name="avatar"
                       setValue={setValue}
                       getValues={getValues}
+                      disabled={isView}
                       error={errors?.avatar?.message as string}
                     />
                   </div>
@@ -215,36 +359,48 @@ export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
 
               <div className="mb-10 flex flex-col gap-7">
                 <FormGroup title="Address" className="grid-cols-12" />
-                <FormGroup title="Country">
+                <FormGroup title="Country" isLabel>
                   <Input
                     placeholder="Country"
                     {...register('country')}
                     error={errors.country?.message}
+                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
-                <FormGroup title="Street">
+                <FormGroup title="Unit Number" isLabel>
+                  <Input
+                    placeholder="Unit Number"
+                    {...register('unit_number')}
+                    error={errors.unit_number?.message}
+                    disabled={isView}
+                    className="flex-grow"
+                  />
+                </FormGroup>
+                <FormGroup title="Street" isLabel>
                   <Input
                     placeholder="Street"
-                    {...register('street')}
-                    error={errors.street?.message}
+                    {...register('street_name')}
+                    error={errors.street_name?.message}
+                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
-                <FormGroup title="Suburb">
+                <FormGroup title="Suburb" isLabel>
                   <Input
                     placeholder="Suburb"
                     {...register('suburb')}
                     error={errors.suburb?.message}
+                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
-                <Controller
-                  name="state"
-                  control={control}
-                  render={({ field }) => (
-                    <FormGroup title="States">
-                      <Flex justify="between" align="center" gap="4">
+                <FormGroup title="States" isLabel>
+                  <Flex justify="between" align="center" gap="4">
+                    <Controller
+                      name="state"
+                      control={control}
+                      render={({ field }) => (
                         <CSelect
                           {...field}
                           label="State"
@@ -252,35 +408,47 @@ export default function PatientDetails({ nextTab }: { nextTab: () => void }) {
                           className="group relative z-0"
                           options={stateOption}
                           error={errors.state?.message as string}
-                          labelClassName="text-base font-medium"
+                          disabled={isView}
                         />
-                        <Input
-                          label="Post Code"
-                          placeholder="Post Code"
-                          {...register('post_code')}
-                          error={errors.post_code?.message}
-                          labelClassName="text-base font-bold"
-                          className="flex-grow"
-                        />
-                      </Flex>
-                    </FormGroup>
-                  )}
-                />
-                <FormGroup title="Password">
+                      )}
+                    />
+                    <Input
+                      label="Post Code"
+                      placeholder="Post Code"
+                      {...register('post_code')}
+                      error={errors.post_code?.message}
+                      disabled={isView}
+                      className="flex-grow"
+                    />
+                  </Flex>
+                </FormGroup>
+                <FormGroup title="Description" isLabel>
                   <Input
-                    placeholder="Password"
-                    {...register('password')}
-                    error={errors.password?.message}
+                    placeholder="Description"
+                    {...register('description')}
+                    error={errors.description?.message}
+                    disabled={isView}
+                    className="flex-grow"
+                  />
+                </FormGroup>
+                <FormGroup title="Notes" isLabel>
+                  <Textarea
+                    placeholder="Notes"
+                    {...register('notes')}
+                    error={errors.notes?.message}
+                    disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
               </div>
             </div>
-            <FormFooter
-              // isLoading={isLoading}
-              altBtnText="Cancel"
-              submitBtnText="Save"
-            />
+            {!isView && (
+              <FormFooter
+                isLoading={isPending}
+                altBtnText="Cancel"
+                submitBtnText="Save"
+              />
+            )}
           </>
         );
       }}

@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { PiXBold } from 'react-icons/pi';
 import { Title, Text, Input, Flex } from 'rizzui';
-import FormGroup from '../../form-group';
+import FormGroup from '../../ui/form-group';
 import { IGetAllPatientsResponse } from '@/types/ApiResponse';
 import { genderOption, stateOption } from '@/config/constants';
 import CSelect from '../../ui/select';

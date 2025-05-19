@@ -2,21 +2,18 @@
 
 import React from 'react';
 import { PiTrashDuotone } from 'react-icons/pi';
-import DateFiled from '@/app/shared/controlled-table/date-field';
-import PriceField from '@/app/shared/controlled-table/price-field';
-import StatusField from '@/app/shared/controlled-table/status-field';
+import DateFiled from '@/app/shared/ui/controlled-table/date-field';
+import StatusField from '@/app/shared/ui/controlled-table/status-field';
 import { Button } from 'rizzui';
 import { getDateRangeStateValues } from '@core/utils/get-formatted-date';
 import { useMedia } from '@core/hooks/use-media';
-import {
-  renderOptionDisplayValue,
-  statusOptions,
-} from '@/app/shared/invoice/form-utils';
+import { statusOptions } from '@/app/shared/invoice/create-edit-form/form-utils';
+import CSelect from '../../ui/select';
 
 type FilterElementProps = {
   isFiltered: boolean;
   filters: { [key: string]: any };
-  updateFilter: (columnId: string, filterValue: string | any[]) => void;
+  updateFilter: (columnId: string, filterValue: number | any[] | null) => void;
   handleReset: () => void;
 };
 
@@ -27,16 +24,17 @@ export default function FilterElement({
   handleReset,
 }: FilterElementProps) {
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
+
   return (
     <>
-      <PriceField
-        value={filters['amount']}
-        onChange={(data) => updateFilter('amount', data)}
-      />
       <DateFiled
         selectsRange
         dateFormat="dd MMM yyyy"
         className="w-full"
+        isClearable
+        onClear={() => {
+          updateFilter('createdAt', [null, null]);
+        }}
         selected={getDateRangeStateValues(filters['createdAt'][0])}
         startDate={getDateRangeStateValues(filters['createdAt'][0]) as Date}
         endDate={getDateRangeStateValues(filters['createdAt'][1]) as Date}
@@ -51,35 +49,17 @@ export default function FilterElement({
           },
         })}
       />
-      <DateFiled
-        selectsRange
-        dateFormat="dd MMM yyyy"
-        className="w-full"
-        selected={getDateRangeStateValues(filters['dueDate'][0])}
-        startDate={getDateRangeStateValues(filters['dueDate'][0]) as Date}
-        endDate={getDateRangeStateValues(filters['dueDate'][1]) as Date}
-        onChange={(date: any) => {
-          updateFilter('dueDate', date);
-        }}
-        placeholderText="Select due date"
-        {...(isMediumScreen && {
-          inputProps: {
-            label: 'Due Date',
-            labelClassName: 'font-medium text-gray-700',
-          },
-        })}
-      />
-      <StatusField
+      <CSelect
         options={statusOptions}
-        value={filters['status']}
-        onChange={(value: string) => {
+        value={filters?.['status'] || null}
+        onChange={(value: number) => {
           updateFilter('status', value);
         }}
-        getOptionValue={(option: { value: any }) => option.value}
-        getOptionDisplayValue={(option: { value: any }) =>
-          renderOptionDisplayValue(option.value as string)
-        }
-        displayValue={(selected: string) => renderOptionDisplayValue(selected)}
+        placeholder="Select status"
+        clearable
+        onClear={() => {
+          updateFilter('status', null);
+        }}
         dropdownClassName="!z-10 h-auto"
         className={'w-auto'}
         {...(isMediumScreen && {
