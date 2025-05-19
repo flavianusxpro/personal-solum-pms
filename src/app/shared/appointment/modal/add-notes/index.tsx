@@ -2,6 +2,7 @@ import { useModal } from '@/app/shared/modal-views/use-modal';
 import FormFooter from '@/core/components/form-footer';
 import { Form } from '@/core/ui/form';
 import { useGetAppointments } from '@/hooks/useAppointment';
+import { useCreatePatientFLag } from '@/hooks/usePatientFlag';
 import { useCreatePatientNote } from '@/hooks/usePatientNote';
 import {
   AddAppointmentNotesForm,
@@ -15,7 +16,7 @@ import { ActionIcon, Flex, Textarea, Title } from 'rizzui';
 export default function AddNotesForm({ patient_id }: { patient_id: number }) {
   const { closeModal } = useModal();
 
-  const { mutate } = useCreatePatientNote();
+  const { mutate } = useCreatePatientFLag();
   const { refetch } = useGetAppointments({
     page: 1,
     perPage: 10,
@@ -24,8 +25,9 @@ export default function AddNotesForm({ patient_id }: { patient_id: number }) {
   const onSubmit: SubmitHandler<AddAppointmentNotesForm> = (data) => {
     mutate(
       {
+        category: 'note',
         description: data.notes,
-        patient_id,
+        patient_id: patient_id,
       },
       {
         onSuccess: () => {

@@ -498,7 +498,7 @@ export interface IPayloadPasientNote {
 
 export interface IPayloadPasientFlag {
   id?: number;
-  patient_id: string;
+  patient_id: number;
   category: string;
   description: string;
 }

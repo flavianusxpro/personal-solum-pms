@@ -15,7 +15,7 @@ type Columns = {
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
-  onDeleteItem: (id: string) => void;
+  onDeleteItem: (id: string[]) => void;
   onHeaderCellClick: (value: string) => void;
   onChecked?: (id: string) => void;
   openModal?: ({
@@ -124,7 +124,7 @@ export const getColumns = ({
         <DeletePopover
           title={`Delete the Patient`}
           description={`Are you sure you want to delete this #${row.id} Patient?`}
-          onDelete={() => onDeleteItem(row?.id.toString())}
+          onDelete={() => onDeleteItem([row?.id.toString()])}
         />
       </div>
     ),
