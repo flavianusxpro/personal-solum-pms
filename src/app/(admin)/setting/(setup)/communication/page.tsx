@@ -61,13 +61,11 @@ export default function Communication() {
     useUpdateTwilioConfig();
 
   const onSubmit: SubmitHandler<SettingCommunicationFormTypes> = (data) => {
-    console.log('Profile settings data ->', {
-      ...data,
-    });
     const payloadTwilioConfig: IPayloadUpdateTwilioConfig = {
       account_id: data.twillio_id_key || '',
       auth_token: data.twillio_auth_token || '',
       from_number: data.twillio_phone_number || '',
+      status: data.twillio_status || false,
     };
 
     const payloadSmtpConfig: IPayloadUpdateSmtpConfig = {
@@ -129,10 +127,17 @@ export default function Communication() {
           twillio_id_key: dataTwilio?.data.account_id || '',
           twillio_auth_token: dataTwilio?.data.auth_token || '',
           twillio_phone_number: dataTwilio?.data.from_number || '',
+          twillio_status: dataTwilio?.data.status || false,
         },
       }}
     >
-      {({ register, control, setValue, watch, formState: { errors } }) => {
+      {({
+        register,
+        control,
+        setValue,
+        watch,
+        formState: { errors, dirtyFields },
+      }) => {
         return (
           <>
             <FormGroup
@@ -241,7 +246,9 @@ export default function Communication() {
                   variant="flat"
                   className=""
                   labelClassName="font-medium text-sm text-gray-900"
-                  checked={watch('sms_provider_status')}
+                  checked={
+                    watch('twillio_status') || watch('sms_provider_status')
+                  }
                   onChange={(e) => {
                     setValue('sms_provider_status', e.target.checked);
                   }}

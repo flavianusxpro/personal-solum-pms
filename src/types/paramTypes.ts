@@ -520,6 +520,7 @@ export interface IPayloadUpdateTwilioConfig {
   account_id: string;
   auth_token: string;
   from_number: string;
+  status: boolean;
 }
 
 export interface IPayloadUpdateSmtpConfig {
