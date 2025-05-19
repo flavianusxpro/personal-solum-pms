@@ -1245,9 +1245,17 @@ div[style='z-index: 1000001;'],
 .rbc-day-slot .rbc-event {
   @apply border-0;
 }
+
+.rbc-month-view
 .rbc-event,
 .rbc-day-slot .rbc-background-event {
-  @apply rounded-md bg-primary px-2 py-1.5 text-sm font-medium;
+  @apply rounded-md bg-white px-2 text-sm font-medium;
+}
+
+.rbc-week-view
+.rbc-event,
+.rbc-day-slot .rbc-background-event {
+  @apply rounded-md bg-primary px-2 text-sm font-medium;
 }
 
 .rbc-time-view .rbc-row {

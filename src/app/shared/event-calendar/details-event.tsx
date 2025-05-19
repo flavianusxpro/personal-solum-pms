@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 import CreateUpdateAppointmentForm from '../appointment/modal/appointment-form';
 
 function DetailsEvents({ event }: { event: CalendarEvent }) {
+  console.log('🚀 ~ DetailsEvents ~ event:', event);
   const { closeModal, openModal } = useModal();
 
   const {

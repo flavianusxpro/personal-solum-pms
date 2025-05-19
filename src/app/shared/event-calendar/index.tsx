@@ -12,7 +12,6 @@ import {
 import DetailsEvents from '@/app/shared/event-calendar/details-event';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import cn from '@core/utils/class-names';
-import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import CSelect from '../ui/select';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
 import { useGetAppointments } from '@/hooks/useAppointment';
@@ -28,7 +27,6 @@ const rtcEventClassName =
 
 export default function EventCalendarView() {
   const { openModal } = useModal();
-  const { colorPresetName } = useColorPresetName();
 
   const [selectDoctor, setSelectDoctor] = useState<number | null>(null);
 
@@ -148,7 +146,9 @@ export default function EventCalendarView() {
 
     return (
       <div className={cn('w-full rounded-md border px-1', bgColor)}>
-        <Text className="text-sm text-white">{value ?? '-'}</Text>
+        <Text className="overflow-hidden text-ellipsis text-sm text-white">
+          {value ?? '-'}
+        </Text>
       </div>
     );
   }
@@ -181,8 +181,14 @@ export default function EventCalendarView() {
 
       <Calendar
         components={{
-          eventWrapper: ({ event }) =>
-            getRowAppointment(event.title, event?.data?.type as string),
+          month: {
+            event: ({ event }) =>
+              getRowAppointment(event.title, event?.data?.type as string),
+          },
+          week: {
+            event: ({ event }) =>
+              getRowAppointment(event.title, event?.data?.type as string),
+          },
         }}
         timeslots={4}
         step={15}
@@ -198,9 +204,9 @@ export default function EventCalendarView() {
         selectable
         scrollToTime={scrollToTime}
         className={cn(
-          'h-[650px] md:h-[1000px]',
+          'h-[650px] md:h-[1000px]'
           // calendarToolbarClassName,
-          colorPresetName === 'black' && rtcEventClassName
+          // colorPresetName === 'black' && rtcEventClassName
         )}
         onNavigate={onNavigate}
       />
