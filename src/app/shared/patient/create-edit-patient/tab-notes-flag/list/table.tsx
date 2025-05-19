@@ -87,7 +87,7 @@ export default function ListTable({ className }: { className?: string }) {
 
   return (
     <div className={className}>
-      <FormGroup title="Correspondence" className="mb-5" />
+      <FormGroup title="Notes & Flags" className="mb-5" />
 
       <ControlledTable
         isLoading={isLoading}
