@@ -1,19 +1,19 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-node_modules
-.pnp
+/node_modules
+/.pnp
 .pnp.js
 
 # testing
-coverage
+/coverage
 
 # next.js
-.next/
-out/
-build
-dist
-.swc/
+/.next/
+/out/
+
+# production
+/build
 
 # misc
 .DS_Store
@@ -25,19 +25,28 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-/apps/**/.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env*.local
+.env
 
-# turbo
-.turbo
+# vercel
+.vercel
 
-# ui
-dist/
+# typescript
+*.tsbuildinfo
+next-env.d.ts
 
+# PWA files
+**/public/sw.js
+**/public/workbox-*.js
+**/public/worker-*.js
+**/public/sw.js.map
+**/public/workbox-*.js.map
+**/public/worker-*.js.map
+
+# e2e tests
+/test-results/
+/playwright-report/
+/playwright/.cache/
 .vercel
 .vscode
-
-*.zip
+/.turbo/*
