@@ -30,6 +30,8 @@ export const routes = {
   },
   marketing: {
     coupon: '/marketing/coupon',
+    emailMarketing: '/marketing/email-marketing',
+    smsMarketing: '/marketing/sms-marketing',
   },
   invoice: {
     home: '/invoice',
