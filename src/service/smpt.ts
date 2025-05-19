@@ -1,4 +1,4 @@
-import { get, put } from '@/app/api/api';
+import { get, put } from '@/config/api';
 import { IGetSmtpConfigResponse } from '@/types/ApiResponse';
 import { IPayloadUpdateSmtpConfig } from '@/types/paramTypes';
 

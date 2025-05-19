@@ -1,4 +1,4 @@
-import { post } from '@/app/api/api';
+import { post } from '@/config/api';
 import { IPostOneTimePaymentResponse } from '@/types/ApiResponse';
 import {
   IPayloadPostBookAppoinment,

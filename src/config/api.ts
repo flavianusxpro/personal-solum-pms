@@ -6,8 +6,7 @@ import axios, {
 import { getSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 
-export const API_URL =
-  process.env.NEXT_API_URL || 'https://clinicapi.xprogroup.com.au/';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const axiosApi = axios.create({
   baseURL: API_URL,

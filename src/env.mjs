@@ -27,6 +27,7 @@ export const env = createEnv({
    * Environment variables available on the client (and server).
    */
   client: {
+    NEXT_PUBLIC_API_URL: z.string(),
     NEXT_PUBLIC_APP_NAME: z.string().optional(),
     NEXT_PUBLIC_GOOGLE_MAP_API_KEY: z.string().optional(),
     NEXT_PUBLIC_BOOKING_API_URL: z.string(),

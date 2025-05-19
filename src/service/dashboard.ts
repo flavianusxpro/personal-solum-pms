@@ -1,4 +1,4 @@
-import { get } from '@/app/api/api';
+import { get } from '@/config/api';
 import { IGetDashboardSummaryResponse } from '@/types/ApiResponse';
 
 export default async function getDashboardSummary() {

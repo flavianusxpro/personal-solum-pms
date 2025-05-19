@@ -3,7 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { env } from '@/env.mjs';
 import { pagesOptions } from './pages-options';
-import { post } from '../../api';
+import { post } from '../../../../config/api';
 import { SignInApiResponse } from '@/types/ApiResponse';
 
 export const authOptions: NextAuthOptions = {

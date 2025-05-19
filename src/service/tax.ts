@@ -1,4 +1,4 @@
-import { del, get, post, put } from '@/app/api/api';
+import { del, get, post, put } from '@/config/api';
 import { IGetTaxesResponse } from '@/types/ApiResponse';
 import { IParamGetTaxes, IPayloadCreateEditTax } from '@/types/paramTypes';
 

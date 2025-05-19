@@ -1,4 +1,4 @@
-import { get, put } from '@/app/api/api';
+import { get, put } from '@/config/api';
 import { IGetTwilioConfigResponse } from '@/types/ApiResponse';
 import { IPayloadUpdateTwilioConfig } from '@/types/paramTypes';
 

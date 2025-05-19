@@ -1,4 +1,4 @@
-import { del, get, post, put } from '@/app/api/api';
+import { del, get, post, put } from '@/config/api';
 import {
   IGetPermissionsResponse,
   IGetRolesResponse,

@@ -1,4 +1,4 @@
-import { get, post, put } from '@/app/api/api';
+import { get, post, put } from '@/config/api';
 import { IGetProfileResponse } from '@/types/ApiResponse';
 import { IPayloadUpdatePassword } from '@/types/paramTypes';
 
