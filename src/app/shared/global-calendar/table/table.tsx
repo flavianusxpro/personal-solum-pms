@@ -1,7 +1,6 @@
 'use client';
 
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
-import { useColumn } from '@core/hooks/use-column';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { getColumns } from './columns';
 import { useModal } from '../../modal-views/use-modal';
@@ -33,7 +32,7 @@ export default function GlobalCalendarTable({}: {}) {
     sort: 'DESC',
     from: selectedDate,
     to: selectedDate,
-    // branchId: selectedBranch,
+    clinicId: selectedBranch || undefined,
   });
 
   const { data: dataClinics } = useGetAllClinics({
