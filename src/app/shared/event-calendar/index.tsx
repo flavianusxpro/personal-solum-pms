@@ -29,6 +29,11 @@ export default function EventCalendarView() {
   const { openModal } = useModal();
 
   const [selectDoctor, setSelectDoctor] = useState<number | null>(null);
+  const [view, setView] = useState<View>('month');
+
+  const isAgendaView = useMemo(() => {
+    return view === 'agenda';
+  }, [view]);
 
   const { data: dataDoctor } = useGetAllDoctors({
     page: 1,
@@ -43,24 +48,46 @@ export default function EventCalendarView() {
 
   const events: CalendarEvent[] = useMemo(() => {
     if (!dataAppointment) return [];
-    return dataAppointment.data.map((appointment) => ({
-      title:
-        appointment?.patient?.first_name +
-        ' ' +
-        appointment?.patient?.last_name,
-      id: appointment.id.toString(),
-      start: new Date(appointment.date),
-      end: new Date(appointment.date),
-      allDay: false,
-      patient:
-        appointment?.patient?.first_name +
-        ' ' +
-        appointment?.patient?.last_name,
-      description: appointment.note || '-',
-      doctor:
-        appointment.doctor.first_name + ' ' + appointment.doctor.last_name,
-      data: appointment,
-    }));
+
+    return dataAppointment.data.map((appointment) => {
+      const type = appointment?.type as string;
+
+      let bgColor = '';
+      switch (type) {
+        case 'INITIAL':
+          bgColor = 'bg-green-600';
+          break;
+        case 'FOLLOWUP':
+          bgColor = 'bg-blue-600';
+          break;
+        case 'SCRIPT_RENEWAL':
+          bgColor = 'bg-yellow-600';
+          break;
+        default:
+          bgColor = 'bg-pink-600';
+          break;
+      }
+
+      return {
+        title:
+          appointment?.patient?.first_name +
+          ' ' +
+          appointment?.patient?.last_name,
+        id: appointment.id.toString(),
+        start: new Date(appointment.date),
+        end: new Date(appointment.date),
+        allDay: false,
+        patient:
+          appointment?.patient?.first_name +
+          ' ' +
+          appointment?.patient?.last_name,
+        description: appointment.note || '-',
+        doctor:
+          appointment.doctor.first_name + ' ' + appointment.doctor.last_name,
+        data: appointment,
+        color: bgColor,
+      };
+    });
   }, [dataAppointment]);
 
   const doctorOptions = useMemo(() => {
@@ -103,8 +130,8 @@ export default function EventCalendarView() {
     () => ({
       views: {
         month: true,
-        week: false,
-        day: false,
+        week: true,
+        day: true,
         agenda: true,
       },
       scrollToTime: new Date(),
@@ -186,9 +213,9 @@ export default function EventCalendarView() {
 
       <Calendar
         components={{
-          month: { event: eventComponent },
-          week: { event: eventComponent },
-          day: { event: eventComponent },
+          //   month: { event: eventComponent },
+          //   week: { event: eventComponent },
+          //   day: { event: eventComponent },
           agenda: { event: eventComponent },
         }}
         timeslots={4}
@@ -196,11 +223,21 @@ export default function EventCalendarView() {
         step={15}
         localizer={localizer}
         events={events}
+        eventPropGetter={(event) => ({
+          className: cn('text-sm', !isAgendaView && event.color),
+          style: {
+            color: isAgendaView ? 'black' : 'white',
+            borderRadius: '5px',
+            display: 'block',
+          },
+        })}
         views={views}
+        onView={(view: View) => {
+          setView(view);
+        }}
         formats={formats}
         startAccessor="start"
         endAccessor="end"
-        dayLayoutAlgorithm="no-overlap"
         onSelectEvent={handleSelectEvent}
         onSelectSlot={handleSelectSlot}
         selectable

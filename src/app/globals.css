@@ -1246,19 +1246,14 @@ div[style='z-index: 1000001;'],
   @apply border-0;
 }
 
-.rbc-month-view
-.rbc-event,
-.rbc-day-slot .rbc-background-event {
-  @apply rounded-md bg-white px-2 text-sm font-medium;
-}
 
 .rbc-event, 
 .rbc-day-slot .rbc-background-event {
-  @apply rounded-md bg-primary px-2 text-sm font-medium;
-}
+  @apply rounded-md px-2 text-sm font-medium h-fit !important;
+} 
 
 .rbc-time-view .rbc-row {
-  @apply h-12;
+  @apply h-4;
 }
 
 .rbc-time-content > * + * > * {
