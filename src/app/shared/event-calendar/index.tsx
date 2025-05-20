@@ -121,6 +121,10 @@ export default function EventCalendarView() {
     []
   );
 
+  const eventComponent = useCallback(({ event }: { event: CalendarEvent }) => {
+    return getRowAppointment(event.title, event?.data?.type as string);
+  }, []);
+
   useEffect(() => {
     if (selectDoctor || selectDoctor === null) {
       refetch();
@@ -181,16 +185,10 @@ export default function EventCalendarView() {
 
       <Calendar
         components={{
-          month: {
-            event: ({ event }) =>
-              getRowAppointment(event.title, event?.data?.type as string),
-          },
-          week: {
-            event: ({ event }) =>
-              getRowAppointment(event.title, event?.data?.type as string),
-          },
+          event: eventComponent,
         }}
         timeslots={4}
+        titleAccessor={'title'}
         step={15}
         localizer={localizer}
         events={events}
