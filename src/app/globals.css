@@ -1253,7 +1253,7 @@ div[style='z-index: 1000001;'],
 }
 
 .rbc-event, 
-.rbc-day-slot .rbc-background-event button {
+.rbc-day-slot .rbc-background-event {
   @apply rounded-md bg-primary px-2 text-sm font-medium;
 }
 

@@ -103,8 +103,8 @@ export default function EventCalendarView() {
     () => ({
       views: {
         month: true,
-        week: true,
-        day: true,
+        week: false,
+        day: false,
         agenda: true,
       },
       scrollToTime: new Date(),
@@ -121,17 +121,9 @@ export default function EventCalendarView() {
     []
   );
 
-  const eventComponent = useCallback(({ event }: { event: CalendarEvent }) => {
-    return getRowAppointment(event.title, event?.data?.type as string);
-  }, []);
+  const eventComponent = useCallback(({ event, style, className }: any) => {
+    const type = event?.data?.type as string;
 
-  useEffect(() => {
-    if (selectDoctor || selectDoctor === null) {
-      refetch();
-    }
-  }, [selectDoctor, refetch]);
-
-  function getRowAppointment(value: string, type: string) {
     let bgColor = '';
     switch (type) {
       case 'INITIAL':
@@ -149,13 +141,22 @@ export default function EventCalendarView() {
     }
 
     return (
-      <div className={cn('w-full rounded-md border px-1', bgColor)}>
+      <div
+        className={cn('w-full rounded-md border px-1', bgColor, className)}
+        style={style}
+      >
         <Text className="overflow-hidden text-ellipsis text-sm text-white">
-          {value ?? '-'}
+          {event.title ?? '-'}
         </Text>
       </div>
     );
-  }
+  }, []);
+
+  useEffect(() => {
+    if (selectDoctor || selectDoctor === null) {
+      refetch();
+    }
+  }, [selectDoctor, refetch]);
 
   return (
     <div className="@container">
@@ -185,7 +186,10 @@ export default function EventCalendarView() {
 
       <Calendar
         components={{
-          event: eventComponent,
+          month: { event: eventComponent },
+          week: { event: eventComponent },
+          day: { event: eventComponent },
+          agenda: { event: eventComponent },
         }}
         timeslots={4}
         titleAccessor={'title'}
