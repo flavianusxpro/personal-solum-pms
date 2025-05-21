@@ -42,7 +42,11 @@ export default function AppointmentServices() {
   const { gotoNextStep } = useStepperAppointment();
   const [formData, setFormData] = useAtom(formDataAtom);
 
-  const { data: dataPatientProblem } = useGetPatientProblem({ search: '' });
+  const { data: dataPatientProblem } = useGetPatientProblem({
+    page: 1,
+    perPage: 100,
+    sort: 'DESC',
+  });
   const { data: dataPatientTypes } = useGetPatientTypes({
     search: '',
   });
@@ -88,7 +92,7 @@ export default function AppointmentServices() {
 
   const patientProblemOptions = useMemo(
     () =>
-      dataPatientProblem?.map((item) => ({
+      dataPatientProblem?.data.map((item) => ({
         label: item.name,
         value: item.name,
       })) ?? [],

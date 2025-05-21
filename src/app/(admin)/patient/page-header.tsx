@@ -12,7 +12,7 @@ const pageHeader = {
   title: 'Patients',
   breadcrumb: [
     {
-      href: routes.patient.dashboard,
+      href: routes.patient.list,
       name: 'Patients',
     },
     {
