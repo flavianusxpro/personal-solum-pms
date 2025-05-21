@@ -124,8 +124,7 @@ export const GetColumns = ({
         dayjs(createdDate).format('DD/MM/YYYY HH:mm'),
     },
     {
-      title: <HeaderCell title="Appointment To" />,
-      // onHeaderCell: () => onHeaderCellClick('doctor.name'),
+      title: <HeaderCell title="Doctor" />,
       dataIndex: 'doctor',
       key: 'doctor',
       width: 320,
