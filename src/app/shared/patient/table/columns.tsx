@@ -260,11 +260,11 @@ function StatusSelect({ selectItem, id }: { selectItem: number; id: string }) {
   const { mutate, isPending } = useUpdatePatient();
 
   const handleChange = (value: number) => {
-    setValue(value);
     mutate(
       { patient_id: id, status: value },
       {
         onSuccess: () => {
+          setValue(value);
           toast.success('Status updated successfully');
         },
         onError: (error: any) => {

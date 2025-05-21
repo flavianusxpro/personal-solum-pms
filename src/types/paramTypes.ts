@@ -216,8 +216,13 @@ interface Week {
   endTime: string;
 }
 
-export interface IParamGetPatientProblem {
-  search: string;
+export interface IPayloadCreatePatientProblem {
+  id?: number;
+  name?: string;
+  is_active?: boolean;
+}
+export interface IParamGetPatientProblem extends IParamGetDataWithPagination {
+  search?: string;
 }
 
 export interface IParamGetPatientTypes {

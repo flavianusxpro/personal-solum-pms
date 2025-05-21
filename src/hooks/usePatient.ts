@@ -7,6 +7,9 @@ import {
   putUpdatePatient,
   putUpdateAssignDoctor,
   deletePatient,
+  createPatientProblem,
+  updatePatientProblem,
+  deletePatientProblem,
 } from '@/service/patient';
 import {
   IParamGetAllPatient,
@@ -77,6 +80,24 @@ export function useGetPatientProblem(params: IParamGetPatientProblem) {
       return await getPatientProblem(params);
     },
     staleTime: 1000 * 60 * 10, // 10 minutes
+  });
+}
+
+export function useCreatePatientProblem() {
+  return useMutation({
+    mutationFn: createPatientProblem,
+  });
+}
+
+export function useUpdatePatientProblem() {
+  return useMutation({
+    mutationFn: updatePatientProblem,
+  });
+}
+
+export function useDeletePatientProblem() {
+  return useMutation({
+    mutationFn: deletePatientProblem,
   });
 }
 

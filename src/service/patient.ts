@@ -11,6 +11,7 @@ import {
   IParamGetPatientProblem,
   IParamGetPatientTypes,
   IPayloadCreateEditPatient,
+  IPayloadCreatePatientProblem,
   IPayloadUpdateAssignDoctor,
 } from '@/types/paramTypes';
 
@@ -44,7 +45,7 @@ export async function deletePatient(ids: number[]) {
 }
 
 export async function getPatientTypes(params: IParamGetPatientTypes) {
-  return await get<IGetPatientProblemResponse>('/admin/patient/type', {
+  return await get<IGetPatientTypeResponse>('/admin/patient/type', {
     params,
   }).then((res) => {
     return res.data;
@@ -52,11 +53,25 @@ export async function getPatientTypes(params: IParamGetPatientTypes) {
 }
 
 export async function getPatientProblem(params: IParamGetPatientProblem) {
-  return await get<IGetPatientTypeResponse>('/admin/patient/problem', {
+  return await get<IGetPatientProblemResponse>('/admin/patient/problem', {
     params,
-  }).then((res) => {
-    return res.data;
   });
+}
+
+export async function createPatientProblem(
+  payload: IPayloadCreatePatientProblem
+) {
+  return await post('/admin/patient/problem', payload);
+}
+
+export async function updatePatientProblem(
+  payload: IPayloadCreatePatientProblem
+) {
+  return await put('/admin/patient/problem/' + payload.id, payload);
+}
+
+export async function deletePatientProblem(id: string) {
+  return await del(`/admin/patient/problem/${id}`);
 }
 
 export async function putUpdateAssignDoctor(

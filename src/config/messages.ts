@@ -126,4 +126,5 @@ export const messages = {
   dateOfBirthRequired: 'Date of Birth is required',
   noteIsRequired: 'Note is required',
   required: (field: string) => `${field} is required`,
+  conditionNameIsRequired: 'Condition name is required',
 };

@@ -423,8 +423,8 @@ export function getScheduleStatusBadge(status: number | string) {
     case 2:
       return (
         <Flex gap="1" align="center">
-          <Text className="font-medium text-yellow-600">Scheduled</Text>
           <Badge color="warning" renderAsDot />
+          <Text className="font-medium text-yellow-600">Scheduled</Text>
         </Flex>
       );
     case 1:
