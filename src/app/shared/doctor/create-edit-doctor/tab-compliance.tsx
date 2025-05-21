@@ -299,10 +299,10 @@ export default function TabRequirement({
 
       <Divider className="col-span-full" />
 
-      <FormGroup title="Regulation" className="my-7 grid-cols-12" />
-      <FormGroup title="Aphra Registration" isLabel>
+      <FormGroup title="Regulations" className="my-7 grid-cols-12" />
+      <FormGroup title="Ahpra Registration" isLabel>
         <Input
-          placeholder="Aphra Registration"
+          placeholder="Ahpra Registration"
           {...register('driverLicenceNumber')}
           error={errors.driverLicenceNumber?.message}
           disabled={isView}
