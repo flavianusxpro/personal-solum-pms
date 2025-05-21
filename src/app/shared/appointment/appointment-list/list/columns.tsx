@@ -140,7 +140,7 @@ export const GetColumns = ({
     {
       title: (
         <HeaderCell
-          title="APPOINTMENT TYPE"
+          title="APT TYPE"
           sortable
           ascending={
             sortConfig?.direction === 'asc' && sortConfig?.key === 'type'
@@ -161,7 +161,7 @@ export const GetColumns = ({
       ),
     },
     {
-      title: <HeaderCell title="APPOINT STATUS" />,
+      title: <HeaderCell title="APT STATUS" />,
       onHeaderCell: () => onHeaderCellClick('status'),
       dataIndex: 'status',
       key: 'status',
