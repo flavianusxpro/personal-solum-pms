@@ -282,7 +282,7 @@ export default function PatientDetails({
                     className="flex-grow"
                   />
                 </FormGroup>
-                <FormGroup title="">
+                <FormGroup title="Medicare Information" isLabel>
                   <Flex gap="4" justify="between" align="center">
                     <Input
                       label="Position of Card"
@@ -308,6 +308,16 @@ export default function PatientDetails({
                       error={errors.medicare_expiry?.message}
                     />
                   </Flex>
+                </FormGroup>
+
+                <FormGroup title="IHI Number" isLabel>
+                  <Input
+                    placeholder="IHI Number"
+                    {...register('ihi_number')}
+                    error={errors.ihi_number?.message}
+                    disabled={isView}
+                    className="flex-grow"
+                  />
                 </FormGroup>
 
                 <FormGroup title="Patient Type" isLabel>
@@ -435,6 +445,7 @@ export default function PatientDetails({
                 </FormGroup>
                 <FormGroup title="Card Number" isLabel>
                   <Input
+                    type="number"
                     placeholder="Card Number"
                     {...register('concession_card_number')}
                     error={errors.concession_card_number?.message}
