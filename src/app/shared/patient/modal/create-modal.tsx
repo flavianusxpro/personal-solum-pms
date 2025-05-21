@@ -269,14 +269,6 @@ export default function CreatePatienModal() {
                     className="flex-grow"
                   />
                 </Flex>
-                <FormGroup title="Description" isLabel>
-                  <Input
-                    placeholder="Description"
-                    {...register('description')}
-                    error={errors.description?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
                 <FormGroup title="Password" isLabel>
                   <Input
                     placeholder="Password"
