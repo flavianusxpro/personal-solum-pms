@@ -154,7 +154,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
               gap="4"
             >
               <Title className="text-lg">
-                {isView ? 'View' : data ? 'Update' : 'Create'} Pharmachy
+                {isView ? 'View' : data ? 'Update' : 'Create'} Pharmacy
               </Title>
               <ActionIcon variant="text" onClick={closeModal} className="">
                 <PiX className="h-6 w-6" />
