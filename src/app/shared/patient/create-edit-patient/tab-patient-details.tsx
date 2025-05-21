@@ -52,6 +52,8 @@ export default function PatientDetails({
 
   const { data: dataPatientProblem } = useGetPatientProblem({
     search: searchPatientProblem,
+    perPage: 100,
+    page: 1,
   });
   const { data: dataPatientTypes } = useGetPatientTypes({
     search: searchPatientType,
@@ -71,7 +73,7 @@ export default function PatientDetails({
 
   const patientProblemOptions = useMemo(
     () =>
-      dataPatientProblem?.map((item) => ({
+      dataPatientProblem?.data.map((item) => ({
         label: item.name,
         value: item.name,
       })),

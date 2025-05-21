@@ -72,7 +72,7 @@ export default function CreateEditPatient({
       : 'Create Patient',
     breadcrumb: [
       {
-        href: routes.patient.dashboard,
+        href: routes.patient.list,
         name: 'Patient',
       },
       {
