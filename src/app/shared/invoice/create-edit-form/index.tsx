@@ -77,7 +77,10 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
     const totalItemAmount = (data.items || []).reduce(
       (acc: number, item: any) => {
         const itemTotal = Number(item.amount) * Number(item.qty);
-        return acc + itemTotal;
+        const itemTotalWithTax =
+          itemTotal +
+          (Number(item.taxFee) ? (itemTotal * Number(item.taxFee)) / 100 : 0);
+        return acc + itemTotalWithTax;
       },
       0
     );
@@ -195,16 +198,20 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
 
         const totalItemAmount = items
           ? (items || []).reduce((acc: number, item: any) => {
-              const itemTotal = Number(item.amount) * Number(item.qty);
+              const perItemTotal = Number(item.amount) * Number(item.qty);
+              const itemTotal =
+                perItemTotal +
+                (Number(item.taxFee)
+                  ? (perItemTotal * Number(item.taxFee)) / 100
+                  : 0);
               return acc + itemTotal;
             }, 0)
           : 0;
+
         const totalAmount =
           (totalItemAmount || 0) +
           ((totalItemAmount * Number(taxFee)) / 100 || 0) +
           (Number(otherFee) || 0);
-
-        const selectedTax = taxFeeOptions.find((item) => item.value === taxFee);
 
         return (
           <>
