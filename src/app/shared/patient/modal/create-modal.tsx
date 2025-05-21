@@ -4,24 +4,17 @@ import { Controller, SubmitHandler } from 'react-hook-form';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { ActionIcon, Flex, Input, Title } from 'rizzui';
+import { Flex, Input } from 'rizzui';
 import CSelect from '@/core/ui/select';
 import { genderOption, stateOption } from '@/config/constants';
 import { IPayloadCreateEditPatient } from '@/types/paramTypes';
 import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
-import { PiX } from 'react-icons/pi';
 import {
   patientDetailsFormSchema,
   PatientDetailsFormTypes,
 } from '@/validators/patient-details.schema';
-import {
-  useCreatePatient,
-  useGetAllPatients,
-  useGetPatientProblem,
-  useGetPatientTypes,
-} from '@/hooks/usePatient';
-import { useMemo, useState } from 'react';
+import { useCreatePatient, useGetAllPatients } from '@/hooks/usePatient';
 import dayjs from 'dayjs';
 import { DatePicker } from '@/core/ui/datepicker';
 import { PhoneNumber } from '@/core/ui/phone-input';
@@ -30,20 +23,11 @@ import FormHeader from '@/core/components/form-header';
 export default function CreatePatienModal() {
   const { closeModal } = useModal();
 
-  const [searchPatientProblem, setSearchPatientProblem] = useState('');
-  const [searchPatientType, setSearchPatientType] = useState('');
-
   const { refetch } = useGetAllPatients({
     page: 1,
     perPage: 10,
   });
 
-  const { data: dataPatientProblem } = useGetPatientProblem({
-    search: searchPatientProblem,
-  });
-  const { data: dataPatientTypes } = useGetPatientTypes({
-    search: searchPatientType,
-  });
   const { mutate: mutateCreatePatient, isPending } = useCreatePatient();
 
   const onSubmit: SubmitHandler<PatientDetailsFormTypes> = (data) => {
@@ -77,7 +61,6 @@ export default function CreatePatienModal() {
         closeModal();
       },
       onError: (error) => {
-        console.log('🚀 ~ PatientDetails ~ error:', error);
         const errorMessage =
           (error as any)?.response?.data?.message || 'An error occurred';
         toast.error(errorMessage);
@@ -222,37 +205,6 @@ export default function CreatePatienModal() {
                   error={errors.medicare_expiry?.message}
                   placeholderText="MM/YY"
                 />
-                {/* <FormGroup title="Patient Type" isLabel>
-                  <Controller
-                    name="patient_type"
-                    control={control}
-                    render={({ field }) => (
-                      <CSelect
-                        {...field}
-                        label=""
-                        placeholder="Select Patient Type"
-                        options={patientTypeOptions ?? []}
-                        error={errors.patient_type?.message as string}
-                      />
-                    )}
-                  />
-                </FormGroup>
-
-                <FormGroup title="Patient Problem" isLabel>
-                  <Controller
-                    name="patient_problem"
-                    control={control}
-                    render={({ field }) => (
-                      <CSelect
-                        {...field}
-                        label=""
-                        placeholder="Select Patient Type"
-                        options={patientProblemOptions ?? []}
-                        error={errors.patient_problem?.message as string}
-                      />
-                    )}
-                  />
-                </FormGroup> */}
               </div>
 
               <div className="mb-10 flex flex-col gap-7">

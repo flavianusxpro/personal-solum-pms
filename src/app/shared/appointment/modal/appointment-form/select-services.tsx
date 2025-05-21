@@ -184,8 +184,8 @@ export default function AppointmentServices() {
               {...field}
               className="col-span-full md:col-span-1"
               labelClassName="font-medium text-gray-1000 dark:text-white"
-              placeholder="select patient problem..."
-              label="Problem Type"
+              placeholder="select patient condition..."
+              label="Patient Condition"
               options={patientProblemOptions}
               error={errors?.patient_problem?.message as string}
             />

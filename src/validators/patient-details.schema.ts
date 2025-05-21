@@ -28,6 +28,10 @@ export const patientDetailsFormSchema = z.object({
   description: z.string().optional(),
   notes: z.string().optional(),
 
+  concession_card_type: z.string().optional(),
+  concession_card_number: z.string().optional(),
+  concession_card_expiry: z.date().optional(),
+
   medicare_card: z.string().min(10).max(13, { message: messages.maxLength }),
   medicare_expiry: z.date(),
   position_of_card: z

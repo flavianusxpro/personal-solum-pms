@@ -327,7 +327,7 @@ export default function PatientDetails({
                   />
                 </FormGroup>
 
-                <FormGroup title="Patient Problem" isLabel>
+                <FormGroup title="Patient Condition" isLabel>
                   <Controller
                     name="patient_problem"
                     control={control}
@@ -335,7 +335,7 @@ export default function PatientDetails({
                       <MultiSelect
                         {...field}
                         label=""
-                        placeholder="Select Patient Type"
+                        placeholder="Select Patient Condition"
                         options={patientProblemOptions ?? []}
                         disabled={isView}
                         error={errors.patient_problem?.message as string}
@@ -422,22 +422,39 @@ export default function PatientDetails({
                     />
                   </Flex>
                 </FormGroup>
-                <FormGroup title="Description" isLabel>
+
+                <FormGroup title="Concession Card" className="grid-cols-12" />
+                <FormGroup title="Card Type" isLabel>
                   <Input
-                    placeholder="Description"
-                    {...register('description')}
-                    error={errors.description?.message}
+                    placeholder="Card Type"
+                    {...register('concession_card_type')}
+                    error={errors.concession_card_type?.message}
                     disabled={isView}
                     className="flex-grow"
                   />
                 </FormGroup>
-                <FormGroup title="Notes" isLabel>
-                  <Textarea
-                    placeholder="Notes"
-                    {...register('notes')}
-                    error={errors.notes?.message}
+                <FormGroup title="Card Number" isLabel>
+                  <Input
+                    placeholder="Card Number"
+                    {...register('concession_card_number')}
+                    error={errors.concession_card_number?.message}
                     disabled={isView}
                     className="flex-grow"
+                  />
+                </FormGroup>
+
+                <FormGroup title="Expiry Date" isLabel>
+                  <DatePicker
+                    selected={watch('concession_card_expiry')}
+                    onChange={(date) => {
+                      if (!date) return;
+                      setValue('concession_card_expiry', date);
+                    }}
+                    showDateSelect={false}
+                    showMonthYearPicker
+                    minDate={new Date()}
+                    dateFormat="MM/YY"
+                    error={errors.concession_card_expiry?.message}
                   />
                 </FormGroup>
               </div>
