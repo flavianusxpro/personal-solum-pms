@@ -384,7 +384,7 @@ export function getPaymentStatusBadge(status: number | string | undefined) {
   }
 }
 
-function getScheduleStatusBadge(status: number | string) {
+export function getScheduleStatusBadge(status: number | string) {
   switch (status) {
     case 7:
       return (

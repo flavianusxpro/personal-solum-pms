@@ -26,7 +26,7 @@ const rtcEventClassName =
   '[&_.rbc-event]:!text-gray-0 dark:[&_.rbc-event]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:focus]:!text-gray-0';
 
 export default function EventCalendarView() {
-  const { openModal } = useModal();
+  const { openModal, isOpen } = useModal();
 
   const [selectDoctor, setSelectDoctor] = useState<number | null>(null);
   const [view, setView] = useState<View>('month');
@@ -183,7 +183,7 @@ export default function EventCalendarView() {
     if (selectDoctor || selectDoctor === null) {
       refetch();
     }
-  }, [selectDoctor, refetch]);
+  }, [selectDoctor, refetch, isOpen]);
 
   return (
     <div className="@container">

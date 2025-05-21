@@ -9,9 +9,10 @@ import { formatDate } from '@core/utils/format-date';
 import { useDeleteAppointment } from '@/hooks/useAppointment';
 import toast from 'react-hot-toast';
 import CreateUpdateAppointmentForm from '../appointment/modal/appointment-form';
+import { getScheduleStatusBadge } from '../appointment/appointment-list/list/columns';
+import { useEffect } from 'react';
 
 function DetailsEvents({ event }: { event: CalendarEvent }) {
-  console.log('🚀 ~ DetailsEvents ~ event:', event);
   const { closeModal, openModal } = useModal();
 
   const {
@@ -91,6 +92,20 @@ function DetailsEvents({ event }: { event: CalendarEvent }) {
               {formatDate(event.end, 'h:mm A')}
             </span>
           </li> */}
+          <li className="flex gap-2">
+            <MdOutlineCalendarMonth className="h-5 w-5" />
+            <span>Appointment Status:</span>
+            <span className="font-medium text-gray-1000">
+              {getScheduleStatusBadge(event.data?.status as number)}
+            </span>
+          </li>
+          <li className="flex gap-2">
+            <MdOutlineCalendarMonth className="h-5 w-5" />
+            <span>Appointment Type:</span>
+            <span className="font-medium text-gray-1000">
+              {event.data?.type}
+            </span>
+          </li>
           {event.location && (
             <li className="flex gap-2">
               <PiMapPin className="h-5 w-5" />
