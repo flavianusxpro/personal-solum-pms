@@ -484,7 +484,7 @@ export interface IPayloadCreateEditPharmachy {
   billing_email: string;
   website?: string;
   address_line_1: string;
-  address_line_2: string;
+  address_line_2?: string;
   city: string;
   state: string;
   postcode: string;

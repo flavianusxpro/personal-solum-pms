@@ -128,7 +128,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
           billing_email: data?.billing_email,
           phone: data?.phone?.replace('+', '') ?? '',
           address_line_1: data?.address_line_1,
-          address_line_2: data?.address_line_2,
+          address_line_2: data?.address_line_2 || undefined,
           city: data?.city,
           state: data?.state,
           postcode: data?.postcode,
