@@ -63,7 +63,7 @@ export const routes = {
   consentFormConfirmation: '/form/consent-form/confirmation',
 
   appointment: {
-    dashboard: '/appointment',
+    dashboard: '/dashboard',
     appointmentList: '/appointment/list',
   },
   calendar: '/calendar',

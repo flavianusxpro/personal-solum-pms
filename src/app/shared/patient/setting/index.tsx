@@ -11,7 +11,7 @@ import CreateEditSpecialistModal from './condition/modal/create-edit-modal';
 export const navItems = [
   {
     value: 'condition',
-    label: 'Patient Problem',
+    label: 'Patient Condition',
   },
 ];
 
