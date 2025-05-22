@@ -6,8 +6,6 @@ import { startTransition, useState } from 'react';
 import SimpleBar from 'simplebar-react';
 import { useParams } from 'next/navigation';
 import { useGetDoctorById } from '@/hooks/useDoctor';
-import TabTreatment from './tab-treatment';
-import TabSpecialist from './tab-specialist';
 import SpecialistTable from './specialist/table/table';
 import ModalButton from '../../ui/modal-button/modal-button';
 import CreateEditSpecialistModal from './specialist/modal/create-edit-modal';
