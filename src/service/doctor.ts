@@ -4,6 +4,7 @@ import {
   IGetAnalyticReportBillingByDoctorIdResponse,
   IGetDoctorByClinicResponse,
   IGetDoctorByIdResponse,
+  IGetDoctorCostByIdResponse,
   IGetSpecialistResponse,
   IGetTreatmentResponse,
   IPostGetDoctorAvailabilityByClinicResponse,
@@ -17,6 +18,7 @@ import {
   IPayloadAssignDoctorToClinic,
   IPayloadCreateEditDoctor,
   IPayloadCreateEditTreatment,
+  IPayloadDoctorCost,
   IPayloadPostCreateEditSpecialist,
   IPayloadSettingBillingDoctor,
   IPayloadSettingMeetingDoctor,
@@ -150,4 +152,20 @@ export async function putUpdateTreatment(payload: IPayloadCreateEditTreatment) {
 
 export async function deleteTreatment(id: string) {
   return await del<any>(`/admin/doctor/treatment/${id}`);
+}
+
+export async function getDoctorCostById(id: number) {
+  return await get<IGetDoctorCostByIdResponse>(`/admin/doctor/cost/${id}`);
+}
+
+export async function postCreateDoctorCost(payload: IPayloadDoctorCost) {
+  return await post('/admin/doctor/cost', payload);
+}
+
+export async function putUpdateDoctorCost(payload: IPayloadDoctorCost) {
+  return await put('/admin/doctor/cost/' + payload.id, payload);
+}
+
+export async function deleteDoctorCost(ids: number[]) {
+  return await del<any>(`/admin/doctor/cost/`, { data: { ids } });
 }

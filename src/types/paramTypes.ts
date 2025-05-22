@@ -539,3 +539,10 @@ export interface IPayloadUpdateSmtpConfig {
   secure_type: string;
   mail_from: string;
 }
+
+export interface IPayloadDoctorCost {
+  id?: number;
+  doctorId: number;
+  treatmentId: number;
+  amount: number;
+}

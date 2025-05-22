@@ -5,8 +5,6 @@ import { HeaderCell } from '@/app/shared/ui/table';
 import { routes } from '@/config/routes';
 import EyeIcon from '@core/components/icons/eye';
 import PencilIcon from '@core/components/icons/pencil';
-import TableAvatar from '@core/ui/avatar-card';
-import DateCell from '@core/ui/date-cell';
 import Link from 'next/link';
 import { PiCopy } from 'react-icons/pi';
 import {

@@ -880,3 +880,14 @@ export interface IGetSmtpConfigResponse extends ApiResponse {
     updated_at: string;
   };
 }
+
+export interface IGetDoctorCostByIdResponse extends ApiResponse {
+  data: {
+    id: number;
+    doctorId: number;
+    treatmentId: number;
+    amount: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+}
