@@ -11,7 +11,7 @@ import DateCell from '@core/ui/date-cell';
 import Link from 'next/link';
 import { PiCopy } from 'react-icons/pi';
 import { ActionIcon, Badge, Checkbox, Text, Tooltip } from 'rizzui';
-import ModalButton from '../../ui/modal-button/modal-button';
+import ModalButton from '../../ui/modal/modal-button';
 import CreateEditEmailTemplateModal from '../modal/create-edit-modal';
 
 type Columns = {

@@ -1,7 +1,7 @@
 import EventCalendarView from '@/app/shared/calendar';
 import EventForm from '@/app/shared/calendar/event-form';
 import ExportButton from '@/app/shared/ui/export-button';
-import ModalButton from '@/app/shared/ui/modal-button/modal-button';
+import ModalButton from '@/app/shared/ui/modal/modal-button';
 import { metaObject } from '@/config/site.config';
 import { eventData } from '@/data/event-data';
 

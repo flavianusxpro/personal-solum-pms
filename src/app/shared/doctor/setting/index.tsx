@@ -7,7 +7,7 @@ import SimpleBar from 'simplebar-react';
 import { useParams } from 'next/navigation';
 import { useGetDoctorById } from '@/hooks/useDoctor';
 import SpecialistTable from './specialist/table/table';
-import ModalButton from '../../ui/modal-button/modal-button';
+import ModalButton from '../../ui/modal/modal-button';
 import CreateEditSpecialistModal from './specialist/modal/create-edit-modal';
 import CreateEditTreatmentModal from './treatment/modal/create-edit-modal';
 import TreatmentTable from './treatment/table/table';

@@ -5,7 +5,7 @@ import { TabButton } from '../../ui/tab-button';
 import { startTransition, useState } from 'react';
 import SimpleBar from 'simplebar-react';
 import ConditionTable from './condition/table/table';
-import ModalButton from '../../ui/modal-button/modal-button';
+import ModalButton from '../../ui/modal/modal-button';
 import CreateEditSpecialistModal from './condition/modal/create-edit-modal';
 
 export const navItems = [

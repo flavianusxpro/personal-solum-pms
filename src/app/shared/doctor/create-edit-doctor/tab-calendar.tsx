@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useModal } from '../../modal-views/use-modal';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import { useParams } from 'next/navigation';
-import ModalButton from '../../ui/modal-button/modal-button';
+import ModalButton from '../../ui/modal/modal-button';
 import CreateScheduleForm from '../../calendar/create-schedule-form';
 import { Flex, Loader } from 'rizzui';
 import { DoctorSchedule } from '@/types/ApiResponse';

@@ -8,7 +8,7 @@ import { useColumn } from '@core/hooks/use-column';
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { getColumns } from './columns';
 import TableHeader from '@/app/shared/ui/table-header';
-import ModalButton from '@/app/shared/ui/modal-button/modal-button';
+import ModalButton from '@/app/shared/ui/modal/modal-button';
 import FlagForm from '../modal/add-flag';
 import FormGroup from '@/app/shared/ui/form-group';
 import {

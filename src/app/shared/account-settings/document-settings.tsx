@@ -19,7 +19,7 @@ import dynamic from 'next/dynamic';
 // import PageHeader from '@/app/shared/page-header';
 // import { routes } from '@/config/routes';
 // import { metaObject } from '@/config/site.config';
-import UploadButton from '@/app/shared/ui/modal-button/upload-button';
+import UploadButton from '@/app/shared/ui/modal/upload-button';
 const FileUpload = dynamic(() => import('@/app/shared/ui/file-upload'), {
   ssr: false,
 });

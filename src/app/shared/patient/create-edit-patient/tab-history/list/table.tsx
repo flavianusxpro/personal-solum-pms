@@ -10,7 +10,7 @@ import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { allFilesData } from '@/data/all-files';
 import { getColumns } from './columns';
 import TableHeader from '@/app/shared/ui/table-header';
-import ModalButton from '@/app/shared/ui/modal-button/modal-button';
+import ModalButton from '@/app/shared/ui/modal/modal-button';
 import FormGroup from '@/app/shared/ui/form-group';
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,

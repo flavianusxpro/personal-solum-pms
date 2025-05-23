@@ -26,19 +26,6 @@ import {
 import { PiTrashBold } from 'react-icons/pi';
 import { DatePicker } from '@/core/ui/datepicker';
 
-const Select = dynamic(() => import('rizzui').then((mod) => mod.Select), {
-  ssr: false,
-  loading: () => (
-    <div className="grid h-10 place-content-center">
-      <Loader variant="spinner" />
-    </div>
-  ),
-});
-
-const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
-  ssr: false,
-});
-
 export default function Setup() {
   const {
     register,

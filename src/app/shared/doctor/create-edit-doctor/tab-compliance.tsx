@@ -15,7 +15,7 @@ import {
 import { ActionIcon, Button, Flex, Grid, Input, Text, Tooltip } from 'rizzui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import CardExpiry from '@/app/shared/ui/card-expiry';
-import UploadFile from '@/app/shared/ui/modal-button/modal-upload-file-button';
+import UploadFile from '@/app/shared/ui/modal/modal-upload-file-button';
 import { PiPencil, PiTrashBold } from 'react-icons/pi';
 import Divider from '../../ui/divider';
 import FileItem from '../../ui/file/file-item';
