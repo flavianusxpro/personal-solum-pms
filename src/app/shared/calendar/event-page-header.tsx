@@ -5,7 +5,7 @@ import ModalButton from '@/app/shared/ui/modal-button/modal-button';
 import PageHeader from '@/app/shared/ui/page-header';
 import { routes } from '@/config/routes';
 import { eventData } from '@/data/event-data';
-import EventForm from '@/app/shared/event-calendar/event-form';
+import EventForm from '@/app/shared/calendar/event-form';
 
 const pageHeader = {
   title: 'Calendar',

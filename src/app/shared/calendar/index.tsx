@@ -9,7 +9,7 @@ import {
   NavigateAction,
   View,
 } from 'react-big-calendar';
-import DetailsEvents from '@/app/shared/event-calendar/details-event';
+import DetailsEvents from '@/app/shared/calendar/details-event';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import cn from '@core/utils/class-names';
 import CSelect from '../ui/select';
@@ -19,8 +19,13 @@ import CreateUpdateAppointmentForm from '../appointment/modal/appointment-form';
 import { PiInfo } from 'react-icons/pi';
 import ActionTooltipButton from '../ui/action-button';
 import { Text } from 'rizzui';
+import dynamic from 'next/dynamic';
 
 const localizer = dayjsLocalizer(dayjs);
+const MultiSelect = dynamic(
+  () => import('rizzui').then((mod) => mod.MultiSelect),
+  { ssr: false }
+);
 
 const rtcEventClassName =
   '[&_.rbc-event]:!text-gray-0 dark:[&_.rbc-event]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:focus]:!text-gray-0';
@@ -28,7 +33,7 @@ const rtcEventClassName =
 export default function EventCalendarView() {
   const { openModal, isOpen } = useModal();
 
-  const [selectDoctor, setSelectDoctor] = useState<number | null>(null);
+  const [selectDoctor, setSelectDoctor] = useState<string[]>();
   const [view, setView] = useState<View>('month');
 
   const isAgendaView = useMemo(() => {
@@ -43,7 +48,9 @@ export default function EventCalendarView() {
   const { data: dataAppointment, refetch } = useGetAppointments({
     page: 1,
     perPage: 100,
-    doctorId: selectDoctor as number,
+    q: JSON.stringify({
+      doctor_ids: selectDoctor,
+    }),
   });
 
   const events: CalendarEvent[] = useMemo(() => {
@@ -94,7 +101,7 @@ export default function EventCalendarView() {
     if (!dataDoctor) return [];
     return dataDoctor.data.map((doctor) => ({
       label: doctor.first_name + ' ' + doctor.last_name,
-      value: doctor.id,
+      value: doctor.id.toString(),
     }));
   }, [dataDoctor]);
 
@@ -180,7 +187,7 @@ export default function EventCalendarView() {
   }, []);
 
   useEffect(() => {
-    if (selectDoctor || selectDoctor === null) {
+    if (selectDoctor || selectDoctor === undefined) {
       refetch();
     }
   }, [selectDoctor, refetch, isOpen]);
@@ -188,15 +195,14 @@ export default function EventCalendarView() {
   return (
     <div className="@container">
       <div className="mb-4 flex w-1/4 items-center gap-4">
-        <CSelect
+        <MultiSelect
           searchable
           label="Select Doctor"
           options={doctorOptions}
           value={selectDoctor}
-          clearable
           placeholder="All Doctors"
-          onClear={() => setSelectDoctor(null)}
-          onChange={(e: number) => setSelectDoctor(e)}
+          onClear={() => setSelectDoctor(undefined)}
+          onChange={(e: string[]) => setSelectDoctor(e)}
         />
         <ActionTooltipButton
           tooltipContent={`

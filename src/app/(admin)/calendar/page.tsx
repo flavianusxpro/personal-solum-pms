@@ -1,5 +1,5 @@
 import { metaObject } from '@/config/site.config';
-import EventCalendarView from '@/app/shared/event-calendar';
+import EventCalendarView from '@/app/shared/calendar';
 import ExportButton from '@/app/shared/ui/export-button';
 import ModalButton from '@/app/shared/ui/modal-button/modal-button';
 import PageHeader from '@/app/shared/ui/page-header';
