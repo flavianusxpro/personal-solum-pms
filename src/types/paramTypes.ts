@@ -78,6 +78,9 @@ export interface IPayloadCreateEditPatient {
   patient_type?: string;
   photo?: string;
   ihi_number?: string;
+  concession_card_type?: string;
+  concession_card_number?: string;
+  concession_card_expire_date?: string;
 }
 
 export interface IPayloadCreateEditDoctor {

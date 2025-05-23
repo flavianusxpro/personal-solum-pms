@@ -117,6 +117,11 @@ export default function PatientDetails({
       unit_number: data.unit_number,
       photo: data.avatar,
       ihi_number: data.ihi_number,
+      concession_card_type: data.concession_card_type,
+      concession_card_number: data.concession_card_number,
+      concession_card_expire_date: dayjs(data.concession_card_expiry).format(
+        'DD MM YYYY'
+      ),
     };
 
     if (id) {
@@ -168,6 +173,11 @@ export default function PatientDetails({
           post_code: dataPatient?.postcode ?? '',
           avatar: dataPatient?.photo || undefined,
           ihi_number: dataPatient?.ihi_number ?? '',
+          concession_card_expiry: dataPatient?.concession_card_type
+            ? dayjs(dataPatient.concession_card_expire_date).toDate()
+            : undefined,
+          concession_card_number: dataPatient?.concession_card_number ?? '',
+          concession_card_type: dataPatient?.concession_card_expire_date ?? '',
         },
       }}
     >

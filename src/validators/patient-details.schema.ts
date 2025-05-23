@@ -25,7 +25,7 @@ export const patientDetailsFormSchema = z.object({
   post_code: z.string().max(4, {
     message: messages.postCodeMaxLength,
   }),
-  ihi_number: z.string().optional(),
+  ihi_number: z.string().max(13, { message: messages.maxLength }).optional(),
 
   concession_card_type: z.string().optional(),
   concession_card_number: z.string().optional(),

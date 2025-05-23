@@ -11,7 +11,6 @@ import toast from 'react-hot-toast';
 export default function useAcl() {
   const router = useRouter();
   const { data } = useSession();
-  console.log('🚀 ~ useAcl ~ data:', data);
 
   const {
     data: dataProfile,
