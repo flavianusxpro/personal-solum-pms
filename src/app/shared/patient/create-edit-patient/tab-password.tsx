@@ -8,7 +8,6 @@ import {
   ChangePasswordSchema,
 } from '@/validators/change-password.schema';
 import FormGroup from '../../ui/form-group';
-import { useUpdatePassword } from '@/hooks/useProfile';
 import toast from 'react-hot-toast';
 import { useParams } from 'next/navigation';
 import { useUpdatePatient } from '@/hooks/usePatient';

@@ -10,14 +10,7 @@ import {
 import { PiTrashBold } from 'react-icons/pi';
 import CSelect from '../../ui/select';
 import QuantityInput from '../../ui/quantity-input';
-import {
-  ActionIcon,
-  Button,
-  Input,
-  SelectOption,
-  Text,
-  Textarea,
-} from 'rizzui';
+import { ActionIcon, Input, SelectOption } from 'rizzui';
 import { InvoiceFormInput } from '@/validators/create-invoice.schema';
 import { IGetAllItemsResponse } from '@/types/ApiResponse';
 import { useAtom } from 'jotai';
@@ -55,7 +48,8 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
   const selectedItem = watch(`items.${index}.item`)?.split(' - ')[0];
   const findedItem = dataItems?.find((item) => item.code === selectedItem);
   const itemPrice = findedItem?.price ?? 0;
-  const itemTaxFee = watch(`items.${index}.taxFee`);
+  const taxIdItem = watch(`items.${index}.taxId`);
+  const findedTaxFee = taxFeeOptions.find((item) => item.value === taxIdItem);
 
   const quantityValue = watch(
     `items.${index}.qty`,
@@ -67,8 +61,10 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
   }, [quantityValue, itemPrice]);
 
   const totalAmountWithTax = useCallback(() => {
-    return totalAmount() + (totalAmount() * (Number(itemTaxFee) || 0)) / 100;
-  }, [itemTaxFee, totalAmount]);
+    return (
+      totalAmount() + (totalAmount() * (Number(findedTaxFee?.fee) || 0)) / 100
+    );
+  }, [findedTaxFee?.fee, totalAmount]);
 
   useEffect(() => {
     if (itemPrice) {
@@ -85,6 +81,10 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
     if (findedItem?.description === null) {
       setValue(`items.${index}.description`, '');
     }
+
+    if (findedTaxFee?.value) {
+      setValue(`items.${index}.tax_fee`, Number(findedTaxFee.fee));
+    }
   }, [
     selectedItem,
     quantityValue,
@@ -93,6 +93,8 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
     index,
     totalAmount,
     findedItem?.description,
+    findedTaxFee?.value,
+    findedTaxFee?.fee,
   ]);
 
   return (
@@ -140,7 +142,7 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
       />
 
       <Controller
-        name={`items.${index}.taxFee`}
+        name={`items.${index}.taxId`}
         control={control}
         render={({ field }) => (
           <CSelect

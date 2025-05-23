@@ -69,9 +69,9 @@ function ProfileMenuPopover({ children }: React.PropsWithChildren<{}>) {
 
 function DropdownMenu() {
   const router = useRouter();
-  const { data } = useSession();
+  const { status } = useSession();
 
-  const { data: dataProfile, isSuccess } = useProfile(data?.accessToken);
+  const { data: dataProfile } = useProfile(status === 'authenticated');
 
   const handleSignOut = async () => {
     await signOut({ redirect: false }); // Prevent automatic re-render

@@ -25,10 +25,10 @@ export default function SignInForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get('callbackUrl');
   const isMedium = useMedia('(max-width: 1200px)', false);
-  const { data } = useSession();
+  const { status } = useSession();
 
   const [isLoading, setIsloading] = useState(false);
-  const { refetch } = useProfile(data?.accessToken);
+  const { refetch } = useProfile(status === 'authenticated');
 
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
     setIsloading(true);

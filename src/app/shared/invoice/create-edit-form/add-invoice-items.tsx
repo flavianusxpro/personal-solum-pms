@@ -22,6 +22,7 @@ interface IPropsAddInvoiceItems {
   errors: FieldErrors<InvoiceFormInput>;
   setValue: UseFormSetValue<InvoiceFormInput>;
   taxFeeOptions: SelectOption[];
+  isEdit?: boolean;
 }
 export function AddInvoiceItems({
   watch,
@@ -30,6 +31,7 @@ export function AddInvoiceItems({
   errors,
   setValue,
   taxFeeOptions,
+  isEdit,
 }: IPropsAddInvoiceItems) {
   const { data: dataItems } = useGetItems({
     page: 1,
@@ -65,7 +67,7 @@ export function AddInvoiceItems({
   }, [dataItems, fields, items, setValue, watch]);
 
   useEffect(() => {
-    if (items?.length === 0) {
+    if (items?.length === 0 && !isEdit) {
       append({
         item: null,
         description: '',
@@ -74,7 +76,7 @@ export function AddInvoiceItems({
         total_amount: 0,
       } as any);
     }
-  }, [append, items?.length]);
+  }, [append, isEdit, items?.length]);
 
   return (
     <div className="col-span-2 mt-4 rounded-lg border border-muted @container">

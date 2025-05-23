@@ -474,6 +474,8 @@ interface Item {
   description: string;
   amount: string;
   qty: number;
+  taxId: number;
+  tax_fee: string;
   total_amount: string;
   created_at: string;
   updated_at: string;
