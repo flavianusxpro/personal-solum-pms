@@ -31,12 +31,11 @@ export default function Footer({
     usePostRescheduleAppointmentByDate();
 
   function submitRescheduleAppointment() {
-    console.log('formData', formData);
-
     if (formData.rescedule_by === 'date') {
       mutateRescheduleByDate(
         {
           id: formData.id as number,
+          doctorId: formData.doctorId,
           date: `${dayjs(formData.date).format('YYYY-MM-DD')} ${formData.doctorTime}`,
         },
         {

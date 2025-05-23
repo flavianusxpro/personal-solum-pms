@@ -897,3 +897,9 @@ export interface IGetDoctorCostByIdResponse extends ApiResponse {
     updated_at: string;
   }[];
 }
+
+export interface IGetCalendarScheduleByClinicIdResponse extends ApiResponse {
+  data: {
+    date: string;
+  }[];
+}

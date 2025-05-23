@@ -10,21 +10,10 @@ import dayjs from 'dayjs';
 import Footer from './footer';
 import { rescheduleAppointmentSchema } from '@/validators/reschedule-appointment.schema';
 import { formRescheduleDataAtom, useStepperCancelAppointment } from '.';
-
-const disabledDate: dayjs.Dayjs[] = [];
-for (
-  let date = dayjs('2025-05-06');
-  date.isBefore(dayjs('2025-05-31'));
-  date = date.add(1, 'day')
-) {
-  if (date.day() !== 0 && date.day() !== 6) {
-    // Exclude weekends (Sunday: 0, Saturday: 6)
-    disabledDate.push(date);
-  }
-}
+import { useGetCalendarScheduleByClinicId } from '@/hooks/useClinic';
+import { useMemo } from 'react';
 
 // generate form types from zod validation schema
-
 const FormSchema = rescheduleAppointmentSchema['appointmentDate'];
 
 type FormSchemaType = z.infer<typeof FormSchema>;
@@ -32,6 +21,9 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 export default function DateTime() {
   const { gotoStep } = useStepperCancelAppointment();
   const [formData, setFormData] = useAtom(formRescheduleDataAtom);
+
+  const { data: dataCalendarSchedule, isLoading } =
+    useGetCalendarScheduleByClinicId(formData.clinicId as number);
 
   const {
     control,
@@ -44,12 +36,21 @@ export default function DateTime() {
     },
   });
 
+  const disabledDate: dayjs.Dayjs[] = useMemo(() => {
+    if (!dataCalendarSchedule?.data) return [];
+    const disabledDates = dataCalendarSchedule?.data.map((item) =>
+      dayjs(item.date)
+    );
+    return disabledDates;
+  }, [dataCalendarSchedule]);
+
   const onSubmit: SubmitHandler<FormSchemaType> = (data) => {
     setFormData((prev) => ({
       ...prev,
       date: dayjs(data.date).format('YYYY-MM-DD'),
     }));
-    gotoStep(3);
+
+    formData.rescedule_by === 'doctor' ? gotoStep(2) : gotoStep(3);
   };
 
   return (

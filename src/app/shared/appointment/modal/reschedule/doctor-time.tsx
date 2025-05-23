@@ -8,7 +8,10 @@ import { Flex, Input, Loader, Text } from 'rizzui';
 import Footer from './footer';
 import { IParamGetDoctorByClinic } from '@/types/paramTypes';
 import { useMemo, useState } from 'react';
-import { useGetDoctorByClinic } from '@/hooks/useClinic';
+import {
+  useGetDoctorAvailabilityByClinic,
+  useGetDoctorByClinic,
+} from '@/hooks/useClinic';
 import Image from 'next/image';
 import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
 import { IGetDoctorByClinicResponse } from '@/types/ApiResponse';
@@ -176,114 +179,42 @@ function DoctorTime({
 }) {
   const [formData] = useAtom(formRescheduleDataAtom);
 
-  const appointmentType = useMemo(
-    () => formData?.appointment_type?.includes('Follow up'),
-    [formData?.appointment_type]
-  );
+  const appointmentType = useMemo(() => {
+    if (formData?.appointment_type?.includes('FOLLOWUP')) {
+      return 'FOLLOWUP';
+    } else if (formData?.appointment_type?.includes('SCRIPT_RENEWAL')) {
+      return 'SCRIPT_RENEWAL';
+    } else {
+      return 'INITIAL';
+    }
+  }, [formData?.appointment_type]);
 
-  const interval = useMemo(
-    () =>
-      appointmentType
-        ? doctor.appointment_duration.followup
-        : doctor.appointment_duration.initial,
-    [appointmentType, doctor.appointment_duration]
-  );
-
-  const selectedDateDay = dayjs(formData?.date).get('day');
-  const selectedDay = doctor?.appointment_schedule?.week.find(
-    (day) => day.day === selectedDateDay
-  );
-
-  const practices_open = selectedDay?.startTime;
-  const practices_close = selectedDay?.endTime;
-
-  const dailyBreakTime = useMemo(() => {
-    const selectedDailyBreakTime =
-      doctor?.appointment_schedule?.dailyBreakTimes;
-    if (!selectedDailyBreakTime) return [];
-
-    const dailyBreakTimes = selectedDailyBreakTime.map((item) => {
-      const startTime = item.startTime.split(':').map(Number);
-      const endTime = item.endTime.split(':').map(Number);
-
-      const start = new Date();
-      start.setHours(startTime[0], startTime[1], 0, 0);
-
-      const end = new Date();
-      end.setHours(endTime[0], endTime[1], 0, 0);
-
-      const breakTimes: string[] = [];
-      while (start < end) {
-        breakTimes.push(
-          start.toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
-          })
-        );
-        start.setMinutes(start.getMinutes() + interval); // Assuming 15-minute intervals
-      }
-
-      return breakTimes;
+  const { data: dataAvailability, isLoading } =
+    useGetDoctorAvailabilityByClinic({
+      clinicId: formData?.clinicId as number,
+      doctorId: doctor.id as number,
+      appointment_type: appointmentType,
+      appointment_date: dayjs(formData.date).format('YYYY-MM-DD'),
     });
 
-    return dailyBreakTimes.flat();
-  }, [doctor?.appointment_schedule?.dailyBreakTimes, interval]);
-
-  const [startHours, startMinutes] = practices_open
-    ? practices_open.split(':').map(Number)
-    : [0, 0];
-
-  const [endHours, endMinutes] = practices_close
-    ? practices_close.split(':').map(Number)
-    : [0, 0];
-
-  const bookedTimes: string[] = useMemo(() => {
-    return (
-      doctor.booked_times.find((item) => item.date === formData.date)
-        ?.booked_times ?? []
-    );
-  }, [doctor.booked_times, formData.date]);
-
   const timeList = useMemo(() => {
-    const times: string[] = [];
-    const start = new Date();
-    start.setHours(startHours, startMinutes, 0, 0);
-
-    const end = new Date();
-    end.setHours(endHours, endMinutes, 0, 0);
-
-    while (start <= end) {
-      const timeString = start.toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-      });
-
-      if (
-        !bookedTimes.includes(timeString?.split(' ')[0]) &&
-        !dailyBreakTime.includes(timeString?.split(' ')[0])
-      ) {
-        times.push(timeString);
+    if (!dataAvailability?.data) return [];
+    return dataAvailability.data.reduce((acc, item) => {
+      if (item.available) {
+        const availTime = dayjs(item.time, 'HH:mm:ss').format('h:mm A');
+        acc.push(`${availTime}`);
       }
+      return acc;
+    }, [] as string[]);
+  }, [dataAvailability?.data]);
 
-      start.setMinutes(start.getMinutes() + interval);
-    }
-
-    return times;
-  }, [
-    startHours,
-    startMinutes,
-    endHours,
-    endMinutes,
-    bookedTimes,
-    dailyBreakTime,
-    interval,
-  ]);
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="px-4 pb-4">
-      {practices_open ? (
+      {timeList.length > 0 ? (
         <div className="relative">
           <div
             className={`mt-4 grid transition-all delay-200 duration-1000 ease-in-out ${

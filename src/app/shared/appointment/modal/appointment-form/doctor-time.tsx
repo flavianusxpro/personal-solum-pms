@@ -180,7 +180,7 @@ function DoctorTime({
     script_renewal_fee: string;
   }>;
 }) {
-  const [formData, setFormData] = useAtom(formDataAtom);
+  const [formData] = useAtom(formDataAtom);
 
   const appointmentType = useMemo(() => {
     if (formData?.appointment_type?.includes('FOLLOWUP')) {

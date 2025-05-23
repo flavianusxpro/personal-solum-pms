@@ -302,6 +302,7 @@ export interface IPayloadPostCancelAppoinment {
 export interface IPayloadPostRescheduleByDate {
   id: number;
   date: string;
+  doctorId?: number;
   note?: string;
 }
 

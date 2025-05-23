@@ -19,7 +19,7 @@ export default function RescheduleOptions() {
       ...prev,
       rescedule_by: 'doctor',
     }));
-    gotoStep(2);
+    gotoStep(1);
   };
 
   return (
