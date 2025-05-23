@@ -31,29 +31,25 @@ export default function Footer({
     usePostRescheduleAppointmentByDate();
 
   function submitRescheduleAppointment() {
-    if (formData.rescedule_by === 'date') {
-      mutateRescheduleByDate(
-        {
-          id: formData.id as number,
-          doctorId: formData.doctorId,
-          date: `${dayjs(formData.date).format('YYYY-MM-DD')} ${formData.doctorTime}`,
+    mutateRescheduleByDate(
+      {
+        id: formData.id as number,
+        doctorId: formData.doctorId,
+        date: `${dayjs(formData.date).format('YYYY-MM-DD')} ${formData.doctorTime}`,
+      },
+      {
+        onSuccess: () => {
+          toast.success('Appointment rescheduled successfully');
+          closeModal();
         },
-        {
-          onSuccess: () => {
-            toast.success('Appointment rescheduled successfully');
-            closeModal();
-          },
-          onError: (error: any) => {
-            toast.error(
-              error?.response?.data?.message || 'Error rescheduling appointment'
-            );
-            console.error('Error rescheduling appointment:', error);
-          },
-        }
-      );
-    } else {
-      // Handle other reschedule methods if needed
-    }
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || 'Error rescheduling appointment'
+          );
+          console.error('Error rescheduling appointment:', error);
+        },
+      }
+    );
   }
 
   return (
