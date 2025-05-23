@@ -11,6 +11,7 @@ import ModalButton from '../../ui/modal/modal-button';
 import CreateEditSpecialistModal from './specialist/modal/create-edit-modal';
 import CreateEditTreatmentModal from './treatment/modal/create-edit-modal';
 import TreatmentTable from './treatment/table/table';
+import ProblemTable from './condition/table/table';
 
 export const navItems = [
   {
@@ -20,6 +21,10 @@ export const navItems = [
   {
     value: 'treatment',
     label: 'Treatment',
+  },
+  {
+    value: 'problem',
+    label: 'Problem',
   },
 ];
 
@@ -81,6 +86,7 @@ export default function SettingDoctor({
 
         {tab === 'specialist' && <SpecialistTable />}
         {tab === 'treatment' && <TreatmentTable />}
+        {tab === 'problem' && <ProblemTable />}
       </div>
     </>
   );
