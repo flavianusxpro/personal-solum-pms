@@ -1,5 +1,5 @@
 import BillingSettingsView from '@/app/shared/account-settings/billing-settings';
-import EventForm from '@/app/shared/event-calendar/event-form';
+import EventForm from '@/app/shared/calendar/event-form';
 import ExportButton from '@/app/shared/ui/export-button';
 import ModalButton from '@/app/shared/ui/modal-button/modal-button';
 import { metaObject } from '@/config/site.config';
