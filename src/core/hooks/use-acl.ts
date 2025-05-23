@@ -3,20 +3,23 @@
 import { routes } from '@/config/routes';
 import { useProfile } from '@/hooks/useProfile';
 import { adminMenuItems } from '@/layouts/hydrogen/menu-items';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
 
 export default function useAcl() {
   const router = useRouter();
+  const { data } = useSession();
+  console.log('🚀 ~ useAcl ~ data:', data);
+
   const {
     data: dataProfile,
     isLoading: isLoadingProfile,
     isSuccess,
     isError,
     error,
-  } = useProfile();
+  } = useProfile(data?.accessToken);
 
   const permissionRead = useMemo(() => {
     return dataProfile?.role?.permissions.reduce(

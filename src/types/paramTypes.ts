@@ -77,6 +77,7 @@ export interface IPayloadCreateEditPatient {
   patient_problem?: string[];
   patient_type?: string;
   photo?: string;
+  ihi_number?: string;
 }
 
 export interface IPayloadCreateEditDoctor {

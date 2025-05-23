@@ -7,7 +7,7 @@ import { useMedia } from '@core/hooks/use-media';
 import { Form } from '@core/ui/form';
 import { routes } from '@/config/routes';
 import { loginSchema, LoginSchema } from '@/validators/login.schema';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
@@ -25,9 +25,10 @@ export default function SignInForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get('callbackUrl');
   const isMedium = useMedia('(max-width: 1200px)', false);
+  const { data } = useSession();
 
   const [isLoading, setIsloading] = useState(false);
-  const { refetch } = useProfile();
+  const { refetch } = useProfile(data?.accessToken);
 
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
     setIsloading(true);

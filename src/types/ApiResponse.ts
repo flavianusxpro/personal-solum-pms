@@ -207,6 +207,7 @@ export interface IGetPatientByIdResponse extends ApiResponse {
     emergency_email: null;
     emergency_relationship: null;
     verification_token: string;
+    ihi_number: string;
     timezone: string;
     created_at: string;
     updated_at: string;

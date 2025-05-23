@@ -116,6 +116,7 @@ export default function PatientDetails({
       postcode: data.post_code,
       unit_number: data.unit_number,
       photo: data.avatar,
+      ihi_number: data.ihi_number,
     };
 
     if (id) {
@@ -166,6 +167,7 @@ export default function PatientDetails({
           state: dataPatient?.state ?? '',
           post_code: dataPatient?.postcode ?? '',
           avatar: dataPatient?.photo || undefined,
+          ihi_number: dataPatient?.ihi_number ?? '',
         },
       }}
     >

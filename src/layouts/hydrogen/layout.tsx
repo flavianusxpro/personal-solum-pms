@@ -1,6 +1,5 @@
 import { routes } from '@/config/routes';
 import useAcl from '@/core/hooks/use-acl';
-import { useProfile } from '@/hooks/useProfile';
 import Header from '@/layouts/hydrogen/header';
 import Sidebar from '@/layouts/hydrogen/sidebar';
 import { usePathname, useRouter } from 'next/navigation';
