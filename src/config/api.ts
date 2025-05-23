@@ -3,8 +3,9 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
-import { getSession } from 'next-auth/react';
+import { getSession, signOut } from 'next-auth/react';
 import toast from 'react-hot-toast';
+import { routes } from './routes';
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -29,12 +30,10 @@ axiosApi.interceptors.request.use(attachToken, (error) =>
 axiosApi.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error: any) => {
-    if (
-      error.response?.data?.message?.includes('Token is Expired') ||
-      error.response?.data?.message?.includes('Token is Invalid') ||
-      error.response?.data?.message?.includes('Authorization Token not found')
-    ) {
-      window.location.replace('/login');
+    if (error.response?.status === 401) {
+      toast.error('Unauthorized. Please log in again.');
+      signOut({ redirect: false });
+      window.location.replace(routes.auth.signIn);
     }
 
     if (error.response?.status === 500) {
