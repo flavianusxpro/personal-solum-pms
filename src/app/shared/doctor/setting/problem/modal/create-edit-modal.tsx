@@ -19,15 +19,12 @@ import {
 import CSelect from '@/app/shared/ui/select';
 import toast from 'react-hot-toast';
 
-interface CreateEditSmsTemplateModalProps {
+interface IProps {
   data?: IGetPatientProblemResponse['data'][number];
   isView?: boolean;
 }
 
-export default function CreateEditSpecialistModal({
-  data,
-  isView,
-}: CreateEditSmsTemplateModalProps) {
+export default function CreateEditProblemModal({ data, isView }: IProps) {
   const { closeModal } = useModal();
 
   const { refetch } = useGetPatientProblem({

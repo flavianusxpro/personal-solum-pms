@@ -18,7 +18,6 @@ import {
 import {
   useGetDoctorById,
   useGetSpecialists,
-  useGetTreatments,
   useUpdateDoctor,
 } from '@/hooks/useDoctor';
 import dynamic from 'next/dynamic';
@@ -56,10 +55,6 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     page: 1,
     perPage: 100,
   });
-  const { data: dataTreatments } = useGetTreatments({
-    perPage: 100,
-    page: 1,
-  });
 
   const specialistsOptions = useMemo(() => {
     if (!dataSpecialists) return [];
@@ -68,14 +63,6 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
       value: item.id.toString(),
     }));
   }, [dataSpecialists]);
-
-  const treatmentOptions = useMemo(() => {
-    if (!dataTreatments) return [];
-    return dataTreatments.data.map((item) => ({
-      label: item.name,
-      value: item.id.toString(),
-    }));
-  }, [dataTreatments]);
 
   const specialistTypeDefaultValues = useMemo(() => {
     if (!dataDoctor?.specialist_type) return [];
@@ -87,16 +74,6 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     }
     return [];
   }, [dataDoctor]);
-
-  const treatmentTypeDefaultValues: string[] =
-    typeof dataDoctor?.treatment_type === 'string'
-      ? (dataDoctor.treatment_type as string)
-          .slice(1, -1)
-          .split('","')
-          .map((s) => s.replace(/^"|"$/g, ''))
-      : Array.isArray(dataDoctor?.treatment_type)
-        ? dataDoctor.treatment_type
-        : [];
 
   const onSubmit: SubmitHandler<DoctorDetailsFormTypes> = (data) => {
     const payload: IPayloadCreateEditDoctor = {
@@ -112,8 +89,6 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
       postcode: data.postcode,
       country: data.country,
       state: data.state,
-      // treatment_type: data.treatment_type.map((item) => parseInt(item)),
-      treatment_type: data.treatment_type,
       specialist_type: data.specialist_type.map((item) => parseInt(item)),
       medical_interest: data.medical_interest,
       email: data.email,
@@ -166,7 +141,6 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
           address_line_2: dataDoctor?.address_line_2 ?? '',
           about: dataDoctor?.description ?? '',
           medical_interest: dataDoctor?.medical_interest ?? '',
-          treatment_type: treatmentTypeDefaultValues,
           specialist_type: specialistTypeDefaultValues,
           language: dataDoctor?.language
             ? (JSON.parse(dataDoctor.language) as (string | undefined)[])
@@ -367,7 +341,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
             <Divider />
 
             <div className="section-container">
-              <FormGroup title="Treatment Type" isLabel>
+              <FormGroup title="Problem Type" isLabel>
                 <Controller
                   name="treatment_type"
                   control={control}
@@ -375,8 +349,8 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
                     <MultySelect
                       searchable
                       {...field}
-                      placeholder="Select Specialist Type"
-                      options={treatmentOptions}
+                      placeholder="Select Problem Type"
+                      options={[]}
                       disabled={isView}
                       error={errors.treatment_type?.message}
                     />

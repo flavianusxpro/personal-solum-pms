@@ -66,7 +66,7 @@ export const getColumns = ({
     render: (value: string) => <Text className="font-medium">{value}</Text>,
   },
   {
-    title: <HeaderCell title="CONDITION NAME" />,
+    title: <HeaderCell title="PROBLEM NAME" />,
     dataIndex: 'name',
     key: 'name',
     width: 200,
