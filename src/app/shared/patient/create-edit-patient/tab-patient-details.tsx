@@ -63,10 +63,14 @@ export default function PatientDetails({
 
   const parsedPatientProblem: string[] =
     typeof dataPatient?.patient_problem === 'string'
-      ? (dataPatient.patient_problem as string)
-          .slice(1, -1)
-          .split('","')
-          .map((s) => s.replace(/^"|"$/g, ''))
+      ? dataPatient.patient_problem === '{}' ||
+        dataPatient.patient_problem === '[]' ||
+        dataPatient.patient_problem === ''
+        ? []
+        : (dataPatient.patient_problem as string)
+            .slice(1, -1)
+            .split('","')
+            .map((s) => s.replace(/^"|"$/g, ''))
       : Array.isArray(dataPatient?.patient_problem)
         ? dataPatient.patient_problem
         : [];
@@ -167,7 +171,6 @@ export default function PatientDetails({
           country: dataPatient?.country ?? '',
           unit_number: dataPatient?.unit_number ?? '',
           street_name: dataPatient?.street_name ?? '',
-          // description: dataPatient?.description ?? '',
           suburb: dataPatient?.suburb ?? '',
           state: dataPatient?.state ?? '',
           post_code: dataPatient?.postcode ?? '',
@@ -475,6 +478,7 @@ export default function PatientDetails({
                       if (!date) return;
                       setValue('concession_card_expiry', date);
                     }}
+                    placeholderText="Expiry Date"
                     showDateSelect={false}
                     showMonthYearPicker
                     minDate={new Date()}
