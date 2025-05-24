@@ -93,7 +93,7 @@ export default function TableFilter({
   children,
 }: TableFilterProps) {
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
 
   return (
