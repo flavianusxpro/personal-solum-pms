@@ -3,11 +3,9 @@
 import { useProfile } from '@/hooks/useProfile';
 import { adminMenuItems } from '@/layouts/hydrogen/menu-items';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
 export default function useAcl() {
-  const router = useRouter();
   const { status } = useSession();
 
   const {

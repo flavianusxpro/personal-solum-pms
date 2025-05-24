@@ -404,6 +404,15 @@ export default function PatientDetails({
                     className="flex-grow"
                   />
                 </FormGroup>
+                <FormGroup title="Address Line 1" isLabel>
+                  <Input
+                    placeholder="Address Line 1"
+                    {...register('address_line_1')}
+                    error={errors.address_line_1?.message}
+                    disabled={isView}
+                    className="flex-grow"
+                  />
+                </FormGroup>
                 <FormGroup title="Street" isLabel>
                   <Input
                     placeholder="Street"
