@@ -33,7 +33,10 @@ axiosApi.interceptors.response.use(
     if (error.response?.status === 401) {
       toast.error('Unauthorized. Please log in again.');
       signOut({ redirect: false });
-      window.location.replace(routes.auth.signIn);
+      if (typeof window !== 'undefined') {
+        const router = require('next/navigation').default;
+        router.replace(routes.auth.signIn);
+      }
     }
 
     if (error.response?.status === 500) {

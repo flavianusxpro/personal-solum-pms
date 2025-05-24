@@ -4,7 +4,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const useProfile = (enabled: boolean) =>
   useQuery({
-    queryKey: ['profile'],
+    queryKey: ['profile' + enabled ? 'enabled' : 'disabled'],
     queryFn: async () => getProfile(),
     staleTime: 1000 * 60 * 60, // 1 hour
     enabled: enabled,
