@@ -233,6 +233,14 @@ export default function CreatePatienModal() {
                     className="flex-grow"
                   />
                 </FormGroup>
+                <FormGroup title="Address Line 2" isLabel>
+                  <Input
+                    placeholder="Address Line 2"
+                    {...register('address_line_2')}
+                    error={errors.address_line_2?.message}
+                    className="flex-grow"
+                  />
+                </FormGroup>
                 <FormGroup title="Street" isLabel>
                   <Input
                     placeholder="Street"

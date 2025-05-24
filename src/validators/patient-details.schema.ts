@@ -21,6 +21,7 @@ export const patientDetailsFormSchema = z.object({
   country: z.string().optional(),
   unit_number: z.string().optional(),
   address_line_1: z.string().optional(),
+  address_line_2: z.string().optional(),
   suburb: z.string().optional(),
   street_name: z.string().optional(),
   post_code: z.string().max(4, {

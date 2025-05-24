@@ -180,7 +180,7 @@ export default function PatientDetails({
             ? dayjs(dataPatient.concession_card_expire_date).toDate()
             : undefined,
           concession_card_number: dataPatient?.concession_card_number ?? '',
-          concession_card_type: dataPatient?.concession_card_expire_date ?? '',
+          concession_card_type: dataPatient?.concession_card_type ?? '',
         },
       }}
     >
@@ -409,6 +409,15 @@ export default function PatientDetails({
                     placeholder="Address Line 1"
                     {...register('address_line_1')}
                     error={errors.address_line_1?.message}
+                    disabled={isView}
+                    className="flex-grow"
+                  />
+                </FormGroup>
+                <FormGroup title="Address Line 2" isLabel>
+                  <Input
+                    placeholder="Address Line 2"
+                    {...register('address_line_2')}
+                    error={errors.address_line_2?.message}
                     disabled={isView}
                     className="flex-grow"
                   />
