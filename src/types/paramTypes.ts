@@ -114,6 +114,7 @@ export interface IPayloadCreateEditDoctor {
   // treatment_type?: number[];
   treatment_type?: string[];
   specialist_type?: number[];
+  problem_type?: string[];
   medical_interest?: string;
   language?: string[];
 }

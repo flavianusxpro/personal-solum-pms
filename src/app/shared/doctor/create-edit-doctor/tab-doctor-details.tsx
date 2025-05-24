@@ -26,6 +26,7 @@ import SelectLoader from '@/core/components/loader/select-loader';
 import Divider from '@/app/shared/ui/divider';
 import { useMemo } from 'react';
 import { PhoneNumber } from '@/core/ui/phone-input';
+import { useGetPatientProblem } from '@/hooks/usePatient';
 
 const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
   ssr: false,
@@ -56,6 +57,11 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     perPage: 100,
   });
 
+  const { data: dataProblemTypes } = useGetPatientProblem({
+    page: 1,
+    perPage: 100,
+  });
+
   const specialistsOptions = useMemo(() => {
     if (!dataSpecialists) return [];
     return dataSpecialists.data.map((item) => ({
@@ -63,6 +69,14 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
       value: item.id.toString(),
     }));
   }, [dataSpecialists]);
+
+  const problemTypesOptions = useMemo(() => {
+    if (!dataProblemTypes) return [];
+    return dataProblemTypes.data.map((item) => ({
+      label: item.name,
+      value: item.name,
+    }));
+  }, [dataProblemTypes]);
 
   const specialistTypeDefaultValues = useMemo(() => {
     if (!dataDoctor?.specialist_type) return [];
@@ -74,6 +88,19 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     }
     return [];
   }, [dataDoctor]);
+
+  const problemTypeDefaultValues = useMemo(() => {
+    if (!dataDoctor?.problem_type) return [];
+    const parsedProblemType = JSON.parse(dataDoctor.problem_type) as string[];
+    if (Array.isArray(parsedProblemType)) {
+      return parsedProblemType.map((item) => item);
+    }
+    return [];
+  }, [dataDoctor]);
+  console.log(
+    '🚀 ~ problemTypeDefaultValues ~ problemTypeDefaultValues:',
+    problemTypeDefaultValues
+  );
 
   const onSubmit: SubmitHandler<DoctorDetailsFormTypes> = (data) => {
     const payload: IPayloadCreateEditDoctor = {
@@ -90,6 +117,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
       country: data.country,
       state: data.state,
       specialist_type: data.specialist_type.map((item) => parseInt(item)),
+      problem_type: data.problem_type,
       medical_interest: data.medical_interest,
       email: data.email,
       date_of_birth: data.date_of_birth as string,
@@ -142,6 +170,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
           about: dataDoctor?.description ?? '',
           medical_interest: dataDoctor?.medical_interest ?? '',
           specialist_type: specialistTypeDefaultValues,
+          problem_type: problemTypeDefaultValues,
           language: dataDoctor?.language
             ? (JSON.parse(dataDoctor.language) as (string | undefined)[])
             : [],
@@ -343,16 +372,16 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
             <div className="section-container">
               <FormGroup title="Problem Type" isLabel>
                 <Controller
-                  name="treatment_type"
+                  name="problem_type"
                   control={control}
                   render={({ field }) => (
                     <MultySelect
                       searchable
                       {...field}
                       placeholder="Select Problem Type"
-                      options={[]}
+                      options={problemTypesOptions}
                       disabled={isView}
-                      error={errors.treatment_type?.message}
+                      error={errors.problem_type?.message}
                     />
                   )}
                 />
