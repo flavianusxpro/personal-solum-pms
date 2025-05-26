@@ -14,6 +14,8 @@ export interface IParamGetAllClinic extends IParamGetDataWithPagination {
 export interface IParamGetDoctorByClinic extends IParamGetDataWithPagination {
   id: string;
   role?: RoleType;
+  treatment_type: string;
+  problem_type: string;
 }
 
 export interface IPayloadRegisterForPatient extends RegisterSchema {}
@@ -40,8 +42,6 @@ export interface IPayloadPostBookAppoinment {
   additional_information: Additionalinformation;
   appointment_type: string;
 }
-
-interface Additionalinformation {}
 
 export interface IPayloadPostPaymentMethod {
   payment_method: string;
@@ -288,11 +288,16 @@ export interface IPayloadPostAppoinment {
   doctorId: number;
   date: string;
   note?: string;
-  appointment_type: string;
+  // appointment_type: string;
   patient_type: string;
-  patient_problem: string[];
+  patient_problem: string;
   payment_id?: string;
   meeting_preference: string;
+  additional_information: Additionalinformation;
+}
+
+interface Additionalinformation {
+  note?: string;
 }
 
 export interface IPayloadPostCancelAppoinment {

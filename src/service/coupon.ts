@@ -1,5 +1,8 @@
 import { del, get, post, put } from '@/config/api';
-import { IGetCouponsResponse } from '@/types/ApiResponse';
+import {
+  IGetCouponsResponse,
+  IPostCouponCodeValidationResponse,
+} from '@/types/ApiResponse';
 import {
   IParamsGetCoupons,
   IPayloadCreateUpdateCoupon,
@@ -19,4 +22,11 @@ export async function putUpdateCoupon(payload: IPayloadCreateUpdateCoupon) {
 
 export async function deleteCoupon(ids: number[]) {
   return await del(`/admin/coupon/`, { data: { ids } });
+}
+
+export async function postCouponCodeValidation(payload: string) {
+  return await post<IPostCouponCodeValidationResponse>(
+    '/patient/coupon/validate',
+    { coupon_code: payload }
+  );
 }

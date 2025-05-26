@@ -69,20 +69,26 @@ export interface IGetClinicByIdForPatientResponse extends ApiResponse {
 
 export interface IGetDoctorByClinicResponse extends ApiResponse {
   data: {
-    id: number | null;
+    id: number;
     first_name: string;
     last_name: string;
-    gender: null;
-    url_photo: null;
-    specialist: null;
+    gender: string;
+    photo: null;
+    specialist_type: string;
+    treatment_type: string;
+    problem_type: string;
+    medical_interest: string;
+    language: string;
     description: null;
-    appointment_duration: Appointmentduration;
-    appointment_fee: Appointmentfee;
-    appointment_schedule: Appointmentschedule | null;
-    booked_times: Booked_Times[];
+    cost: Cost;
   }[];
 }
 
+interface Cost {
+  name: string;
+  duration: number;
+  amount: string;
+}
 interface Booked_Times {
   date: string;
   booked_times: string[];
@@ -903,4 +909,11 @@ export interface IGetCalendarScheduleByClinicIdResponse extends ApiResponse {
   data: {
     date: string;
   }[];
+}
+
+export interface IPostCouponCodeValidationResponse extends ApiResponse {
+  data: {
+    amount: number;
+    type: string;
+  };
 }
