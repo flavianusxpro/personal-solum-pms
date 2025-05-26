@@ -45,22 +45,33 @@ export default function DoctorCost(data: IProps) {
     page: 1,
     perPage: 100,
   });
+  const { data: dataDoctorCost, refetch: refetchDoctorCost } =
+    useGetDoctorCostById(doctorId as unknown as number);
 
   const { mutate: mutateCreate } = usePostCreateDoctorCost();
   const { mutate: mutateUpdate } = usePutUpdateDoctorCost();
 
   const treatmentOptions = useMemo(() => {
     if (!dataTreatments) return [];
-    return dataTreatments.data.map((item) => ({
-      label: item.name,
-      value: item.id,
-    }));
-  }, [dataTreatments]);
+    const existingTreatments = dataDoctorCost?.data || [];
+    const existingTreatmentIds = new Set(
+      existingTreatments.map((treatment) => treatment.treatmentId)
+    );
+
+    return dataTreatments.data
+      .filter(
+        (item) =>
+          !existingTreatmentIds.has(item.id) || data.treatmentId === item.id
+      )
+      .map((item) => ({
+        label: item.name,
+        value: item.id,
+      }));
+  }, [data.treatmentId, dataDoctorCost?.data, dataTreatments]);
 
   const onSubmit: SubmitHandler<SettingsDoctorSchema['costs'][number]> = (
     data
   ) => {
-    console.log('🚀 ~ DoctorCost ~ data:', data);
     const payload: IPayloadDoctorCost = {
       id,
       doctorId,

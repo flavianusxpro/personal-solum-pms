@@ -97,10 +97,6 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     }
     return [];
   }, [dataDoctor]);
-  console.log(
-    '🚀 ~ problemTypeDefaultValues ~ problemTypeDefaultValues:',
-    problemTypeDefaultValues
-  );
 
   const onSubmit: SubmitHandler<DoctorDetailsFormTypes> = (data) => {
     const payload: IPayloadCreateEditDoctor = {
