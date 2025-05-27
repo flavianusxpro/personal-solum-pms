@@ -26,6 +26,8 @@ import { useMemo, useState } from 'react';
 import { DatePicker } from '@/core/ui/datepicker';
 import { PhoneNumber } from '@/core/ui/phone-input';
 import dynamic from 'next/dynamic';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
 
 const MultiSelect = dynamic(
   () => import('rizzui').then((mod) => mod.MultiSelect),
@@ -163,7 +165,7 @@ export default function PatientDetails({
           date_of_birth: dataPatient?.date_of_birth ?? '',
           medicare_card: dataPatient?.medicare_card_number ?? '',
           medicare_expiry: dataPatient?.medicare_expired_date
-            ? dayjs(dataPatient.medicare_expired_date).toDate()
+            ? dayjs(dataPatient.medicare_expired_date, 'DD MM YYYY').toDate()
             : undefined,
           patient_problem: parsedPatientProblem,
           patient_type: dataPatient?.patient_type || undefined,
