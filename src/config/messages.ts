@@ -126,5 +126,7 @@ export const messages = {
   dateOfBirthRequired: 'Date of Birth is required',
   noteIsRequired: 'Note is required',
   required: (field: string) => `${field} is required`,
+  maxFileSize: (field: string, size: string) =>
+    `${field} must be less than ${size}`,
   conditionNameIsRequired: 'Condition name is required',
 };

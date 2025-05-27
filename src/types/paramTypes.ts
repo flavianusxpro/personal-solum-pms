@@ -566,3 +566,6 @@ export interface IPayloadUpdateAwsS3Config {
   endpoint: string;
   status: boolean;
 }
+
+export interface IParamsGetPatientDocumentation
+  extends IParamGetDataWithPagination {}

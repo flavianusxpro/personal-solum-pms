@@ -10,6 +10,7 @@ import {
   IParamGetAllPatient,
   IParamGetPatientProblem,
   IParamGetPatientTypes,
+  IParamsGetPatientDocumentation,
   IPayloadCreateEditPatient,
   IPayloadCreatePatientProblem,
   IPayloadUpdateAssignDoctor,
@@ -81,4 +82,36 @@ export async function putUpdateAssignDoctor(
     `/admin/patient/${params.patient_id}/assign-doctor/`,
     params
   );
+}
+
+export async function getPatientDocumentation(
+  params: IParamsGetPatientDocumentation
+) {
+  return await get('/admin/patient/file', {
+    params,
+  });
+}
+
+export async function postUploadPatientDocumentation(payload: FormData) {
+  return await post('/admin/patient/file', payload, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+}
+export async function putUpdatePatientDocumentation(payload: FormData) {
+  const id = payload.get('id');
+  return await put(`/admin/patient/file/${id}`, payload, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+}
+
+export async function deletePatientDocumentation(ids: string[]) {
+  return await del(`/admin/patient/file/`, {
+    data: {
+      ids,
+    },
+  });
 }
