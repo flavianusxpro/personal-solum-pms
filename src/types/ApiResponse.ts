@@ -917,3 +917,17 @@ export interface IPostCouponCodeValidationResponse extends ApiResponse {
     type: string;
   };
 }
+
+export interface IGetAwsS3ConfigResponse extends ApiResponse {
+  data: {
+    id: number;
+    aws_access_id: string;
+    aws_secret_key: string;
+    bucket: string;
+    region: string;
+    endpoint: string;
+    status: boolean;
+    created_at: string;
+    updated_at: string;
+  };
+}

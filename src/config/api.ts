@@ -29,10 +29,11 @@ axiosApi.interceptors.request.use(attachToken, (error) =>
 
 axiosApi.interceptors.response.use(
   (response: AxiosResponse) => response,
-  (error: any) => {
+  async (error: any) => {
     if (error.response?.status === 401) {
-      toast.error('Unauthorized. Please log in again.');
-      signOut({ redirect: false });
+      await signOut({ redirect: false }).then(() => {
+        toast.error('Unauthorized. Please log in again.');
+      });
       if (typeof window !== 'undefined') {
         const router = require('next/navigation').default;
         router.replace(routes.auth.signIn);

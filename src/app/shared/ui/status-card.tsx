@@ -12,6 +12,7 @@ interface IMeetingCard {
   switchValue?: boolean;
   className?: string;
   disabled?: boolean;
+  containClassName?: string;
 }
 
 export default function StatusCard(props: IMeetingCard) {
@@ -25,6 +26,7 @@ export default function StatusCard(props: IMeetingCard) {
     switchValue = false,
     className,
     disabled = false,
+    containClassName,
   } = props;
   return (
     <div
@@ -49,11 +51,14 @@ export default function StatusCard(props: IMeetingCard) {
         </Text>
         <div className="w-full">
           <div
-            className={`transition-all duration-300 ${
-              switchValue
-                ? 'max-h-screen pt-7 opacity-100'
-                : 'max-h-0 overflow-hidden opacity-0'
-            }`}
+            className={cn(
+              `transition-all duration-300 ${
+                switchValue
+                  ? 'max-h-screen pt-7 opacity-100'
+                  : 'max-h-0 overflow-hidden opacity-0'
+              }`,
+              containClassName
+            )}
           >
             {children}
           </div>

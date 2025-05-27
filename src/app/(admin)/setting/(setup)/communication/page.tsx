@@ -6,15 +6,7 @@ import toast from 'react-hot-toast';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import {
-  Input,
-  Loader,
-  Text,
-  Textarea,
-  Switch,
-  SelectOption,
-  Flex,
-} from 'rizzui';
+import { Input, Loader, Switch, SelectOption, Flex } from 'rizzui';
 import {
   settingCommunicationFormSchema,
   SettingCommunicationFormTypes,
@@ -26,10 +18,12 @@ import { IoChevronDownCircleOutline } from 'react-icons/io5';
 import { PhoneNumber } from '@/core/ui/phone-input';
 import { useGetTwilioConfig, useUpdateTwilioConfig } from '@/hooks/useTwilio';
 import {
+  IPayloadUpdateAwsS3Config,
   IPayloadUpdateSmtpConfig,
   IPayloadUpdateTwilioConfig,
 } from '@/types/paramTypes';
 import { useGetSmtpConfig, useUpdateSmtpConfig } from '@/hooks/useSmpt';
+import { useGetAwsS3Config, useUpdateAwsS3Config } from '@/hooks/useAws';
 
 const types: SelectOption[] = [
   {
@@ -54,11 +48,14 @@ export default function Communication() {
   const { data: dataSmtp, isLoading: isLoadingGetSmtp } = useGetSmtpConfig();
   const { data: dataTwilio, isLoading: isLoadingGetTwilio } =
     useGetTwilioConfig();
+  const { data: dataAwsS3, isLoading: isLoadingGetAwsS3 } = useGetAwsS3Config();
 
   const { mutate: mutateUpdateSmtp, isPending: isPendingUpdateSmtp } =
     useUpdateSmtpConfig();
   const { mutate: mutateUpdateTwilio, isPending: isPendingUpdateTwilio } =
     useUpdateTwilioConfig();
+  const { mutate: mutateUpdateAwsS3, isPending: isPendingUpdateAwsS3 } =
+    useUpdateAwsS3Config();
 
   const onSubmit: SubmitHandler<SettingCommunicationFormTypes> = (data) => {
     const payloadTwilioConfig: IPayloadUpdateTwilioConfig = {
@@ -75,6 +72,15 @@ export default function Communication() {
       secure_type: data.smtp_security_type || '',
       smtp_username: data.smtp_username || '',
       smtp_password: data.smtp_password || '',
+    };
+
+    const payloadAwsS3Config: IPayloadUpdateAwsS3Config = {
+      aws_access_id: data.aws_id || '',
+      aws_secret_key: data.aws_secret_key || '',
+      bucket: data.aws_bucket || '',
+      region: data.aws_region || '',
+      endpoint: data.aws_endpoint || '',
+      status: data.aws_status || false,
     };
 
     mutateUpdateSmtp(payloadSmtpConfig, {
@@ -99,9 +105,21 @@ export default function Communication() {
         );
       },
     });
+
+    mutateUpdateAwsS3(payloadAwsS3Config, {
+      onSuccess: () => {
+        toast.success('AWS S3 configuration updated successfully');
+      },
+      onError: (error: any) => {
+        toast.error(
+          'Failed to update AWS S3 configuration: ' +
+            error.response.data.message
+        );
+      },
+    });
   };
 
-  if (isLoadingGetTwilio || isLoadingGetSmtp) {
+  if (isLoadingGetTwilio || isLoadingGetSmtp || isLoadingGetAwsS3) {
     return (
       <div className="flex h-full w-full items-center justify-center">
         <Loader />
@@ -128,6 +146,14 @@ export default function Communication() {
           twillio_auth_token: dataTwilio?.data.auth_token || '',
           twillio_phone_number: dataTwilio?.data.from_number || '',
           twillio_status: dataTwilio?.data.status || false,
+          sms_provider_status:
+            dataTwilio?.data.status || dataAwsS3?.data.status || false,
+          aws_id: dataAwsS3?.data.aws_access_id || '',
+          aws_secret_key: dataAwsS3?.data.aws_secret_key || '',
+          aws_bucket: dataAwsS3?.data.bucket || '',
+          aws_region: dataAwsS3?.data.region || '',
+          aws_endpoint: dataAwsS3?.data.endpoint || '',
+          aws_status: dataAwsS3?.data.status || false,
         },
       }}
     >
@@ -246,9 +272,7 @@ export default function Communication() {
                   variant="flat"
                   className=""
                   labelClassName="font-medium text-sm text-gray-900"
-                  checked={
-                    watch('twillio_status') || watch('sms_provider_status')
-                  }
+                  checked={watch('sms_provider_status')}
                   onChange={(e) => {
                     setValue('sms_provider_status', e.target.checked);
                   }}
@@ -259,7 +283,6 @@ export default function Communication() {
             <div
               className={cn(
                 'transition-all duration-300',
-
                 watch('sms_provider_status')
                   ? 'max-h-screen'
                   : 'max-h-0 overflow-hidden opacity-0'
@@ -316,30 +339,49 @@ export default function Communication() {
 
                   <StatusCard
                     icon={<IoChevronDownCircleOutline />}
-                    meetName="AWS (not connected yet)"
+                    meetName="AWS S3 Configuration"
                     content="AWS"
                     onSwitchChange={(checked) => {
                       setValue('aws_status', checked);
                     }}
                     switchValue={watch('aws_status')}
+                    containClassName="grid grid-cols-2 gap-4"
                   >
-                    <Flex>
-                      <Input
-                        label="AWS ID Key"
-                        placeholder="AWS ID Key"
-                        {...register('aws_id_key')}
-                        error={errors.aws_id_key?.message}
-                        className="flex-grow"
-                      />
-
-                      <Input
-                        label="AWS Pass Key"
-                        placeholder="AWS Pass Key"
-                        {...register('aws_pass_key')}
-                        error={errors.aws_pass_key?.message}
-                        className="flex-grow"
-                      />
-                    </Flex>
+                    <Input
+                      label="AWS ID"
+                      placeholder="AWS ID"
+                      {...register('aws_id')}
+                      error={errors.aws_id?.message}
+                      className="flex-grow"
+                    />
+                    <Input
+                      label="AWS Secret Key"
+                      placeholder="AWS Secret Key"
+                      {...register('aws_secret_key')}
+                      error={errors.aws_secret_key?.message}
+                      className="flex-grow"
+                    />
+                    <Input
+                      label="Bucket"
+                      placeholder="Bucket"
+                      {...register('aws_bucket')}
+                      error={errors.aws_bucket?.message}
+                      className="flex-grow"
+                    />
+                    <Input
+                      label="Region"
+                      placeholder="AWS Pass Key"
+                      {...register('aws_region')}
+                      error={errors.aws_region?.message}
+                      className="flex-grow"
+                    />
+                    <Input
+                      label="Endpoint"
+                      placeholder="Endpoint"
+                      {...register('aws_endpoint')}
+                      error={errors.aws_endpoint?.message}
+                      className="flex-grow"
+                    />
                   </StatusCard>
 
                   <StatusCard
@@ -370,6 +412,94 @@ export default function Communication() {
                     </Flex>
                   </StatusCard>
                 </div>
+              </div>
+            </div>
+
+            <div className="mb-10 grid grid-cols-2 gap-7 divide-y divide-dashed divide-gray-200 @2xl:gap-9 @3xl:gap-11">
+              <div>
+                <FormGroup
+                  title="Access ID"
+                  className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                  isLabel
+                >
+                  <Input
+                    placeholder="Access ID"
+                    {...register('smtp_host')}
+                    error={errors.smtp_host?.message}
+                    className="flex-grow"
+                  />
+                </FormGroup>
+
+                <FormGroup
+                  title="Secret Key"
+                  className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                  isLabel
+                >
+                  <Input
+                    placeholder="Secret Key"
+                    {...register('smtp_email_address')}
+                    error={errors.smtp_email_address?.message}
+                    className="flex-grow"
+                  />
+                </FormGroup>
+
+                <FormGroup
+                  title="Bucket"
+                  className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                  isLabel
+                >
+                  <Input
+                    placeholder="Bucket"
+                    {...register('smtp_port')}
+                    error={errors.smtp_port?.message}
+                    className="flex-grow"
+                  />
+                </FormGroup>
+              </div>
+              <div>
+                <FormGroup
+                  title="Region"
+                  className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                  isLabel
+                >
+                  <Input
+                    placeholder="Region"
+                    {...register('smtp_port')}
+                    error={errors.smtp_port?.message}
+                    className="flex-grow"
+                  />
+                </FormGroup>
+                <FormGroup
+                  title="Endpoint"
+                  className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                  isLabel
+                >
+                  <Input
+                    placeholder="Endpoint"
+                    {...register('smtp_username')}
+                    error={errors.smtp_username?.message}
+                    className="flex-grow"
+                  />
+                </FormGroup>
+                <FormGroup
+                  title="Status"
+                  className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                  isLabel
+                >
+                  <Controller
+                    name="smtp_password"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        placeholder="Status"
+                        options={types}
+                        className="col-span-full"
+                        error={errors?.smtp_password?.message as string}
+                      />
+                    )}
+                  />
+                </FormGroup>
               </div>
             </div>
 
@@ -406,7 +536,11 @@ export default function Communication() {
             </FormGroup>
 
             <FormFooter
-              isLoading={isPendingUpdateTwilio || isPendingUpdateSmtp}
+              isLoading={
+                isPendingUpdateTwilio ||
+                isPendingUpdateSmtp ||
+                isPendingUpdateAwsS3
+              }
               altBtnText="Cancel"
               submitBtnText="Save"
             />

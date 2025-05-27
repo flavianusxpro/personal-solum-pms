@@ -557,3 +557,12 @@ export interface IPayloadDoctorCost {
   treatmentId: number;
   amount: number;
 }
+
+export interface IPayloadUpdateAwsS3Config {
+  aws_access_id: string;
+  aws_secret_key: string;
+  bucket: string;
+  region: string;
+  endpoint: string;
+  status: boolean;
+}
