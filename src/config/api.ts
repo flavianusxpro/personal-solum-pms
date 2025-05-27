@@ -32,10 +32,6 @@ axiosApi.interceptors.response.use(
   async (error: any) => {
     if (error.response?.status === 401) {
       await signOut({ redirect: true, callbackUrl: routes.auth.signIn });
-      if (typeof window !== 'undefined') {
-        const router = require('next/navigation').default;
-        router.replace(routes.auth.signIn);
-      }
     }
 
     if (error.response?.status === 500) {
