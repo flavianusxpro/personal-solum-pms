@@ -2,6 +2,7 @@ import { del, get, post, put } from '@/config/api';
 import {
   IGetAllPatientsResponse,
   IGetPatientByIdResponse,
+  IGetPatientDocumentationResponse,
   IGetPatientProblemResponse,
   IGetPatientTypeResponse,
   IUpdateDoctorAssignResponse,
@@ -87,7 +88,7 @@ export async function putUpdateAssignDoctor(
 export async function getPatientDocumentation(
   params: IParamsGetPatientDocumentation
 ) {
-  return await get('/admin/patient/file', {
+  return await get<IGetPatientDocumentationResponse>('/admin/patient/file', {
     params,
   });
 }

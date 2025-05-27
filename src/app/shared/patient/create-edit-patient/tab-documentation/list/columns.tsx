@@ -6,12 +6,12 @@ import { HeaderCell } from '@/app/shared/ui/table';
 import ActionTooltipButton from '@/app/shared/ui/action-button';
 import PencilIcon from '@/core/components/icons/pencil';
 import DeletePopover from '@/app/shared/ui/delete-popover';
-import { IGetPatientFlagResponse } from '@/types/ApiResponse';
-import FlagForm from '../modal/add-documentation';
+import { IGetPatientDocumentationResponse } from '@/types/ApiResponse';
+import DocumentationForm from '../modal/add-documentation';
 
-type Row = IGetPatientFlagResponse['data'][number];
+type Row = IGetPatientDocumentationResponse['data'][number];
 type Columns = {
-  data: IGetPatientFlagResponse['data'];
+  data: IGetPatientDocumentationResponse['data'];
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
@@ -61,34 +61,29 @@ export const getColumns = ({
     ),
   },
   {
-    title: <HeaderCell title="Category" />,
-    dataIndex: 'category',
-    key: 'category',
-    width: 420,
-    render: (value: string) => value,
-  },
-  {
-    title: <HeaderCell title="Description" />,
-    dataIndex: 'description',
-    key: 'description',
-    width: 130,
-    render: (value: string) => value,
-  },
-  {
-    title: <HeaderCell title="Type" />,
-    dataIndex: 'category',
-    key: 'category',
-    width: 130,
-    render: (value: any) => (
-      <span className="capitalize text-gray-500">{value}</span>
-    ),
-  },
-  {
-    title: <HeaderCell title="Created By" />,
-    dataIndex: 'created_by',
-    key: 'created_by',
+    title: <HeaderCell title="NAME" />,
+    dataIndex: 'name',
+    key: 'name',
     width: 200,
     render: (value: string) => value,
+  },
+  {
+    title: <HeaderCell title="TYPE" />,
+    dataIndex: 'type',
+    key: 'type',
+    width: 130,
+    render: (value: string) => value,
+  },
+  {
+    title: <HeaderCell title="Size" />,
+    dataIndex: 'size',
+    key: 'size',
+    width: 100,
+    render: (value: number) => (
+      <Text className="text-gray-500">
+        {value ? `${(value / 1024).toFixed(2)} KB` : 'N/A'}
+      </Text>
+    ),
   },
   {
     title: <HeaderCell title="Created At" />,
@@ -104,6 +99,20 @@ export const getColumns = ({
     ),
   },
   {
+    title: <HeaderCell title="Updated At" />,
+    dataIndex: 'updated_at',
+    key: 'updated_at',
+    width: 200,
+    render: (value: Date) => (
+      <>
+        <Text className="mb-1 text-gray-500">
+          {dayjs(value).format('DD MMM YYYY')}
+        </Text>
+      </>
+    ),
+  },
+
+  {
     title: <></>,
     dataIndex: 'action',
     key: 'action',
@@ -113,7 +122,7 @@ export const getColumns = ({
         <ActionTooltipButton
           onClick={() => {
             openModal?.({
-              view: <FlagForm flagData={row} />,
+              view: <DocumentationForm data={row} />,
             });
           }}
           tooltipContent="Edit"
@@ -122,8 +131,8 @@ export const getColumns = ({
           <PencilIcon className="h-4 w-4" />
         </ActionTooltipButton>
         <DeletePopover
-          title={`Delete the Patient`}
-          description={`Are you sure you want to delete this #${row.id} Patient?`}
+          title={`Delete the Document`}
+          description={`Are you sure you want to delete this #${row.id} document?`}
           onDelete={() => onDeleteItem([row?.id.toString()])}
         />
       </div>

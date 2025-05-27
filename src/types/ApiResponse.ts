@@ -931,3 +931,17 @@ export interface IGetAwsS3ConfigResponse extends ApiResponse {
     updated_at: string;
   };
 }
+
+export interface IGetPatientDocumentationResponse
+  extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    patientId: number;
+    name: string;
+    url: string;
+    size: number;
+    type: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+}

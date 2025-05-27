@@ -9,7 +9,7 @@ import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { getColumns } from './columns';
 import TableHeader from '@/app/shared/ui/table-header';
 import ModalButton from '@/app/shared/ui/modal/modal-button';
-import FlagForm from '../modal/add-documentation';
+import DocumentationForm from '../modal/add-documentation';
 import FormGroup from '@/app/shared/ui/form-group';
 import {
   useDeletePatientFLag,
@@ -17,7 +17,11 @@ import {
 } from '@/hooks/usePatientFlag';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { useParams } from 'next/navigation';
-import { useGetPatientById } from '@/hooks/usePatient';
+import {
+  useDeletePatientDocumentation,
+  useGetPatientById,
+  useGetPatientDocumentation,
+} from '@/hooks/usePatient';
 import toast from 'react-hot-toast';
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
@@ -32,14 +36,13 @@ export default function ListTable({ className }: { className?: string }) {
   });
 
   const { data: dataPatient } = useGetPatientById(id);
-  const { data: dataFlags } = useGetPatientFlags({
+  const { data: dataDocuments, refetch } = useGetPatientDocumentation({
     page: params.page,
     perPage: params.perPage,
-    patientId: dataPatient?.id as number,
     sort: 'DESC',
   });
 
-  const { mutate } = useDeletePatientFLag();
+  const { mutate } = useDeletePatientDocumentation();
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -50,7 +53,8 @@ export default function ListTable({ className }: { className?: string }) {
   const onDeleteItem = (id: string[]) => {
     mutate(id, {
       onSuccess: () => {
-        toast.success('Patient flag deleted successfully');
+        refetch();
+        toast.success('Patient document deleted successfully');
         setSelectedRowKeys([]);
       },
       onError: (error: any) => {
@@ -76,12 +80,12 @@ export default function ListTable({ className }: { className?: string }) {
     handleRowSelect,
     handleSelectAll,
     handleDelete,
-  } = useTable(dataFlags?.data ?? [], params.perPage);
+  } = useTable(dataDocuments?.data ?? [], params.perPage);
 
   const columns = useMemo(
     () =>
       getColumns({
-        data: dataFlags?.data ?? [],
+        data: dataDocuments?.data ?? [],
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -132,7 +136,7 @@ export default function ListTable({ className }: { className?: string }) {
         }}
         tableHeader={
           <TableHeader isCustomHeader checkedItems={[]}>
-            <ModalButton view={<FlagForm />} />
+            <ModalButton view={<DocumentationForm />} />
           </TableHeader>
         }
         tableFooter={
