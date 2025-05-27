@@ -31,9 +31,7 @@ axiosApi.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: any) => {
     if (error.response?.status === 401) {
-      await signOut({ redirect: false }).then(() => {
-        toast.error('Unauthorized. Please log in again.');
-      });
+      await signOut({ redirect: true, callbackUrl: routes.auth.signIn });
       if (typeof window !== 'undefined') {
         const router = require('next/navigation').default;
         router.replace(routes.auth.signIn);
