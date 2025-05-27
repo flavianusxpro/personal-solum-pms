@@ -111,7 +111,7 @@ export default function CreateEditPatient({
         {tab === 'billing' && <TabBillingAppointments isView={isView} />}
         {tab === 'notes-flags' && <TabNotesFlags isView={isView} />}
         {tab === 'assign' && <TabAssign isView={isView} />}
-        {tab === 'history' && <TabHistory isView={isView} />}
+        {tab === 'history' && <></>}
         {tab === 'documentation' && <TabDocumentation isView={isView} />}
       </div>
     </>
