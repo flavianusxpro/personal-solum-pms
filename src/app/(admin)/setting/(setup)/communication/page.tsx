@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { Input, Loader, Switch, SelectOption, Flex } from 'rizzui';
+import { Input, Loader, Switch, SelectOption, Flex, Text } from 'rizzui';
 import {
   settingCommunicationFormSchema,
   SettingCommunicationFormTypes,
@@ -24,6 +24,7 @@ import {
 } from '@/types/paramTypes';
 import { useGetSmtpConfig, useUpdateSmtpConfig } from '@/hooks/useSmpt';
 import { useGetAwsS3Config, useUpdateAwsS3Config } from '@/hooks/useAws';
+import { useState } from 'react';
 
 const types: SelectOption[] = [
   {
@@ -45,6 +46,8 @@ const types: SelectOption[] = [
 ];
 
 export default function Communication() {
+  const [smtpMode, setSmtpMode] = useState<'manual' | 'aws'>('manual');
+
   const { data: dataSmtp, isLoading: isLoadingGetSmtp } = useGetSmtpConfig();
   const { data: dataTwilio, isLoading: isLoadingGetTwilio } =
     useGetTwilioConfig();
@@ -170,94 +173,205 @@ export default function Communication() {
               description="SMTP configuration is used to send email notifications"
               className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
             />
-
+            <Flex className="mt-6 items-center justify-between">
+              <CSelect
+                value={smtpMode}
+                placeholder="Select SMTP Mode"
+                options={[
+                  { label: 'Manual', value: 'manual' },
+                  { label: 'AWS Email', value: 'aws' },
+                ]}
+                onChange={(value: string) =>
+                  setSmtpMode(value as 'manual' | 'aws')
+                }
+                className="w-fit"
+              />
+            </Flex>
             <div className="mb-10 grid grid-cols-2 gap-7 divide-y divide-dashed divide-gray-200 @2xl:gap-9 @3xl:gap-11">
-              <div>
-                <FormGroup
-                  title="Host"
-                  className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
-                  isLabel
-                >
-                  <Input
-                    placeholder="Host"
-                    {...register('smtp_host')}
-                    error={errors.smtp_host?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-
-                <FormGroup
-                  title="Email Address"
-                  className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
-                  isLabel
-                >
-                  <Input
-                    placeholder="Email Address"
-                    {...register('smtp_email_address')}
-                    error={errors.smtp_email_address?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-
-                <FormGroup
-                  title="Email Port"
-                  className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
-                  isLabel
-                >
-                  <Input
-                    type="number"
-                    placeholder="Email Port"
-                    {...register('smtp_port')}
-                    error={errors.smtp_port?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-              </div>
-              <div>
-                <FormGroup
-                  title="Security Type"
-                  className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
-                  isLabel
-                >
-                  <Controller
-                    control={control}
-                    name="smtp_security_type"
-                    render={({ field }) => (
-                      <CSelect
-                        {...field}
-                        placeholder="Select Type"
-                        options={types}
-                        className="col-span-full"
-                        error={errors?.smtp_security_type?.message as string}
+              {smtpMode === 'aws' && (
+                <>
+                  <div>
+                    <FormGroup
+                      title="Aws Host (not connected yet)"
+                      className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                      isLabel
+                    >
+                      <Input
+                        placeholder="Host"
+                        {...register('smtp_host')}
+                        error={errors.smtp_host?.message}
+                        className="flex-grow"
                       />
-                    )}
-                  />
-                </FormGroup>
-                <FormGroup
-                  title="Username"
-                  className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
-                  isLabel
-                >
-                  <Input
-                    placeholder="Smtp Username"
-                    {...register('smtp_username')}
-                    error={errors.smtp_username?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-                <FormGroup
-                  title="Password"
-                  className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
-                  isLabel
-                >
-                  <Input
-                    placeholder="Smtp Password"
-                    {...register('smtp_password')}
-                    error={errors.smtp_password?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-              </div>
+                    </FormGroup>
+
+                    <FormGroup
+                      title="Aws Email Address"
+                      className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                      isLabel
+                    >
+                      <Input
+                        placeholder="Email Address"
+                        {...register('smtp_email_address')}
+                        error={errors.smtp_email_address?.message}
+                        className="flex-grow"
+                      />
+                    </FormGroup>
+
+                    <FormGroup
+                      title="Aws Email Port"
+                      className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                      isLabel
+                    >
+                      <Input
+                        type="number"
+                        placeholder="Email Port"
+                        {...register('smtp_port')}
+                        error={errors.smtp_port?.message}
+                        className="flex-grow"
+                      />
+                    </FormGroup>
+                  </div>
+                  <div>
+                    <FormGroup
+                      title="Security Type"
+                      className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                      isLabel
+                    >
+                      <Controller
+                        control={control}
+                        name="smtp_security_type"
+                        render={({ field }) => (
+                          <CSelect
+                            {...field}
+                            placeholder="Select Type"
+                            options={types}
+                            className="col-span-full"
+                            error={
+                              errors?.smtp_security_type?.message as string
+                            }
+                          />
+                        )}
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      title="Username"
+                      className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                      isLabel
+                    >
+                      <Input
+                        placeholder="Smtp Username"
+                        {...register('smtp_username')}
+                        error={errors.smtp_username?.message}
+                        className="flex-grow"
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      title="Password"
+                      className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                      isLabel
+                    >
+                      <Input
+                        placeholder="Smtp Password"
+                        {...register('smtp_password')}
+                        error={errors.smtp_password?.message}
+                        className="flex-grow"
+                      />
+                    </FormGroup>
+                  </div>
+                </>
+              )}
+              {smtpMode === 'manual' && (
+                <>
+                  <div>
+                    <FormGroup
+                      title="Host"
+                      className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                      isLabel
+                    >
+                      <Input
+                        placeholder="Host"
+                        {...register('smtp_host')}
+                        error={errors.smtp_host?.message}
+                        className="flex-grow"
+                      />
+                    </FormGroup>
+
+                    <FormGroup
+                      title="Email Address"
+                      className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                      isLabel
+                    >
+                      <Input
+                        placeholder="Email Address"
+                        {...register('smtp_email_address')}
+                        error={errors.smtp_email_address?.message}
+                        className="flex-grow"
+                      />
+                    </FormGroup>
+
+                    <FormGroup
+                      title="Email Port"
+                      className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                      isLabel
+                    >
+                      <Input
+                        type="number"
+                        placeholder="Email Port"
+                        {...register('smtp_port')}
+                        error={errors.smtp_port?.message}
+                        className="flex-grow"
+                      />
+                    </FormGroup>
+                  </div>
+                  <div>
+                    <FormGroup
+                      title="Security Type"
+                      className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                      isLabel
+                    >
+                      <Controller
+                        control={control}
+                        name="smtp_security_type"
+                        render={({ field }) => (
+                          <CSelect
+                            {...field}
+                            placeholder="Select Type"
+                            options={types}
+                            className="col-span-full"
+                            error={
+                              errors?.smtp_security_type?.message as string
+                            }
+                          />
+                        )}
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      title="Username"
+                      className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                      isLabel
+                    >
+                      <Input
+                        placeholder="Smtp Username"
+                        {...register('smtp_username')}
+                        error={errors.smtp_username?.message}
+                        className="flex-grow"
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      title="Password"
+                      className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+                      isLabel
+                    >
+                      <Input
+                        placeholder="Smtp Password"
+                        {...register('smtp_password')}
+                        error={errors.smtp_password?.message}
+                        className="flex-grow"
+                      />
+                    </FormGroup>
+                  </div>
+                </>
+              )}
             </div>
 
             <FormGroup
