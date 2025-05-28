@@ -10,6 +10,8 @@ import {
   refundInvoiceSchema,
 } from '@/validators/refund-invoice.schema';
 import CSelect from '@/app/shared/ui/select';
+import { useGetInvoices, useRefundInvoice } from '@/hooks/useInvoice';
+import toast from 'react-hot-toast';
 
 export default function RefundForm({
   data,
@@ -18,23 +20,24 @@ export default function RefundForm({
 }) {
   const { closeModal } = useModal();
 
-  const onSubmit: SubmitHandler<RefundInvoiceForm> = (data) => {
-    console.log('🚀 ~ onSubmit ~ data:', data);
-    // mutate(
-    // {
-    //     id: data.id,
-    //     note: data.note,
-    // },
-    // {
-    //     onSuccess: () => {
-    //     toast.success('Note updated successfully');
-    //     closeModal();
-    //     },
-    //     onError: (error) => {
-    //     toast.error('Failed to update note: ' + error.message);
-    //     },
-    // }
-    // );
+  const { mutate } = useRefundInvoice();
+
+  const { refetch } = useGetInvoices({
+    page: 1,
+    perPage: 10,
+  });
+
+  const onSubmit: SubmitHandler<RefundInvoiceForm> = (formValue) => {
+    mutate(data.id, {
+      onSuccess: () => {
+        refetch();
+        toast.success('Refund updated successfully');
+        closeModal();
+      },
+      onError: (error) => {
+        toast.error('Failed to update note: ' + error.message);
+      },
+    });
   };
 
   return (
@@ -57,13 +60,20 @@ export default function RefundForm({
               </ActionIcon>
             </Flex>
 
-            <CSelect
-              options={[
-                {
-                  label: 'Transfer',
-                  value: 'transfer',
-                },
-              ]}
+            <Controller
+              control={control}
+              name="payment_method"
+              render={({ field }) => (
+                <CSelect
+                  {...field}
+                  options={[
+                    {
+                      label: 'Transfer',
+                      value: 'transfer',
+                    },
+                  ]}
+                />
+              )}
             />
 
             <Controller

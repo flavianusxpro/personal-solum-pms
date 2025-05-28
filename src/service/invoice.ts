@@ -32,3 +32,11 @@ export async function deleteInvoice(ids: number[]) {
     },
   });
 }
+
+export async function postRefundInvoice(id: number) {
+  return await post(`/admin/invoice/${id}/refund`, {});
+}
+
+export async function postResendInvoice(id: number) {
+  return await post(`/admin/invoice/resend`, {});
+}
