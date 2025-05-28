@@ -146,8 +146,7 @@ export default function Communication() {
           twillio_auth_token: dataTwilio?.data.auth_token || '',
           twillio_phone_number: dataTwilio?.data.from_number || '',
           twillio_status: dataTwilio?.data.status || false,
-          sms_provider_status:
-            dataTwilio?.data.status || dataAwsS3?.data.status || false,
+          sms_provider_status: dataTwilio?.data.status || false,
           aws_id: dataAwsS3?.data.aws_access_id || '',
           aws_secret_key: dataAwsS3?.data.aws_secret_key || '',
           aws_bucket: dataAwsS3?.data.bucket || '',
@@ -262,6 +261,60 @@ export default function Communication() {
             </div>
 
             <FormGroup
+              title="AWS CONFIGURATION"
+              description="AWS configuration"
+              className="mb-10 mt-4 border-t border-t-slate-300 pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+            />
+            <div className="mb-10">
+              <StatusCard
+                icon={<IoChevronDownCircleOutline />}
+                meetName="AWS S3 Configuration"
+                content="AWS"
+                onSwitchChange={(checked) => {
+                  setValue('aws_status', checked);
+                }}
+                switchValue={watch('aws_status')}
+                containClassName="grid grid-cols-2 gap-4"
+              >
+                <Input
+                  label="AWS ID"
+                  placeholder="AWS ID"
+                  {...register('aws_id')}
+                  error={errors.aws_id?.message}
+                  className="flex-grow"
+                />
+                <Input
+                  label="AWS Secret Key"
+                  placeholder="AWS Secret Key"
+                  {...register('aws_secret_key')}
+                  error={errors.aws_secret_key?.message}
+                  className="flex-grow"
+                />
+                <Input
+                  label="Bucket"
+                  placeholder="Bucket"
+                  {...register('aws_bucket')}
+                  error={errors.aws_bucket?.message}
+                  className="flex-grow"
+                />
+                <Input
+                  label="Region"
+                  placeholder="AWS Pass Key"
+                  {...register('aws_region')}
+                  error={errors.aws_region?.message}
+                  className="flex-grow"
+                />
+                <Input
+                  label="Endpoint"
+                  placeholder="Endpoint"
+                  {...register('aws_endpoint')}
+                  error={errors.aws_endpoint?.message}
+                  className="flex-grow"
+                />
+              </StatusCard>
+            </div>
+
+            <FormGroup
               title="SMS Provider"
               description="SMS provider is used to send SMS notifications"
               className="mb-10 mt-4 border-t border-t-slate-300 pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
@@ -335,53 +388,6 @@ export default function Communication() {
                         )}
                       />
                     </Flex>
-                  </StatusCard>
-
-                  <StatusCard
-                    icon={<IoChevronDownCircleOutline />}
-                    meetName="AWS S3 Configuration"
-                    content="AWS"
-                    onSwitchChange={(checked) => {
-                      setValue('aws_status', checked);
-                    }}
-                    switchValue={watch('aws_status')}
-                    containClassName="grid grid-cols-2 gap-4"
-                  >
-                    <Input
-                      label="AWS ID"
-                      placeholder="AWS ID"
-                      {...register('aws_id')}
-                      error={errors.aws_id?.message}
-                      className="flex-grow"
-                    />
-                    <Input
-                      label="AWS Secret Key"
-                      placeholder="AWS Secret Key"
-                      {...register('aws_secret_key')}
-                      error={errors.aws_secret_key?.message}
-                      className="flex-grow"
-                    />
-                    <Input
-                      label="Bucket"
-                      placeholder="Bucket"
-                      {...register('aws_bucket')}
-                      error={errors.aws_bucket?.message}
-                      className="flex-grow"
-                    />
-                    <Input
-                      label="Region"
-                      placeholder="AWS Pass Key"
-                      {...register('aws_region')}
-                      error={errors.aws_region?.message}
-                      className="flex-grow"
-                    />
-                    <Input
-                      label="Endpoint"
-                      placeholder="Endpoint"
-                      {...register('aws_endpoint')}
-                      error={errors.aws_endpoint?.message}
-                      className="flex-grow"
-                    />
                   </StatusCard>
 
                   <StatusCard
