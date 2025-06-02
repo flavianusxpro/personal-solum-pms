@@ -7,6 +7,7 @@ import { Checkbox, Title, Text, Button, Badge } from 'rizzui';
 import { exportToCSV } from '@core/utils/export-to-csv';
 import { billingHistoryData } from '@/data/billing-history';
 import { IDoctor, IGetAppointmentListResponse } from '@/types/ApiResponse';
+import { getAptStatusBadge } from '@/app/shared/appointment/appointment-list/list/columns';
 
 function handleDownloadRowData(row: { [key: string]: any }) {
   exportToCSV(
@@ -95,7 +96,7 @@ export const getColumns = ({
     onHeaderCell: () => onHeaderCellClick('status'),
     dataIndex: 'status',
     key: 'status',
-    render: (status: any) => getStatusBadge(status),
+    render: (status: any) => getAptStatusBadge(status),
   },
   {
     title: <></>,

@@ -35,7 +35,7 @@ import CancelForm from '../../modal/cancel-form';
 import RescheduleAppointmentForm from '../../modal/reschedule';
 import RevertForm from '../../modal/revert-form';
 
-const statusOptions = [
+const aptStatusOptions = [
   { label: 'Draft', value: 1 },
   { label: 'Scheduled', value: 2 },
   { label: 'Checked In', value: 3 },
@@ -391,7 +391,7 @@ export function getPaymentStatusBadge(status: number | string | undefined) {
   }
 }
 
-export function getScheduleStatusBadge(status: number | string) {
+export function getAptStatusBadge(status: number | string) {
   switch (status) {
     case 7:
       return (
@@ -453,7 +453,7 @@ export function getScheduleStatusBadge(status: number | string) {
 }
 
 function StatusSelect({ selectItem, id }: { selectItem: number; id: number }) {
-  const selectItemValue = statusOptions.find(
+  const selectItemValue = aptStatusOptions.find(
     (option) => option.value === selectItem
   )?.value;
   const [value, setValue] = useState(selectItemValue);
@@ -482,12 +482,12 @@ function StatusSelect({ selectItem, id }: { selectItem: number; id: number }) {
       className={'min-w-[140px]'}
       dropdownClassName="h-auto"
       placeholder="Select Status"
-      options={statusOptions}
+      options={aptStatusOptions}
       value={value}
       onChange={handleChange}
       isLoading={isPending}
       displayValue={(option: { value: number }) =>
-        getScheduleStatusBadge(option.value)
+        getAptStatusBadge(option.value)
       }
     />
   );

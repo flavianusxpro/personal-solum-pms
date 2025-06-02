@@ -39,7 +39,7 @@ const statusOptions = [
   { label: 'Send via Credit Card', value: 2 },
 ];
 
-function getPaymentStatusBadge(status: number) {
+export function getInvoicePaymentStatusBadge(status: number) {
   switch (status) {
     case 1:
       return (
@@ -165,7 +165,7 @@ export const getColumns = ({
     dataIndex: 'status',
     key: 'status',
     width: 650,
-    render: (value: number) => getPaymentStatusBadge(value),
+    render: (value: number) => getInvoicePaymentStatusBadge(value),
   },
   {
     title: <HeaderCell title="CREATED BY" />,

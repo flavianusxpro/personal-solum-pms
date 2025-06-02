@@ -7,6 +7,7 @@ import { HeaderCell } from '@/app/shared/ui/table';
 import { Checkbox, Title, Text, Button, Badge } from 'rizzui';
 import { exportToCSV } from '@core/utils/export-to-csv';
 import { billingHistoryData } from '@/data/billing-history';
+import { getInvoicePaymentStatusBadge } from '@/app/shared/invoice/invoice-list/columns';
 
 const statusColors: any = {
   'In Progress': 'info',
@@ -98,7 +99,7 @@ export const getColumns = ({
     onHeaderCell: () => onHeaderCellClick('status'),
     dataIndex: 'status',
     key: 'status',
-    render: (status: any) => getStatusBadge(status),
+    render: (status: number) => getInvoicePaymentStatusBadge(status),
   },
   {
     title: <></>,
