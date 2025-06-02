@@ -9,7 +9,7 @@ import { formatDate } from '@core/utils/format-date';
 import { useDeleteAppointment } from '@/hooks/useAppointment';
 import toast from 'react-hot-toast';
 import CreateUpdateAppointmentForm from '../appointment/modal/appointment-form';
-import { getScheduleStatusBadge } from '../appointment/appointment-list/list/columns';
+import { getAptStatusBadge } from '../appointment/appointment-list/list/columns';
 import { useEffect } from 'react';
 
 function DetailsEvents({ event }: { event: CalendarEvent }) {
@@ -96,7 +96,7 @@ function DetailsEvents({ event }: { event: CalendarEvent }) {
             <MdOutlineCalendarMonth className="h-5 w-5" />
             <span>Appointment Status:</span>
             <span className="font-medium text-gray-1000">
-              {getScheduleStatusBadge(event.data?.status as number)}
+              {getAptStatusBadge(event.data?.status as number)}
             </span>
           </li>
           <li className="flex gap-2">
