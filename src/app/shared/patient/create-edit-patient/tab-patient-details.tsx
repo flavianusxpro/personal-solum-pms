@@ -128,6 +128,8 @@ export default function PatientDetails({
       concession_card_expire_date: dayjs(data.concession_card_expiry).format(
         'DD MM YYYY'
       ),
+      address_line_1: data.address_line_1,
+      address_line_2: data.address_line_2,
     };
 
     if (id) {
@@ -183,6 +185,8 @@ export default function PatientDetails({
             : undefined,
           concession_card_number: dataPatient?.concession_card_number ?? '',
           concession_card_type: dataPatient?.concession_card_type ?? '',
+          address_line_1: dataPatient?.address_line_1 ?? '',
+          address_line_2: dataPatient?.address_line_2 ?? '',
         },
       }}
     >

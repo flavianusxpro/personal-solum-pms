@@ -221,6 +221,8 @@ export interface IGetPatientByIdResponse extends ApiResponse {
     created_at: string;
     updated_at: string;
     doctors: IDoctor[];
+    address_line_1: string;
+    address_line_2: string;
   };
 }
 

@@ -37,11 +37,12 @@ import RevertForm from '../../modal/revert-form';
 
 const statusOptions = [
   { label: 'Draft', value: 1 },
-  { label: 'Pending', value: 2 },
-  { label: 'Confirmed', value: 3 },
+  { label: 'Scheduled', value: 2 },
+  { label: 'Checked In', value: 3 },
   { label: 'Finished', value: 4 },
   { label: 'Cancelled', value: 5 },
-  { label: 'Rescheduled', value: 6 },
+  { label: 'On Going', value: 6 },
+  { label: 'No Show', value: 7 },
 ];
 
 type RowValue = IGetAppointmentListResponse['data'][number];
