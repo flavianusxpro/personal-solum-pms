@@ -30,14 +30,6 @@ export default function OtherPagesLayout({
             notIn ? 'justify-between' : 'justify-center'
           )}
         >
-          <Link href={'/'}>
-            <Image
-              src={siteConfig.logo}
-              alt={siteConfig.title}
-              className="dark:invert"
-              priority
-            />
-          </Link>
           {notIn && (
             <Button
               variant="outline"
@@ -50,7 +42,6 @@ export default function OtherPagesLayout({
           )}
         </div>
       </div>
-      <SocialItems />
     </div>
   );
 }

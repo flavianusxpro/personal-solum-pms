@@ -38,5 +38,5 @@ export async function postRefundInvoice(id: number) {
 }
 
 export async function postResendInvoice(id: number) {
-  return await post(`/admin/invoice/resend`, {});
+  return await post(`/admin/invoice/${id}/resend`, {});
 }
