@@ -50,7 +50,7 @@ export default function DateTime() {
       date: dayjs(data.date).format('YYYY-MM-DD'),
     }));
 
-    formData.rescedule_by === 'doctor' ? gotoStep(2) : gotoStep(3);
+    gotoStep(2);
   };
 
   return (

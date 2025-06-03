@@ -50,7 +50,7 @@ export default function AppointmentPatientDoctor() {
     id: formData?.clinicId?.toString() as string,
     page: 1,
     perPage: 10,
-    treatment_type: formData.treatment,
+    treatment_type: formData.treatment || formData.patient_type,
     problem_type: formData.patient_problem,
   });
 
