@@ -100,12 +100,7 @@ export default function CreateEditPatient({
           </nav>
         </SimpleBar>
 
-        {tab === 'patient' && (
-          <PatientDetails
-            nextTab={() => selectTab(navItems[1].value)}
-            isView={isView}
-          />
-        )}
+        {tab === 'patient' && <PatientDetails isView={isView} />}
         {tab === 'password' && <TabPassword isView={isView} />}
         {tab === 'emergency' && <TabEmergencyContact isView={isView} />}
         {tab === 'billing' && <TabBillingAppointments isView={isView} />}
