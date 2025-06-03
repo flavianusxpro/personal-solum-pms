@@ -87,7 +87,7 @@ export default function DateTime() {
                     const isDisabled = disabledDate.some((disabled) =>
                       disabled.isSame(dayjs(date), 'day')
                     );
-                    return isDisabled ? '' : '';
+                    return isDisabled ? 'bg-green-100' : '';
                   }
                 }}
                 className="self-center !border-0 !bg-transparent px-4 pb-4 pt-2.5 !font-inter !text-base md:px-5 md:pb-5"
