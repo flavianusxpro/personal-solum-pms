@@ -913,13 +913,6 @@ export interface IGetCalendarScheduleByClinicIdResponse extends ApiResponse {
   }[];
 }
 
-export interface IPostCouponCodeValidationResponse extends ApiResponse {
-  data: {
-    amount: number;
-    type: string;
-  };
-}
-
 export interface IGetAwsS3ConfigResponse extends ApiResponse {
   data: {
     id: number;
@@ -946,4 +939,24 @@ export interface IGetPatientDocumentationResponse
     created_at: string;
     updated_at: string;
   }[];
+}
+
+export interface IPostCouponCodeValidationResponse extends ApiResponse {
+  data: {
+    id: number;
+    type: string;
+    name: string;
+    description: string;
+    code: string;
+    discount_type: string;
+    discount_amount: number;
+    expiry_date: string;
+    patient_limit_use: number;
+    limit: number;
+    remaining_limit: number;
+    category: string;
+    restrict_patient: string;
+    created_at: string;
+    updated_at: string;
+  };
 }

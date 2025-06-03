@@ -39,22 +39,22 @@ const PriceEstimationCost = ({
     useCouponCodeValidation();
 
   const couponValue = useMemo(() => {
-    if (dataCoupon?.data?.type === 'percent') {
-      return `${dataCoupon.data.amount}%`;
-    } else if (dataCoupon?.data?.type === 'fix') {
-      return `$${dataCoupon.data.amount}`;
+    if (dataCoupon?.data?.discount_type === 'percent') {
+      return `${dataCoupon.data.discount_amount}%`;
+    } else if (dataCoupon?.data?.discount_type === 'fix') {
+      return `$${dataCoupon.data.discount_amount}`;
     }
     return '-';
   }, [dataCoupon]);
 
   const totalValue = useMemo(() => {
-    if (dataCoupon?.data?.type === 'percent') {
+    if (dataCoupon?.data?.discount_type === 'percent') {
       return (
         Number(formData.fee) -
-        (Number(formData.fee) * Number(dataCoupon.data.amount)) / 100
+        (Number(formData.fee) * Number(dataCoupon.data.discount_amount)) / 100
       );
-    } else if (dataCoupon?.data?.type === 'fix') {
-      return Number(formData.fee) - Number(dataCoupon.data.amount);
+    } else if (dataCoupon?.data?.discount_type === 'fix') {
+      return Number(formData.fee) - Number(dataCoupon.data.discount_amount);
     }
     return formData.fee;
   }, [dataCoupon, formData.fee]);
@@ -63,7 +63,7 @@ const PriceEstimationCost = ({
 
   function couponValidation(couponCode: string) {
     mutateCouponValidation(couponCode, {
-      onSuccess: (data) => {
+      onSuccess: () => {
         toast.success('Coupon code applied successfully');
       },
       onError: (error: any) => {
@@ -115,7 +115,7 @@ const PriceEstimationCost = ({
             </Flex>
             <Flex justify="between" align="center">
               <Text>Coupon:</Text>
-              <Text>-</Text>
+              <Text>{couponValue ?? '-'}</Text>
             </Flex>
             <Flex justify="between" align="center">
               <Text>Merchant Fee:</Text>

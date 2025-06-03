@@ -26,7 +26,7 @@ export async function deleteCoupon(ids: number[]) {
 
 export async function postCouponCodeValidation(payload: string) {
   return await post<IPostCouponCodeValidationResponse>(
-    '/patient/coupon/validate',
+    '/admin/coupon/validation',
     { coupon_code: payload }
   );
 }
