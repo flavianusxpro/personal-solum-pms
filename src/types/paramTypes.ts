@@ -570,4 +570,6 @@ export interface IPayloadUpdateAwsS3Config {
 }
 
 export interface IParamsGetPatientDocumentation
-  extends IParamGetDataWithPagination {}
+  extends IParamGetDataWithPagination {
+  patientId: number;
+}

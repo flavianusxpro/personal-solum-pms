@@ -49,6 +49,7 @@ export default function DocumentationForm({
   const { refetch } = useGetPatientDocumentation({
     page: 1,
     perPage: 10,
+    patientId: dataPatient?.id as number,
   });
 
   const { mutate: mutateCreate, isPending } = useUploadPatientDocumentation();

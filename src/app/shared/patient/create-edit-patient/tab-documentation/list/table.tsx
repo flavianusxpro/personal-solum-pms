@@ -40,6 +40,7 @@ export default function ListTable({ className }: { className?: string }) {
     page: params.page,
     perPage: params.perPage,
     sort: 'DESC',
+    patientId: dataPatient?.id as number,
   });
 
   const { mutate } = useDeletePatientDocumentation();
