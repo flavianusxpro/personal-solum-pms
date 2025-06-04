@@ -14,6 +14,7 @@ import {
   putUpdatePatientDocumentation,
   deletePatientDocumentation,
   getPatientDocumentation,
+  putPatientAssignClinic,
 } from '@/service/patient';
 import {
   IParamGetAllPatient,
@@ -140,5 +141,11 @@ export function useUpdatePatientDocumentation() {
 export function useDeletePatientDocumentation() {
   return useMutation({
     mutationFn: deletePatientDocumentation,
+  });
+}
+
+export function useAssignClinicPatient() {
+  return useMutation({
+    mutationFn: putPatientAssignClinic,
   });
 }

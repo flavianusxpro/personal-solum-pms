@@ -14,6 +14,7 @@ import {
   IParamsGetPatientDocumentation,
   IPayloadCreateEditPatient,
   IPayloadCreatePatientProblem,
+  IPayloadPatientAssignClinic,
   IPayloadUpdateAssignDoctor,
 } from '@/types/paramTypes';
 
@@ -114,5 +115,13 @@ export async function deletePatientDocumentation(ids: string[]) {
     data: {
       ids,
     },
+  });
+}
+
+export async function putPatientAssignClinic(
+  payload: IPayloadPatientAssignClinic
+) {
+  return await put(`/admin/patient/${payload.uuid}/assign-clinic`, {
+    clinic_ids: payload.clinic_ids,
   });
 }

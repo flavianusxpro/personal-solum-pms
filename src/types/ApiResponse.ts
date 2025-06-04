@@ -222,6 +222,7 @@ export interface IGetPatientByIdResponse extends ApiResponse {
     created_at: string;
     updated_at: string;
     doctors: IDoctor[];
+    clinics: IClinic[];
     address_line_1: string;
     address_line_2: string;
   };
@@ -498,6 +499,20 @@ export interface IGetAppointmentSummaryResponse extends ApiResponse {
     finished_appointment: number;
     cancelled_appointment: number;
   };
+}
+
+interface IClinic {
+  id: number;
+  name: string;
+  email: string;
+  mobile_number: string;
+  address: string;
+  logo: string;
+  default: boolean;
+  status: number;
+  description: null;
+  created_at: string;
+  updated_at: string;
 }
 export interface IDoctor {
   id: number;

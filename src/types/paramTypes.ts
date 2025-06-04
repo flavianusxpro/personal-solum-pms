@@ -577,3 +577,8 @@ export interface IParamsGetPatientDocumentation
   extends IParamGetDataWithPagination {
   patientId: number;
 }
+
+export interface IPayloadPatientAssignClinic {
+  uuid: string;
+  clinic_ids: number[];
+}
