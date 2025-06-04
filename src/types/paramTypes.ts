@@ -436,6 +436,10 @@ export interface IPayloadUpdateEmailNotificationSettings {
   birthday_email_html: string;
   reminder_email_status: boolean;
   reminder_email_html: string;
+  cancelled_email_status?: boolean;
+  cancelled_email_html?: string;
+  refund_email_status?: boolean;
+  refund_email_html?: string;
 }
 
 export interface IPayloadCreateEditEmailTemplate {

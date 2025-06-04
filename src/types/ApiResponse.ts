@@ -757,6 +757,10 @@ export interface IGetEmailNotificationSettingsResponse extends ApiResponse {
     birthday_email_html: null;
     reminder_email_status: boolean;
     reminder_email_html: null;
+    refund_email_status: boolean;
+    refund_email_html: null;
+    cancelled_email_status: boolean;
+    cancelled_email_html: null;
   };
 }
 
