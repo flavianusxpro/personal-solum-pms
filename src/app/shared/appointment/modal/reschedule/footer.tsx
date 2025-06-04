@@ -36,6 +36,7 @@ export default function Footer({
         id: formData.id as number,
         doctorId: formData.doctorId,
         date: `${dayjs(formData.date).format('YYYY-MM-DD')} ${formData.doctorTime}`,
+        note: formData.reason,
       },
       {
         onSuccess: () => {

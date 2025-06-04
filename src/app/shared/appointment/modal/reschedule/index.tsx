@@ -61,6 +61,7 @@ type FormDataType = {
   fee: string;
   rescedule_by?: string;
   treatment: string;
+  reason?: string;
   oldData?: {
     id?: number | null;
     clinicId?: number;
@@ -99,6 +100,7 @@ export const initialFormData = {
   rescedule_by: '',
   treatment: '',
   fee: '',
+  reason: '',
   oldData: {
     id: null,
     clinicId: undefined,
