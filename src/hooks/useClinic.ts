@@ -64,7 +64,7 @@ export function useGetDoctorAvailabilityByClinic(
   payload: IParamsGetDoctorAvailability
 ) {
   return useQuery({
-    queryKey: ['doctor-availability-by-clinic'],
+    queryKey: ['doctor-availability-by-clinic' + payload.doctorId],
     queryFn: async () => postGetDoctorAvailabilityByClinic(payload),
   });
 }
