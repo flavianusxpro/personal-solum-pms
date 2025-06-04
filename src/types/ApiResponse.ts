@@ -180,6 +180,7 @@ export interface IGetAllPatientsResponse extends ApiResponseWithPagination {
     timezone: string;
     created_at: string;
     updated_at: string;
+    photo: string | null;
   }[];
 }
 

@@ -177,168 +177,168 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
       {({ register, control, setValue, getValues, formState: { errors } }) => {
         return (
           <>
-            <div className="grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
-              <div className="section-container">
-                <FormGroup
-                  title="Personal Info"
-                  className="grid-cols-12 gap-4"
+            <div className="detail-form-container">
+              <FormGroup
+                title="Personal Info"
+                className="col-span-full gap-4"
+              />
+              <FormGroup title="First Name" isLabel>
+                <Input
+                  placeholder="First Name"
+                  {...register('first_name')}
+                  error={errors.first_name?.message}
+                  className="flex-grow"
+                  disabled={isView}
                 />
-                <FormGroup title="First Name" isLabel>
-                  <Input
-                    placeholder="First Name"
-                    {...register('first_name')}
-                    error={errors.first_name?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Last Name" isLabel>
-                  <Input
-                    placeholder="Last Name"
-                    {...register('last_name')}
-                    error={errors.last_name?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Gender" isLabel>
-                  <Controller
-                    name="gender"
-                    control={control}
-                    render={({ field }) => (
-                      <CSelect
-                        {...field}
-                        label=""
-                        placeholder="Select Gender"
-                        options={genderOption}
-                        disabled={isView}
-                      />
-                    )}
-                  />
-                </FormGroup>
-                <FormGroup title="Birth of Date" isLabel>
-                  <Input
-                    placeholder="Birth of Dae"
-                    type="date"
-                    {...register('date_of_birth')}
-                    error={errors.date_of_birth?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Phone Number" isLabel>
-                  <Controller
-                    name="mobile_number"
-                    control={control}
-                    render={({ field }) => (
-                      <PhoneNumber
-                        {...field}
-                        country="au"
-                        preferredCountries={['au']}
-                        placeholder="Phone Number"
-                        error={errors.mobile_number?.message}
-                        disabled={isView}
-                      />
-                    )}
-                  />
-                </FormGroup>
-
-                <FormGroup title="Email" isLabel>
-                  <Input
-                    placeholder="Email"
-                    {...register('email')}
-                    error={errors.email?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-              </div>
-
-              <div className="section-container">
-                <FormGroup title="Address" className="grid-cols-12" />
-                <FormGroup title="Country" isLabel>
-                  <Input
-                    placeholder="Country"
-                    {...register('country')}
-                    error={errors.country?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-
-                <FormGroup title="Street Number" isLabel>
-                  <Input
-                    placeholder="Street"
-                    {...register('street_number')}
-                    error={errors.street_number?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Street Name" isLabel>
-                  <Input
-                    placeholder="Street"
-                    {...register('street_name')}
-                    error={errors.street_name?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Address Line 1" isLabel>
-                  <Input
-                    placeholder="Address Line 1"
-                    {...register('address_line_1')}
-                    error={errors.address_line_1?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Address Line 2" isLabel>
-                  <Input
-                    placeholder="Address Line 2"
-                    {...register('address_line_2')}
-                    error={errors.address_line_2?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Suburb" isLabel>
-                  <Input
-                    placeholder="Suburb"
-                    {...register('suburb')}
-                    error={errors.suburb?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
+              </FormGroup>
+              <FormGroup title="Last Name" isLabel>
+                <Input
+                  placeholder="Last Name"
+                  {...register('last_name')}
+                  error={errors.last_name?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+              <FormGroup title="Gender" isLabel>
                 <Controller
-                  name="state"
+                  name="gender"
                   control={control}
                   render={({ field }) => (
-                    <FormGroup title="">
-                      <Flex justify="between" align="center" gap="4">
-                        <CSelect
-                          {...field}
-                          label="State"
-                          placeholder="State"
-                          className="group relative z-0"
-                          options={stateOption}
-                          error={errors.state?.message as string}
-                          disabled={isView}
-                        />
-                        <Input
-                          label="Post Code"
-                          placeholder="Post Code"
-                          {...register('postcode')}
-                          error={errors.postcode?.message}
-                          className="flex-grow"
-                          disabled={isView}
-                        />
-                      </Flex>
-                    </FormGroup>
+                    <CSelect
+                      {...field}
+                      label=""
+                      placeholder="Select Gender"
+                      options={genderOption}
+                      disabled={isView}
+                    />
                   )}
                 />
-              </div>
+              </FormGroup>
+              <FormGroup title="Birth of Date" isLabel>
+                <Input
+                  placeholder="Birth of Dae"
+                  type="date"
+                  {...register('date_of_birth')}
+                  error={errors.date_of_birth?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+              <FormGroup title="Phone Number" isLabel>
+                <Controller
+                  name="mobile_number"
+                  control={control}
+                  render={({ field }) => (
+                    <PhoneNumber
+                      {...field}
+                      country="au"
+                      preferredCountries={['au']}
+                      placeholder="Phone Number"
+                      error={errors.mobile_number?.message}
+                      disabled={isView}
+                    />
+                  )}
+                />
+              </FormGroup>
+
+              <FormGroup title="Email" isLabel>
+                <Input
+                  placeholder="Email"
+                  {...register('email')}
+                  error={errors.email?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+            </div>
+
+            <Divider />
+
+            <div className="detail-form-container">
+              <FormGroup title="Address" className="col-span-full gap-4" />
+              <FormGroup title="Country" isLabel>
+                <Input
+                  placeholder="Country"
+                  {...register('country')}
+                  error={errors.country?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+
+              <FormGroup title="Street Number" isLabel>
+                <Input
+                  placeholder="Street"
+                  {...register('street_number')}
+                  error={errors.street_number?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+              <FormGroup title="Street Name" isLabel>
+                <Input
+                  placeholder="Street"
+                  {...register('street_name')}
+                  error={errors.street_name?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+              <FormGroup title="Address Line 1" isLabel>
+                <Input
+                  placeholder="Address Line 1"
+                  {...register('address_line_1')}
+                  error={errors.address_line_1?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+              <FormGroup title="Address Line 2" isLabel>
+                <Input
+                  placeholder="Address Line 2"
+                  {...register('address_line_2')}
+                  error={errors.address_line_2?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+              <FormGroup title="Suburb" isLabel>
+                <Input
+                  placeholder="Suburb"
+                  {...register('suburb')}
+                  error={errors.suburb?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+              <Controller
+                name="state"
+                control={control}
+                render={({ field }) => (
+                  <FormGroup title="">
+                    <Flex justify="between" align="center" gap="4">
+                      <CSelect
+                        {...field}
+                        label="State"
+                        placeholder="State"
+                        className="group relative z-0"
+                        options={stateOption}
+                        error={errors.state?.message as string}
+                        disabled={isView}
+                      />
+                      <Input
+                        label="Post Code"
+                        placeholder="Post Code"
+                        {...register('postcode')}
+                        error={errors.postcode?.message}
+                        className="flex-grow"
+                        disabled={isView}
+                      />
+                    </Flex>
+                  </FormGroup>
+                )}
+              />
             </div>
 
             <Divider />

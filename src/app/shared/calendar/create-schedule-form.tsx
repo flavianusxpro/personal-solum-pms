@@ -101,23 +101,28 @@ export default function CreateScheduleForm({
 
   function selectedInitialWeek() {
     const { start_date, end_date } = selectedDateRange;
-
     if (!start_date || !end_date) return;
 
     const startDateValue = dayjs(start_date).toDate();
-    const endDateValue = dayjs(end_date).toDate();
+    const endDateValue = dayjs(end_date).subtract(1, 'day').toDate();
 
-    let selectedDay = dayjs(start_date).day(); // 0 (Sunday) - 6 (Saturday)
-
-    const selectedDays = weekInitialValue
-      .filter((item) => item.day === selectedDay)
-      .map((item) => ({
-        ...item,
-        start_date: startDateValue,
-        end_date: endDateValue,
-      }));
-
-    return selectedDays;
+    // Get all days between startDateValue and endDateValue (inclusive)
+    let current = dayjs(startDateValue);
+    const last = dayjs(endDateValue);
+    const result = [];
+    while (current.isBefore(last) || current.isSame(last, 'day')) {
+      const dayOfWeek = current.day();
+      const dayObj = weekInitialValue.find((item) => item.day === dayOfWeek);
+      if (dayObj) {
+        result.push({
+          ...dayObj,
+          start_date: startDateValue,
+          end_date: endDateValue,
+        });
+      }
+      current = current.add(1, 'day');
+    }
+    return result;
   }
 
   const { mutate, isPending } = usePostCreateSchedule();
@@ -125,14 +130,6 @@ export default function CreateScheduleForm({
     doctorId,
     page: 1,
     perPage: 100,
-  });
-
-  const [selectedDays, setSelectedDays] = useState<{
-    label: string;
-    day: number;
-  }>({
-    label: '',
-    day: 0,
   });
 
   const {
@@ -259,7 +256,7 @@ export default function CreateScheduleForm({
     const payloadSettingAppointment: IPayloadPostCreateSchedule = {
       doctorId: Number(doctorId),
       description: data.description || '',
-      dates: payloadDates.slice(0, -1), // Remove the last index
+      dates: payloadDates, // Remove the last index
     };
 
     mutate(payloadSettingAppointment, {

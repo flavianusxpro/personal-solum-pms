@@ -83,7 +83,7 @@ export const getColumns = ({
     width: 300,
     render: (_: any, row: Row) => (
       <AvatarCard
-        src={''}
+        src={row.photo || ''}
         name={`${row.first_name} ${row.last_name}`}
         number={row.mobile_number}
         description={row.email.toLowerCase()}

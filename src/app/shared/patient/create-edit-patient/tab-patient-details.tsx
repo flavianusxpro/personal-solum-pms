@@ -27,6 +27,7 @@ import { DatePicker } from '@/core/ui/datepicker';
 import { PhoneNumber } from '@/core/ui/phone-input';
 import dynamic from 'next/dynamic';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import Divider from '../../ui/divider';
 
 dayjs.extend(customParseFormat);
 
@@ -195,7 +196,7 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
       }) => {
         return (
           <>
-            <div className="mb-10 grid grid-cols-2 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
+            <div className="detail-form-container">
               <FormGroup
                 title="Personal Info"
                 className="col-span-full gap-4"
@@ -220,6 +221,21 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                   )}
                 />
               </FormGroup>
+              <FormGroup title="Gender" isLabel>
+                <Controller
+                  name="gender"
+                  control={control}
+                  render={({ field }) => (
+                    <CSelect
+                      {...field}
+                      label=""
+                      placeholder="Select Gender"
+                      options={genderOption}
+                      disabled={isView}
+                    />
+                  )}
+                />
+              </FormGroup>
               <FormGroup title="First Name" isLabel>
                 <Input
                   placeholder="First Name"
@@ -238,21 +254,7 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                   disabled={isView}
                 />
               </FormGroup>
-              <FormGroup title="Gender" isLabel>
-                <Controller
-                  name="gender"
-                  control={control}
-                  render={({ field }) => (
-                    <CSelect
-                      {...field}
-                      label=""
-                      placeholder="Select Gender"
-                      options={genderOption}
-                      disabled={isView}
-                    />
-                  )}
-                />
-              </FormGroup>
+
               <FormGroup title="Birth of Date" isLabel>
                 <Input
                   placeholder="Birth of Dae"
@@ -382,7 +384,11 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                   />
                 </div>
               </FormGroup>
+            </div>
 
+            <Divider />
+
+            <div className="detail-form-container">
               <FormGroup title="Address" className="col-span-full gap-4" />
               <FormGroup title="Country" isLabel>
                 <Input
