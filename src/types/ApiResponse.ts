@@ -214,6 +214,7 @@ export interface IGetPatientByIdResponse extends ApiResponse {
     emergency_email: null;
     emergency_relationship: null;
     verification_token: string;
+    position_of_card: string;
     ihi_number: string;
     concession_card_expire_date: string;
     concession_card_number: string;
