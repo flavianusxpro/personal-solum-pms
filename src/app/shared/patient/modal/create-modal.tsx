@@ -50,7 +50,7 @@ export default function CreatePatienModal() {
       postcode: data.post_code,
       state: data.state,
       country: data.country,
-      potition_on_card: data.position_of_card,
+      position_of_card: data.position_of_card,
       patient_type: 'New Patient',
     };
 
