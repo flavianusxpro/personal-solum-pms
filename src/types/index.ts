@@ -95,6 +95,7 @@ export interface CalendarEvent {
   patient?: string;
   description?: string;
   location?: string;
+  color?: string;
   breakTimes?: {
     start: Date;
     end: Date;

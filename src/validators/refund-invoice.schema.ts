@@ -4,6 +4,7 @@ import { fileSchema, validateEmail } from './common-rules';
 
 // form zod validation schema
 export const refundInvoiceSchema = z.object({
+  payment_method: z.string().optional(),
   reason: z.string().optional(),
 });
 

@@ -128,7 +128,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
           billing_email: data?.billing_email,
           phone: data?.phone?.replace('+', '') ?? '',
           address_line_1: data?.address_line_1,
-          address_line_2: data?.address_line_2,
+          address_line_2: data?.address_line_2 || undefined,
           city: data?.city,
           state: data?.state,
           postcode: data?.postcode,
@@ -154,7 +154,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
               gap="4"
             >
               <Title className="text-lg">
-                {isView ? 'View' : data ? 'Update' : 'Create'} Pharmachy
+                {isView ? 'View' : data ? 'Update' : 'Create'} Pharmacy
               </Title>
               <ActionIcon variant="text" onClick={closeModal} className="">
                 <PiX className="h-6 w-6" />

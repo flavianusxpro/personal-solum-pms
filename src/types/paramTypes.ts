@@ -14,6 +14,8 @@ export interface IParamGetAllClinic extends IParamGetDataWithPagination {
 export interface IParamGetDoctorByClinic extends IParamGetDataWithPagination {
   id: string;
   role?: RoleType;
+  treatment_type: string;
+  problem_type: string;
 }
 
 export interface IPayloadRegisterForPatient extends RegisterSchema {}
@@ -41,8 +43,6 @@ export interface IPayloadPostBookAppoinment {
   appointment_type: string;
 }
 
-interface Additionalinformation {}
-
 export interface IPayloadPostPaymentMethod {
   payment_method: string;
   amount: number;
@@ -57,7 +57,7 @@ export interface IPayloadCreateEditPatient {
   mobile_number?: string;
   status?: number;
   title?: string;
-  potition_on_card?: string;
+  position_of_card?: string;
   country?: string;
   unit_number?: string;
   street_name?: string;
@@ -77,6 +77,12 @@ export interface IPayloadCreateEditPatient {
   patient_problem?: string[];
   patient_type?: string;
   photo?: string;
+  ihi_number?: string;
+  concession_card_type?: string;
+  concession_card_number?: string;
+  concession_card_expire_date?: string;
+  address_line_1?: string;
+  address_line_2?: string;
 }
 
 export interface IPayloadCreateEditDoctor {
@@ -110,6 +116,7 @@ export interface IPayloadCreateEditDoctor {
   // treatment_type?: number[];
   treatment_type?: string[];
   specialist_type?: number[];
+  problem_type?: string[];
   medical_interest?: string;
   language?: string[];
 }
@@ -134,7 +141,9 @@ export interface IParamGetTaxes extends IParamGetDataWithPagination {}
 export interface IParamsGetItems extends IParamGetDataWithPagination {}
 export interface IParamsGetPharmachies extends IParamGetDataWithPagination {}
 export interface IParamsPatientNotes extends IParamGetDataWithPagination {}
-export interface IParamsPatientFlags extends IParamGetDataWithPagination {}
+export interface IParamsPatientFlags extends IParamGetDataWithPagination {
+  patientId: number;
+}
 export interface IParamGetAppointments extends IParamGetDataWithPagination {
   doctorId?: number;
   patientId?: number;
@@ -145,6 +154,7 @@ export interface IParamGetAppointments extends IParamGetDataWithPagination {
   doctorName?: string;
   by_reschedule?: boolean;
   q?: string;
+  clinicId?: number;
 }
 export interface IParamGetInvoices extends IParamGetDataWithPagination {
   doctorId?: number;
@@ -213,8 +223,13 @@ interface Week {
   endTime: string;
 }
 
-export interface IParamGetPatientProblem {
-  search: string;
+export interface IPayloadCreatePatientProblem {
+  id?: number;
+  name?: string;
+  is_active?: boolean;
+}
+export interface IParamGetPatientProblem extends IParamGetDataWithPagination {
+  search?: string;
 }
 
 export interface IParamGetPatientTypes {
@@ -275,11 +290,16 @@ export interface IPayloadPostAppoinment {
   doctorId: number;
   date: string;
   note?: string;
-  appointment_type: string;
+  // appointment_type: string;
   patient_type: string;
-  patient_problem: string[];
+  patient_problem: string;
   payment_id?: string;
   meeting_preference: string;
+  additional_information: Additionalinformation;
+}
+
+interface Additionalinformation {
+  note?: string;
 }
 
 export interface IPayloadPostCancelAppoinment {
@@ -290,6 +310,7 @@ export interface IPayloadPostCancelAppoinment {
 export interface IPayloadPostRescheduleByDate {
   id: number;
   date: string;
+  doctorId?: number;
   note?: string;
 }
 
@@ -299,7 +320,7 @@ export interface IPayloadPutUpdateAppoinment {
   doctorId?: number;
   patientId?: number;
   patient_type?: string;
-  patient_problem?: string[];
+  patient_problem?: string;
   status?: number;
   appointment_type?: string;
   note?: string;
@@ -415,6 +436,10 @@ export interface IPayloadUpdateEmailNotificationSettings {
   birthday_email_html: string;
   reminder_email_status: boolean;
   reminder_email_html: string;
+  cancelled_email_status?: boolean;
+  cancelled_email_html?: string;
+  refund_email_status?: boolean;
+  refund_email_html?: string;
 }
 
 export interface IPayloadCreateEditEmailTemplate {
@@ -481,7 +506,7 @@ export interface IPayloadCreateEditPharmachy {
   billing_email: string;
   website?: string;
   address_line_1: string;
-  address_line_2: string;
+  address_line_2?: string;
   city: string;
   state: string;
   postcode: string;
@@ -496,7 +521,7 @@ export interface IPayloadPasientNote {
 
 export interface IPayloadPasientFlag {
   id?: number;
-  patient_id: string;
+  patient_id: number;
   category: string;
   description: string;
 }
@@ -520,6 +545,7 @@ export interface IPayloadUpdateTwilioConfig {
   account_id: string;
   auth_token: string;
   from_number: string;
+  status: boolean;
 }
 
 export interface IPayloadUpdateSmtpConfig {
@@ -529,4 +555,30 @@ export interface IPayloadUpdateSmtpConfig {
   smtp_password: string;
   secure_type: string;
   mail_from: string;
+}
+
+export interface IPayloadDoctorCost {
+  id?: number;
+  doctorId: number;
+  treatmentId: number;
+  amount: number;
+}
+
+export interface IPayloadUpdateAwsS3Config {
+  aws_access_id: string;
+  aws_secret_key: string;
+  bucket: string;
+  region: string;
+  endpoint: string;
+  status: boolean;
+}
+
+export interface IParamsGetPatientDocumentation
+  extends IParamGetDataWithPagination {
+  patientId: number;
+}
+
+export interface IPayloadPatientAssignClinic {
+  uuid: string;
+  clinic_ids: number[];
 }

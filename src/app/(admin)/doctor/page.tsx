@@ -6,7 +6,7 @@ import ExportButton from '@/app/shared/ui/export-button';
 import { doctorData } from '@/data/doctor-data';
 import { PiPlusBold } from 'react-icons/pi';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import CreateDoctorModal from '@/app/shared/doctor/modal/create-modal';
+import CreateDoctorModal from '@/app/shared/doctor/modal/create-doctor';
 import DoctorTable from '@/app/shared/doctor/tableDataDoctor/table';
 
 const pageHeader = {

@@ -17,6 +17,10 @@ import {
   deleteTreatment,
   putUpdateTreatment,
   putSettingAppointmentDoctor,
+  getDoctorCostById,
+  postCreateDoctorCost,
+  putUpdateDoctorCost,
+  deleteDoctorCost,
 } from '@/service/doctor';
 
 import { IParamGetAllDoctor, IParamGetSpecialists } from '@/types/paramTypes';
@@ -152,5 +156,33 @@ export function usePutUpdateTreatment() {
 export function useDeleteTreatment() {
   return useMutation({
     mutationFn: deleteTreatment,
+  });
+}
+
+export function useGetDoctorCostById(id: number) {
+  return useQuery({
+    queryKey: ['getDoctorCostById' + id],
+    queryFn: async () => {
+      return await getDoctorCostById(id);
+    },
+    enabled: !!id,
+  });
+}
+
+export function usePostCreateDoctorCost() {
+  return useMutation({
+    mutationFn: postCreateDoctorCost,
+  });
+}
+
+export function usePutUpdateDoctorCost() {
+  return useMutation({
+    mutationFn: putUpdateDoctorCost,
+  });
+}
+
+export function useDeleteDoctorCostById() {
+  return useMutation({
+    mutationFn: deleteDoctorCost,
   });
 }

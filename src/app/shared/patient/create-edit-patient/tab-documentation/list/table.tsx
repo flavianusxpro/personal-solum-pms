@@ -1,0 +1,159 @@
+'use client';
+
+import { useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
+import { useTable } from '@core/hooks/use-table';
+import { Button } from 'rizzui';
+import { useColumn } from '@core/hooks/use-column';
+import ControlledTable from '@/app/shared/ui/controlled-table/index';
+import { getColumns } from './columns';
+import TableHeader from '@/app/shared/ui/table-header';
+import ModalButton from '@/app/shared/ui/modal/modal-button';
+import DocumentationForm from '../modal/add-documentation';
+import FormGroup from '@/app/shared/ui/form-group';
+import {
+  useDeletePatientFLag,
+  useGetPatientFlags,
+} from '@/hooks/usePatientFlag';
+import { useModal } from '@/app/shared/modal-views/use-modal';
+import { useParams } from 'next/navigation';
+import {
+  useDeletePatientDocumentation,
+  useGetPatientById,
+  useGetPatientDocumentation,
+} from '@/hooks/usePatient';
+import toast from 'react-hot-toast';
+const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
+  ssr: false,
+});
+
+export default function ListTable({ className }: { className?: string }) {
+  const id = useParams().id as string;
+  const { openModal } = useModal();
+  const [params, setParams] = useState({
+    page: 1,
+    perPage: 10,
+  });
+
+  const { data: dataPatient } = useGetPatientById(id);
+  const { data: dataDocuments, refetch } = useGetPatientDocumentation({
+    page: params.page,
+    perPage: params.perPage,
+    sort: 'DESC',
+    patientId: dataPatient?.id as number,
+  });
+
+  const { mutate } = useDeletePatientDocumentation();
+
+  const onHeaderCellClick = (value: string) => ({
+    onClick: () => {
+      handleSort(value);
+    },
+  });
+
+  const onDeleteItem = (id: string[]) => {
+    mutate(id, {
+      onSuccess: () => {
+        refetch();
+        toast.success('Patient document deleted successfully');
+        setSelectedRowKeys([]);
+      },
+      onError: (error: any) => {
+        toast.error(error?.response?.data?.message || 'Something went wrong');
+      },
+    });
+  };
+
+  const {
+    isLoading,
+    tableData,
+    currentPage,
+    totalItems,
+    handlePaginate,
+    filters,
+    updateFilter,
+    searchTerm,
+    handleSearch,
+    sortConfig,
+    handleSort,
+    selectedRowKeys,
+    setSelectedRowKeys,
+    handleRowSelect,
+    handleSelectAll,
+    handleDelete,
+  } = useTable(dataDocuments?.data ?? [], params.perPage);
+
+  const columns = useMemo(
+    () =>
+      getColumns({
+        data: dataDocuments?.data ?? [],
+        sortConfig,
+        checkedItems: selectedRowKeys,
+        onHeaderCellClick,
+        onDeleteItem,
+        onChecked: handleRowSelect,
+        handleSelectAll,
+        openModal,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      selectedRowKeys,
+      onHeaderCellClick,
+      sortConfig.key,
+      sortConfig.direction,
+      onDeleteItem,
+      handleRowSelect,
+      handleSelectAll,
+      openModal,
+    ]
+  );
+
+  const { visibleColumns } = useColumn(columns);
+
+  return (
+    <div className={className}>
+      <FormGroup title="Documentation" className="mb-5" />
+
+      <ControlledTable
+        isLoading={isLoading}
+        showLoadingText={true}
+        data={tableData ?? []}
+        // @ts-ignore
+        columns={visibleColumns}
+        scroll={{ x: 1300 }}
+        variant="modern"
+        tableLayout="auto"
+        rowKey={(record) => record.id}
+        paginatorOptions={{
+          pageSize: params.perPage,
+          setPageSize: (pageSize: number) =>
+            setParams((prev) => ({ ...prev, perPage: pageSize })),
+          total: totalItems,
+          current: params.page,
+          onChange: (page: number) => {
+            setParams((prev) => ({ ...prev, page }));
+            handlePaginate(page);
+          },
+        }}
+        tableHeader={
+          <TableHeader isCustomHeader checkedItems={[]}>
+            <ModalButton view={<DocumentationForm />} />
+          </TableHeader>
+        }
+        tableFooter={
+          <TableFooter
+            checkedItems={selectedRowKeys}
+            handleDelete={(ids: string[]) => {
+              onDeleteItem(ids);
+            }}
+          >
+            <Button size="sm" className="dark:bg-gray-300 dark:text-gray-800">
+              Download {selectedRowKeys.length}{' '}
+              {selectedRowKeys.length > 1 ? 'Files' : 'File'}
+            </Button>
+          </TableFooter>
+        }
+      />
+    </div>
+  );
+}

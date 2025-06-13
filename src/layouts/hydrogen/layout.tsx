@@ -1,6 +1,5 @@
 import { routes } from '@/config/routes';
 import useAcl from '@/core/hooks/use-acl';
-import { useProfile } from '@/hooks/useProfile';
 import Header from '@/layouts/hydrogen/header';
 import Sidebar from '@/layouts/hydrogen/sidebar';
 import { usePathname, useRouter } from 'next/navigation';
@@ -16,13 +15,7 @@ export default function HydrogenLayout({
   const { permissionRead, isSuccess } = useAcl();
 
   const whiteList = useMemo(
-    () => [
-      routes.profile,
-      routes.forms.profileSettings,
-      routes.pharmachy,
-      routes.requestCallBack,
-      routes.globalCalendar,
-    ],
+    () => [routes.profile, routes.forms.profileSettings],
     []
   );
 

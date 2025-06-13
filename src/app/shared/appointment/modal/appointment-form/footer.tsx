@@ -32,13 +32,14 @@ export default function Footer({ className }: FooterProps) {
 
   const saveAppoinment = () => {
     const payload: IPayloadPostAppoinment = {
-      appointment_type: formData.appointment_type,
+      // appointment_type: formData.appointment_type,
+      additional_information: { note: formData.note },
       clinicId: formData.clinicId as number,
       doctorId: formData.doctorId as number,
       date: `${dayjs(formData.date).format('YYYY-MM-DD')} ${formData.doctorTime}`,
       note: formData.note,
       patient_problem: formData.patient_problem,
-      patient_type: formData.patient_type,
+      patient_type: formData.treatment,
       meeting_preference: 'ZOOM',
       patientId: formData.patient_id as number,
     };

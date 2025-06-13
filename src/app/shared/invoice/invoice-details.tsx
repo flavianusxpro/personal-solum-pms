@@ -49,7 +49,7 @@ function InvoiceDetailsListTable({
       width: 50,
     },
     {
-      title: 'Item',
+      title: 'Product & Service',
       dataIndex: 'code',
       key: 'code',
       width: 250,

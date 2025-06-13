@@ -12,12 +12,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useModal } from '../../modal-views/use-modal';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import { useParams } from 'next/navigation';
-import ModalButton from '../../ui/modal-button/modal-button';
-import CreateScheduleForm from '../../event-calendar/create-schedule-form';
+import ModalButton from '../../ui/modal/modal-button';
+import CreateScheduleForm from '../../calendar/create-schedule-form';
 import { Flex, Loader } from 'rizzui';
-import { useGetDoctorById } from '@/hooks/useDoctor';
 import { DoctorSchedule } from '@/types/ApiResponse';
-import DetailsSchedule from '../../event-calendar/details-schedule';
+import DetailsSchedule from '../../calendar/details-schedule';
 import { useGetListSchedule } from '@/hooks/useSchedule';
 
 const localizer = dayjsLocalizer(dayjs);

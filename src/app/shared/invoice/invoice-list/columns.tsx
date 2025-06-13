@@ -21,7 +21,7 @@ import TableAvatar from '@core/ui/avatar-card';
 import { IGetInvoiceListResponse } from '@/types/ApiResponse';
 import CSelect from '../../ui/select';
 import { useState } from 'react';
-import { usePutUpdateInvoice } from '@/hooks/useInvoice';
+import { usePutUpdateInvoice, useResendInvoice } from '@/hooks/useInvoice';
 import { HiOutlineAdjustmentsVertical } from 'react-icons/hi2';
 import { useModal } from '../../modal-views/use-modal';
 import { FaRegNoteSticky } from 'react-icons/fa6';
@@ -30,6 +30,7 @@ import RefundForm from '../modal/refund-form';
 import ActionTooltipButton from '../../ui/action-tooltip-button';
 import { PiCheckBold } from 'react-icons/pi';
 import { Currency } from '@/store/currency';
+import toast from 'react-hot-toast';
 
 type IRowType = IGetInvoiceListResponse['data'][number];
 
@@ -38,7 +39,7 @@ const statusOptions = [
   { label: 'Send via Credit Card', value: 2 },
 ];
 
-function getPaymentStatusBadge(status: number) {
+export function getInvoicePaymentStatusBadge(status: number) {
   switch (status) {
     case 1:
       return (
@@ -68,6 +69,13 @@ function getPaymentStatusBadge(status: number) {
         <div className="flex items-center">
           <Badge color="warning" renderAsDot />
           <Text className="text-gray-dark ms-2 font-medium">Void</Text>
+        </div>
+      );
+    case 5:
+      return (
+        <div className="flex items-center">
+          <Badge color="secondary" renderAsDot />
+          <Text className="text-gray-dark ms-2 font-medium">Refund</Text>
         </div>
       );
     default:
@@ -157,7 +165,7 @@ export const getColumns = ({
     dataIndex: 'status',
     key: 'status',
     width: 650,
-    render: (value: number) => getPaymentStatusBadge(value),
+    render: (value: number) => getInvoicePaymentStatusBadge(value),
   },
   {
     title: <HeaderCell title="CREATED BY" />,
@@ -186,7 +194,22 @@ function RenderAction({
 }) {
   const { openModal, closeModal } = useModal();
 
-  function sendToEmail() {}
+  const { mutate } = useResendInvoice();
+
+  const statusAvailToRefund = [3];
+
+  function sendToEmail() {
+    mutate(row.id, {
+      onSuccess: () => {
+        toast.success('Invoice sent to email successfully');
+      },
+      onError: (error: any) => {
+        toast.error(
+          error?.response?.data?.message || 'Error sending invoice to email'
+        );
+      },
+    });
+  }
 
   function refundModal(row: IRowType) {
     closeModal(),
@@ -219,12 +242,14 @@ function RenderAction({
         <Dropdown.Menu className="divide-y">
           <Dropdown.Item onClick={sendToEmail}>
             <FaRegNoteSticky className="mr-2 h-4 w-4" />
-            Send to email (pdf)
+            Resend
           </Dropdown.Item>
-          <Dropdown.Item onClick={() => refundModal(row)}>
-            <GrSchedules className="mr-2 h-4 w-4" />
-            Refund
-          </Dropdown.Item>
+          {statusAvailToRefund.includes(row.status) && (
+            <Dropdown.Item onClick={() => refundModal(row)}>
+              <GrSchedules className="mr-2 h-4 w-4" />
+              Refund
+            </Dropdown.Item>
+          )}
         </Dropdown.Menu>
       </Dropdown>
 

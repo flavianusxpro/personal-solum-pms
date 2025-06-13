@@ -9,7 +9,7 @@ import {
   NavigateAction,
   View,
 } from 'react-big-calendar';
-import DetailsEvents from '@/app/shared/event-calendar/details-event';
+import DetailsEvents from '@/app/shared/calendar/details-event';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import cn from '@core/utils/class-names';
 import CSelect from '../ui/select';
@@ -19,16 +19,26 @@ import CreateUpdateAppointmentForm from '../appointment/modal/appointment-form';
 import { PiInfo } from 'react-icons/pi';
 import ActionTooltipButton from '../ui/action-button';
 import { Text } from 'rizzui';
+import dynamic from 'next/dynamic';
 
 const localizer = dayjsLocalizer(dayjs);
+const MultiSelect = dynamic(
+  () => import('rizzui').then((mod) => mod.MultiSelect),
+  { ssr: false }
+);
 
 const rtcEventClassName =
   '[&_.rbc-event]:!text-gray-0 dark:[&_.rbc-event]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:focus]:!text-gray-0';
 
 export default function EventCalendarView() {
-  const { openModal } = useModal();
+  const { openModal, isOpen } = useModal();
 
-  const [selectDoctor, setSelectDoctor] = useState<number | null>(null);
+  const [selectDoctor, setSelectDoctor] = useState<string[]>();
+  const [view, setView] = useState<View>('month');
+
+  const isAgendaView = useMemo(() => {
+    return view === 'agenda';
+  }, [view]);
 
   const { data: dataDoctor } = useGetAllDoctors({
     page: 1,
@@ -38,36 +48,60 @@ export default function EventCalendarView() {
   const { data: dataAppointment, refetch } = useGetAppointments({
     page: 1,
     perPage: 100,
-    doctorId: selectDoctor as number,
+    q: JSON.stringify({
+      doctor_ids: selectDoctor,
+    }),
   });
 
   const events: CalendarEvent[] = useMemo(() => {
     if (!dataAppointment) return [];
-    return dataAppointment.data.map((appointment) => ({
-      title:
-        appointment?.patient?.first_name +
-        ' ' +
-        appointment?.patient?.last_name,
-      id: appointment.id.toString(),
-      start: new Date(appointment.date),
-      end: new Date(appointment.date),
-      allDay: false,
-      patient:
-        appointment?.patient?.first_name +
-        ' ' +
-        appointment?.patient?.last_name,
-      description: appointment.note || '-',
-      doctor:
-        appointment.doctor.first_name + ' ' + appointment.doctor.last_name,
-      data: appointment,
-    }));
+
+    return dataAppointment.data.map((appointment) => {
+      const type = appointment?.type as string;
+
+      let bgColor = '';
+      switch (type) {
+        case 'INITIAL':
+          bgColor = 'bg-green-600';
+          break;
+        case 'FOLLOWUP':
+          bgColor = 'bg-blue-600';
+          break;
+        case 'SCRIPT_RENEWAL':
+          bgColor = 'bg-yellow-600';
+          break;
+        default:
+          bgColor = 'bg-pink-600';
+          break;
+      }
+
+      return {
+        title:
+          appointment?.patient?.first_name +
+          ' ' +
+          appointment?.patient?.last_name,
+        id: appointment.id.toString(),
+        start: new Date(appointment.date),
+        end: new Date(appointment.date),
+        allDay: false,
+        patient:
+          appointment?.patient?.first_name +
+          ' ' +
+          appointment?.patient?.last_name,
+        description: appointment.note || '-',
+        doctor:
+          appointment.doctor.first_name + ' ' + appointment.doctor.last_name,
+        data: appointment,
+        color: bgColor,
+      };
+    });
   }, [dataAppointment]);
 
   const doctorOptions = useMemo(() => {
     if (!dataDoctor) return [];
     return dataDoctor.data.map((doctor) => ({
       label: doctor.first_name + ' ' + doctor.last_name,
-      value: doctor.id,
+      value: doctor.id.toString(),
     }));
   }, [dataDoctor]);
 
@@ -121,13 +155,9 @@ export default function EventCalendarView() {
     []
   );
 
-  useEffect(() => {
-    if (selectDoctor || selectDoctor === null) {
-      refetch();
-    }
-  }, [selectDoctor, refetch]);
+  const eventComponent = useCallback(({ event, style, className }: any) => {
+    const type = event?.data?.type as string;
 
-  function getRowAppointment(value: string, type: string) {
     let bgColor = '';
     switch (type) {
       case 'INITIAL':
@@ -145,26 +175,34 @@ export default function EventCalendarView() {
     }
 
     return (
-      <div className={cn('w-full rounded-md border px-1', bgColor)}>
+      <div
+        className={cn('w-full rounded-md border px-1', bgColor, className)}
+        style={style}
+      >
         <Text className="overflow-hidden text-ellipsis text-sm text-white">
-          {value ?? '-'}
+          {event.title ?? '-'}
         </Text>
       </div>
     );
-  }
+  }, []);
+
+  useEffect(() => {
+    if (selectDoctor || selectDoctor === undefined) {
+      refetch();
+    }
+  }, [selectDoctor, refetch, isOpen]);
 
   return (
     <div className="@container">
       <div className="mb-4 flex w-1/4 items-center gap-4">
-        <CSelect
+        <MultiSelect
           searchable
           label="Select Doctor"
           options={doctorOptions}
           value={selectDoctor}
-          clearable
           placeholder="All Doctors"
-          onClear={() => setSelectDoctor(null)}
-          onChange={(e: number) => setSelectDoctor(e)}
+          onClear={() => setSelectDoctor(undefined)}
+          onChange={(e: string[]) => setSelectDoctor(e)}
         />
         <ActionTooltipButton
           tooltipContent={`
@@ -181,24 +219,31 @@ export default function EventCalendarView() {
 
       <Calendar
         components={{
-          month: {
-            event: ({ event }) =>
-              getRowAppointment(event.title, event?.data?.type as string),
-          },
-          week: {
-            event: ({ event }) =>
-              getRowAppointment(event.title, event?.data?.type as string),
-          },
+          //   month: { event: eventComponent },
+          //   week: { event: eventComponent },
+          //   day: { event: eventComponent },
+          agenda: { event: eventComponent },
         }}
         timeslots={4}
+        titleAccessor={'title'}
         step={15}
         localizer={localizer}
         events={events}
+        eventPropGetter={(event) => ({
+          className: cn('text-sm', !isAgendaView && event.color),
+          style: {
+            color: isAgendaView ? 'black' : 'white',
+            borderRadius: '5px',
+            display: 'block',
+          },
+        })}
         views={views}
+        onView={(view: View) => {
+          setView(view);
+        }}
         formats={formats}
         startAccessor="start"
         endAccessor="end"
-        dayLayoutAlgorithm="no-overlap"
         onSelectEvent={handleSelectEvent}
         onSelectSlot={handleSelectSlot}
         selectable

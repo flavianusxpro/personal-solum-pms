@@ -1,5 +1,8 @@
 import { post } from '@/config/api';
-import { IPostOneTimePaymentResponse } from '@/types/ApiResponse';
+import {
+  IPostCouponCodeValidationResponse,
+  IPostOneTimePaymentResponse,
+} from '@/types/ApiResponse';
 import {
   IPayloadPostBookAppoinment,
   IPayloadPostPaymentMethod,

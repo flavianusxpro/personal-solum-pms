@@ -7,11 +7,20 @@ import {
   putUpdatePatient,
   putUpdateAssignDoctor,
   deletePatient,
+  createPatientProblem,
+  updatePatientProblem,
+  deletePatientProblem,
+  postUploadPatientDocumentation,
+  putUpdatePatientDocumentation,
+  deletePatientDocumentation,
+  getPatientDocumentation,
+  putPatientAssignClinic,
 } from '@/service/patient';
 import {
   IParamGetAllPatient,
   IParamGetPatientProblem,
   IParamGetPatientTypes,
+  IParamsGetPatientDocumentation,
   IPayloadCreateEditPatient,
   IPayloadUpdateAssignDoctor,
 } from '@/types/paramTypes';
@@ -80,10 +89,63 @@ export function useGetPatientProblem(params: IParamGetPatientProblem) {
   });
 }
 
+export function useCreatePatientProblem() {
+  return useMutation({
+    mutationFn: createPatientProblem,
+  });
+}
+
+export function useUpdatePatientProblem() {
+  return useMutation({
+    mutationFn: updatePatientProblem,
+  });
+}
+
+export function useDeletePatientProblem() {
+  return useMutation({
+    mutationFn: deletePatientProblem,
+  });
+}
+
 export function useUpdateAssignDoctor() {
   return useMutation({
     mutationFn: async (payload: IPayloadUpdateAssignDoctor) => {
       return await putUpdateAssignDoctor(payload);
     },
+  });
+}
+
+export function useGetPatientDocumentation(
+  params: IParamsGetPatientDocumentation
+) {
+  return useQuery({
+    queryKey: ['patientDocumentation', params],
+    queryFn: async () => {
+      return await getPatientDocumentation(params);
+    },
+  });
+}
+
+export function useUploadPatientDocumentation() {
+  return useMutation({
+    mutationFn: postUploadPatientDocumentation,
+  });
+}
+
+export function useUpdatePatientDocumentation() {
+  return useMutation({
+    mutationFn: putUpdatePatientDocumentation,
+  });
+}
+
+export function useDeletePatientDocumentation() {
+  return useMutation({
+    mutationFn: deletePatientDocumentation,
+  });
+}
+
+export function useAssignClinicPatient() {
+  return useMutation({
+    mutationFn: putPatientAssignClinic,
   });
 }

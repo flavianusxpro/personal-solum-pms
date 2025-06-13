@@ -15,7 +15,7 @@ import {
 import { ActionIcon, Button, Flex, Grid, Input, Text, Tooltip } from 'rizzui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import CardExpiry from '@/app/shared/ui/card-expiry';
-import UploadFile from '@/app/shared/ui/modal-button/modal-upload-file-button';
+import UploadFile from '@/app/shared/ui/modal/modal-upload-file-button';
 import { PiPencil, PiTrashBold } from 'react-icons/pi';
 import Divider from '../../ui/divider';
 import FileItem from '../../ui/file/file-item';
@@ -299,10 +299,10 @@ export default function TabRequirement({
 
       <Divider className="col-span-full" />
 
-      <FormGroup title="Regulation" className="my-7 grid-cols-12" />
-      <FormGroup title="Aphra Registration" isLabel>
+      <FormGroup title="Regulations" className="my-7 grid-cols-12" />
+      <FormGroup title="Ahpra Registration" isLabel>
         <Input
-          placeholder="Aphra Registration"
+          placeholder="Ahpra Registration"
           {...register('driverLicenceNumber')}
           error={errors.driverLicenceNumber?.message}
           disabled={isView}

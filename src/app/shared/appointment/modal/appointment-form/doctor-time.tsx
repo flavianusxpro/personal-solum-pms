@@ -43,9 +43,7 @@ export default function AppointmentPatientDoctor() {
     defaultValues: {
       doctorId: formData?.doctorId,
       doctorTime: formData?.doctorTime,
-      followup_fee: formData?.followup_fee,
-      initial_fee: formData?.initial_fee,
-      script_renewal_fee: formData?.script_renewal_fee,
+      fee: formData?.fee || '',
     },
   });
   const watchDoctor = watch('doctorId');
@@ -55,6 +53,8 @@ export default function AppointmentPatientDoctor() {
     id: formData?.clinicId?.toString() as string,
     page: 1,
     perPage: 10,
+    treatment_type: formData.treatment,
+    problem_type: formData.patient_problem,
   });
 
   const { data: dataDoctor, isLoading } = useGetDoctorByClinic(params);
@@ -68,9 +68,7 @@ export default function AppointmentPatientDoctor() {
       ...prev,
       doctorId: data.doctorId,
       doctorTime: data.doctorTime,
-      initial_fee: data.initial_fee,
-      followup_fee: data.followup_fee,
-      script_renewal_fee: data.script_renewal_fee,
+      fee: data.fee,
     }));
     gotoNextStep();
   };
@@ -107,7 +105,7 @@ export default function AppointmentPatientDoctor() {
                 {/* Doctor Header */}
                 <div className="flex items-center justify-between space-x-4 p-6">
                   <div className="flex items-center space-x-4">
-                    {doctor.url_photo ? (
+                    {/* {doctor.url_photo ? (
                       <Image
                         src={doctor.url_photo}
                         alt={doctor.first_name}
@@ -115,11 +113,11 @@ export default function AppointmentPatientDoctor() {
                         height={48}
                         width={48}
                       />
-                    ) : (
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-300">
-                        🏥
-                      </div>
-                    )}
+                    ) : ( */}
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-300">
+                      🏥
+                    </div>
+                    {/* )} */}
                     <h3 className="cursor-pointer text-base font-bold hover:underline">
                       Dr. {doctor.first_name} {doctor.last_name}
                     </h3>
@@ -175,12 +173,10 @@ function DoctorTime({
   setValue: UseFormSetValue<{
     doctorId: number;
     doctorTime: string;
-    followup_fee: string;
-    initial_fee: string;
-    script_renewal_fee: string;
+    fee: string;
   }>;
 }) {
-  const [formData, setFormData] = useAtom(formDataAtom);
+  const [formData] = useAtom(formDataAtom);
 
   const appointmentType = useMemo(() => {
     if (formData?.appointment_type?.includes('FOLLOWUP')) {
@@ -232,12 +228,7 @@ function DoctorTime({
                 onClick={() => {
                   setValue('doctorTime', time);
                   setValue('doctorId', doctor.id as number);
-                  setValue('initial_fee', doctor.appointment_fee.initial);
-                  setValue('followup_fee', doctor.appointment_fee.followup);
-                  setValue(
-                    'script_renewal_fee',
-                    doctor.appointment_fee.script_renewal ?? '0'
-                  );
+                  setValue('fee', doctor.cost.amount || '');
                 }}
               >
                 {time}

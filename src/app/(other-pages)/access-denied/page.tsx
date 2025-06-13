@@ -1,4 +1,4 @@
-import AccessDenied from '@/app/access-denied';
+import AccessDenied from '@/app/shared/access-denied';
 
 export default function AccessDeniedPage() {
   return <AccessDenied />;

@@ -18,7 +18,6 @@ import {
 import {
   useGetDoctorById,
   useGetSpecialists,
-  useGetTreatments,
   useUpdateDoctor,
 } from '@/hooks/useDoctor';
 import dynamic from 'next/dynamic';
@@ -27,6 +26,7 @@ import SelectLoader from '@/core/components/loader/select-loader';
 import Divider from '@/app/shared/ui/divider';
 import { useMemo } from 'react';
 import { PhoneNumber } from '@/core/ui/phone-input';
+import { useGetPatientProblem } from '@/hooks/usePatient';
 
 const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
   ssr: false,
@@ -56,9 +56,10 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     page: 1,
     perPage: 100,
   });
-  const { data: dataTreatments } = useGetTreatments({
-    perPage: 100,
+
+  const { data: dataProblemTypes } = useGetPatientProblem({
     page: 1,
+    perPage: 100,
   });
 
   const specialistsOptions = useMemo(() => {
@@ -69,13 +70,13 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     }));
   }, [dataSpecialists]);
 
-  const treatmentOptions = useMemo(() => {
-    if (!dataTreatments) return [];
-    return dataTreatments.data.map((item) => ({
+  const problemTypesOptions = useMemo(() => {
+    if (!dataProblemTypes) return [];
+    return dataProblemTypes.data.map((item) => ({
       label: item.name,
-      value: item.id.toString(),
+      value: item.name,
     }));
-  }, [dataTreatments]);
+  }, [dataProblemTypes]);
 
   const specialistTypeDefaultValues = useMemo(() => {
     if (!dataDoctor?.specialist_type) return [];
@@ -88,15 +89,14 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     return [];
   }, [dataDoctor]);
 
-  const treatmentTypeDefaultValues: string[] =
-    typeof dataDoctor?.treatment_type === 'string'
-      ? (dataDoctor.treatment_type as string)
-          .slice(1, -1)
-          .split('","')
-          .map((s) => s.replace(/^"|"$/g, ''))
-      : Array.isArray(dataDoctor?.treatment_type)
-        ? dataDoctor.treatment_type
-        : [];
+  const problemTypeDefaultValues = useMemo(() => {
+    if (!dataDoctor?.problem_type) return [];
+    const parsedProblemType = JSON.parse(dataDoctor.problem_type) as string[];
+    if (Array.isArray(parsedProblemType)) {
+      return parsedProblemType.map((item) => item);
+    }
+    return [];
+  }, [dataDoctor]);
 
   const onSubmit: SubmitHandler<DoctorDetailsFormTypes> = (data) => {
     const payload: IPayloadCreateEditDoctor = {
@@ -112,9 +112,8 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
       postcode: data.postcode,
       country: data.country,
       state: data.state,
-      // treatment_type: data.treatment_type.map((item) => parseInt(item)),
-      treatment_type: data.treatment_type,
       specialist_type: data.specialist_type.map((item) => parseInt(item)),
+      problem_type: data.problem_type,
       medical_interest: data.medical_interest,
       email: data.email,
       date_of_birth: data.date_of_birth as string,
@@ -166,8 +165,8 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
           address_line_2: dataDoctor?.address_line_2 ?? '',
           about: dataDoctor?.description ?? '',
           medical_interest: dataDoctor?.medical_interest ?? '',
-          treatment_type: treatmentTypeDefaultValues,
           specialist_type: specialistTypeDefaultValues,
+          problem_type: problemTypeDefaultValues,
           language: dataDoctor?.language
             ? (JSON.parse(dataDoctor.language) as (string | undefined)[])
             : [],
@@ -178,168 +177,168 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
       {({ register, control, setValue, getValues, formState: { errors } }) => {
         return (
           <>
-            <div className="grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2">
-              <div className="section-container">
-                <FormGroup
-                  title="Personal Info"
-                  className="grid-cols-12 gap-4"
+            <div className="detail-form-container">
+              <FormGroup
+                title="Personal Info"
+                className="col-span-full gap-4"
+              />
+              <FormGroup title="First Name" isLabel>
+                <Input
+                  placeholder="First Name"
+                  {...register('first_name')}
+                  error={errors.first_name?.message}
+                  className="flex-grow"
+                  disabled={isView}
                 />
-                <FormGroup title="First Name" isLabel>
-                  <Input
-                    placeholder="First Name"
-                    {...register('first_name')}
-                    error={errors.first_name?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Last Name" isLabel>
-                  <Input
-                    placeholder="Last Name"
-                    {...register('last_name')}
-                    error={errors.last_name?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Gender" isLabel>
-                  <Controller
-                    name="gender"
-                    control={control}
-                    render={({ field }) => (
-                      <CSelect
-                        {...field}
-                        label=""
-                        placeholder="Select Gender"
-                        options={genderOption}
-                        disabled={isView}
-                      />
-                    )}
-                  />
-                </FormGroup>
-                <FormGroup title="Birth of Date" isLabel>
-                  <Input
-                    placeholder="Birth of Dae"
-                    type="date"
-                    {...register('date_of_birth')}
-                    error={errors.date_of_birth?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Phone Number" isLabel>
-                  <Controller
-                    name="mobile_number"
-                    control={control}
-                    render={({ field }) => (
-                      <PhoneNumber
-                        {...field}
-                        country="au"
-                        preferredCountries={['au']}
-                        placeholder="Phone Number"
-                        error={errors.mobile_number?.message}
-                        disabled={isView}
-                      />
-                    )}
-                  />
-                </FormGroup>
-
-                <FormGroup title="Email" isLabel>
-                  <Input
-                    placeholder="Email"
-                    {...register('email')}
-                    error={errors.email?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-              </div>
-
-              <div className="section-container">
-                <FormGroup title="Address" className="grid-cols-12" />
-                <FormGroup title="Country" isLabel>
-                  <Input
-                    placeholder="Country"
-                    {...register('country')}
-                    error={errors.country?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-
-                <FormGroup title="Street Number" isLabel>
-                  <Input
-                    placeholder="Street"
-                    {...register('street_number')}
-                    error={errors.street_number?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Street Name" isLabel>
-                  <Input
-                    placeholder="Street"
-                    {...register('street_name')}
-                    error={errors.street_name?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Address Line 1" isLabel>
-                  <Input
-                    placeholder="Address Line 1"
-                    {...register('address_line_1')}
-                    error={errors.address_line_1?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Address Line 2" isLabel>
-                  <Input
-                    placeholder="Address Line 2"
-                    {...register('address_line_2')}
-                    error={errors.address_line_2?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
-                <FormGroup title="Suburb" isLabel>
-                  <Input
-                    placeholder="Suburb"
-                    {...register('suburb')}
-                    error={errors.suburb?.message}
-                    className="flex-grow"
-                    disabled={isView}
-                  />
-                </FormGroup>
+              </FormGroup>
+              <FormGroup title="Last Name" isLabel>
+                <Input
+                  placeholder="Last Name"
+                  {...register('last_name')}
+                  error={errors.last_name?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+              <FormGroup title="Gender" isLabel>
                 <Controller
-                  name="state"
+                  name="gender"
                   control={control}
                   render={({ field }) => (
-                    <FormGroup title="">
-                      <Flex justify="between" align="center" gap="4">
-                        <CSelect
-                          {...field}
-                          label="State"
-                          placeholder="State"
-                          className="group relative z-0"
-                          options={stateOption}
-                          error={errors.state?.message as string}
-                          disabled={isView}
-                        />
-                        <Input
-                          label="Post Code"
-                          placeholder="Post Code"
-                          {...register('postcode')}
-                          error={errors.postcode?.message}
-                          className="flex-grow"
-                          disabled={isView}
-                        />
-                      </Flex>
-                    </FormGroup>
+                    <CSelect
+                      {...field}
+                      label=""
+                      placeholder="Select Gender"
+                      options={genderOption}
+                      disabled={isView}
+                    />
                   )}
                 />
-              </div>
+              </FormGroup>
+              <FormGroup title="Birth of Date" isLabel>
+                <Input
+                  placeholder="Birth of Dae"
+                  type="date"
+                  {...register('date_of_birth')}
+                  error={errors.date_of_birth?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+              <FormGroup title="Phone Number" isLabel>
+                <Controller
+                  name="mobile_number"
+                  control={control}
+                  render={({ field }) => (
+                    <PhoneNumber
+                      {...field}
+                      country="au"
+                      preferredCountries={['au']}
+                      placeholder="Phone Number"
+                      error={errors.mobile_number?.message}
+                      disabled={isView}
+                    />
+                  )}
+                />
+              </FormGroup>
+
+              <FormGroup title="Email" isLabel>
+                <Input
+                  placeholder="Email"
+                  {...register('email')}
+                  error={errors.email?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+            </div>
+
+            <Divider />
+
+            <div className="detail-form-container">
+              <FormGroup title="Address" className="col-span-full gap-4" />
+              <FormGroup title="Country" isLabel>
+                <Input
+                  placeholder="Country"
+                  {...register('country')}
+                  error={errors.country?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+
+              <FormGroup title="Street Number" isLabel>
+                <Input
+                  placeholder="Street"
+                  {...register('street_number')}
+                  error={errors.street_number?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+              <FormGroup title="Street Name" isLabel>
+                <Input
+                  placeholder="Street"
+                  {...register('street_name')}
+                  error={errors.street_name?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+              <FormGroup title="Address Line 1" isLabel>
+                <Input
+                  placeholder="Address Line 1"
+                  {...register('address_line_1')}
+                  error={errors.address_line_1?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+              <FormGroup title="Address Line 2" isLabel>
+                <Input
+                  placeholder="Address Line 2"
+                  {...register('address_line_2')}
+                  error={errors.address_line_2?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+              <FormGroup title="Suburb" isLabel>
+                <Input
+                  placeholder="Suburb"
+                  {...register('suburb')}
+                  error={errors.suburb?.message}
+                  className="flex-grow"
+                  disabled={isView}
+                />
+              </FormGroup>
+              <Controller
+                name="state"
+                control={control}
+                render={({ field }) => (
+                  <FormGroup title="">
+                    <Flex justify="between" align="center" gap="4">
+                      <CSelect
+                        {...field}
+                        label="State"
+                        placeholder="State"
+                        className="group relative z-0"
+                        options={stateOption}
+                        error={errors.state?.message as string}
+                        disabled={isView}
+                      />
+                      <Input
+                        label="Post Code"
+                        placeholder="Post Code"
+                        {...register('postcode')}
+                        error={errors.postcode?.message}
+                        className="flex-grow"
+                        disabled={isView}
+                      />
+                    </Flex>
+                  </FormGroup>
+                )}
+              />
             </div>
 
             <Divider />
@@ -367,18 +366,18 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
             <Divider />
 
             <div className="section-container">
-              <FormGroup title="Treatment Type" isLabel>
+              <FormGroup title="Problem Type" isLabel>
                 <Controller
-                  name="treatment_type"
+                  name="problem_type"
                   control={control}
                   render={({ field }) => (
                     <MultySelect
                       searchable
                       {...field}
-                      placeholder="Select Specialist Type"
-                      options={treatmentOptions}
+                      placeholder="Select Problem Type"
+                      options={problemTypesOptions}
                       disabled={isView}
-                      error={errors.treatment_type?.message}
+                      error={errors.problem_type?.message}
                     />
                   )}
                 />

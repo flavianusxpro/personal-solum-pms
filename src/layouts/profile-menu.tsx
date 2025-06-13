@@ -3,7 +3,7 @@
 import { Title, Text, Avatar, Button, Popover, Flex } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { routes } from '@/config/routes';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -69,8 +69,9 @@ function ProfileMenuPopover({ children }: React.PropsWithChildren<{}>) {
 
 function DropdownMenu() {
   const router = useRouter();
+  const { status } = useSession();
 
-  const { data: dataProfile, isSuccess } = useProfile();
+  const { data: dataProfile } = useProfile(status === 'authenticated');
 
   const handleSignOut = async () => {
     await signOut({ redirect: false }); // Prevent automatic re-render

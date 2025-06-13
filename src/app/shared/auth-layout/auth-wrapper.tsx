@@ -64,9 +64,6 @@ export default function AuthWrapper({
           )}
         >
           <div className="flex flex-col items-center">
-            <Link href={'/'} className="mb-7 inline-block max-w-[64px] lg:mb-9">
-              <Logo className="w-[180px]" />
-            </Link>
             <Title
               as="h2"
               className="mb-7 text-center text-[28px] font-bold leading-snug md:text-3xl md:!leading-normal lg:mb-10 lg:text-4xl"
@@ -109,12 +106,12 @@ function AuthHeader() {
       <Link href={'/'}>
         <Logo className="w-[180px]" />
       </Link>
-      <div className="flex items-center space-x-2 md:space-x-4">
+      {/* <div className="flex items-center space-x-2 md:space-x-4">
         <AuthNavLink href={routes.auth.signIn}>
           <PiArrowLineRight className="h-4 w-4" />
           <span>Login</span>
         </AuthNavLink>
-      </div>
+      </div> */}
     </header>
   );
 }

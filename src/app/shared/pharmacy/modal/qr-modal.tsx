@@ -17,7 +17,7 @@ interface IProps {
 export default function ShowQrModal({ data, isView }: IProps) {
   const { closeModal } = useModal();
 
-  const linkValue = `${process.env.NEXT_PUBLIC_BOOKING_API_URL}/bookings?clincicId=${data?.clinicId}&pharmacyId=${data?.id}`;
+  const linkValue = `${process.env.NEXT_PUBLIC_BOOKING_API_URL}/bookings?clinicId=${data?.clinicId}&pharmacyId=${data?.id}`;
 
   return (
     <div className={cn('flex flex-col gap-6 px-6 pb-6 pt-6')}>

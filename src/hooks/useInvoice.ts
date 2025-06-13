@@ -3,6 +3,8 @@ import {
   getInvoiceById,
   getInvoiceList,
   postCreateInvoice,
+  postRefundInvoice,
+  postResendInvoice,
   putCreateInvoice,
 } from '@/service/invoice';
 import { IParamGetAppointments } from '@/types/paramTypes';
@@ -39,5 +41,17 @@ export function usePutUpdateInvoice() {
 export function useDeleteInvoice() {
   return useMutation({
     mutationFn: deleteInvoice,
+  });
+}
+
+export function useResendInvoice() {
+  return useMutation({
+    mutationFn: postResendInvoice,
+  });
+}
+
+export function useRefundInvoice() {
+  return useMutation({
+    mutationFn: postRefundInvoice,
   });
 }

@@ -1,6 +1,7 @@
 import {
   deleteCoupon,
   getCoupons,
+  postCouponCodeValidation,
   postCreateCoupon,
   putUpdateCoupon,
 } from '@/service/coupon';
@@ -29,5 +30,11 @@ export function useUpdateCoupon() {
 export function useDeleteCoupon() {
   return useMutation({
     mutationFn: deleteCoupon,
+  });
+}
+
+export function useCouponCodeValidation() {
+  return useMutation({
+    mutationFn: postCouponCodeValidation,
   });
 }

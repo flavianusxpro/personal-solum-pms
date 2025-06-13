@@ -15,5 +15,5 @@ export async function putUpdatePatientFlag(payload: IPayloadPasientFlag) {
 }
 
 export async function deletePatientFlag(ids: string[]) {
-  return await del('admin/patient/flag/' + { data: ids });
+  return await del('admin/patient/flag/', { data: { ids } });
 }

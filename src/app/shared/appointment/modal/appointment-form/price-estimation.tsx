@@ -1,6 +1,6 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import CheckCircleIcon from '@core/components/icons/check-circle';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ActionIcon, Button, Flex, Input, Text, Title } from 'rizzui';
 import cn from '@/core/utils/class-names';
 import StripeCheckout from '@/app/shared/stripe-checkout/stripe-checkout';
@@ -11,6 +11,7 @@ import { useAtom } from 'jotai';
 import { formDataAtom } from '.';
 import dayjs from 'dayjs';
 import { currencyAtom } from '@/store/currency';
+import { useCouponCodeValidation } from '@/hooks/useCoupon';
 
 const STEP = {
   ESTIMATE_COST: 'estimate-cost',
@@ -30,43 +31,59 @@ const PriceEstimationCost = ({
   const [currencyData] = useAtom(currencyAtom);
   const [formData] = useAtom(formDataAtom);
   const [step, setStep] = React.useState(STEP.ESTIMATE_COST);
+  const [inputCouponCode, setInputCouponCode] = React.useState('');
 
   const appointmentType = formData?.appointment_type;
 
-  function getFee() {
-    if (appointmentType.includes('FOLLOWUP')) {
-      return formData?.followup_fee;
-    } else if (appointmentType.includes('script renewal')) {
-      return formData?.script_renewal_fee;
-    } else {
-      return formData?.initial_fee;
-    }
-  }
+  const { mutate: mutateCouponValidation, data: dataCoupon } =
+    useCouponCodeValidation();
 
-  function getAppointmentType() {
-    if (appointmentType?.includes('follow up')) {
-      return 'FOLLOWUP';
-    } else if (appointmentType?.includes('script renewal')) {
-      return 'SCRIPT_RENEWAL';
-    } else {
-      return 'INITIAL';
+  const couponValue = useMemo(() => {
+    if (dataCoupon?.data?.discount_type === 'percent') {
+      return `${dataCoupon.data.discount_amount}%`;
+    } else if (dataCoupon?.data?.discount_type === 'fix') {
+      return `$${dataCoupon.data.discount_amount}`;
     }
-  }
+    return '-';
+  }, [dataCoupon]);
+
+  const totalValue = useMemo(() => {
+    if (dataCoupon?.data?.discount_type === 'percent') {
+      return (
+        Number(formData.fee) -
+        (Number(formData.fee) * Number(dataCoupon.data.discount_amount)) / 100
+      );
+    } else if (dataCoupon?.data?.discount_type === 'fix') {
+      return Number(formData.fee) - Number(dataCoupon.data.discount_amount);
+    }
+    return formData.fee;
+  }, [dataCoupon, formData.fee]);
 
   const { mutate } = usePostCreateAppointment();
 
+  function couponValidation(couponCode: string) {
+    mutateCouponValidation(couponCode, {
+      onSuccess: () => {
+        toast.success('Coupon code applied successfully');
+      },
+      onError: (error: any) => {
+        toast.error('Invalid coupon code: ' + error.response.data.message);
+      },
+    });
+  }
+
   const successPayment = (paymentId: string) => {
     const payload: IPayloadPostAppoinment = {
-      appointment_type: formData.appointment_type,
       clinicId: formData.clinicId as number,
       doctorId: formData.doctorId as number,
       date: `${dayjs(formData.date).format('YYYY-MM-DD')} ${formData.doctorTime}`,
       note: formData.note,
       patient_problem: formData.patient_problem,
-      patient_type: getAppointmentType(),
+      patient_type: formData.treatment,
       payment_id: paymentId,
       meeting_preference: 'ZOOM',
       patientId: formData.patient_id as number,
+      additional_information: { note: formData.note },
     };
 
     mutate(payload, {
@@ -91,19 +108,14 @@ const PriceEstimationCost = ({
           </div>
           <div className="grid w-full grid-cols-1 gap-2">
             <Flex justify="between" align="center">
-              <Text>Total Cost:</Text>
+              <Text>Sub Total:</Text>
               <Text>
-                {currencyData.active.symbol}
-                {Number(getFee())}
+                {currencyData.active.symbol} {Number(formData.fee)}
               </Text>
             </Flex>
             <Flex justify="between" align="center">
-              <Text>Sub Total:</Text>
-              <Text>{currencyData.active.symbol}-</Text>
-            </Flex>
-            <Flex justify="between" align="center">
               <Text>Coupon:</Text>
-              <Text>-</Text>
+              <Text>{couponValue ?? '-'}</Text>
             </Flex>
             <Flex justify="between" align="center">
               <Text>Merchant Fee:</Text>
@@ -115,16 +127,25 @@ const PriceEstimationCost = ({
                 placeholder="Enter coupon code"
                 inputClassName="text-sm"
                 size="sm"
+                onChange={(e) => setInputCouponCode(e.target.value)}
+                value={inputCouponCode}
                 suffix={
                   <ActionIcon
                     variant="text"
                     className="flex items-center gap-1 text-xs"
-                    onClick={() => {}}
+                    onClick={() => couponValidation(inputCouponCode)}
                   >
                     Apply
                   </ActionIcon>
                 }
               />
+            </Flex>
+            <Flex justify="between" align="center">
+              <Text>Total Cost:</Text>
+              <Text>
+                {currencyData.active.symbol}
+                {Number(totalValue)}
+              </Text>
             </Flex>
           </div>
           <Text>

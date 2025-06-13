@@ -1,6 +1,7 @@
 import {
   deleteClinic,
   getAllClinics,
+  getCalendarScheduleByClinicId,
   getClinicByIdForPatient,
   postCreateClinic,
   putUpdateClinic,
@@ -63,7 +64,15 @@ export function useGetDoctorAvailabilityByClinic(
   payload: IParamsGetDoctorAvailability
 ) {
   return useQuery({
-    queryKey: ['doctor-availability-by-clinic'],
+    queryKey: ['doctor-availability-by-clinic' + payload.doctorId],
     queryFn: async () => postGetDoctorAvailabilityByClinic(payload),
+  });
+}
+
+export function useGetCalendarScheduleByClinicId(clinicId: number) {
+  return useQuery({
+    queryKey: ['calendar-schedule-by-clinic' + clinicId],
+    queryFn: async () => getCalendarScheduleByClinicId(clinicId),
+    enabled: !!clinicId,
   });
 }

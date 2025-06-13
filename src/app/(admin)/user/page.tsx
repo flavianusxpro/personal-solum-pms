@@ -8,7 +8,7 @@ import { PiPlusBold } from 'react-icons/pi';
 import { orderData } from '@/data/order-data';
 import ExportButton from '@/app/shared/ui/export-button';
 import UsersTable from '@/app/shared/user/users-table';
-import ModalButton from '@/app/shared/ui/modal-button/modal-button';
+import ModalButton from '@/app/shared/ui/modal/modal-button';
 import CreateUserModal from '@/app/shared/user/modal/create-modal';
 
 const pageHeader = {

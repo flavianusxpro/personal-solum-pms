@@ -20,13 +20,18 @@ export const patientDetailsFormSchema = z.object({
   state: z.string().optional(),
   country: z.string().optional(),
   unit_number: z.string().optional(),
+  address_line_1: z.string().optional(),
+  address_line_2: z.string().optional(),
   suburb: z.string().optional(),
   street_name: z.string().optional(),
   post_code: z.string().max(4, {
     message: messages.postCodeMaxLength,
   }),
-  description: z.string().optional(),
-  notes: z.string().optional(),
+  ihi_number: z.string().max(13, { message: messages.maxLength }).optional(),
+
+  concession_card_type: z.string().optional(),
+  concession_card_number: z.string().optional(),
+  concession_card_expiry: z.date().optional(),
 
   medicare_card: z.string().min(10).max(13, { message: messages.maxLength }),
   medicare_expiry: z.date(),

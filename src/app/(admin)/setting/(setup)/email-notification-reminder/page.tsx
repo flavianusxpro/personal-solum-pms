@@ -77,6 +77,10 @@ export default function Setup() {
       reschedule_email_html: data.reschedule_email_html || '',
       reminder_email_html: data.reminder_email_html || '',
       reminder_email_status: data.reminder_email_status || false,
+      refund_email_status: data.refund_email_status || false,
+      refund_email_html: data.refund_email_html || '',
+      cancelled_email_status: data.cancelled_email_status || false,
+      cancelled_email_html: data.cancelled_email_html || '',
     };
 
     mutateUpdateEmailNotification(emailPayload, {
@@ -137,6 +141,15 @@ export default function Setup() {
             dataEmailNotificationSettings?.reminder_email_html || '',
           reminder_email_status:
             dataEmailNotificationSettings?.reminder_email_status || false,
+
+          cancelled_email_status:
+            dataEmailNotificationSettings?.cancelled_email_status || false,
+          cancelled_email_html:
+            dataEmailNotificationSettings?.cancelled_email_html || '',
+          refund_email_status:
+            dataEmailNotificationSettings?.refund_email_status || false,
+          refund_email_html:
+            dataEmailNotificationSettings?.refund_email_html || '',
         },
       }}
     >
@@ -347,6 +360,76 @@ export default function Setup() {
               </Flex>
               <Controller
                 name="birthday_email_html"
+                control={control}
+                render={({ field }) => (
+                  <QuillEditor
+                    {...field}
+                    label="Email Template"
+                    className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
+                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                  />
+                )}
+              />
+            </StatusCard>
+
+            <StatusCard
+              icon={<IoChevronDownCircleOutline />}
+              meetName="Cancelled"
+              content="Cancelled notification for forgot password"
+              onSwitchChange={(checked) => {
+                setValue('cancelled_email_status', checked);
+              }}
+              switchValue={watch('cancelled_email_status')}
+              className="mb-10"
+            >
+              <Flex justify="end" className="">
+                <CSelect
+                  searchable
+                  placeholder="Select Template"
+                  options={emailTemplateOptions}
+                  onChange={(value: string) =>
+                    setValue('cancelled_email_html', value)
+                  }
+                  className="w-fit"
+                />
+              </Flex>
+              <Controller
+                name="cancelled_email_html"
+                control={control}
+                render={({ field }) => (
+                  <QuillEditor
+                    {...field}
+                    label="Email Template"
+                    className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
+                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                  />
+                )}
+              />
+            </StatusCard>
+
+            <StatusCard
+              icon={<IoChevronDownCircleOutline />}
+              meetName="Refund"
+              content="Refund notification for forgot password"
+              onSwitchChange={(checked) => {
+                setValue('refund_email_status', checked);
+              }}
+              switchValue={watch('refund_email_status')}
+              className="mb-10"
+            >
+              <Flex justify="end" className="">
+                <CSelect
+                  searchable
+                  placeholder="Select Template"
+                  options={emailTemplateOptions}
+                  onChange={(value: string) =>
+                    setValue('refund_email_html', value)
+                  }
+                  className="w-fit"
+                />
+              </Flex>
+              <Controller
+                name="refund_email_html"
                 control={control}
                 render={({ field }) => (
                   <QuillEditor

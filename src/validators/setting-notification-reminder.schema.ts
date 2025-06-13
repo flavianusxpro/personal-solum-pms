@@ -32,6 +32,11 @@ export const settingNotificationReminderFormSchema = z.object({
   birthday_email_status: z.boolean().optional(),
   birthday_email_html: z.string().optional(),
 
+  cancelled_email_status: z.boolean().optional(),
+  cancelled_email_html: z.string().optional(),
+  refund_email_status: z.boolean().optional(),
+  refund_email_html: z.string().optional(),
+
   // reminder
   reminder_email_status: z.boolean().optional(),
   reminder_email_html: z.string().optional(),
