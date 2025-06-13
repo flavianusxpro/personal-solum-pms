@@ -7,7 +7,7 @@ import { useMedia } from '@core/hooks/use-media';
 import { Form } from '@core/ui/form';
 import { routes } from '@/config/routes';
 import { loginSchema, LoginSchema } from '@/validators/login.schema';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
@@ -25,9 +25,10 @@ export default function SignInForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get('callbackUrl');
   const isMedium = useMedia('(max-width: 1200px)', false);
+  const { status } = useSession();
 
   const [isLoading, setIsloading] = useState(false);
-  const { refetch } = useProfile();
+  const { refetch } = useProfile(status === 'authenticated');
 
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
     setIsloading(true);
@@ -107,15 +108,6 @@ export default function SignInForm() {
           </div>
         )}
       </Form>
-      <Text className="mt-6 text-center text-[15px] leading-loose text-gray-500 md:mt-7 lg:mt-9 lg:text-base">
-        Don’t have an account?{' '}
-        <Link
-          href={routes.auth.signUp}
-          className="font-semibold text-gray-700 transition-colors hover:text-primary"
-        >
-          Sign Up
-        </Link>
-      </Text>
     </>
   );
 }

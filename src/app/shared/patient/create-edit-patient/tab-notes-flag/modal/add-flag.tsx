@@ -16,8 +16,7 @@ import {
   useUpdatePatientFLag,
 } from '@/hooks/usePatientFlag';
 import toast from 'react-hot-toast';
-import { useGetPatientNotes } from '@/hooks/usePatientNote';
-import { useGetPatientById, useUpdatePatient } from '@/hooks/usePatient';
+import { useGetPatientById } from '@/hooks/usePatient';
 import { IGetPatientFlagResponse } from '@/types/ApiResponse';
 
 export default function FlagForm({
@@ -32,6 +31,7 @@ export default function FlagForm({
   const { refetch } = useGetPatientFlags({
     page: 1,
     perPage: 10,
+    patientId: dataPatient?.id as number,
   });
 
   const { mutate: mutateCreate, isPending } = useCreatePatientFLag();
@@ -42,7 +42,7 @@ export default function FlagForm({
       return mutateUpdate(
         {
           id: flagData.id,
-          patient_id: dataPatient?.id as unknown as string,
+          patient_id: dataPatient?.id as number,
           description: data.description,
           category: data.category,
         },
@@ -62,7 +62,7 @@ export default function FlagForm({
     }
     mutateCreate(
       {
-        patient_id: dataPatient?.id as unknown as string,
+        patient_id: dataPatient?.id as number,
         description: data.description,
         category: data.category,
       },

@@ -26,10 +26,16 @@ export const settingsDoctorSchema = z.object({
 
   fee: z.number().optional(),
   cancellation_fee: z.number().optional(),
-  initial_appointment_fee: z.number().optional(),
-  follow_up_appointment_fee: z.number().optional(),
-  script_renewal_fee: z.number().optional(),
-
+  // initial_appointment_fee: z.number().optional(),
+  // follow_up_appointment_fee: z.number().optional(),
+  // script_renewal_fee: z.number().optional(),
+  costs: z.array(
+    z.object({
+      costId: z.number().optional(),
+      treatmentId: z.number(),
+      amount: z.string().min(1, { message: 'Amount is required' }),
+    })
+  ),
   doctor_timezone: z.string().optional(),
   initial_appointment_time: z.number().optional(),
   follow_up_appointment_time: z.number().optional(),

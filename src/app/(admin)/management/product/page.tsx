@@ -2,7 +2,7 @@
 import PageHeader from '@/app/shared/ui/page-header';
 import ProductTable from '@/app/shared/product/tableDataProduct/table';
 import { routes } from '@/config/routes';
-import ModalButton from '@/app/shared/ui/modal-button/modal-button';
+import ModalButton from '@/app/shared/ui/modal/modal-button';
 import CreateEditItemModal from '@/app/shared/product/modal/create-edit-modal';
 
 const pageHeader = {

@@ -12,6 +12,7 @@ export function useGetPatientFlags(params: IParamsPatientFlags) {
   return useQuery({
     queryKey: ['patient-flags'],
     queryFn: () => getPatientFlags(params),
+    enabled: !!params.patientId,
   });
 }
 

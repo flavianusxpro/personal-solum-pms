@@ -23,7 +23,6 @@ export function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const blacklist = useMemo(
     () => [
       routes.signIn,
-      routes.bookAppointment,
       routes.auth.signUp,
       routes.auth.forgotPassword,
       routes.accessDenied,

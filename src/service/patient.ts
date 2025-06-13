@@ -2,6 +2,7 @@ import { del, get, post, put } from '@/config/api';
 import {
   IGetAllPatientsResponse,
   IGetPatientByIdResponse,
+  IGetPatientDocumentationResponse,
   IGetPatientProblemResponse,
   IGetPatientTypeResponse,
   IUpdateDoctorAssignResponse,
@@ -10,7 +11,10 @@ import {
   IParamGetAllPatient,
   IParamGetPatientProblem,
   IParamGetPatientTypes,
+  IParamsGetPatientDocumentation,
   IPayloadCreateEditPatient,
+  IPayloadCreatePatientProblem,
+  IPayloadPatientAssignClinic,
   IPayloadUpdateAssignDoctor,
 } from '@/types/paramTypes';
 
@@ -44,7 +48,7 @@ export async function deletePatient(ids: number[]) {
 }
 
 export async function getPatientTypes(params: IParamGetPatientTypes) {
-  return await get<IGetPatientProblemResponse>('/admin/patient/type', {
+  return await get<IGetPatientTypeResponse>('/admin/patient/type', {
     params,
   }).then((res) => {
     return res.data;
@@ -52,11 +56,25 @@ export async function getPatientTypes(params: IParamGetPatientTypes) {
 }
 
 export async function getPatientProblem(params: IParamGetPatientProblem) {
-  return await get<IGetPatientTypeResponse>('/admin/patient/problem', {
+  return await get<IGetPatientProblemResponse>('/admin/patient/problem', {
     params,
-  }).then((res) => {
-    return res.data;
   });
+}
+
+export async function createPatientProblem(
+  payload: IPayloadCreatePatientProblem
+) {
+  return await post('/admin/patient/problem', payload);
+}
+
+export async function updatePatientProblem(
+  payload: IPayloadCreatePatientProblem
+) {
+  return await put('/admin/patient/problem/' + payload.id, payload);
+}
+
+export async function deletePatientProblem(id: string) {
+  return await del(`/admin/patient/problem/${id}`);
 }
 
 export async function putUpdateAssignDoctor(
@@ -66,4 +84,44 @@ export async function putUpdateAssignDoctor(
     `/admin/patient/${params.patient_id}/assign-doctor/`,
     params
   );
+}
+
+export async function getPatientDocumentation(
+  params: IParamsGetPatientDocumentation
+) {
+  return await get<IGetPatientDocumentationResponse>('/admin/patient/file', {
+    params,
+  });
+}
+
+export async function postUploadPatientDocumentation(payload: FormData) {
+  return await post('/admin/patient/file', payload, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+}
+export async function putUpdatePatientDocumentation(payload: FormData) {
+  const id = payload.get('id');
+  return await put(`/admin/patient/file/${id}`, payload, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+}
+
+export async function deletePatientDocumentation(ids: string[]) {
+  return await del(`/admin/patient/file/`, {
+    data: {
+      ids,
+    },
+  });
+}
+
+export async function putPatientAssignClinic(
+  payload: IPayloadPatientAssignClinic
+) {
+  return await put(`/admin/patient/${payload.uuid}/assign-clinic`, {
+    clinic_ids: payload.clinic_ids,
+  });
 }

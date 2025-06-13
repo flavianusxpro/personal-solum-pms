@@ -10,14 +10,7 @@ import {
 import { PiTrashBold } from 'react-icons/pi';
 import CSelect from '../../ui/select';
 import QuantityInput from '../../ui/quantity-input';
-import {
-  ActionIcon,
-  Button,
-  Input,
-  SelectOption,
-  Text,
-  Textarea,
-} from 'rizzui';
+import { ActionIcon, Input, SelectOption } from 'rizzui';
 import { InvoiceFormInput } from '@/validators/create-invoice.schema';
 import { IGetAllItemsResponse } from '@/types/ApiResponse';
 import { useAtom } from 'jotai';
@@ -55,6 +48,8 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
   const selectedItem = watch(`items.${index}.item`)?.split(' - ')[0];
   const findedItem = dataItems?.find((item) => item.code === selectedItem);
   const itemPrice = findedItem?.price ?? 0;
+  const taxIdItem = watch(`items.${index}.taxId`);
+  const findedTaxFee = taxFeeOptions.find((item) => item.value === taxIdItem);
 
   const quantityValue = watch(
     `items.${index}.qty`,
@@ -64,6 +59,12 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
   const totalAmount = useCallback(() => {
     return quantityValue * Number(itemPrice);
   }, [quantityValue, itemPrice]);
+
+  const totalAmountWithTax = useCallback(() => {
+    return (
+      totalAmount() + (totalAmount() * (Number(findedTaxFee?.fee) || 0)) / 100
+    );
+  }, [findedTaxFee?.fee, totalAmount]);
 
   useEffect(() => {
     if (itemPrice) {
@@ -77,8 +78,13 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
       setValue(`items.${index}.description`, findedItem.description);
     }
 
-    // set tax rate
-    // setValue(`items.${index}.tax_rate`, 0);
+    if (findedItem?.description === null) {
+      setValue(`items.${index}.description`, '');
+    }
+
+    if (findedTaxFee?.value) {
+      setValue(`items.${index}.tax_fee`, Number(findedTaxFee.fee));
+    }
   }, [
     selectedItem,
     quantityValue,
@@ -87,6 +93,8 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
     index,
     totalAmount,
     findedItem?.description,
+    findedTaxFee?.value,
+    findedTaxFee?.fee,
   ]);
 
   return (
@@ -106,12 +114,10 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
         )}
       />
       <div className="w-full">
-        <label className="block text-sm font-medium text-gray-700">
-          Description
-        </label>
-        <div className="mt-1.5 rounded-md border border-gray-300 p-2">
-          {field.description || 'Enter item description'}
-        </div>
+        <Input
+          label="Description"
+          {...register(`items.${index}.description`)}
+        />
       </div>
       <Controller
         name={`items.${index}.qty`}
@@ -136,7 +142,7 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
       />
 
       <Controller
-        name="taxFee"
+        name={`items.${index}.taxId`}
         control={control}
         render={({ field }) => (
           <CSelect
@@ -150,7 +156,7 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
       />
 
       <Input
-        value={totalAmount()}
+        value={totalAmountWithTax()}
         label="Total"
         type="number"
         prefix={currencyData.active.symbol}

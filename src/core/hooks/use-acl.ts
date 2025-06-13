@@ -1,22 +1,18 @@
 'use client';
 
-import { routes } from '@/config/routes';
 import { useProfile } from '@/hooks/useProfile';
 import { adminMenuItems } from '@/layouts/hydrogen/menu-items';
-import { signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
-import toast from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
+import { useMemo } from 'react';
 
 export default function useAcl() {
-  const router = useRouter();
+  const { status } = useSession();
+
   const {
     data: dataProfile,
     isLoading: isLoadingProfile,
     isSuccess,
-    isError,
-    error,
-  } = useProfile();
+  } = useProfile(status === 'authenticated');
 
   const permissionRead = useMemo(() => {
     return dataProfile?.role?.permissions.reduce(
@@ -38,18 +34,6 @@ export default function useAcl() {
       return acc;
     }, []);
   }, [permissionRead]);
-
-  const handleSignOut = async () => {
-    toast.error('Please login again to continue');
-    router.replace(routes.auth.signIn);
-    await signOut({ redirect: false });
-  };
-
-  useEffect(() => {
-    if (isError) {
-      handleSignOut();
-    }
-  }, [isError]);
 
   return { menuItems, isLoadingProfile, isSuccess, permissionRead };
 }

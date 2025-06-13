@@ -58,7 +58,10 @@ type FormDataType = {
   followup_fee: string;
   initial_fee: string;
   script_renewal_fee: string;
+  fee: string;
   rescedule_by?: string;
+  treatment: string;
+  reason?: string;
   oldData?: {
     id?: number | null;
     clinicId?: number;
@@ -74,6 +77,8 @@ type FormDataType = {
     followup_fee: string;
     initial_fee: string;
     script_renewal_fee: string;
+    treatment: string;
+    fee?: string;
   };
 };
 
@@ -93,6 +98,9 @@ export const initialFormData = {
   initial_fee: '',
   script_renewal_fee: '',
   rescedule_by: '',
+  treatment: '',
+  fee: '',
+  reason: '',
   oldData: {
     id: null,
     clinicId: undefined,
@@ -108,6 +116,8 @@ export const initialFormData = {
     followup_fee: '',
     initial_fee: '',
     script_renewal_fee: '',
+    treatment: '',
+    fee: '',
   },
 };
 
@@ -197,6 +207,8 @@ export default function CancelAppointmentForm({
         followup_fee: '',
         initial_fee: '',
         script_renewal_fee: '',
+        treatment: '',
+        fee: '',
         oldData: {
           id: data?.id,
           appointment_type: data?.type,
@@ -212,6 +224,8 @@ export default function CancelAppointmentForm({
           followup_fee: '',
           initial_fee: '',
           script_renewal_fee: '',
+          treatment: '',
+          fee: '',
         },
       });
     } else {

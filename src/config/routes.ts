@@ -14,7 +14,8 @@ export const routes = {
   },
 
   patient: {
-    dashboard: '/patient',
+    list: '/patient',
+    setting: '/patient/setting',
     create: '/patient/create',
     edit: (id: string) => `/patient/edit/${id}`,
     patientDetail: (id: string) => `/patient/${id}`,
@@ -30,6 +31,8 @@ export const routes = {
   },
   marketing: {
     coupon: '/marketing/coupon',
+    emailMarketing: '/marketing/email-marketing',
+    smsMarketing: '/marketing/sms-marketing',
   },
   invoice: {
     home: '/invoice',
@@ -60,7 +63,7 @@ export const routes = {
   consentFormConfirmation: '/form/consent-form/confirmation',
 
   appointment: {
-    dashboard: '/appointment',
+    dashboard: '/dashboard',
     appointmentList: '/appointment/list',
   },
   calendar: '/calendar',

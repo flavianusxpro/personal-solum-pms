@@ -35,13 +35,14 @@ import CancelForm from '../../modal/cancel-form';
 import RescheduleAppointmentForm from '../../modal/reschedule';
 import RevertForm from '../../modal/revert-form';
 
-const statusOptions = [
+const aptStatusOptions = [
   { label: 'Draft', value: 1 },
-  { label: 'Pending', value: 2 },
-  { label: 'Confirmed', value: 3 },
+  { label: 'Scheduled', value: 2 },
+  { label: 'Checked In', value: 3 },
   { label: 'Finished', value: 4 },
   { label: 'Cancelled', value: 5 },
-  { label: 'Rescheduled', value: 6 },
+  { label: 'On Going', value: 6 },
+  { label: 'No Show', value: 7 },
 ];
 
 type RowValue = IGetAppointmentListResponse['data'][number];
@@ -124,8 +125,7 @@ export const GetColumns = ({
         dayjs(createdDate).format('DD/MM/YYYY HH:mm'),
     },
     {
-      title: <HeaderCell title="Appointment To" />,
-      // onHeaderCell: () => onHeaderCellClick('doctor.name'),
+      title: <HeaderCell title="Doctor" />,
       dataIndex: 'doctor',
       key: 'doctor',
       width: 320,
@@ -141,7 +141,7 @@ export const GetColumns = ({
     {
       title: (
         <HeaderCell
-          title="APPOINTMENT TYPE"
+          title="APT TYPE"
           sortable
           ascending={
             sortConfig?.direction === 'asc' && sortConfig?.key === 'type'
@@ -162,7 +162,7 @@ export const GetColumns = ({
       ),
     },
     {
-      title: <HeaderCell title="APPOINT STATUS" />,
+      title: <HeaderCell title="APT STATUS" />,
       onHeaderCell: () => onHeaderCellClick('status'),
       dataIndex: 'status',
       key: 'status',
@@ -193,7 +193,7 @@ export const GetColumns = ({
       width: 260,
       onHeaderCell: () => onHeaderCellClick('status'),
       render: (status: number | string, row: RowValue) =>
-        getPaymentStatusBadge(status),
+        getPaymentStatusBadge(row?.payment?.status ?? 0),
     },
     {
       title: <></>,
@@ -351,7 +351,7 @@ function RenderAction({
   );
 }
 
-export function getPaymentStatusBadge(status: number | string) {
+export function getPaymentStatusBadge(status: number | string | undefined) {
   switch (status) {
     case 2:
       return (
@@ -374,6 +374,13 @@ export function getPaymentStatusBadge(status: number | string) {
           <Text className="font-medium text-yellow-600">Pending</Text>
         </Flex>
       );
+    case 0:
+      return (
+        <div className="flex items-center">
+          <Badge renderAsDot className="bg-gray-400" />
+          <Text className="font-medium text-gray-600">Not Paid</Text>
+        </div>
+      );
     default:
       return (
         <div className="flex items-center">
@@ -384,8 +391,22 @@ export function getPaymentStatusBadge(status: number | string) {
   }
 }
 
-function getScheduleStatusBadge(status: number | string) {
+export function getAptStatusBadge(status: number | string) {
   switch (status) {
+    case 7:
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="warning" renderAsDot />
+          <Text className="font-medium text-green-dark">No Show</Text>
+        </Flex>
+      );
+    case 6:
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="info" renderAsDot />
+          <Text className="font-medium text-green-500">On Going</Text>
+        </Flex>
+      );
     case 5:
       return (
         <Flex gap="1" align="center">
@@ -397,21 +418,21 @@ function getScheduleStatusBadge(status: number | string) {
       return (
         <Flex gap="1" align="center">
           <Badge color="success" renderAsDot />
-          <Text className="font-medium text-green-dark">Finished</Text>
+          <Text className="font-medium text-green-dark">Completed</Text>
         </Flex>
       );
     case 3:
       return (
         <Flex gap="1" align="center">
           <Badge color="info" renderAsDot />
-          <Text className="font-medium text-blue-500">Confirmed</Text>
+          <Text className="font-medium text-blue-500">Checked In</Text>
         </Flex>
       );
     case 2:
       return (
         <Flex gap="1" align="center">
           <Badge color="warning" renderAsDot />
-          <Text className="font-medium text-yellow-600">Pending</Text>
+          <Text className="font-medium text-yellow-600">Scheduled</Text>
         </Flex>
       );
     case 1:
@@ -432,7 +453,7 @@ function getScheduleStatusBadge(status: number | string) {
 }
 
 function StatusSelect({ selectItem, id }: { selectItem: number; id: number }) {
-  const selectItemValue = statusOptions.find(
+  const selectItemValue = aptStatusOptions.find(
     (option) => option.value === selectItem
   )?.value;
   const [value, setValue] = useState(selectItemValue);
@@ -461,12 +482,12 @@ function StatusSelect({ selectItem, id }: { selectItem: number; id: number }) {
       className={'min-w-[140px]'}
       dropdownClassName="h-auto"
       placeholder="Select Status"
-      options={statusOptions}
+      options={aptStatusOptions}
       value={value}
       onChange={handleChange}
       isLoading={isPending}
       displayValue={(option: { value: number }) =>
-        getScheduleStatusBadge(option.value)
+        getAptStatusBadge(option.value)
       }
     />
   );

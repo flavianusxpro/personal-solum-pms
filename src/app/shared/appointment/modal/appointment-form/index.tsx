@@ -56,11 +56,13 @@ type FormDataType = {
   note: string;
   appointment_type: string;
   patient_type: string;
-  patient_problem: string[];
+  patient_problem: string;
+  treatment: string;
   meeting_preference: string;
   followup_fee: string;
   initial_fee: string;
   script_renewal_fee: string;
+  fee?: string;
 };
 
 export const initialFormData = {
@@ -73,11 +75,13 @@ export const initialFormData = {
   note: '',
   appointment_type: '',
   patient_type: '',
-  patient_problem: [],
+  patient_problem: '',
   meeting_preference: '',
   followup_fee: '',
   initial_fee: '',
   script_renewal_fee: '',
+  treatment: '',
+  fee: '',
 };
 
 export const formDataAtom = atom<FormDataType>(initialFormData);
@@ -169,11 +173,13 @@ export default function CreateUpdateAppointmentForm({
         meeting_preference: '',
         note: data?.note || '',
         patient_id: data?.patientId,
-        patient_problem: parsedPatientProblem,
+        patient_problem: data.patient_problem,
         patient_type: data?.patient_type,
         followup_fee: '',
         initial_fee: '',
         script_renewal_fee: '',
+        treatment: '',
+        // fee: data?.fee || '',
       });
     } else {
       setFormData(initialFormData);

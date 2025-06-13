@@ -1,6 +1,8 @@
 'use client';
 
 import { Button, Text } from 'rizzui';
+import { useModal } from '../modal-views/use-modal';
+import DeleteConfirmationModal from './modal/delete-confirmation';
 
 interface TableFooterProps {
   checkedItems: string[];
@@ -12,6 +14,7 @@ export default function TableFooter({
   handleDelete,
   children,
 }: React.PropsWithChildren<TableFooterProps>) {
+  const { openModal } = useModal();
   if (checkedItems.length === 0) {
     return null;
   }
@@ -26,7 +29,13 @@ export default function TableFooter({
           className="underline"
           color="danger"
           onClick={() => {
-            handleDelete(checkedItems);
+            openModal({
+              view: (
+                <DeleteConfirmationModal
+                  onDelete={() => handleDelete(checkedItems)}
+                />
+              ),
+            });
           }}
         >
           Delete Them

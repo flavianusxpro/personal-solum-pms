@@ -19,11 +19,7 @@ import { PiHospital } from 'react-icons/pi';
 import { useGetAppointments } from '@/hooks/useAppointment';
 import { useGetAllClinics } from '@/hooks/useClinic';
 import dayjs from 'dayjs';
-
-const MultiSelect = dynamic(
-  () => import('rizzui').then((mod) => mod.MultiSelect),
-  { ssr: false }
-);
+import { useGetTreatments } from '@/hooks/useDoctor';
 
 const Textarea = dynamic(() => import('rizzui').then((mod) => mod.Textarea), {
   ssr: false,
@@ -42,7 +38,18 @@ export default function AppointmentServices() {
   const { gotoNextStep } = useStepperAppointment();
   const [formData, setFormData] = useAtom(formDataAtom);
 
-  const { data: dataPatientProblem } = useGetPatientProblem({ search: '' });
+  const { data: dataPatientProblem } = useGetPatientProblem({
+    page: 1,
+    perPage: 100,
+    sort: 'DESC',
+  });
+
+  const { data: dataTreatments } = useGetTreatments({
+    page: 1,
+    perPage: 100,
+    sort: 'DESC',
+  });
+
   const { data: dataPatientTypes } = useGetPatientTypes({
     search: '',
   });
@@ -88,11 +95,20 @@ export default function AppointmentServices() {
 
   const patientProblemOptions = useMemo(
     () =>
-      dataPatientProblem?.map((item) => ({
+      dataPatientProblem?.data.map((item) => ({
         label: item.name,
         value: item.name,
       })) ?? [],
     [dataPatientProblem]
+  );
+
+  const treatmentOptions = useMemo(
+    () =>
+      dataTreatments?.data.map((item) => ({
+        label: item.name,
+        value: item.name,
+      })) ?? [],
+    [dataTreatments]
   );
 
   const patientTypeOptions = useMemo(
@@ -110,6 +126,7 @@ export default function AppointmentServices() {
       appointment_type: data.appointment_type,
       patient_type: data.patient_type,
       patient_problem: data.patient_problem,
+      treatment: data.treatment,
       note: data.note ?? '',
     }));
     gotoNextStep();
@@ -117,19 +134,19 @@ export default function AppointmentServices() {
 
   useEffect(() => {
     if (lastAppointment) {
-      const parsedPatientProblem: string[] =
-        typeof lastAppointment?.patient_problem === 'string'
-          ? (lastAppointment.patient_problem as string)
-              .slice(1, -1)
-              .split('","')
-              .map((s) => s.replace(/^"|"$/g, ''))
-          : Array.isArray(lastAppointment?.patient_problem)
-            ? lastAppointment.patient_problem
-            : [];
+      // const parsedPatientProblem: string[] =
+      //   typeof lastAppointment?.patient_problem === 'string'
+      //     ? (lastAppointment.patient_problem as string)
+      //         .slice(1, -1)
+      //         .split('","')
+      //         .map((s) => s.replace(/^"|"$/g, ''))
+      //     : Array.isArray(lastAppointment?.patient_problem)
+      //       ? lastAppointment.patient_problem
+      //       : [];
 
       setValue('appointment_type', lastAppointment.type);
       setValue('patient_type', lastAppointment.patient_type);
-      setValue('patient_problem', parsedPatientProblem);
+      setValue('patient_problem', lastAppointment.patient_problem);
       setValue('note', lastAppointment.note || '');
     }
   }, [lastAppointment, setFormData, setValue]);
@@ -180,14 +197,29 @@ export default function AppointmentServices() {
           control={control}
           name="patient_problem"
           render={({ field }) => (
-            <MultiSelect
+            <CSelect
               {...field}
               className="col-span-full md:col-span-1"
               labelClassName="font-medium text-gray-1000 dark:text-white"
-              placeholder="select patient problem..."
-              label="Problem Type"
+              placeholder="select patient condition..."
+              label="Patient Condition"
               options={patientProblemOptions}
               error={errors?.patient_problem?.message as string}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="treatment"
+          render={({ field }) => (
+            <CSelect
+              {...field}
+              className="col-span-full md:col-span-1"
+              labelClassName="font-medium text-gray-1000 dark:text-white"
+              placeholder="select treatment..."
+              label="Patient Treatment"
+              options={treatmentOptions}
+              error={errors?.treatment?.message as string}
             />
           )}
         />

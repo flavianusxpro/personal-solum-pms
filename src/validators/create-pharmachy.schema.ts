@@ -16,9 +16,7 @@ export const createPharmachySchema = z.object({
   address_line_1: z.string().min(1, {
     message: messages.addressIsRequired,
   }),
-  address_line_2: z.string().min(1, {
-    message: messages.addressIsRequired,
-  }),
+  address_line_2: z.string().optional(),
   city: z.string().min(1, {
     message: messages.cityIsRequired,
   }),

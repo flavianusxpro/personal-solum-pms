@@ -69,20 +69,26 @@ export interface IGetClinicByIdForPatientResponse extends ApiResponse {
 
 export interface IGetDoctorByClinicResponse extends ApiResponse {
   data: {
-    id: number | null;
+    id: number;
     first_name: string;
     last_name: string;
-    gender: null;
-    url_photo: null;
-    specialist: null;
+    gender: string;
+    photo: null;
+    specialist_type: string;
+    treatment_type: string;
+    problem_type: string;
+    medical_interest: string;
+    language: string;
     description: null;
-    appointment_duration: Appointmentduration;
-    appointment_fee: Appointmentfee;
-    appointment_schedule: Appointmentschedule | null;
-    booked_times: Booked_Times[];
+    cost: Cost;
   }[];
 }
 
+interface Cost {
+  name: string;
+  duration: number;
+  amount: string;
+}
 interface Booked_Times {
   date: string;
   booked_times: string[];
@@ -174,6 +180,7 @@ export interface IGetAllPatientsResponse extends ApiResponseWithPagination {
     timezone: string;
     created_at: string;
     updated_at: string;
+    photo: string | null;
   }[];
 }
 
@@ -207,10 +214,18 @@ export interface IGetPatientByIdResponse extends ApiResponse {
     emergency_email: null;
     emergency_relationship: null;
     verification_token: string;
+    position_of_card: string;
+    ihi_number: string;
+    concession_card_expire_date: string;
+    concession_card_number: string;
+    concession_card_type: string;
     timezone: string;
     created_at: string;
     updated_at: string;
     doctors: IDoctor[];
+    clinics: IClinic[];
+    address_line_1: string;
+    address_line_2: string;
   };
 }
 
@@ -272,6 +287,7 @@ export interface IGetDoctorByIdResponse extends ApiResponse {
     emergency_relationship: null;
     medical_interest: string;
     specialist_type: string;
+    problem_type: string;
     treatment_type: string;
     language: string;
     timezone: string;
@@ -470,6 +486,8 @@ interface Item {
   description: string;
   amount: string;
   qty: number;
+  taxId: number;
+  tax_fee: string;
   total_amount: string;
   created_at: string;
   updated_at: string;
@@ -482,6 +500,20 @@ export interface IGetAppointmentSummaryResponse extends ApiResponse {
     finished_appointment: number;
     cancelled_appointment: number;
   };
+}
+
+interface IClinic {
+  id: number;
+  name: string;
+  email: string;
+  mobile_number: string;
+  address: string;
+  logo: string;
+  default: boolean;
+  status: number;
+  description: null;
+  created_at: string;
+  updated_at: string;
 }
 export interface IDoctor {
   id: number;
@@ -741,6 +773,10 @@ export interface IGetEmailNotificationSettingsResponse extends ApiResponse {
     birthday_email_html: null;
     reminder_email_status: boolean;
     reminder_email_html: null;
+    refund_email_status: boolean;
+    refund_email_html: null;
+    cancelled_email_status: boolean;
+    cancelled_email_html: null;
   };
 }
 
@@ -863,6 +899,7 @@ export interface IGetTwilioConfigResponse extends ApiResponse {
     id: number;
     created_at: string;
     updated_at: string;
+    status: boolean;
   };
 }
 
@@ -875,6 +912,71 @@ export interface IGetSmtpConfigResponse extends ApiResponse {
     smtp_password: string;
     secure_type: string;
     mail_from: string;
+    created_at: string;
+    updated_at: string;
+  };
+}
+
+export interface IGetDoctorCostByIdResponse extends ApiResponse {
+  data: {
+    id: number;
+    doctorId: number;
+    treatmentId: number;
+    amount: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+}
+
+export interface IGetCalendarScheduleByClinicIdResponse extends ApiResponse {
+  data: {
+    date: string;
+  }[];
+}
+
+export interface IGetAwsS3ConfigResponse extends ApiResponse {
+  data: {
+    id: number;
+    aws_access_id: string;
+    aws_secret_key: string;
+    bucket: string;
+    region: string;
+    endpoint: string;
+    status: boolean;
+    created_at: string;
+    updated_at: string;
+  };
+}
+
+export interface IGetPatientDocumentationResponse
+  extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    patientId: number;
+    name: string;
+    url: string;
+    size: number;
+    type: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+}
+
+export interface IPostCouponCodeValidationResponse extends ApiResponse {
+  data: {
+    id: number;
+    type: string;
+    name: string;
+    description: string;
+    code: string;
+    discount_type: string;
+    discount_amount: number;
+    expiry_date: string;
+    patient_limit_use: number;
+    limit: number;
+    remaining_limit: number;
+    category: string;
+    restrict_patient: string;
     created_at: string;
     updated_at: string;
   };

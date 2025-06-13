@@ -24,17 +24,6 @@ const statusOptions = [
   },
 ];
 
-const conditionOptions = [
-  {
-    value: 'no-followup',
-    label: 'No Follow Up',
-  },
-  {
-    value: 'no-in-last-3-months',
-    label: 'No Appointment In Last 3 Months',
-  },
-];
-
 type FilterElementProps = {
   isFiltered: boolean;
   filters: { [key: string]: any };
@@ -75,6 +64,7 @@ export default function FilterElement({
       />
 
       <CSelect
+        className="w-fit"
         options={statusOptions}
         placeholder="Select status"
         value={filters['status']}
@@ -93,23 +83,6 @@ export default function FilterElement({
         dropdownClassName="h-auto z-10 bg-white/90 dark:bg-gray-800/90"
       />
 
-      {/* <CSelect
-        options={conditionOptions}
-        value={filters['condition']}
-        onChange={(value: string) => {
-          updateFilter('condition', value);
-        }}
-        getOptionValue={(option: { value: any }) => option.value}
-        clearable
-        onClear={() => {
-          updateFilter('condition', null);
-        }}
-        {...(isMediumScreen && {
-          label: 'Condition',
-          labelClassName: 'font-medium text-gray-700',
-        })}
-        dropdownClassName="h-auto bg-white/90 dark:bg-gray-800/90"
-      /> */}
       {isFiltered ? (
         <Button
           size="sm"

@@ -1,10 +1,7 @@
 'use client';
 
 import { Button, Flex } from 'rizzui';
-import { PiFire, PiLightning, PiPlusBold, PiStackSimple } from 'react-icons/pi';
-import MasterCardIcon from '@core/components/icons/mastercard';
-import VisaIcon from '@core/components/icons/visa';
-import ApplePayIcon from '@core/components/icons/apple-pay';
+import { PiPlusBold } from 'react-icons/pi';
 import { billingHistoryData } from '@/data/billing-history';
 import { exportToCSV } from '@core/utils/export-to-csv';
 import BillingHistoryTable from './billing-history/table';

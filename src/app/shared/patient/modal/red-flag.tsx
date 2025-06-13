@@ -11,7 +11,7 @@ import {
 import { useCreatePatientFLag } from '@/hooks/usePatientFlag';
 import toast from 'react-hot-toast';
 
-export default function RedFlagForm({ patient_id }: { patient_id: string }) {
+export default function RedFlagForm({ patient_id }: { patient_id: number }) {
   const { closeModal } = useModal();
   const { mutate } = useCreatePatientFLag();
   const onSubmit: SubmitHandler<AddRedFlagPatientForm> = (data) => {

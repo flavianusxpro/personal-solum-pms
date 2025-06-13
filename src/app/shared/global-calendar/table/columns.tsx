@@ -24,7 +24,7 @@ export const getColumns = ({ data, openModal }: Columns) => {
     title: <HeaderCell title="Time" />,
     dataIndex: 'time',
     key: 'time',
-    width: 25,
+    width: 1,
     render: (time: string) => <Text className="font-medium">{time}</Text>,
   };
 
@@ -32,14 +32,13 @@ export const getColumns = ({ data, openModal }: Columns) => {
     title: <HeaderCell title={name} />,
     dataIndex: name,
     key: name,
-    width: 200,
     render: (value: string, data: Row) => getRowAppointment(value, data.type),
   }));
 
   return [baseColumn, ...doctorColumns];
 };
 
-export function getRowAppointment(value: string, type: string) {
+function getRowAppointment(value: string, type: string) {
   let bgColor = '';
   switch (type) {
     case 'INITIAL':

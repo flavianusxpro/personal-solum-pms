@@ -1,6 +1,7 @@
 import { del, get, post, put } from '@/config/api';
 import {
   IGetAllClinicForPatientResponse,
+  IGetCalendarScheduleByClinicIdResponse,
   IGetClinicByIdForPatientResponse,
 } from '@/types/ApiResponse';
 import {
@@ -31,4 +32,13 @@ export async function putUpdateClinic(payload: IPayloadCreateUpdateClinic) {
 
 export async function deleteClinic(id: string) {
   return await del('/admin/clinic/' + id);
+}
+
+export async function getCalendarScheduleByClinicId(clinicId: number) {
+  return await get<IGetCalendarScheduleByClinicIdResponse>(
+    `/patient/clinic/calendar/schedule`,
+    {
+      params: { clinicId },
+    }
+  );
 }

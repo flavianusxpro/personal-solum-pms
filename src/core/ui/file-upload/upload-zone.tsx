@@ -1,19 +1,16 @@
 'use client';
 
 import Image from 'next/image';
-import toast from 'react-hot-toast';
 import isEmpty from 'lodash/isEmpty';
 import prettyBytes from 'pretty-bytes';
 import { useCallback, useState } from 'react';
 import { useDropzone } from '@uploadthing/react/hooks';
-import { PiCheckBold, PiTrashBold, PiUploadSimpleBold } from 'react-icons/pi';
-import { generateClientDropzoneAccept } from 'uploadthing/client';
+import { PiCheckBold, PiTrashBold } from 'react-icons/pi';
 import { Button, Text, FieldError } from 'rizzui';
 import cn from '../../utils/class-names';
 import UploadIcon from '../../components/shape/upload';
 import { endsWith } from 'lodash';
 import { FileWithPath } from 'react-dropzone';
-import { ClientUploadedFileData } from 'uploadthing/types';
 
 interface UploadZoneProps {
   label?: string;
@@ -42,7 +39,8 @@ export default function UploadZone({
 
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[]) => {
-      console.log('acceptedFiles', acceptedFiles);
+      const file: File = acceptedFiles?.[0];
+
       setFiles([
         ...acceptedFiles.map((file) =>
           Object.assign(file, {
@@ -50,6 +48,12 @@ export default function UploadZone({
           })
         ),
       ]);
+      console.log('🚀 ~ file:', file);
+      //       {
+      //     "path": "Invoice_ 76.pdf",
+      //     "preview": "blob:http://localhost:3000/fd74c416-16d9-46a1-8fb7-eb998243993a"
+      // }
+      setValue(name, [file]);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [files]
@@ -81,11 +85,7 @@ export default function UploadZone({
 
   return (
     <div className={cn('grid @container', className)}>
-      {label && (
-        <span className="mb-1.5 block font-semibold text-gray-900">
-          {label}
-        </span>
-      )}
+      {label && <span className="mb-1.5 block text-gray-900">{label}</span>}
       <div
         className={cn(
           'rounded-md border-[1.8px]',
@@ -202,13 +202,13 @@ function UploadButtons({
         <PiTrashBold />
         Clear {files.length} files
       </Button>
-      <Button
+      {/* <Button
         className="w-full gap-2 @xl:w-auto"
         isLoading={isLoading}
         onClick={onUpload}
       >
         <PiUploadSimpleBold /> Upload {files.length} files
-      </Button>
+      </Button> */}
     </div>
   );
 }

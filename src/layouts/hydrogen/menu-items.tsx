@@ -80,7 +80,7 @@ export const adminMenuItems = [
   },
   {
     name: 'Patients',
-    href: routes.patient.dashboard,
+    href: routes.patient.list,
     icon: <PiUserCirclePlus />,
     permissionReadName: ['patient'],
   },
@@ -140,12 +140,12 @@ export const adminMenuItems = [
       },
       {
         name: 'Email Marketing (coming soon)',
-        href: routes.management.product.list,
+        href: routes.marketing.emailMarketing,
         icon: <PiBoundingBox />,
       },
       {
         name: 'Sms Marketing (coming soon)',
-        href: routes.management.product.list,
+        href: routes.marketing.smsMarketing,
         icon: <PiBoundingBox />,
       },
     ],

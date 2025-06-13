@@ -8,7 +8,11 @@ import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
 import { Flex, Input, Loader, Text, Textarea } from 'rizzui';
 import { assignSchema, AssignTypes } from '@/validators/assign-doctor.schema';
-import { useGetPatientById, useUpdateAssignDoctor } from '@/hooks/usePatient';
+import {
+  useAssignClinicPatient,
+  useGetPatientById,
+  useUpdateAssignDoctor,
+} from '@/hooks/usePatient';
 import { useParams } from 'next/navigation';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
 import { useEffect, useMemo, useState } from 'react';
@@ -31,7 +35,11 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
 
   const [clinicIds, setClinicIds] = useState<string[]>([]);
 
-  const { data: dataPatient } = useGetPatientById(id);
+  const {
+    data: dataPatient,
+    refetch: refetchDataPatient,
+    isLoading,
+  } = useGetPatientById(id);
 
   const { data: dataClinics } = useGetAllClinics({
     page: 1,
@@ -52,6 +60,7 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
   });
 
   const { mutate } = useUpdateAssignDoctor();
+  const { mutate: mutatePatientAssignClinic } = useAssignClinicPatient();
 
   const clinicsOptions = useMemo(() => {
     if (!dataClinics) return [];
@@ -78,11 +87,27 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
         doctor_ids,
       },
       {
-        onSuccess: (data) => {
-          toast.success(data.message);
+        onSuccess: () => {
+          toast.success('Doctor assigned successfully');
         },
-        onError: (error) => {
-          toast.error(error.message);
+        onError: (error: any) => {
+          toast.error(error.response?.data?.message || error.message);
+        },
+      }
+    );
+
+    mutatePatientAssignClinic(
+      {
+        uuid: id,
+        clinic_ids: data.clinic.map((clinic) => parseInt(clinic)),
+      },
+      {
+        onSuccess: () => {
+          refetchDataPatient();
+          toast.success('Clinic assigned successfully');
+        },
+        onError: (error: any) => {
+          toast.error(error.response?.data?.message || error.message);
         },
       }
     );
@@ -94,6 +119,8 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
     }
   }, [clinicIds, refetch]);
 
+  if (isLoading || isloadingGetDoctors) return <Loader />;
+
   return (
     <Form<AssignTypes>
       validationSchema={assignSchema}
@@ -104,6 +131,9 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
         defaultValues: {
           doctor: dataPatient?.doctors
             ? dataPatient?.doctors.map((doctor) => doctor.id.toString())
+            : [],
+          clinic: dataPatient?.clinics
+            ? dataPatient?.clinics.map((clinic) => clinic.id.toString())
             : [],
         },
       }}

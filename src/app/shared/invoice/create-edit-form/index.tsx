@@ -68,7 +68,8 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
     if (!dataTaxes?.data) return [];
     return dataTaxes?.data.map((item) => ({
       label: `${item.description}`,
-      value: item.value,
+      value: item.id,
+      fee: item.value,
     }));
   }, [dataTaxes]);
 
@@ -77,7 +78,10 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
     const totalItemAmount = (data.items || []).reduce(
       (acc: number, item: any) => {
         const itemTotal = Number(item.amount) * Number(item.qty);
-        return acc + itemTotal;
+        const itemTotalWithTax =
+          itemTotal +
+          (Number(item.tax_fee) ? (itemTotal * Number(item.tax_fee)) / 100 : 0);
+        return acc + itemTotalWithTax;
       },
       0
     );
@@ -175,6 +179,8 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
             item: `${item.code} - ${item.name}`,
             amount: Number(item.amount),
             qty: Number(item.qty),
+            taxId: Number(item.taxId),
+            tax_fee: Number(item.tax_fee),
             total_amount: Number(item.total_amount),
           })),
           taxFee: dataInvoice?.tax_fee
@@ -195,16 +201,20 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
 
         const totalItemAmount = items
           ? (items || []).reduce((acc: number, item: any) => {
-              const itemTotal = Number(item.amount) * Number(item.qty);
+              const perItemTotal = Number(item.amount) * Number(item.qty);
+              const itemTotal =
+                perItemTotal +
+                (Number(item.tax_fee)
+                  ? (perItemTotal * Number(item.tax_fee)) / 100
+                  : 0);
               return acc + itemTotal;
             }, 0)
           : 0;
+
         const totalAmount =
           (totalItemAmount || 0) +
           ((totalItemAmount * Number(taxFee)) / 100 || 0) +
           (Number(otherFee) || 0);
-
-        const selectedTax = taxFeeOptions.find((item) => item.value === taxFee);
 
         return (
           <>
@@ -307,6 +317,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
                     errors={errors}
                     setValue={setValue}
                     taxFeeOptions={taxFeeOptions}
+                    isEdit={!!id}
                   />
                 </FormBlockWrapper>
 

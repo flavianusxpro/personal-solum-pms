@@ -83,7 +83,7 @@ export const getColumns = ({
     width: 300,
     render: (_: any, row: Row) => (
       <AvatarCard
-        src={''}
+        src={row.photo || ''}
         name={`${row.first_name} ${row.last_name}`}
         number={row.mobile_number}
         description={row.email.toLowerCase()}
@@ -182,7 +182,7 @@ function RenderAction({
   function handleRedFlagModal() {
     closeModal(),
       openModal({
-        view: <RedFlagForm patient_id={row.id.toString()} />,
+        view: <RedFlagForm patient_id={row.id} />,
         customSize: '600px',
       });
   }
@@ -260,11 +260,11 @@ function StatusSelect({ selectItem, id }: { selectItem: number; id: string }) {
   const { mutate, isPending } = useUpdatePatient();
 
   const handleChange = (value: number) => {
-    setValue(value);
     mutate(
       { patient_id: id, status: value },
       {
         onSuccess: () => {
+          setValue(value);
           toast.success('Status updated successfully');
         },
         onError: (error: any) => {

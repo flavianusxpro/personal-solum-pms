@@ -13,6 +13,7 @@ import TabAssign from './tab-assign';
 import { useParams } from 'next/navigation';
 import { useGetPatientById } from '@/hooks/usePatient';
 import TabHistory from './tab-history';
+import TabDocumentation from './tab-documentation';
 
 export const navItems = [
   {
@@ -72,7 +73,7 @@ export default function CreateEditPatient({
       : 'Create Patient',
     breadcrumb: [
       {
-        href: routes.patient.dashboard,
+        href: routes.patient.list,
         name: 'Patient',
       },
       {
@@ -99,18 +100,14 @@ export default function CreateEditPatient({
           </nav>
         </SimpleBar>
 
-        {tab === 'patient' && (
-          <PatientDetails
-            nextTab={() => selectTab(navItems[1].value)}
-            isView={isView}
-          />
-        )}
+        {tab === 'patient' && <PatientDetails isView={isView} />}
         {tab === 'password' && <TabPassword isView={isView} />}
         {tab === 'emergency' && <TabEmergencyContact isView={isView} />}
         {tab === 'billing' && <TabBillingAppointments isView={isView} />}
         {tab === 'notes-flags' && <TabNotesFlags isView={isView} />}
         {tab === 'assign' && <TabAssign isView={isView} />}
-        {tab === 'history' && <TabHistory isView={isView} />}
+        {tab === 'history' && <></>}
+        {tab === 'documentation' && <TabDocumentation isView={isView} />}
       </div>
     </>
   );

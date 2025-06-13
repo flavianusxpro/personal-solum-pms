@@ -6,13 +6,13 @@ import { startTransition, useState } from 'react';
 import SimpleBar from 'simplebar-react';
 import { useParams } from 'next/navigation';
 import { useGetDoctorById } from '@/hooks/useDoctor';
-import TabTreatment from './tab-treatment';
-import TabSpecialist from './tab-specialist';
 import SpecialistTable from './specialist/table/table';
-import ModalButton from '../../ui/modal-button/modal-button';
+import ModalButton from '../../ui/modal/modal-button';
 import CreateEditSpecialistModal from './specialist/modal/create-edit-modal';
 import CreateEditTreatmentModal from './treatment/modal/create-edit-modal';
 import TreatmentTable from './treatment/table/table';
+import ProblemTable from './problem/table/table';
+import CreateEditProblemModal from './problem/modal/create-edit-modal';
 
 export const navItems = [
   {
@@ -22,6 +22,10 @@ export const navItems = [
   {
     value: 'treatment',
     label: 'Treatment',
+  },
+  {
+    value: 'problem',
+    label: 'Problem',
   },
 ];
 
@@ -62,6 +66,7 @@ export default function SettingDoctor({
             <>
               {tab === 'specialist' && <CreateEditSpecialistModal />}
               {tab === 'treatment' && <CreateEditTreatmentModal />}
+              {tab === 'problem' && <CreateEditProblemModal />}
             </>
           }
         />
@@ -83,6 +88,7 @@ export default function SettingDoctor({
 
         {tab === 'specialist' && <SpecialistTable />}
         {tab === 'treatment' && <TreatmentTable />}
+        {tab === 'problem' && <ProblemTable />}
       </div>
     </>
   );

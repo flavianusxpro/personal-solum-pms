@@ -4,7 +4,7 @@ import { Controller, SubmitHandler } from 'react-hook-form';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { ActionIcon, FieldError, Flex, Input, Title } from 'rizzui';
+import { FieldError, Input } from 'rizzui';
 import CSelect from '@/core/ui/select';
 import { genderOption, languageOption, stateOption } from '@/config/constants';
 import { IPayloadCreateDoctorUser } from '@/types/paramTypes';
@@ -14,7 +14,6 @@ import {
 } from '@/validators/create-doctor.schema';
 import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
-import { PiX } from 'react-icons/pi';
 import { usePostCreateDoctorUser } from '@/hooks/useUser';
 import { useGetSpecialists, useGetTreatments } from '@/hooks/useDoctor';
 import { useMemo } from 'react';
@@ -22,7 +21,6 @@ import SelectLoader from '@/core/components/loader/select-loader';
 import dynamic from 'next/dynamic';
 import { useGetRoles } from '@/hooks/useRole';
 import { useGetAllClinics } from '@/hooks/useClinic';
-import { error } from 'console';
 import { PhoneNumber } from '@/core/ui/phone-input';
 import FormHeader from '@/core/components/form-header';
 

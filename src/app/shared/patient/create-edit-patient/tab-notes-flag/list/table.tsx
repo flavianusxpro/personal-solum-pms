@@ -8,26 +8,38 @@ import { useColumn } from '@core/hooks/use-column';
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { getColumns } from './columns';
 import TableHeader from '@/app/shared/ui/table-header';
-import ModalButton from '@/app/shared/ui/modal-button/modal-button';
+import ModalButton from '@/app/shared/ui/modal/modal-button';
 import FlagForm from '../modal/add-flag';
 import FormGroup from '@/app/shared/ui/form-group';
-import { useGetPatientFlags } from '@/hooks/usePatientFlag';
+import {
+  useDeletePatientFLag,
+  useGetPatientFlags,
+} from '@/hooks/usePatientFlag';
 import { useModal } from '@/app/shared/modal-views/use-modal';
+import { useParams } from 'next/navigation';
+import { useGetPatientById } from '@/hooks/usePatient';
+import toast from 'react-hot-toast';
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
 });
 
 export default function ListTable({ className }: { className?: string }) {
+  const id = useParams().id as string;
   const { openModal } = useModal();
   const [params, setParams] = useState({
     page: 1,
     perPage: 10,
   });
 
+  const { data: dataPatient } = useGetPatientById(id);
   const { data: dataFlags } = useGetPatientFlags({
     page: params.page,
     perPage: params.perPage,
+    patientId: dataPatient?.id as number,
+    sort: 'DESC',
   });
+
+  const { mutate } = useDeletePatientFLag();
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -35,8 +47,16 @@ export default function ListTable({ className }: { className?: string }) {
     },
   });
 
-  const onDeleteItem = (id: string) => {
-    handleDelete(id);
+  const onDeleteItem = (id: string[]) => {
+    mutate(id, {
+      onSuccess: () => {
+        toast.success('Patient flag deleted successfully');
+        setSelectedRowKeys([]);
+      },
+      onError: (error: any) => {
+        toast.error(error?.response?.data?.message || 'Something went wrong');
+      },
+    });
   };
 
   const {
@@ -87,7 +107,7 @@ export default function ListTable({ className }: { className?: string }) {
 
   return (
     <div className={className}>
-      <FormGroup title="Correspondence" className="mb-5" />
+      <FormGroup title="Notes & Flags" className="mb-5" />
 
       <ControlledTable
         isLoading={isLoading}
@@ -119,8 +139,7 @@ export default function ListTable({ className }: { className?: string }) {
           <TableFooter
             checkedItems={selectedRowKeys}
             handleDelete={(ids: string[]) => {
-              setSelectedRowKeys([]);
-              handleDelete(ids);
+              onDeleteItem(ids);
             }}
           >
             <Button size="sm" className="dark:bg-gray-300 dark:text-gray-800">

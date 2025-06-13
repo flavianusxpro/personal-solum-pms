@@ -8,7 +8,7 @@ import { getColumns } from './columns';
 import { useModal } from '../../modal-views/use-modal';
 import { useDeleteTax, useGetTaxes } from '@/hooks/useTax';
 import PageHeader from '../../ui/page-header';
-import ModalButton from '../../ui/modal-button/modal-button';
+import ModalButton from '../../ui/modal/modal-button';
 import { routes } from '@/config/routes';
 import CreateEditTaxModal from '../modal/create-edit-modal';
 
