@@ -52,6 +52,7 @@ export default function AppointmentPatientDoctor() {
     perPage: 10,
     treatment_type: formData.treatment || formData.patient_type,
     problem_type: formData.patient_problem,
+    doctorId: formData?.doctorId,
   });
 
   const { data: dataDoctor, isLoading } = useGetDoctorByClinic(params);

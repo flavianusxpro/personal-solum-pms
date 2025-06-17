@@ -12,6 +12,7 @@ import { rescheduleAppointmentSchema } from '@/validators/reschedule-appointment
 import { formRescheduleDataAtom, useStepperCancelAppointment } from '.';
 import { useGetCalendarScheduleByClinicId } from '@/hooks/useClinic';
 import { useMemo } from 'react';
+import toast from 'react-hot-toast';
 
 // generate form types from zod validation schema
 const FormSchema = rescheduleAppointmentSchema['appointmentDate'];
@@ -45,6 +46,8 @@ export default function DateTime() {
   }, [dataCalendarSchedule]);
 
   const onSubmit: SubmitHandler<FormSchemaType> = (data) => {
+    if (data.date < new Date())
+      return toast.error('Selected date cannot be in the past.');
     setFormData((prev) => ({
       ...prev,
       date: dayjs(data.date).format('YYYY-MM-DD'),

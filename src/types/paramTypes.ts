@@ -16,6 +16,7 @@ export interface IParamGetDoctorByClinic extends IParamGetDataWithPagination {
   role?: RoleType;
   treatment_type: string;
   problem_type: string;
+  doctorId?: number;
 }
 
 export interface IPayloadRegisterForPatient extends RegisterSchema {}
