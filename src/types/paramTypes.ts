@@ -388,6 +388,7 @@ interface Doctor {
   email: string;
   password: string;
   mobile_number: string;
+  description?: string;
   date_of_birth: string;
   gender: string;
   country: string;
