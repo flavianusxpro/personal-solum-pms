@@ -34,6 +34,7 @@ import AddNotesForm from '../../modal/add-notes';
 import CancelForm from '../../modal/cancel-form';
 import RescheduleAppointmentForm from '../../modal/reschedule';
 import RevertForm from '../../modal/revert-form';
+import ShowNote from '../../modal/show-notes';
 
 const aptStatusOptions = [
   { label: 'Draft', value: 1 },
@@ -236,6 +237,14 @@ function RenderAction({
       });
   }
 
+  function showNoteModal() {
+    closeModal(),
+      openModal({
+        view: <ShowNote notes={row.note || ''} />,
+        customSize: '600px',
+      });
+  }
+
   function addNotesModal() {
     closeModal(),
       openModal({
@@ -286,9 +295,13 @@ function RenderAction({
           </Tooltip>
         </Dropdown.Trigger>
         <Dropdown.Menu className="divide-y">
+          <Dropdown.Item onClick={showNoteModal}>
+            <FaRegNoteSticky className="mr-2 h-4 w-4" />
+            Show Note
+          </Dropdown.Item>
           <Dropdown.Item onClick={addNotesModal}>
             <FaRegNoteSticky className="mr-2 h-4 w-4" />
-            Add Notes
+            Add Note
           </Dropdown.Item>
           {isShowReschedule && (
             <Dropdown.Item onClick={() => rescheduleModal(row)}>
