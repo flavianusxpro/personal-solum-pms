@@ -29,7 +29,7 @@ import { HiOutlineAdjustmentsVertical } from 'react-icons/hi2';
 import { FaRegNoteSticky } from 'react-icons/fa6';
 import { GrSchedules } from 'react-icons/gr';
 import { RxCountdownTimer } from 'react-icons/rx';
-import { MdOutlineFreeCancellation } from 'react-icons/md';
+import { MdNotes, MdOutlineFreeCancellation } from 'react-icons/md';
 import AddNotesForm from '../../modal/add-notes';
 import CancelForm from '../../modal/cancel-form';
 import RescheduleAppointmentForm from '../../modal/reschedule';
@@ -113,7 +113,6 @@ export const GetColumns = ({
           name={`${row?.patient?.first_name} ${row?.patient?.last_name}`}
           description={row?.patient?.email}
           number={row?.patient?.mobile_number}
-          warning={row.note}
         />
       ),
     },
@@ -296,7 +295,7 @@ function RenderAction({
         </Dropdown.Trigger>
         <Dropdown.Menu className="divide-y">
           <Dropdown.Item onClick={showNoteModal}>
-            <FaRegNoteSticky className="mr-2 h-4 w-4" />
+            <MdNotes className="mr-2 h-4 w-4" />
             Show Note
           </Dropdown.Item>
           <Dropdown.Item onClick={addNotesModal}>

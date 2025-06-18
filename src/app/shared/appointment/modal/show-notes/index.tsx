@@ -18,17 +18,16 @@ export default function ShowNote({ notes }: { notes: string }) {
       onSubmit={() => {}}
       className="@container"
       useFormProps={{
-        mode: 'onChange',
         defaultValues: {
           notes: notes || '',
         },
       }}
     >
-      {({ register, control, formState: { errors } }) => {
+      {({ control }) => {
         return (
-          <div className="flex flex-col gap-6 px-6 pt-6">
+          <div className="flex flex-col gap-6 px-6 py-6">
             <Flex justify="between" align="center" gap="4">
-              <Title className="text-lg">Note Appointment</Title>
+              <Title className="text-lg">Appointment Note</Title>
               <ActionIcon variant="text" onClick={closeModal} className="">
                 <PiX className="h-6 w-6" />
               </ActionIcon>
