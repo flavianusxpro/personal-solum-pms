@@ -217,8 +217,8 @@ function RenderAction({
   const { openModal, closeModal } = useModal();
 
   const isShowCancel = [1, 2, 3].includes(row.status);
-
   const isShowReschedule = [3].includes(row.status);
+  const isHasNote = !!row.note;
 
   function handleCreateModal() {
     closeModal(),
@@ -294,10 +294,12 @@ function RenderAction({
           </Tooltip>
         </Dropdown.Trigger>
         <Dropdown.Menu className="divide-y">
-          <Dropdown.Item onClick={showNoteModal}>
-            <MdNotes className="mr-2 h-4 w-4" />
-            Show Note
-          </Dropdown.Item>
+          {isHasNote && (
+            <Dropdown.Item onClick={showNoteModal}>
+              <MdNotes className="mr-2 h-4 w-4" />
+              Show Note
+            </Dropdown.Item>
+          )}
           <Dropdown.Item onClick={addNotesModal}>
             <FaRegNoteSticky className="mr-2 h-4 w-4" />
             Add Note
