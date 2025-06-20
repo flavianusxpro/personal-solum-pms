@@ -35,6 +35,9 @@ import CancelForm from '../../modal/cancel-form';
 import RescheduleAppointmentForm from '../../modal/reschedule';
 import RevertForm from '../../modal/revert-form';
 import ShowNote from '../../modal/show-notes';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 const aptStatusOptions = [
   { label: 'Draft', value: 1 },
@@ -121,8 +124,7 @@ export const GetColumns = ({
       dataIndex: 'date',
       key: 'date',
       width: 250,
-      render: (createdDate: Date) =>
-        dayjs(createdDate).format('DD/MM/YYYY HH:mm'),
+      render: (date: Date) => dayjs(date).utc().format('DD/MM/YYYY hh:mm A'),
     },
     {
       title: <HeaderCell title="Doctor" />,
