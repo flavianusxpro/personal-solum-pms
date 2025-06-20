@@ -17,7 +17,7 @@ import { useModal } from '@/app/shared/modal-views/use-modal';
 import AppointmentDetails from './appointment-details';
 import AvatarCard from '@core/ui/avatar-card';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
-import dayjs from 'dayjs';
+import dayjs from '@/config/dayjs';
 import ActionTooltipButton from '@/app/shared/ui/action-tooltip-button';
 import PencilIcon from '@/core/components/icons/pencil';
 import CSelect from '@/app/shared/ui/select';
@@ -35,9 +35,6 @@ import CancelForm from '../../modal/cancel-form';
 import RescheduleAppointmentForm from '../../modal/reschedule';
 import RevertForm from '../../modal/revert-form';
 import ShowNote from '../../modal/show-notes';
-import utc from 'dayjs/plugin/utc';
-
-dayjs.extend(utc);
 
 const aptStatusOptions = [
   { label: 'Draft', value: 1 },
