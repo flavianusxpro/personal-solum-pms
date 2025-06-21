@@ -58,7 +58,7 @@ export const adminMenuItems = [
     name: 'Global Calendar (coming soon)',
     href: routes.globalCalendar,
     icon: <PiCalendar />,
-    permissionReadName: ['calendar'],
+    permissionReadName: ['global-calendar'],
   },
   {
     name: 'Invoice',
