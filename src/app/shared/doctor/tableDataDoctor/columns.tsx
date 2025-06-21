@@ -59,6 +59,7 @@ type Columns = {
   onChecked?: (id: string) => void;
   handleCopy: (text: string | number) => void;
   dataSpecialistsOptions?: SelectOption[];
+  isPermissionWriteDoctor?: boolean;
 };
 
 export const getColumns = ({
@@ -71,6 +72,7 @@ export const getColumns = ({
   onChecked,
   handleCopy,
   dataSpecialistsOptions,
+  isPermissionWriteDoctor = true,
 }: Columns) => [
   {
     title: (
@@ -164,23 +166,26 @@ export const getColumns = ({
     width: 130,
     render: (_: string, row: any) => (
       <div className="flex items-center justify-end gap-3 pe-4">
-        <Tooltip
-          size="sm"
-          content={'Edit Data Doctor'}
-          placement="top"
-          color="invert"
-        >
-          <Link href={routes.doctor.edit(row.id)}>
-            <ActionIcon
-              as="span"
-              size="sm"
-              variant="outline"
-              className="hover:text-gray-700"
-            >
-              <PencilIcon className="h-4 w-4" />
-            </ActionIcon>
-          </Link>
-        </Tooltip>
+        {isPermissionWriteDoctor && (
+          <Tooltip
+            size="sm"
+            content={'Edit Data Doctor'}
+            placement="top"
+            color="invert"
+          >
+            <Link href={routes.doctor.edit(row.id)}>
+              <ActionIcon
+                as="span"
+                size="sm"
+                variant="outline"
+                className="hover:text-gray-700"
+              >
+                <PencilIcon className="h-4 w-4" />
+              </ActionIcon>
+            </Link>
+          </Tooltip>
+        )}
+
         <Tooltip
           size="sm"
           content={'View Data Doctor'}
@@ -198,11 +203,14 @@ export const getColumns = ({
             </ActionIcon>
           </Link>
         </Tooltip>
-        <DeletePopover
-          title={`Delete the doctor`}
-          description={`Are you sure you want to delete this #${row.id} doctor?`}
-          onDelete={() => onDeleteItem([row.id])}
-        />
+
+        {isPermissionWriteDoctor && (
+          <DeletePopover
+            title={`Delete the doctor`}
+            description={`Are you sure you want to delete this #${row.id} doctor?`}
+            onDelete={() => onDeleteItem([row.id])}
+          />
+        )}
       </div>
     ),
   },
