@@ -27,10 +27,35 @@ export default function useAcl() {
 
   // use this to filter the menu items based on the permissions
   const menuItems = useMemo(() => {
+    if (!permissionRead) return [];
+
     return adminMenuItems.reduce((acc: any[], item) => {
-      if (permissionRead?.includes(item.permissionReadName[0])) {
-        acc.push(item);
+      const hasParentPermission =
+        item.permissionReadName.length === 0 ||
+        item.permissionReadName.some((perm) => permissionRead.includes(perm));
+
+      if (!hasParentPermission) return acc;
+
+      let filteredItem = { ...item };
+
+      if (item.dropdownItems?.length) {
+        const filteredDropdowns = item.dropdownItems.filter((dropdown) => {
+          return (
+            dropdown.permissionReadName.length === 0 ||
+            dropdown.permissionReadName.some((perm) =>
+              permissionRead.includes(perm)
+            )
+          );
+        });
+
+        if (filteredDropdowns.length > 0) {
+          filteredItem.dropdownItems = filteredDropdowns;
+        } else {
+          delete filteredItem.dropdownItems; // Clean up if empty
+        }
       }
+
+      acc.push(filteredItem);
       return acc;
     }, []);
   }, [permissionRead]);
