@@ -35,5 +35,15 @@ export default function useAcl() {
     }, []);
   }, [permissionRead]);
 
-  return { menuItems, isLoadingProfile, isSuccess, permissionRead };
+  const permissions = useMemo(() => {
+    return dataProfile?.role.permissions;
+  }, [dataProfile]);
+
+  return {
+    menuItems,
+    isLoadingProfile,
+    isSuccess,
+    permissionRead,
+    permissions,
+  };
 }
