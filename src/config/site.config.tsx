@@ -10,8 +10,8 @@ enum MODE {
 }
 
 export const siteConfig = {
-  title: 'Solum Clinic',
-  description: `Solum Clinic`,
+  title: `${process.env.NEXT_PUBLIC_CLINIC_NAME}`,
+  description: `${process.env.NEXT_PUBLIC_CLINIC_NAME}`,
   logo: logoImg,
   icon: logoIconImg,
   mode: MODE.LIGHT,
@@ -25,10 +25,14 @@ export const metaObject = (
   description: string = siteConfig.description
 ): Metadata => {
   return {
-    title: title ? `${title} - Solumn Clinic` : siteConfig.title,
+    title: title
+      ? `${title} - ${process.env.NEXT_PUBLIC_CLINIC_NAME}`
+      : siteConfig.title,
     description,
     openGraph: openGraph ?? {
-      title: title ? `${title} - Solumn Clinic` : title,
+      title: title
+        ? `${title} - ${process.env.NEXT_PUBLIC_CLINIC_NAME}`
+        : title,
       description,
       url: 'https://solumclinic.au/',
       siteName: 'Solumn Clinic', // https://developers.google.com/search/docs/appearance/site-names
