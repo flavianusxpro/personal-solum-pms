@@ -584,3 +584,8 @@ export interface IPayloadPatientAssignClinic {
   uuid: string;
   clinic_ids: number[];
 }
+
+export interface IPayloadClinicConnection {
+  name: string;
+  access_token: string;
+}

@@ -1,5 +1,6 @@
 import { routes } from '@/config/routes';
 import dynamic from 'next/dynamic';
+import { PiPlugsConnected } from 'react-icons/pi';
 
 // Dynamic imports untuk ikon yang digunakan
 const PiHouse = dynamic(() =>
@@ -193,5 +194,11 @@ export const adminMenuItems = [
         icon: <PiUser />,
       },
     ],
+  },
+  {
+    name: 'connection',
+    href: routes.connection,
+    icon: <PiPlugsConnected />,
+    permissionReadName: ['management'],
   },
 ];

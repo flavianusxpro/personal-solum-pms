@@ -12,7 +12,6 @@ export const routes = {
     edit: (id: string) => `/user/edit/${id}`,
     userDetail: (id: string) => `/user/${id}`,
   },
-
   patient: {
     list: '/patient',
     setting: '/patient/setting',
@@ -55,13 +54,10 @@ export const routes = {
     branch: '/setting/branch',
     currency: '/setting/currency',
   },
-
   pharmachy: '/pharmacy',
-
   bookAppointment: '/bookings',
   consentForm: '/form/consent-form',
   consentFormConfirmation: '/form/consent-form/confirmation',
-
   appointment: {
     dashboard: '/dashboard',
     appointmentList: '/appointment/list',
@@ -87,4 +83,5 @@ export const routes = {
     otp: '/auth/otp',
   },
   signIn: '/auth/sign-in',
+  connection: '/connection',
 };
