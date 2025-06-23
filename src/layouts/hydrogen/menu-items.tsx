@@ -214,3 +214,20 @@ export const adminMenuItems = [
     permissionReadName: ['management'],
   },
 ];
+
+export type AdminMenuDropdownItem = {
+  name: string;
+  href: string;
+  icon?: React.ReactNode;
+  permissionReadName: string[];
+  superAdminOnly?: boolean;
+};
+
+export type AdminMenuItem = {
+  name: string;
+  href?: string;
+  icon?: React.ReactNode;
+  permissionReadName: string[];
+  dropdownItems?: AdminMenuDropdownItem[];
+  superAdminOnly?: boolean;
+};
