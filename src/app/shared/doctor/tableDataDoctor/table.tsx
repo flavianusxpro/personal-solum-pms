@@ -10,13 +10,14 @@ import {
 import { useColumn } from '@core/hooks/use-column';
 import { useTable } from '@core/hooks/use-table';
 import dynamic from 'next/dynamic';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import toast from 'react-hot-toast';
 import { useCopyToClipboard } from 'react-use';
 import debounce from 'lodash/debounce';
 import dayjs from 'dayjs';
 import TableFooter from '../../ui/table-footer';
+import useAcl from '@/core/hooks/use-acl';
 
 // dynamic import
 const FilterElement = dynamic(
@@ -61,6 +62,13 @@ export default function DoctorTable({}: {}) {
   });
 
   const { mutate: mutateDeleteDoctor } = useDeleteDoctor();
+
+  const { permissions } = useAcl();
+
+  const isPermissionWriteDoctor = useMemo(
+    () => permissions?.some((permission) => permission.name === 'doctor-write'),
+    [permissions]
+  );
 
   const dataSpecialistsOptions = React.useMemo(() => {
     if (!dataSpecialists) return [];
@@ -143,6 +151,7 @@ export default function DoctorTable({}: {}) {
         handleSelectAll,
         handleCopy,
         dataSpecialistsOptions,
+        isPermissionWriteDoctor,
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [

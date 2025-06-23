@@ -1,5 +1,6 @@
 import { routes } from '@/config/routes';
 import dynamic from 'next/dynamic';
+import { PiPlugsConnected } from 'react-icons/pi';
 
 // Dynamic imports untuk ikon yang digunakan
 const PiHouse = dynamic(() =>
@@ -58,7 +59,7 @@ export const adminMenuItems = [
     name: 'Global Calendar (coming soon)',
     href: routes.globalCalendar,
     icon: <PiCalendar />,
-    permissionReadName: ['calendar'],
+    permissionReadName: ['global-calendar'],
   },
   {
     name: 'Invoice',
@@ -94,11 +95,13 @@ export const adminMenuItems = [
         name: 'Doctor List',
         href: routes.doctor.dashboard,
         icon: <PiUser />,
+        permissionReadName: ['doctor'],
       },
       {
         name: 'Setting',
         href: routes.doctor.setting,
         icon: <PiUser />,
+        permissionReadName: ['doctor'],
       },
     ],
   },
@@ -106,7 +109,7 @@ export const adminMenuItems = [
     name: 'Pharmacy',
     href: routes.pharmachy,
     icon: <PiHospital />,
-    permissionReadName: ['setting'],
+    permissionReadName: ['pharmacy'],
   },
   {
     name: 'Users',
@@ -124,6 +127,7 @@ export const adminMenuItems = [
         name: 'Product & Service',
         href: routes.management.product.list,
         icon: <PiBoundingBox />,
+        permissionReadName: [],
       },
     ],
   },
@@ -137,16 +141,19 @@ export const adminMenuItems = [
         name: 'Coupon (coming soon)',
         href: routes.marketing.coupon,
         icon: <PiBoundingBox />,
+        permissionReadName: [],
       },
       {
         name: 'Email Marketing (coming soon)',
         href: routes.marketing.emailMarketing,
         icon: <PiBoundingBox />,
+        permissionReadName: [],
       },
       {
         name: 'Sms Marketing (coming soon)',
         href: routes.marketing.smsMarketing,
         icon: <PiBoundingBox />,
+        permissionReadName: [],
       },
     ],
   },
@@ -166,32 +173,61 @@ export const adminMenuItems = [
         name: 'Setup',
         href: routes.setting.setup,
         icon: <PiUser />,
+        permissionReadName: [],
       },
       {
         name: 'Email Template',
         href: routes.setting.emailTemplate,
         icon: <PiUser />,
+        permissionReadName: [],
       },
       {
         name: 'SMS Template',
         href: routes.setting.smsTemplate,
         icon: <PiUser />,
+        permissionReadName: [],
       },
       {
         name: 'Roles',
         href: routes.setting.roles,
         icon: <PiUser />,
+        permissionReadName: [],
       },
       {
         name: 'Branch',
         href: routes.setting.branch,
         icon: <PiUser />,
+        permissionReadName: [],
       },
       {
         name: 'Currency',
         href: routes.setting.currency,
         icon: <PiUser />,
+        permissionReadName: [],
       },
     ],
   },
+  {
+    name: 'connection',
+    href: routes.connection,
+    icon: <PiPlugsConnected />,
+    permissionReadName: ['management'],
+  },
 ];
+
+export type AdminMenuDropdownItem = {
+  name: string;
+  href: string;
+  icon?: React.ReactNode;
+  permissionReadName: string[];
+  superAdminOnly?: boolean;
+};
+
+export type AdminMenuItem = {
+  name: string;
+  href?: string;
+  icon?: React.ReactNode;
+  permissionReadName: string[];
+  dropdownItems?: AdminMenuDropdownItem[];
+  superAdminOnly?: boolean;
+};

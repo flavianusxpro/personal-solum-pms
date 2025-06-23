@@ -16,6 +16,7 @@ export interface IParamGetDoctorByClinic extends IParamGetDataWithPagination {
   role?: RoleType;
   treatment_type: string;
   problem_type: string;
+  doctorId?: number;
 }
 
 export interface IPayloadRegisterForPatient extends RegisterSchema {}
@@ -387,6 +388,7 @@ interface Doctor {
   email: string;
   password: string;
   mobile_number: string;
+  description?: string;
   date_of_birth: string;
   gender: string;
   country: string;
@@ -581,4 +583,9 @@ export interface IParamsGetPatientDocumentation
 export interface IPayloadPatientAssignClinic {
   uuid: string;
   clinic_ids: number[];
+}
+
+export interface IPayloadClinicConnection {
+  name: string;
+  access_token: string;
 }

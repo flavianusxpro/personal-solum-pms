@@ -8,47 +8,28 @@ import { PiPlusBold } from 'react-icons/pi';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import CreateDoctorModal from '@/app/shared/doctor/modal/create-doctor';
 import DoctorTable from '@/app/shared/doctor/tableDataDoctor/table';
-import useAcl from '@/core/hooks/use-acl';
-import PickDoctorModal from '@/app/shared/doctor/modal/pick-doctor';
+import CreateEditConnectionModal from '@/app/shared/connection/modal.tsx/CreateEdit';
 
 const pageHeader = {
-  title: 'Doctors',
+  title: 'Connection',
   breadcrumb: [
     {
-      href: routes.doctor.dashboard,
-      name: 'Doctors',
-    },
-    {
-      name: 'List',
+      href: routes.connection,
+      name: 'Connection',
     },
   ],
 };
 
-export default function DoctorPage() {
+export default function Page() {
   const { openModal } = useModal();
-  const { permissions } = useAcl();
-
-  const isPermissionWriteDoctor = permissions?.some(
-    (permission) => permission.name === 'doctor-write'
-  );
-
   return (
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
         <div className="mt-4 flex items-center gap-3 @lg:mt-0">
-          <ExportButton
-            data={doctorData}
-            fileName="order_data"
-            header="Order ID,Name,Email,Avatar,Items,Price,Status,Created At,Updated At"
-          />
           <Button
             onClick={() => {
               openModal({
-                view: isPermissionWriteDoctor ? (
-                  <CreateDoctorModal />
-                ) : (
-                  <PickDoctorModal />
-                ),
+                view: <CreateEditConnectionModal />,
                 customSize: '600px',
               });
             }}
@@ -56,13 +37,13 @@ export default function DoctorPage() {
           >
             <Button as="span" className="w-full @lg:w-auto">
               <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
-              {isPermissionWriteDoctor ? 'Add Doctor' : 'Pick Doctor'}
+              Create Connection
             </Button>
           </Button>
         </div>
       </PageHeader>
 
-      <DoctorTable />
+      {/* <DoctorTable /> */}
     </>
   );
 }

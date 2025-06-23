@@ -10,7 +10,6 @@ import { useDeleteAppointment } from '@/hooks/useAppointment';
 import toast from 'react-hot-toast';
 import CreateUpdateAppointmentForm from '../appointment/modal/appointment-form';
 import { getAptStatusBadge } from '../appointment/appointment-list/list/columns';
-import { useEffect } from 'react';
 
 function DetailsEvents({ event }: { event: CalendarEvent }) {
   const { closeModal, openModal } = useModal();

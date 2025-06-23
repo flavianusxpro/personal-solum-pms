@@ -129,4 +129,5 @@ export const messages = {
   maxFileSize: (field: string, size: string) =>
     `${field} must be less than ${size}`,
   conditionNameIsRequired: 'Condition name is required',
+  connectionNameRequired: 'Connection name is required',
 };

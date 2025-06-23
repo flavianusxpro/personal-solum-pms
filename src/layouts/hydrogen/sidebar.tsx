@@ -20,8 +20,10 @@ export default function Sidebar({ className }: { className?: string }) {
           aria-label="Site Logo"
           className="text-gray-800 hover:text-gray-900"
         >
-          <Logo className="max-w-[155px]" />
-          {/* <h2 className='font-bold text-black text-[36px]'>Klinik 001</h2> */}
+          {/* <Logo className="max-w-[155px]" /> */}
+          <h2 className="text-[24px] font-bold text-black">
+            {process.env.NEXT_PUBLIC_CLINIC_NAME}
+          </h2>
         </Link>
       </div>
 

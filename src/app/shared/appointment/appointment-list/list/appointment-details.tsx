@@ -1,6 +1,6 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
-import dayjs from 'dayjs';
+import dayjs from '@/config/dayjs';
 import { PiCalendarCheckLight, PiMapPinLight, PiXBold } from 'react-icons/pi';
 import { ActionIcon, Title, Button } from 'rizzui';
 import { getPaymentStatusBadge } from './columns';
@@ -44,7 +44,7 @@ export default function AppointmentDetails({
             <PiCalendarCheckLight className="me-2 hidden w-5 shrink-0 text-xl" />
             Appointment Date:{' '}
             <span className="ps-2 font-medium text-gray-1000">
-              {dayjs(data?.date).format('DD MMM, YYYY h:mm A')}
+              {dayjs(data?.date).utc().format('DD MMM, YYYY h:mm A')}
             </span>
           </li>
           <li className="flex items-center">

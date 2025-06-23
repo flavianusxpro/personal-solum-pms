@@ -17,7 +17,7 @@ import { useModal } from '@/app/shared/modal-views/use-modal';
 import AppointmentDetails from './appointment-details';
 import AvatarCard from '@core/ui/avatar-card';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
-import dayjs from 'dayjs';
+import dayjs from '@/config/dayjs';
 import ActionTooltipButton from '@/app/shared/ui/action-tooltip-button';
 import PencilIcon from '@/core/components/icons/pencil';
 import CSelect from '@/app/shared/ui/select';
@@ -29,11 +29,12 @@ import { HiOutlineAdjustmentsVertical } from 'react-icons/hi2';
 import { FaRegNoteSticky } from 'react-icons/fa6';
 import { GrSchedules } from 'react-icons/gr';
 import { RxCountdownTimer } from 'react-icons/rx';
-import { MdOutlineFreeCancellation } from 'react-icons/md';
+import { MdNotes, MdOutlineFreeCancellation } from 'react-icons/md';
 import AddNotesForm from '../../modal/add-notes';
 import CancelForm from '../../modal/cancel-form';
 import RescheduleAppointmentForm from '../../modal/reschedule';
 import RevertForm from '../../modal/revert-form';
+import ShowNote from '../../modal/show-notes';
 
 const aptStatusOptions = [
   { label: 'Draft', value: 1 },
@@ -112,7 +113,6 @@ export const GetColumns = ({
           name={`${row?.patient?.first_name} ${row?.patient?.last_name}`}
           description={row?.patient?.email}
           number={row?.patient?.mobile_number}
-          warning={row.note}
         />
       ),
     },
@@ -121,8 +121,7 @@ export const GetColumns = ({
       dataIndex: 'date',
       key: 'date',
       width: 250,
-      render: (createdDate: Date) =>
-        dayjs(createdDate).format('DD/MM/YYYY HH:mm'),
+      render: (date: Date) => dayjs(date).utc().format('DD/MM/YYYY hh:mm A'),
     },
     {
       title: <HeaderCell title="Doctor" />,
@@ -217,8 +216,8 @@ function RenderAction({
   const { openModal, closeModal } = useModal();
 
   const isShowCancel = [1, 2, 3].includes(row.status);
-
   const isShowReschedule = [3].includes(row.status);
+  const isHasNote = !!row.note;
 
   function handleCreateModal() {
     closeModal(),
@@ -232,6 +231,14 @@ function RenderAction({
     closeModal(),
       openModal({
         view: <CreateUpdateAppointmentForm data={row} />,
+        customSize: '600px',
+      });
+  }
+
+  function showNoteModal() {
+    closeModal(),
+      openModal({
+        view: <ShowNote notes={row.note || ''} />,
         customSize: '600px',
       });
   }
@@ -286,9 +293,15 @@ function RenderAction({
           </Tooltip>
         </Dropdown.Trigger>
         <Dropdown.Menu className="divide-y">
+          {isHasNote && (
+            <Dropdown.Item onClick={showNoteModal}>
+              <MdNotes className="mr-2 h-4 w-4" />
+              Show Note
+            </Dropdown.Item>
+          )}
           <Dropdown.Item onClick={addNotesModal}>
             <FaRegNoteSticky className="mr-2 h-4 w-4" />
-            Add Notes
+            Add Note
           </Dropdown.Item>
           {isShowReschedule && (
             <Dropdown.Item onClick={() => rescheduleModal(row)}>

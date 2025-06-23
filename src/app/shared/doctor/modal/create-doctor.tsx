@@ -23,6 +23,12 @@ import { useGetRoles } from '@/hooks/useRole';
 import { useGetAllClinics } from '@/hooks/useClinic';
 import { PhoneNumber } from '@/core/ui/phone-input';
 import FormHeader from '@/core/components/form-header';
+import QuillLoader from '@/core/components/loader/quill-loader';
+
+const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
+  ssr: false,
+  loading: () => <QuillLoader className="col-span-full h-[143px]" />,
+});
 
 const MultySelect = dynamic(
   () => import('rizzui').then((mod) => mod.MultiSelect),
@@ -97,6 +103,7 @@ export default function CreatDoctorModal() {
       clinic_ids: data.clinic_ids.map((item) => parseInt(item)),
       doctor: {
         ...data,
+        description: data.about,
         mobile_number: '+' + data.mobile_number,
         specialist_type: data.specialist_type.map((item) => parseInt(item)),
         treatment_type: data.treatment_type.map((item) => parseInt(item)),
@@ -413,6 +420,21 @@ export default function CreatDoctorModal() {
                   />
                 </FormGroup>
               </div>
+
+              <Controller
+                name="about"
+                control={control}
+                render={({ field }) => (
+                  <QuillEditor
+                    {...field}
+                    label="Doctor Description"
+                    placeholder="Doctor Description"
+                    error={errors.about?.message}
+                    labelClassName="font-medium text-sm"
+                    className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[300px]"
+                  />
+                )}
+              />
             </div>
             <FormFooter
               className="rounded-b-xl"
