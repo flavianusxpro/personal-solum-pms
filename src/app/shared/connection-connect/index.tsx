@@ -12,17 +12,21 @@ import { connectionAtom } from '@/store/connection';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { postSubClinicApi } from '@/config/sub-clinic-api';
+import { IPostConnectMainClinicResponse } from '@/types/ApiResponse';
 
 export default function Connection() {
   const [connectionValue, setConnectionValue] = useAtom(connectionAtom);
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: async (data: ConnectionFormTypes) => {
-      return await axios
-        .post(data.hostname + '/api/connection/connect', {
+      return await postSubClinicApi<IPostConnectMainClinicResponse>(
+        '/api/connection/connect',
+        {
           name: data.connection_name,
           access_token: data.access_token,
-        })
+        }
+      )
         .then((res) => {
           return res.data;
         })
@@ -40,7 +44,11 @@ export default function Connection() {
     });
 
     mutateAsync(data, {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        setConnectionValue({
+          x_token: data.access_token,
+          x_session_id: data.sessionId,
+        });
         toast.success('Connection created successfully');
       },
       onError: (error) => {
@@ -59,6 +67,11 @@ export default function Connection() {
       className="mx-auto w-full max-w-2xl rounded-xl bg-white py-8 shadow-md @container"
       useFormProps={{
         mode: 'onChange',
+        defaultValues: {
+          connection_name: connectionValue.connection_name || '',
+          hostname: connectionValue.hostname || '',
+          access_token: connectionValue.access_token || '',
+        },
       }}
     >
       {({ register, formState: { errors } }) => {

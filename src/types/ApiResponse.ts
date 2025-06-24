@@ -994,3 +994,10 @@ export interface IGetApiKeyConnectionResponse
     updated_at: string;
   }[];
 }
+
+export interface IPostConnectMainClinicResponse extends ApiResponse {
+  data: {
+    sessionId: string;
+    access_token: string;
+  };
+}

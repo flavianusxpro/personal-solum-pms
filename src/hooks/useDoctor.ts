@@ -21,6 +21,7 @@ import {
   postCreateDoctorCost,
   putUpdateDoctorCost,
   deleteDoctorCost,
+  getDoctorListFromMain,
 } from '@/service/doctor';
 
 import { IParamGetAllDoctor, IParamGetSpecialists } from '@/types/paramTypes';
@@ -32,6 +33,17 @@ export function useGetAllDoctors(params: IParamGetAllDoctor) {
     queryFn: async () => getDoctorList(params),
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 10, // 10 minutes
+    enabled: params?.isMainClinic,
+  });
+}
+
+export function useGetAllDoctorsFromMain(params: IParamGetAllDoctor) {
+  return useQuery({
+    queryKey: ['doctors' + params],
+    queryFn: async () => getDoctorListFromMain(params),
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 10, // 10 minutes
+    enabled: params?.isMainClinic,
   });
 }
 

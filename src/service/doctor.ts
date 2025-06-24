@@ -1,4 +1,6 @@
 import { del, get, post, put } from '@/config/base-api';
+import { getSubClinicApi } from '@/config/sub-clinic-api';
+import { connectionAtom } from '@/store/connection';
 import {
   IGetAllDoctorsResponse,
   IGetAnalyticReportBillingByDoctorIdResponse,
@@ -45,6 +47,17 @@ export async function postGetDoctorAvailabilityByClinic(
 export async function getDoctorList(params: IParamGetAllDoctor) {
   return await get<IGetAllDoctorsResponse>('/admin/doctor', {
     params,
+  });
+}
+
+export async function getDoctorListFromMain(params: IParamGetAllDoctor) {
+  console.log('🚀 ~ getDoctorListFromMain ~ params:', params);
+  return await getSubClinicApi<IGetAllDoctorsResponse>('/api/doctor', {
+    params,
+    headers: {
+      'X-Session-ID': params.xSessionId,
+      'X-Token': params.xtoken,
+    },
   });
 }
 

@@ -1,28 +1,9 @@
-import axios, {
-  AxiosRequestConfig,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-} from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import toast from 'react-hot-toast';
-import { defaultConnection } from '@/store/connection';
 
 export const axiosSubClinicApi = axios.create({
-  baseURL: defaultConnection.hostname,
+  baseURL: process.env.NEXT_PUBLIC_CLINIC_MAIN_CLINIC_API_URL,
 });
-
-async function attachToken(
-  config: InternalAxiosRequestConfig
-): Promise<InternalAxiosRequestConfig> {
-  if (defaultConnection) {
-    config.headers.set('X-Token', defaultConnection.x_token);
-    config.headers.set('X-Session-ID', defaultConnection.x_session_id);
-  }
-  return config;
-}
-
-axiosSubClinicApi.interceptors.request.use(attachToken, (error) =>
-  Promise.reject(error)
-);
 
 axiosSubClinicApi.interceptors.response.use(
   (response: AxiosResponse) => response,
@@ -39,7 +20,7 @@ axiosSubClinicApi.interceptors.response.use(
   }
 );
 
-export async function get<T>(
+export async function getSubClinicApi<T>(
   url: string,
   config: AxiosRequestConfig = {}
 ): Promise<T> {
@@ -48,7 +29,7 @@ export async function get<T>(
     .then((response: any) => response.data);
 }
 
-export async function post<T>(
+export async function postSubClinicApi<T>(
   url: string,
   data: any,
   config: AxiosRequestConfig = {}
@@ -58,7 +39,7 @@ export async function post<T>(
     .then((response: any) => response.data);
 }
 
-export async function put<T>(
+export async function putSubClinicApi<T>(
   url: string,
   data: any,
   config: AxiosRequestConfig = {}
@@ -78,7 +59,7 @@ export async function postFormData<T>(
     .then((response: any) => response.data);
 }
 
-export async function del<T>(
+export async function delSubClinicApi<T>(
   url: string,
   config: AxiosRequestConfig = {}
 ): Promise<T> {

@@ -5,6 +5,7 @@ import { getColumns } from '@/app/shared/doctor/tableDataDoctor/columns';
 import {
   useDeleteDoctor,
   useGetAllDoctors,
+  useGetAllDoctorsFromMain,
   useGetSpecialists,
 } from '@/hooks/useDoctor';
 import { useColumn } from '@core/hooks/use-column';
@@ -18,6 +19,9 @@ import debounce from 'lodash/debounce';
 import dayjs from 'dayjs';
 import TableFooter from '../../ui/table-footer';
 import useAcl from '@/core/hooks/use-acl';
+import { useQuery } from '@tanstack/react-query';
+import { useAtom } from 'jotai';
+import { connectionAtom } from '@/store/connection';
 
 // dynamic import
 const FilterElement = dynamic(
@@ -33,6 +37,7 @@ export default function DoctorTable({}: {}) {
   const { isOpen } = useModal();
   const [filterStateValue, setFilterStateValue] = useState(filterState);
   const [_, copyToClipboard] = useCopyToClipboard();
+  const [connectionValue] = useAtom(connectionAtom);
 
   const [params, setParams] = useState({
     page: 1,
@@ -54,7 +59,33 @@ export default function DoctorTable({}: {}) {
       ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
       : undefined,
     q: JSON.stringify({ name: params.search }),
+    isMainClinic: process.env.NEXT_PUBLIC_CLINIC_TYPE === 'MAIN',
   });
+
+  const {
+    data: dataGetAllDoctorsFromMain,
+    isLoading: isLoadingGetAllDoctorsFromMain,
+  } = useGetAllDoctorsFromMain({
+    page: params.page,
+    perPage: params.perPage,
+    from: filterStateValue?.createdAt?.[0]
+      ? dayjs(filterStateValue?.createdAt?.[0]).format('YYYY-MM-DD')
+      : undefined,
+    to: filterStateValue?.createdAt?.[1]
+      ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
+      : undefined,
+    q: JSON.stringify({ name: params.search }),
+    xSessionId: connectionValue?.x_session_id,
+    xtoken: connectionValue?.x_token,
+    isMainClinic: process.env.NEXT_PUBLIC_CLINIC_TYPE !== 'MAIN',
+  });
+
+  const dataToUse = useMemo(() => {
+    if (process.env.NEXT_PUBLIC_CLINIC_TYPE === 'MAIN') {
+      return data;
+    }
+    return dataGetAllDoctorsFromMain;
+  }, [data, dataGetAllDoctorsFromMain]);
 
   const { data: dataSpecialists } = useGetSpecialists({
     page: 1,
@@ -175,7 +206,9 @@ export default function DoctorTable({}: {}) {
   return (
     <div>
       <ControlledTable
-        isLoading={isLoading || isLoadingGetAllDoctors}
+        isLoading={
+          isLoading || isLoadingGetAllDoctors || isLoadingGetAllDoctorsFromMain
+        }
         showLoadingText={true}
         data={tableData ?? []}
         // @ts-ignore
