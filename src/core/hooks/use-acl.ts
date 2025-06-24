@@ -90,7 +90,7 @@ export default function useAcl() {
       acc.push(filteredItem as AdminMenuItem);
       return acc;
     }, []);
-  }, [isSuperAdmin, permissionRead, superAdminOnly]);
+  }, [isMain, isMainOnly, isSuperAdmin, permissionRead, superAdminOnly]);
 
   const permissions = useMemo(() => {
     return dataProfile?.role.permissions;
