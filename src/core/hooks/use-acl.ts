@@ -3,7 +3,11 @@
 import { ROLES } from '@/config/constants';
 import { routes } from '@/config/routes';
 import { useProfile } from '@/hooks/useProfile';
-import { AdminMenuItem, adminMenuItems } from '@/layouts/hydrogen/menu-items';
+import {
+  AdminMenuDropdownItem,
+  AdminMenuItem,
+  adminMenuItems,
+} from '@/layouts/hydrogen/menu-items';
 import { useSession } from 'next-auth/react';
 import { useMemo } from 'react';
 
@@ -11,7 +15,12 @@ export default function useAcl() {
   const { status, data } = useSession();
   const isSuperAdmin = data?.role?.name === ROLES.SuperAdmin;
 
-  const superAdminOnly = [routes.connection];
+  const superAdminOnly = useMemo(() => [routes.connection.connect], []);
+
+  const isMain = process.env.NEXT_PUBLIC_CLINIC_TYPE === 'MAIN';
+  const isMainOnly = useMemo(() => {
+    return [routes.connection.api];
+  }, []);
 
   const {
     data: dataProfile,
@@ -51,17 +60,28 @@ export default function useAcl() {
       let filteredItem = { ...item };
 
       if (item.dropdownItems?.length) {
-        const filteredDropdowns = item.dropdownItems.filter((dropdown) => {
-          return (
-            dropdown.permissionReadName.length === 0 ||
-            dropdown.permissionReadName.some((perm) =>
-              permissionRead.includes(perm)
-            )
-          );
-        });
+        const filteredDropdowns = item.dropdownItems.reduce(
+          (acc: AdminMenuDropdownItem[], dropdown) => {
+            if (!isMain && isMainOnly.includes(dropdown.href)) {
+              return acc;
+            }
+
+            if (
+              dropdown.permissionReadName.length === 0 ||
+              dropdown.permissionReadName.some((perm) =>
+                permissionRead.includes(perm)
+              )
+            ) {
+              acc.push(dropdown);
+            }
+            return acc;
+          },
+          []
+        );
 
         if (filteredDropdowns.length > 0) {
-          filteredItem.dropdownItems = filteredDropdowns;
+          filteredItem.dropdownItems =
+            filteredDropdowns as typeof item.dropdownItems;
         } else {
           delete filteredItem.dropdownItems; // Clean up if empty
         }
@@ -70,7 +90,7 @@ export default function useAcl() {
       acc.push(filteredItem as AdminMenuItem);
       return acc;
     }, []);
-  }, [permissionRead]);
+  }, [isSuperAdmin, permissionRead, superAdminOnly]);
 
   const permissions = useMemo(() => {
     return dataProfile?.role.permissions;

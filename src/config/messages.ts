@@ -130,4 +130,5 @@ export const messages = {
     `${field} must be less than ${size}`,
   conditionNameIsRequired: 'Condition name is required',
   connectionNameRequired: 'Connection name is required',
+  hostnameIsRequired: 'Hostname is required',
 };

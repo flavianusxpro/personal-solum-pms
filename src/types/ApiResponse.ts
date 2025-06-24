@@ -981,3 +981,13 @@ export interface IPostCouponCodeValidationResponse extends ApiResponse {
     updated_at: string;
   };
 }
+
+export interface IGetApiKeyConnectionResponse extends ApiResponse {
+  data: {
+    id: number;
+    token: string;
+    status: boolean;
+    created_at: string;
+    updated_at: string;
+  };
+}

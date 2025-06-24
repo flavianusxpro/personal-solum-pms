@@ -83,5 +83,8 @@ export const routes = {
     otp: '/auth/otp',
   },
   signIn: '/auth/sign-in',
-  connection: '/connection',
+  connection: {
+    api: '/connection/api',
+    connect: '/connection/connect',
+  },
 };
