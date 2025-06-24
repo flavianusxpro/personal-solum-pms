@@ -7,8 +7,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { useCopyToClipboard } from 'react-use';
 import TableFooter from '../../ui/table-footer';
-import { useGetApiConnection } from '@/hooks/useConnection';
+import {
+  useDeleteApiConnection,
+  useGetApiConnection,
+} from '@/hooks/useConnection';
 import { getColumns } from './columns';
+import toast from 'react-hot-toast';
 
 const filterState = {
   createdAt: [null, null],
@@ -35,6 +39,8 @@ export default function ApiTable({}: {}) {
     q: JSON.stringify({ name: params.search }),
   });
 
+  const { mutate } = useDeleteApiConnection();
+
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
       handleSort(value);
@@ -43,6 +49,20 @@ export default function ApiTable({}: {}) {
 
   const handleCopy = (text: string | number) => {
     copyToClipboard(String(text));
+  };
+
+  const onDeleteItem = (ids: number[]) => {
+    mutate(ids, {
+      onSuccess: () => {
+        toast.success('Api connection deleted successfully');
+        refetch();
+      },
+      onError: (error: any) => {
+        const errorMessage =
+          error?.response?.data?.message || 'An error occurred';
+        toast.error(errorMessage);
+      },
+    });
   };
 
   const {
@@ -68,6 +88,7 @@ export default function ApiTable({}: {}) {
         onChecked: handleRowSelect,
         handleSelectAll,
         handleCopy,
+        onDeleteItem: onDeleteItem,
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [

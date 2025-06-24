@@ -986,6 +986,8 @@ export interface IGetApiKeyConnectionResponse
   extends ApiResponseWithPagination {
   data: {
     id: number;
+    hostname: string;
+    name: string;
     token: string;
     status: boolean;
     created_at: string;

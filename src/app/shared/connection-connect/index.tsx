@@ -1,36 +1,54 @@
 'use client';
 
-import FormHeader from '@/core/components/form-header';
 import { Form } from '@/core/ui/form';
 import {
   connectionFormSchema,
   ConnectionFormTypes,
 } from '@/validators/create-connection.schema';
 import { SubmitHandler } from 'react-hook-form';
-import { Input } from 'rizzui';
-import FormFooter from '@/core/components/form-footer';
+import { Button, Flex, Input, Text, Title } from 'rizzui';
 import { useAtom } from 'jotai';
 import { connectionAtom } from '@/store/connection';
+import { useMutation } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 export default function Connection() {
   const [connectionValue, setConnectionValue] = useAtom(connectionAtom);
 
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: async (data: ConnectionFormTypes) => {
+      return await axios
+        .post(data.hostname + '/api/connection/connect', {
+          name: data.connection_name,
+          access_token: data.access_token,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((error) => {
+          throw error;
+        });
+    },
+  });
+
   const onSubmit: SubmitHandler<ConnectionFormTypes> = (data) => {
-    // const payload = {
-    //   name: data.connection_name,
-    //   access_token: sessionData?.accessToken as string,
-    // };
-    // mutate(payload, {
-    //   onSuccess: () => {
-    //     toast.success('Connection created successfully');
-    //     closeModal();
-    //   },
-    //   onError: (error) => {
-    //     const errorMessage =
-    //       (error as any)?.response?.data?.message || 'An error occurred';
-    //     toast.error(errorMessage);
-    //   },
-    // });
+    setConnectionValue({
+      access_token: data.access_token,
+      hostname: data.hostname,
+      connection_name: data.connection_name,
+    });
+
+    mutateAsync(data, {
+      onSuccess: () => {
+        toast.success('Connection created successfully');
+      },
+      onError: (error) => {
+        const errorMessage =
+          (error as any)?.response?.data?.message || 'An error occurred';
+        toast.error(errorMessage);
+      },
+    });
   };
 
   return (
@@ -38,16 +56,23 @@ export default function Connection() {
       validationSchema={connectionFormSchema}
       // resetValues={reset}
       onSubmit={onSubmit}
-      className="max-h-[90vh] overflow-y-auto rounded-xl bg-white @container"
+      className="mx-auto w-full max-w-2xl rounded-xl bg-white py-8 shadow-md @container"
       useFormProps={{
         mode: 'onChange',
       }}
     >
       {({ register, formState: { errors } }) => {
         return (
-          <div className="flex flex-col gap-6 pt-2">
-            <FormHeader title="Create Connection" />
+          <div className="flex flex-col gap-6 rounded-lg pt-2 shadow-sm">
             <div className="grid grid-cols-1 gap-x-7 gap-y-4 px-6">
+              <Text className="text-xl font-semibold">Create Connection</Text>
+              <Input
+                label="Connection Name"
+                placeholder="Connection Name"
+                {...register('connection_name')}
+                error={errors.connection_name?.message}
+                className="flex-grow"
+              />
               <Input
                 label="Hostname"
                 placeholder="Hostname"
@@ -56,20 +81,19 @@ export default function Connection() {
                 className="flex-grow"
               />
               <Input
-                label="Hostname"
-                placeholder="Hostname"
-                {...register('hostname')}
-                error={errors.hostname?.message}
+                label="Access Token"
+                placeholder="Access Token"
+                {...register('access_token')}
+                error={errors.access_token?.message}
                 className="flex-grow"
               />
             </div>
 
-            <FormFooter
-              className="rounded-b-xl"
-              //   isLoading={isPending}
-              altBtnText="Cancel"
-              submitBtnText="Save"
-            />
+            <Flex justify="end" className="px-6 pt-4">
+              <Button isLoading={isPending} type="submit">
+                Connect
+              </Button>
+            </Flex>
           </div>
         );
       }}

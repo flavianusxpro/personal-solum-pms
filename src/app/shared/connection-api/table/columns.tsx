@@ -16,6 +16,11 @@ import {
   Text,
   Tooltip,
 } from 'rizzui';
+import ActionTooltipButton from '../../ui/action-button';
+import { useModal } from '../../modal-views/use-modal';
+import CreateEditApiModal from '../modal/create-edit-modal';
+
+type RowValue = IGetApiKeyConnectionResponse['data'][number];
 
 function getStatusBadge(status: boolean) {
   switch (status) {
@@ -50,6 +55,7 @@ type Columns = {
   checkedItems: string[];
   onChecked?: (id: string) => void;
   handleCopy: (text: string | number) => void;
+  onDeleteItem: (ids: number[]) => void;
 };
 
 export const getColumns = ({
@@ -59,6 +65,7 @@ export const getColumns = ({
   handleSelectAll,
   onChecked,
   handleCopy,
+  onDeleteItem,
 }: Columns) => [
   {
     title: (
@@ -138,69 +145,58 @@ export const getColumns = ({
     dataIndex: 'action',
     key: 'action',
     width: 130,
-    render: (_: string, row: any) => (
-      <></>
-      // <div className="flex items-center justify-end gap-3 pe-4">
-      //   <Tooltip
-      //     size="sm"
-      //     content={'View Data Doctor'}
-      //     placement="top"
-      //     color="invert"
-      //   >
-      //     <Link href={routes.doctor.doctorDetail(row.id)}>
-      //       <ActionIcon
-      //         as="span"
-      //         size="sm"
-      //         variant="outline"
-      //         className="hover:text-gray-700"
-      //       >
-      //         <EyeIcon className="h-4 w-4" />
-      //       </ActionIcon>
-      //     </Link>
-      //   </Tooltip>
-      // </div>
+    render: (_: string, row: RowValue) => (
+      <RenderAction row={row} onDeleteItem={onDeleteItem} />
     ),
   },
 ];
+function RenderAction({
+  row,
+  onDeleteItem,
+}: {
+  row: RowValue;
+  onDeleteItem: (id: number[]) => void;
+}) {
+  const { openModal, closeModal } = useModal();
 
-function getSpecialistDoctor(
-  specialist: string | number[],
-  dataSpecialistsOptions?: SelectOption[]
-) {
-  // specialist is like "[15]" or can be an array of numbers
-  const parsedSpecialist: number[] =
-    typeof specialist === 'string'
-      ? (JSON.parse(specialist) as number[])
-      : (specialist as number[]);
+  function handleEditModal(row: RowValue) {
+    closeModal(),
+      openModal({
+        view: <CreateEditApiModal data={row} />,
+        customSize: '600px',
+      });
+  }
 
-  if (
-    !parsedSpecialist ||
-    !Array.isArray(parsedSpecialist) ||
-    parsedSpecialist.length === 0
-  )
-    return <Text>-</Text>;
-
-  const specialistOptions = parsedSpecialist
-    .slice(0, 2)
-    .map((spec: number) =>
-      dataSpecialistsOptions?.find((option) => option.value === spec)
-    )
-    .filter(Boolean) as SelectOption[];
-
-  const hasMoreSpecialists = parsedSpecialist.length > 2;
+  function handleViewModal(row: RowValue) {
+    closeModal(),
+      openModal({
+        view: <CreateEditApiModal isView data={row} />,
+        customSize: '600px',
+      });
+  }
 
   return (
-    <div className="flex flex-col">
-      {specialistOptions.map((specialistOption, index) => (
-        <Text key={index} className="font-medium text-gray-700">
-          {specialistOption?.label || '-'}
-        </Text>
-      ))}
-      {hasMoreSpecialists && (
-        <Text className="text-xs text-gray-500">
-          +{parsedSpecialist.length - 2} more
-        </Text>
-      )}
+    <div className="flex items-center justify-end gap-3 pe-3">
+      <ActionTooltipButton
+        tooltipContent="Edit Api Connection"
+        variant="outline"
+        onClick={() => handleEditModal(row)}
+      >
+        <PencilIcon className="h-4 w-4" />
+      </ActionTooltipButton>
+
+      <ActionTooltipButton
+        tooltipContent="View Api Connection"
+        variant="outline"
+        onClick={() => handleViewModal(row)}
+      >
+        <EyeIcon className="h-4 w-4" />
+      </ActionTooltipButton>
+      <DeletePopover
+        title={`Delete the appointment`}
+        description={`Are you sure you want to delete this #${row.id} appointment?`}
+        onDelete={() => onDeleteItem([row.id])}
+      />
     </div>
   );
 }

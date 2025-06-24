@@ -6,6 +6,7 @@ export interface CONNECTION {
   access_token?: string;
   x_token?: string;
   x_session_id?: string;
+  connection_name?: string;
 }
 
 export const defaultConnection: CONNECTION = {};

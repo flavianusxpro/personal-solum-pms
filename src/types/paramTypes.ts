@@ -591,3 +591,8 @@ export interface IPayloadClinicConnection {
   name: string;
   access_token: string;
 }
+export interface IPayloadCreateEditApiConnection {
+  id?: number;
+  name: string;
+  hostname: string;
+}
