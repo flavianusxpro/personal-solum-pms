@@ -19,6 +19,8 @@ export interface IParamGetDoctorByClinic extends IParamGetDataWithPagination {
   doctorId?: number;
 }
 
+export interface IParamsGetApiConnection extends IParamGetDataWithPagination {}
+
 export interface IPayloadRegisterForPatient extends RegisterSchema {}
 
 export interface IPayloadCheckout {

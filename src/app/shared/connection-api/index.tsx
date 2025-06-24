@@ -1,7 +1,13 @@
 'use client';
-import { useGetApiConnection } from '@/hooks/useConnection';
+import { Grid, Text, Title } from 'rizzui';
 
 export default function ConnectionApi() {
-  const { data } = useGetApiConnection();
-  return <>API</>;
+  return (
+    <div>
+      <Title>API</Title>
+      <Grid>
+        <Text></Text>
+      </Grid>
+    </div>
+  );
 }

@@ -208,7 +208,7 @@ export const adminMenuItems = [
     ],
   },
   {
-    name: 'connection',
+    name: 'Connection',
     href: routes.connection.connect,
     icon: <PiPlugsConnected />,
     permissionReadName: ['management'],

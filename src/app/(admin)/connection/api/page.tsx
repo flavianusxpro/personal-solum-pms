@@ -1,6 +1,6 @@
 import { routes } from '@/config/routes';
 import PageHeader from '@/app/shared/ui/page-header';
-import ConnectionApi from '@/app/shared/connection-api';
+import ApiTable from '@/app/shared/connection-api/table/table';
 
 const pageHeader = {
   title: 'Connection',
@@ -24,7 +24,7 @@ export default function Page() {
         breadcrumb={pageHeader.breadcrumb}
       ></PageHeader>
 
-      <ConnectionApi />
+      <ApiTable />
     </>
   );
 }

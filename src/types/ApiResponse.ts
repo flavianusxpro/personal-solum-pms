@@ -982,12 +982,13 @@ export interface IPostCouponCodeValidationResponse extends ApiResponse {
   };
 }
 
-export interface IGetApiKeyConnectionResponse extends ApiResponse {
+export interface IGetApiKeyConnectionResponse
+  extends ApiResponseWithPagination {
   data: {
     id: number;
     token: string;
     status: boolean;
     created_at: string;
     updated_at: string;
-  };
+  }[];
 }
