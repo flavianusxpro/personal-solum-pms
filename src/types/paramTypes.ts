@@ -15,7 +15,7 @@ export interface IParamGetDoctorByClinic extends IParamGetDataWithPagination {
   id: string;
   role?: RoleType;
   treatment_type: string;
-  problem_type: string;
+  problem_type?: string;
   doctorId?: number;
 }
 
