@@ -26,6 +26,7 @@ import {
   IPayloadSettingBillingDoctor,
   IPayloadSettingMeetingDoctor,
 } from '@/types/paramTypes';
+import axios from 'axios';
 
 export async function getDoctorByClinic(params: IParamGetDoctorByClinic) {
   return await get<IGetDoctorByClinicResponse>(
@@ -54,13 +55,17 @@ export async function getDoctorList(params: IParamGetAllDoctor) {
 export async function getDoctorListFromMain(
   params: IParamGetAllDoctorForSubClinic
 ) {
-  return await getSubClinicApi<IGetAllDoctorsResponse>('/api/doctor', {
-    params,
-    headers: {
-      'X-Session-ID': params.xSessionId,
-      'X-Token': params.xtoken,
-    },
-  });
+  console.log('🚀 ~ params:', params);
+  return await axios.get<IGetAllDoctorsResponse>(
+    params.apiUrl + '/api/doctor',
+    {
+      params,
+      headers: {
+        'X-Session-ID': params.xSessionId,
+        'X-Token': params.xtoken,
+      },
+    }
+  );
 }
 
 export async function getDoctorById(id: string) {

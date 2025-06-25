@@ -44,10 +44,8 @@ export function useGetAllDoctorsFromMain(
   params: IParamGetAllDoctorForSubClinic
 ) {
   return useQuery({
-    queryKey: ['doctors' + params],
+    queryKey: ['get-doctors-from-main' + params],
     queryFn: async () => getDoctorListFromMain(params),
-    refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 10, // 10 minutes
   });
 }
 

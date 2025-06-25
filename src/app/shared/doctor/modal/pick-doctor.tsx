@@ -67,11 +67,17 @@ export default function PickDoctorModal() {
     perPage: 100,
     xSessionId: connectionValue?.x_session_id,
     xtoken: connectionValue?.x_token,
+    apiUrl: connectionValue?.hostname,
   });
 
+  const { data: dataClinics } = useGetAllClinics({
+    page: 1,
+    perPage: 100,
+    role: 'admin',
+  });
   const doctorsOptions = useMemo(() => {
     if (!dataGetAllDoctorsFromMain) return [];
-    return dataGetAllDoctorsFromMain.data.map((doctor) => ({
+    return dataGetAllDoctorsFromMain?.data.data.map((doctor) => ({
       label: doctor.first_name + ' ' + doctor.last_name,
       value: doctor.id.toString(),
     }));
@@ -80,7 +86,7 @@ export default function PickDoctorModal() {
   const onSubmit: SubmitHandler<PickDoctorFormTypes> = (data) => {
     const findDoctorRole = doctorRole?.find((role) => role.name === 'doctor');
 
-    const findDoctor = dataGetAllDoctorsFromMain?.data.find(
+    const findDoctor = dataGetAllDoctorsFromMain?.data?.data?.find(
       (doctor) => doctor.id === parseInt(data.doctorId)
     );
 
@@ -94,22 +100,49 @@ export default function PickDoctorModal() {
       return;
     }
 
+    if (!dataClinics?.data?.[0]?.id) {
+      toast.error('Clinic not found');
+      return;
+    }
+
+    const specialistTypeDefaultValues = () => {
+      const parsedSpecialistType = JSON.parse(
+        findDoctor.specialist_type
+      ) as number[];
+      if (Array.isArray(parsedSpecialistType)) {
+        return parsedSpecialistType.map((item) => item);
+      }
+      return [];
+    };
+
     const payload: IPayloadCreateDoctorUser = {
       name: findDoctor.first_name + ' ' + findDoctor.last_name,
       email: findDoctor.email,
       password: findDoctor.password as string,
       roleId: findDoctorRole.id,
-      clinic_ids: [1],
+      clinic_ids: [dataClinics?.data?.[0]?.id],
       doctor: {
         ...findDoctor,
         description: findDoctor.description || '',
         mobile_number: '+' + findDoctor.mobile_number,
-        specialist_type: Array.isArray(findDoctor?.specialist_type)
-          ? findDoctor.specialist_type.map((item) => parseInt(item as string))
-          : [],
-        treatment_type: Array.isArray(findDoctor?.treatment_type)
-          ? findDoctor.treatment_type.map((item) => parseInt(item as string))
-          : [],
+        specialist_type: specialistTypeDefaultValues(),
+        treatment_type: (() => {
+          if (Array.isArray(findDoctor.treatment_type)) {
+            return (findDoctor.treatment_type as (string | number)[]).map(
+              (item) => parseInt(item as string)
+            );
+          }
+          if (typeof findDoctor.treatment_type === 'string') {
+            // Handles string like '{"7","8","9"}'
+            const cleaned = findDoctor.treatment_type.replace(/[{}\"]+/g, '');
+            if (!cleaned) return [];
+            return cleaned
+              .split(',')
+              .map((item) => parseInt(item.trim()))
+              .filter((n) => !isNaN(n));
+          }
+          return [];
+        })(),
         date_of_birth: findDoctor.date_of_birth || '',
         gender: findDoctor.gender || '',
         emergency_first_name: findDoctor.emergency_first_name || '',

@@ -12,7 +12,6 @@ import { connectionAtom } from '@/store/connection';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import { postSubClinicApi } from '@/config/sub-clinic-api';
 import { IPostConnectMainClinicResponse } from '@/types/ApiResponse';
 
 export default function Connection() {
@@ -38,18 +37,12 @@ export default function Connection() {
   });
 
   const onSubmit: SubmitHandler<ConnectionFormTypes> = (data) => {
-    setConnectionValue({
-      access_token: data.access_token,
-      hostname: data.hostname,
-      connection_name: data.connection_name,
-    });
-
     mutateAsync(data, {
-      onSuccess: (data) => {
-        console.log('🚀 ~ Connection ~ data:', data);
+      onSuccess: (res) => {
         setConnectionValue({
-          x_token: data.access_token,
-          x_session_id: data.sessionId,
+          hostname: data.hostname,
+          x_token: res.data.access_token,
+          x_session_id: res.data.sessionId,
         });
         toast.success('Connection created successfully');
       },
@@ -68,11 +61,11 @@ export default function Connection() {
       onSubmit={onSubmit}
       className="mx-auto w-full max-w-2xl rounded-xl bg-white py-8 shadow-md @container"
       useFormProps={{
-        mode: 'onChange',
+        mode: 'all',
         defaultValues: {
-          connection_name: connectionValue.connection_name || '',
+          connection_name: connectionValue.x_session_id || '',
           hostname: connectionValue.hostname || '',
-          access_token: connectionValue.access_token || '',
+          access_token: connectionValue.x_token || '',
         },
       }}
     >
