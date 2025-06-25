@@ -37,7 +37,6 @@ export default function DoctorTable({}: {}) {
   const { isOpen } = useModal();
   const [filterStateValue, setFilterStateValue] = useState(filterState);
   const [_, copyToClipboard] = useCopyToClipboard();
-  const [connectionValue] = useAtom(connectionAtom);
 
   const [params, setParams] = useState({
     page: 1,
@@ -59,33 +58,7 @@ export default function DoctorTable({}: {}) {
       ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
       : undefined,
     q: JSON.stringify({ name: params.search }),
-    isMainClinic: process.env.NEXT_PUBLIC_CLINIC_TYPE === 'MAIN',
   });
-
-  const {
-    data: dataGetAllDoctorsFromMain,
-    isLoading: isLoadingGetAllDoctorsFromMain,
-  } = useGetAllDoctorsFromMain({
-    page: params.page,
-    perPage: params.perPage,
-    from: filterStateValue?.createdAt?.[0]
-      ? dayjs(filterStateValue?.createdAt?.[0]).format('YYYY-MM-DD')
-      : undefined,
-    to: filterStateValue?.createdAt?.[1]
-      ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
-      : undefined,
-    q: JSON.stringify({ name: params.search }),
-    xSessionId: connectionValue?.x_session_id,
-    xtoken: connectionValue?.x_token,
-    isMainClinic: process.env.NEXT_PUBLIC_CLINIC_TYPE !== 'MAIN',
-  });
-
-  const dataToUse = useMemo(() => {
-    if (process.env.NEXT_PUBLIC_CLINIC_TYPE === 'MAIN') {
-      return data;
-    }
-    return dataGetAllDoctorsFromMain;
-  }, [data, dataGetAllDoctorsFromMain]);
 
   const { data: dataSpecialists } = useGetSpecialists({
     page: 1,
@@ -206,9 +179,7 @@ export default function DoctorTable({}: {}) {
   return (
     <div>
       <ControlledTable
-        isLoading={
-          isLoading || isLoadingGetAllDoctors || isLoadingGetAllDoctorsFromMain
-        }
+        isLoading={isLoading || isLoadingGetAllDoctors}
         showLoadingText={true}
         data={tableData ?? []}
         // @ts-ignore

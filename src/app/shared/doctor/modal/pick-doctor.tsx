@@ -15,7 +15,11 @@ import {
 import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
 import { usePostCreateDoctorUser } from '@/hooks/useUser';
-import { useGetSpecialists, useGetTreatments } from '@/hooks/useDoctor';
+import {
+  useGetAllDoctorsFromMain,
+  useGetSpecialists,
+  useGetTreatments,
+} from '@/hooks/useDoctor';
 import { useMemo } from 'react';
 import SelectLoader from '@/core/components/loader/select-loader';
 import dynamic from 'next/dynamic';
@@ -28,6 +32,8 @@ import {
   pickDoctorFormSchema,
   PickDoctorFormTypes,
 } from '@/validators/pick-doctor.schema';
+import { useAtom } from 'jotai';
+import { connectionAtom } from '@/store/connection';
 
 const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
   ssr: false,
@@ -44,47 +50,91 @@ const MultySelect = dynamic(
 
 export default function PickDoctorModal() {
   const { closeModal } = useModal();
+  const [connectionValue] = useAtom(connectionAtom);
 
-  // const { mutate: mutateCreateDoctor, isPending } = usePostCreateDoctorUser();
+  const { mutate: mutateCreateDoctor, isPending } = usePostCreateDoctorUser();
 
-  // const clinicsOptions = useMemo(() => {
-  //   if (!dataClinics) return [];
-  //   return dataClinics.data.map((clinic) => ({
-  //     label: clinic.name,
-  //     value: clinic.id.toString(),
-  //   }));
-  // }, [dataClinics]);
+  const { data: doctorRole } = useGetRoles({
+    page: 1,
+    perPage: 100,
+  });
+
+  const {
+    data: dataGetAllDoctorsFromMain,
+    isLoading: isLoadingGetAllDoctorsFromMain,
+  } = useGetAllDoctorsFromMain({
+    page: 1,
+    perPage: 100,
+    xSessionId: connectionValue?.x_session_id,
+    xtoken: connectionValue?.x_token,
+  });
+
+  const doctorsOptions = useMemo(() => {
+    if (!dataGetAllDoctorsFromMain) return [];
+    return dataGetAllDoctorsFromMain.data.map((doctor) => ({
+      label: doctor.first_name + ' ' + doctor.last_name,
+      value: doctor.id.toString(),
+    }));
+  }, [dataGetAllDoctorsFromMain]);
 
   const onSubmit: SubmitHandler<PickDoctorFormTypes> = (data) => {
-    // if (!doctorRole) {
-    //   toast.error('Doctor Role not found');
-    //   return;
-    // }
-    // const payload: IPayloadCreateDoctorUser = {
-    //   name: data.first_name + ' ' + data.last_name,
-    //   email: data.email,
-    //   password: data.password as string,
-    //   roleId: doctorRole.id,
-    //   clinic_ids: data.clinic_ids.map((item) => parseInt(item)),
-    //   doctor: {
-    //     ...data,
-    //     description: data.about,
-    //     mobile_number: '+' + data.mobile_number,
-    //     specialist_type: data.specialist_type.map((item) => parseInt(item)),
-    //     treatment_type: data.treatment_type.map((item) => parseInt(item)),
-    //   },
-    // };
-    // mutateCreateDoctor(payload, {
-    //   onSuccess: () => {
-    //     toast.success('Doctor created successfully');
-    //     closeModal();
-    //   },
-    //   onError: (error) => {
-    //     const errorMessage =
-    //       (error as any)?.response?.data?.message || 'An error occurred';
-    //     toast.error(errorMessage);
-    //   },
-    // });
+    const findDoctorRole = doctorRole?.find((role) => role.name === 'doctor');
+
+    const findDoctor = dataGetAllDoctorsFromMain?.data.find(
+      (doctor) => doctor.id === parseInt(data.doctorId)
+    );
+
+    if (!findDoctor) {
+      toast.error('Doctor not found');
+      return;
+    }
+
+    if (!findDoctorRole) {
+      toast.error('Doctor role not found');
+      return;
+    }
+
+    const payload: IPayloadCreateDoctorUser = {
+      name: findDoctor.first_name + ' ' + findDoctor.last_name,
+      email: findDoctor.email,
+      password: findDoctor.password as string,
+      roleId: findDoctorRole.id,
+      clinic_ids: [1],
+      doctor: {
+        ...findDoctor,
+        description: findDoctor.description || '',
+        mobile_number: '+' + findDoctor.mobile_number,
+        specialist_type: Array.isArray(findDoctor?.specialist_type)
+          ? findDoctor.specialist_type.map((item) => parseInt(item as string))
+          : [],
+        treatment_type: Array.isArray(findDoctor?.treatment_type)
+          ? findDoctor.treatment_type.map((item) => parseInt(item as string))
+          : [],
+        date_of_birth: findDoctor.date_of_birth || '',
+        gender: findDoctor.gender || '',
+        emergency_first_name: findDoctor.emergency_first_name || '',
+        emergency_last_name: findDoctor.emergency_last_name || '',
+        emergency_mobile_number: findDoctor.emergency_mobile_number || '',
+        emergency_email: findDoctor.emergency_email || '',
+        state: findDoctor.state || '',
+        language: Array.isArray(findDoctor.language)
+          ? (findDoctor.language as string[])
+          : typeof findDoctor.language === 'string'
+            ? (JSON.parse(findDoctor.language) as string[])
+            : [],
+      },
+    };
+    mutateCreateDoctor(payload, {
+      onSuccess: () => {
+        toast.success('Doctor picked successfully');
+        closeModal();
+      },
+      onError: (error) => {
+        const errorMessage =
+          (error as any)?.response?.data?.message || 'An error occurred';
+        toast.error(errorMessage);
+      },
+    });
   };
 
   return (
@@ -110,7 +160,7 @@ export default function PickDoctorModal() {
                   render={({ field }) => (
                     <CSelect
                       {...field}
-                      options={[] /* Replace with actual options */}
+                      options={doctorsOptions}
                       placeholder="Select Doctor"
                       className="w-full"
                     />

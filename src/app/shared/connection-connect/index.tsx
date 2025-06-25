@@ -20,13 +20,14 @@ export default function Connection() {
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: async (data: ConnectionFormTypes) => {
-      return await postSubClinicApi<IPostConnectMainClinicResponse>(
-        '/api/connection/connect',
-        {
-          name: data.connection_name,
-          access_token: data.access_token,
-        }
-      )
+      return await axios
+        .post<IPostConnectMainClinicResponse>(
+          data.hostname + '/api/connection/connect',
+          {
+            name: data.connection_name,
+            access_token: data.access_token,
+          }
+        )
         .then((res) => {
           return res.data;
         })
@@ -45,6 +46,7 @@ export default function Connection() {
 
     mutateAsync(data, {
       onSuccess: (data) => {
+        console.log('🚀 ~ Connection ~ data:', data);
         setConnectionValue({
           x_token: data.access_token,
           x_session_id: data.sessionId,

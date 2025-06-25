@@ -13,6 +13,7 @@ import {
 } from '@/types/ApiResponse';
 import {
   IParamGetAllDoctor,
+  IParamGetAllDoctorForSubClinic,
   IParamGetDoctorByClinic,
   IParamGetSpecialists,
   IParamGetTreatments,
@@ -50,8 +51,9 @@ export async function getDoctorList(params: IParamGetAllDoctor) {
   });
 }
 
-export async function getDoctorListFromMain(params: IParamGetAllDoctor) {
-  console.log('🚀 ~ getDoctorListFromMain ~ params:', params);
+export async function getDoctorListFromMain(
+  params: IParamGetAllDoctorForSubClinic
+) {
   return await getSubClinicApi<IGetAllDoctorsResponse>('/api/doctor', {
     params,
     headers: {

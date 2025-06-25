@@ -24,7 +24,11 @@ import {
   getDoctorListFromMain,
 } from '@/service/doctor';
 
-import { IParamGetAllDoctor, IParamGetSpecialists } from '@/types/paramTypes';
+import {
+  IParamGetAllDoctor,
+  IParamGetAllDoctorForSubClinic,
+  IParamGetSpecialists,
+} from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 export function useGetAllDoctors(params: IParamGetAllDoctor) {
@@ -33,17 +37,17 @@ export function useGetAllDoctors(params: IParamGetAllDoctor) {
     queryFn: async () => getDoctorList(params),
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 10, // 10 minutes
-    enabled: params?.isMainClinic,
   });
 }
 
-export function useGetAllDoctorsFromMain(params: IParamGetAllDoctor) {
+export function useGetAllDoctorsFromMain(
+  params: IParamGetAllDoctorForSubClinic
+) {
   return useQuery({
     queryKey: ['doctors' + params],
     queryFn: async () => getDoctorListFromMain(params),
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 10, // 10 minutes
-    enabled: params?.isMainClinic,
   });
 }
 

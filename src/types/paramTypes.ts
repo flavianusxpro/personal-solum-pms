@@ -131,9 +131,12 @@ export interface IParamGetAllPatient extends IParamGetDataWithPagination {
 export interface IParamGetAllDoctor extends IParamGetDataWithPagination {
   from?: string;
   to?: string;
-  isMainClinic?: boolean;
+}
+
+export interface IParamGetAllDoctorForSubClinic extends IParamGetAllDoctor {
   xtoken?: string;
   xSessionId?: string;
+  apiUrl?: string;
 }
 export interface IParamGetAllEmailTemplates
   extends IParamGetDataWithPagination {}
