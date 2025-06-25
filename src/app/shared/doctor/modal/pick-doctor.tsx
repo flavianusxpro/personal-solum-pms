@@ -118,7 +118,7 @@ export default function PickDoctorModal() {
     const payload: IPayloadCreateDoctorUser = {
       name: findDoctor.first_name + ' ' + findDoctor.last_name,
       email: findDoctor.email,
-      password: findDoctor.password as string,
+      password: '12345678',
       roleId: findDoctorRole.id,
       clinic_ids: [dataClinics?.data?.[0]?.id],
       doctor: {
