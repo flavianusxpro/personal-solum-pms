@@ -86,12 +86,12 @@ export default function PickDoctorModal() {
     // Filter out doctors that already exist by full name
     return (dataGetAllDoctorsFromMain?.data?.data || [])
       .filter(
-        (doctor: any) =>
+        (doctor) =>
           !existingDoctorNames.has(
             (doctor.first_name + ' ' + doctor.last_name).toLowerCase()
           )
       )
-      .map((doctor: any) => ({
+      .map((doctor) => ({
         label: doctor.first_name + ' ' + doctor.last_name,
         value: doctor.id.toString(),
       }));
