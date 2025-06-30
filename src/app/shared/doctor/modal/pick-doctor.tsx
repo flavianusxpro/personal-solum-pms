@@ -16,6 +16,7 @@ import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
 import { usePostCreateDoctorUser } from '@/hooks/useUser';
 import {
+  useGetAllDoctors,
   useGetAllDoctorsFromMain,
   useGetSpecialists,
   useGetTreatments,
@@ -34,19 +35,6 @@ import {
 } from '@/validators/pick-doctor.schema';
 import { useAtom } from 'jotai';
 import { connectionAtom } from '@/store/connection';
-
-const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
-  ssr: false,
-  loading: () => <QuillLoader className="col-span-full h-[143px]" />,
-});
-
-const MultySelect = dynamic(
-  () => import('rizzui').then((mod) => mod.MultiSelect),
-  {
-    ssr: false,
-    loading: () => <SelectLoader />,
-  }
-);
 
 export default function PickDoctorModal() {
   const { closeModal } = useModal();
@@ -70,18 +58,44 @@ export default function PickDoctorModal() {
     apiUrl: connectionValue?.hostname,
   });
 
+  const { data: dataDoctors } = useGetAllDoctors({
+    page: 1,
+    perPage: 100,
+  });
+
   const { data: dataClinics } = useGetAllClinics({
     page: 1,
     perPage: 100,
     role: 'admin',
   });
+
   const doctorsOptions = useMemo(() => {
+    const doctors = dataDoctors?.data;
     if (!dataGetAllDoctorsFromMain) return [];
-    return dataGetAllDoctorsFromMain?.data.data.map((doctor) => ({
-      label: doctor.first_name + ' ' + doctor.last_name,
-      value: doctor.id.toString(),
-    }));
-  }, [dataGetAllDoctorsFromMain]);
+    // Build a set of existing doctor full names using reduce
+    const existingDoctorNames = (doctors || []).reduce(
+      (acc: Set<string>, doctor: any) => {
+        if (doctor?.first_name && doctor?.last_name) {
+          acc.add((doctor.first_name + ' ' + doctor.last_name).toLowerCase());
+        }
+        return acc;
+      },
+      new Set<string>()
+    );
+
+    // Filter out doctors that already exist by full name
+    return (dataGetAllDoctorsFromMain?.data?.data || [])
+      .filter(
+        (doctor) =>
+          !existingDoctorNames.has(
+            (doctor.first_name + ' ' + doctor.last_name).toLowerCase()
+          )
+      )
+      .map((doctor) => ({
+        label: doctor.first_name + ' ' + doctor.last_name,
+        value: doctor.id.toString(),
+      }));
+  }, [dataGetAllDoctorsFromMain, dataDoctors]);
 
   const onSubmit: SubmitHandler<PickDoctorFormTypes> = (data) => {
     const findDoctorRole = doctorRole?.find((role) => role.name === 'doctor');
@@ -196,6 +210,7 @@ export default function PickDoctorModal() {
                       options={doctorsOptions}
                       placeholder="Select Doctor"
                       className="w-full"
+                      isLoading={isLoadingGetAllDoctorsFromMain}
                     />
                   )}
                 />

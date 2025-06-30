@@ -40,6 +40,7 @@ export default function Connection() {
     mutateAsync(data, {
       onSuccess: (res) => {
         setConnectionValue({
+          connection_name: data.connection_name,
           hostname: data.hostname,
           x_token: res.data.access_token,
           x_session_id: res.data.sessionId,
@@ -63,13 +64,22 @@ export default function Connection() {
       useFormProps={{
         mode: 'all',
         defaultValues: {
-          connection_name: connectionValue.x_session_id || '',
+          connection_name: connectionValue.connection_name || '',
           hostname: connectionValue.hostname || '',
           access_token: connectionValue.x_token || '',
         },
       }}
     >
-      {({ register, formState: { errors } }) => {
+      {({ register, setValue, formState: { errors } }) => {
+        if (
+          connectionValue.hostname ||
+          connectionValue.x_token ||
+          connectionValue.connection_name
+        ) {
+          setValue('hostname', connectionValue.hostname || '');
+          setValue('connection_name', connectionValue.connection_name || '');
+          setValue('access_token', connectionValue.x_token || '');
+        }
         return (
           <div className="flex flex-col gap-6 rounded-lg pt-2 shadow-sm">
             <div className="grid grid-cols-1 gap-x-7 gap-y-4 px-6">
