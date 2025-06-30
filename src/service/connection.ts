@@ -29,5 +29,5 @@ export async function putUpdateApiKeyConnection(
 }
 
 export async function deleteApiKeyConnection(ids: number[]) {
-  return await del('/admin/setting/apis/delete', { data: ids });
+  return await del('/admin/setting/apis', { data: { ids } });
 }

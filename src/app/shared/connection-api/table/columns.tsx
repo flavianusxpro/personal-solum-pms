@@ -193,8 +193,8 @@ function RenderAction({
         <EyeIcon className="h-4 w-4" />
       </ActionTooltipButton>
       <DeletePopover
-        title={`Delete the appointment`}
-        description={`Are you sure you want to delete this #${row.id} appointment?`}
+        title={`Delete the connection`}
+        description={`Are you sure you want to delete this #${row.id} connection?`}
         onDelete={() => onDeleteItem([row.id])}
       />
     </div>
