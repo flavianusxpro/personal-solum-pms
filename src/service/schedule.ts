@@ -33,7 +33,7 @@ export async function deleteSchedule(ids: number[]) {
 export async function getScheduleFromMainClinicByDoctorId(
   params: IParamGetDoctorScheduleForMainClinic
 ) {
-  return axios.get<any>(`doctor/schedule`, {
+  return axios.get<any>(`${params.apiUrl}/api/doctor/schedule`, {
     params: { doctorId: params.doctorId },
     headers: {
       'X-Session-ID': params.xSessionId,
