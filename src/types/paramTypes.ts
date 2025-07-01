@@ -138,6 +138,12 @@ export interface IParamGetAllDoctorForSubClinic extends IParamGetAllDoctor {
   xSessionId?: string;
   apiUrl?: string;
 }
+export interface IParamGetDoctorScheduleForMainClinic {
+  xtoken?: string;
+  xSessionId?: string;
+  apiUrl?: string;
+  doctorId?: number;
+}
 export interface IParamGetAllEmailTemplates
   extends IParamGetDataWithPagination {}
 export interface IParamGetAllSmsTemplates extends IParamGetDataWithPagination {}

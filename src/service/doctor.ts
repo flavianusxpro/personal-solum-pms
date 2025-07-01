@@ -55,7 +55,6 @@ export async function getDoctorList(params: IParamGetAllDoctor) {
 export async function getDoctorListFromMain(
   params: IParamGetAllDoctorForSubClinic
 ) {
-  console.log('🚀 ~ params:', params);
   return await axios.get<IGetAllDoctorsResponse>(
     params.apiUrl + '/api/doctor',
     {

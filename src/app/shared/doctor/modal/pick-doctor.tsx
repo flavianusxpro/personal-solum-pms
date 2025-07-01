@@ -35,6 +35,7 @@ import {
 } from '@/validators/pick-doctor.schema';
 import { useAtom } from 'jotai';
 import { connectionAtom } from '@/store/connection';
+import { useGetDoctorScheduleByIdFromMainClinic } from '@/hooks/useSchedule';
 
 export default function PickDoctorModal() {
   const { closeModal } = useModal();
@@ -56,6 +57,12 @@ export default function PickDoctorModal() {
     xSessionId: connectionValue?.x_session_id,
     xtoken: connectionValue?.x_token,
     apiUrl: connectionValue?.hostname,
+  });
+
+  const { data: dataScheduleDoctor } = useGetDoctorScheduleByIdFromMainClinic({
+    apiUrl: connectionValue?.hostname,
+    xSessionId: connectionValue?.x_session_id,
+    xtoken: connectionValue?.x_token,
   });
 
   const { data: dataDoctors } = useGetAllDoctors({

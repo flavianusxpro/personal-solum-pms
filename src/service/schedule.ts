@@ -1,10 +1,12 @@
 import { del, get, post, put } from '@/config/base-api';
 import { IGetListScheduleResponse } from '@/types/ApiResponse';
 import {
+  IParamGetDoctorScheduleForMainClinic,
   IParamGetListSchedule,
   IPayloadPostCreateSchedule,
   IPayloadPutUpdateSchedule,
 } from '@/types/paramTypes';
+import axios from 'axios';
 
 export async function getlistSchedule(params: IParamGetListSchedule) {
   return get<IGetListScheduleResponse>('admin/schedule', {
@@ -26,4 +28,16 @@ export async function putUpdateSchedule(payload: IPayloadPutUpdateSchedule) {
 
 export async function deleteSchedule(ids: number[]) {
   return del<any>(`admin/schedule/`, { data: { ids } });
+}
+
+export async function getScheduleFromMainClinicByDoctorId(
+  params: IParamGetDoctorScheduleForMainClinic
+) {
+  return axios.get<any>(`doctor/schedule`, {
+    params: { doctorId: params.doctorId },
+    headers: {
+      'X-Session-ID': params.xSessionId,
+      'X-Token': params.xtoken,
+    },
+  });
 }

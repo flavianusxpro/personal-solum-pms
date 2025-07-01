@@ -1,10 +1,12 @@
 import {
   deleteSchedule,
   getlistSchedule,
+  getScheduleFromMainClinicByDoctorId,
   postCreateSchedule,
   putUpdateSchedule,
 } from '@/service/schedule';
 import {
+  IParamGetDoctorScheduleForMainClinic,
   IParamGetListSchedule,
   IPayloadPostCreateSchedule,
   IPayloadPutUpdateSchedule,
@@ -37,5 +39,17 @@ export function usePutUpdateSchedule() {
 export function useDeleteSchedule() {
   return useMutation({
     mutationFn: deleteSchedule,
+  });
+}
+
+export function useGetDoctorScheduleByIdFromMainClinic(
+  params: IParamGetDoctorScheduleForMainClinic
+) {
+  return useQuery({
+    queryKey: ['getDoctorScheduleByIdFromMainClinic', params],
+    queryFn: () => {
+      return getScheduleFromMainClinicByDoctorId(params);
+    },
+    enabled: !!params.doctorId,
   });
 }
