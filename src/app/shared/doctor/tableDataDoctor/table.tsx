@@ -45,6 +45,7 @@ export default function DoctorTable({}: {}) {
   const isFromMain = useMemo(() => {
     return process.env.NEXT_PUBLIC_CLINIC_TYPE === 'MAIN';
   }, []);
+  console.log('🚀 ~ isFromMain ~ isFromMain:', isFromMain);
 
   const [params, setParams] = useState({
     page: 1,
@@ -52,11 +53,7 @@ export default function DoctorTable({}: {}) {
     search: '',
   });
 
-  const {
-    data,
-    isLoading: isLoadingGetAllDoctors,
-    refetch,
-  } = useGetAllDoctors({
+  const getAllDoctorsResult = useGetAllDoctors({
     page: params.page,
     perPage: params.perPage,
     from: filterStateValue?.createdAt?.[0]
@@ -69,11 +66,7 @@ export default function DoctorTable({}: {}) {
     isFromMain,
   });
 
-  const {
-    data: dataDoctorSharing,
-    isLoading: isLoadingGetDoctorSharing,
-    refetch: refetchDoctorSharing,
-  } = useGetDoctorSharingFromMain({
+  const getDoctorSharingFromMainResult = useGetDoctorSharingFromMain({
     page: params.page,
     perPage: params.perPage,
     from: filterStateValue?.createdAt?.[0]
@@ -85,6 +78,16 @@ export default function DoctorTable({}: {}) {
     q: JSON.stringify({ name: params.search }),
     isFromMain,
   });
+
+  const data = isFromMain
+    ? getAllDoctorsResult.data
+    : getDoctorSharingFromMainResult.data;
+  const isLoadingGetAllDoctors = isFromMain
+    ? getAllDoctorsResult.isLoading
+    : getDoctorSharingFromMainResult.isLoading;
+  const refetch = isFromMain
+    ? getAllDoctorsResult.refetch
+    : getDoctorSharingFromMainResult.refetch;
 
   const { data: dataSpecialists } = useGetSpecialists({
     page: 1,
