@@ -9,10 +9,7 @@ import { SubmitHandler } from 'react-hook-form';
 import { Button, Flex, Input, Text, Title } from 'rizzui';
 import { useAtom } from 'jotai';
 import { connectionAtom } from '@/store/connection';
-import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import axios from 'axios';
-import { IPostConnectMainClinicResponse } from '@/types/ApiResponse';
 import { useRequesClinicConnection } from '@/hooks/useConnection';
 
 export default function Connection() {

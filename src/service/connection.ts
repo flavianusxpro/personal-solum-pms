@@ -11,8 +11,14 @@ import {
 
 export async function postClinicConnection(payload: IPayloadClinicConnection) {
   return await post<IPostConnectMainClinicResponse>(
-    '/api/connection/connect',
+    '/admin/connection/client/connect',
     payload
+  );
+}
+
+export async function getStatusClinicConnection() {
+  return await get<IPostConnectMainClinicResponse>(
+    '/admin/connection/client/status'
   );
 }
 
