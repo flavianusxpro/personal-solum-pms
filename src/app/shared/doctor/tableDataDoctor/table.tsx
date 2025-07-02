@@ -5,8 +5,6 @@ import { getColumns } from '@/app/shared/doctor/tableDataDoctor/columns';
 import {
   useDeleteDoctor,
   useGetAllDoctors,
-  useGetAllDoctorsFromMain,
-  useGetDoctorSharingFromMain,
   useGetSpecialists,
 } from '@/hooks/useDoctor';
 import { useColumn } from '@core/hooks/use-column';
@@ -20,11 +18,6 @@ import debounce from 'lodash/debounce';
 import dayjs from 'dayjs';
 import TableFooter from '../../ui/table-footer';
 import useAcl from '@/core/hooks/use-acl';
-import { useQuery } from '@tanstack/react-query';
-import { useAtom } from 'jotai';
-import { connectionAtom } from '@/store/connection';
-import { useSession } from 'next-auth/react';
-import { ROLES } from '@/config/constants';
 
 // dynamic import
 const FilterElement = dynamic(
@@ -38,14 +31,8 @@ const filterState = {
 
 export default function DoctorTable({}: {}) {
   const { isOpen } = useModal();
-  const { data: dataSession } = useSession();
   const [filterStateValue, setFilterStateValue] = useState(filterState);
   const [_, copyToClipboard] = useCopyToClipboard();
-
-  const isFromMain = useMemo(() => {
-    return process.env.NEXT_PUBLIC_CLINIC_TYPE === 'MAIN';
-  }, []);
-  console.log('🚀 ~ isFromMain ~ isFromMain:', isFromMain);
 
   const [params, setParams] = useState({
     page: 1,
@@ -53,7 +40,11 @@ export default function DoctorTable({}: {}) {
     search: '',
   });
 
-  const getAllDoctorsResult = useGetAllDoctors({
+  const {
+    data,
+    isLoading: isLoadingGetAllDoctors,
+    refetch,
+  } = useGetAllDoctors({
     page: params.page,
     perPage: params.perPage,
     from: filterStateValue?.createdAt?.[0]
@@ -63,31 +54,8 @@ export default function DoctorTable({}: {}) {
       ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
       : undefined,
     q: JSON.stringify({ name: params.search }),
-    isFromMain,
+    isEnable: true,
   });
-
-  const getDoctorSharingFromMainResult = useGetDoctorSharingFromMain({
-    page: params.page,
-    perPage: params.perPage,
-    from: filterStateValue?.createdAt?.[0]
-      ? dayjs(filterStateValue?.createdAt?.[0]).format('YYYY-MM-DD')
-      : undefined,
-    to: filterStateValue?.createdAt?.[1]
-      ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
-      : undefined,
-    q: JSON.stringify({ name: params.search }),
-    isFromMain,
-  });
-
-  const data = isFromMain
-    ? getAllDoctorsResult.data
-    : getDoctorSharingFromMainResult.data;
-  const isLoadingGetAllDoctors = isFromMain
-    ? getAllDoctorsResult.isLoading
-    : getDoctorSharingFromMainResult.isLoading;
-  const refetch = isFromMain
-    ? getAllDoctorsResult.refetch
-    : getDoctorSharingFromMainResult.refetch;
 
   const { data: dataSpecialists } = useGetSpecialists({
     page: 1,

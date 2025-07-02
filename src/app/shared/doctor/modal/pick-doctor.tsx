@@ -15,7 +15,11 @@ import {
 import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
 import { usePostCreateDoctorUser } from '@/hooks/useUser';
-import { useGetAllDoctors, useGetAllDoctorsFromMain } from '@/hooks/useDoctor';
+import {
+  useGetAllDoctors,
+  useGetAllDoctorsFromMain,
+  useGetDoctorSharingFromMain,
+} from '@/hooks/useDoctor';
 import { useMemo } from 'react';
 import { useGetRoles } from '@/hooks/useRole';
 import { useGetAllClinics } from '@/hooks/useClinic';
@@ -42,24 +46,15 @@ export default function PickDoctorModal() {
   const {
     data: dataGetAllDoctorsFromMain,
     isLoading: isLoadingGetAllDoctorsFromMain,
-  } = useGetAllDoctorsFromMain({
+  } = useGetDoctorSharingFromMain({
     page: 1,
     perPage: 100,
-    xSessionId: connectionValue?.x_session_id,
-    xtoken: connectionValue?.x_token,
-    apiUrl: connectionValue?.hostname,
-  });
-
-  const { data: dataScheduleDoctor } = useGetDoctorScheduleByIdFromMainClinic({
-    apiUrl: connectionValue?.hostname,
-    xSessionId: connectionValue?.x_session_id,
-    xtoken: connectionValue?.x_token,
-    doctorId: 61,
   });
 
   const { data: dataDoctors } = useGetAllDoctors({
     page: 1,
     perPage: 100,
+    isEnable: true,
   });
 
   const { data: dataClinics } = useGetAllClinics({
@@ -83,7 +78,7 @@ export default function PickDoctorModal() {
     );
 
     // Filter out doctors that already exist by full name
-    return (dataGetAllDoctorsFromMain?.data?.data || [])
+    return (dataGetAllDoctorsFromMain?.data || [])
       .filter(
         (doctor) =>
           !existingDoctorNames.has(
@@ -99,7 +94,7 @@ export default function PickDoctorModal() {
   const onSubmit: SubmitHandler<PickDoctorFormTypes> = (data) => {
     const findDoctorRole = doctorRole?.find((role) => role.name === 'doctor');
 
-    const findDoctor = dataGetAllDoctorsFromMain?.data?.data?.find(
+    const findDoctor = dataGetAllDoctorsFromMain?.data?.find(
       (doctor) => doctor.id === parseInt(data.doctorId)
     );
 

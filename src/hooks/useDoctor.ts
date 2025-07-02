@@ -37,7 +37,7 @@ export function useGetAllDoctors(params: IParamGetAllDoctor) {
   return useQuery({
     queryKey: ['doctors', params],
     queryFn: async () => getDoctorList(params),
-    enabled: !!params && params.isFromMain === true,
+    enabled: !!params && params.isEnable === true,
   });
 }
 
@@ -45,7 +45,7 @@ export function useGetDoctorSharingFromMain(params: IParamGetDoctorSharing) {
   return useQuery({
     queryKey: ['get-doctor-sharing-from-main' + params],
     queryFn: async () => getDoctorSharingFromMain(params),
-    enabled: !params.isFromMain,
+    enabled: !params.isEnable,
   });
 }
 
