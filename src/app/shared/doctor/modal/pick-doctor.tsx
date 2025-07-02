@@ -15,20 +15,11 @@ import {
 import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
 import { usePostCreateDoctorUser } from '@/hooks/useUser';
-import {
-  useGetAllDoctors,
-  useGetAllDoctorsFromMain,
-  useGetSpecialists,
-  useGetTreatments,
-} from '@/hooks/useDoctor';
+import { useGetAllDoctors, useGetAllDoctorsFromMain } from '@/hooks/useDoctor';
 import { useMemo } from 'react';
-import SelectLoader from '@/core/components/loader/select-loader';
-import dynamic from 'next/dynamic';
 import { useGetRoles } from '@/hooks/useRole';
 import { useGetAllClinics } from '@/hooks/useClinic';
-import { PhoneNumber } from '@/core/ui/phone-input';
 import FormHeader from '@/core/components/form-header';
-import QuillLoader from '@/core/components/loader/quill-loader';
 import {
   pickDoctorFormSchema,
   PickDoctorFormTypes,
@@ -63,6 +54,7 @@ export default function PickDoctorModal() {
     apiUrl: connectionValue?.hostname,
     xSessionId: connectionValue?.x_session_id,
     xtoken: connectionValue?.x_token,
+    doctorId: 61,
   });
 
   const { data: dataDoctors } = useGetAllDoctors({
