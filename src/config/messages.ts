@@ -1,4 +1,5 @@
 export const messages = {
+  baseUrlRequired: 'Base URL is required',
   passwordOneUppercase: `The Password must contain at least one uppercase character`,
   passwordOneLowercase: `The Password must contain at least one lowercase character`,
   passwordOneNumeric: `The password must contain at least one numerical character.`,

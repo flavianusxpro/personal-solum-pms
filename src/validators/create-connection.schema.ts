@@ -3,10 +3,10 @@ import { messages } from '@/config/messages';
 
 // form zod validation schema
 export const connectionFormSchema = z.object({
-  connection_name: z.string().min(1, {
+  name: z.string().min(1, {
     message: messages.connectionNameRequired,
   }),
-  hostname: z.string().min(1, { message: messages.hostnameIsRequired }),
+  base_url: z.string().min(1, { message: messages.baseUrlRequired }),
   access_token: z.string().min(1, {
     message: messages.connectionNameRequired,
   }),

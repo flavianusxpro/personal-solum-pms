@@ -1,5 +1,8 @@
 import { del, get, post, put } from '@/config/base-api';
-import { IGetApiKeyConnectionResponse } from '@/types/ApiResponse';
+import {
+  IGetApiKeyConnectionResponse,
+  IPostConnectMainClinicResponse,
+} from '@/types/ApiResponse';
 import {
   IParamsGetApiConnection,
   IPayloadClinicConnection,
@@ -7,7 +10,10 @@ import {
 } from '@/types/paramTypes';
 
 export async function postClinicConnection(payload: IPayloadClinicConnection) {
-  return await post('/api/connection/connect', payload);
+  return await post<IPostConnectMainClinicResponse>(
+    '/api/connection/connect',
+    payload
+  );
 }
 
 export async function getApiKeyConnection(params: IParamsGetApiConnection) {

@@ -13,35 +13,19 @@ import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { IPostConnectMainClinicResponse } from '@/types/ApiResponse';
+import { useRequesClinicConnection } from '@/hooks/useConnection';
 
 export default function Connection() {
   const [connectionValue, setConnectionValue] = useAtom(connectionAtom);
 
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: async (data: ConnectionFormTypes) => {
-      return await axios
-        .post<IPostConnectMainClinicResponse>(
-          data.hostname + '/api/connection/connect',
-          {
-            name: data.connection_name,
-            access_token: data.access_token,
-          }
-        )
-        .then((res) => {
-          return res.data;
-        })
-        .catch((error) => {
-          throw error;
-        });
-    },
-  });
+  const { mutateAsync, isPending } = useRequesClinicConnection();
 
   const onSubmit: SubmitHandler<ConnectionFormTypes> = (data) => {
     mutateAsync(data, {
       onSuccess: (res) => {
         setConnectionValue({
-          connection_name: data.connection_name,
-          hostname: data.hostname,
+          connection_name: data.name,
+          hostname: data.base_url,
           x_token: res.data.access_token,
           x_session_id: res.data.sessionId,
         });
@@ -64,8 +48,8 @@ export default function Connection() {
       useFormProps={{
         mode: 'all',
         defaultValues: {
-          connection_name: connectionValue.connection_name || '',
-          hostname: connectionValue.hostname || '',
+          name: connectionValue.connection_name || '',
+          base_url: connectionValue.hostname || '',
           access_token: connectionValue.x_token || '',
         },
       }}
@@ -76,8 +60,8 @@ export default function Connection() {
           connectionValue.x_token ||
           connectionValue.connection_name
         ) {
-          setValue('hostname', connectionValue.hostname || '');
-          setValue('connection_name', connectionValue.connection_name || '');
+          setValue('base_url', connectionValue.hostname || '');
+          setValue('name', connectionValue.connection_name || '');
           setValue('access_token', connectionValue.x_token || '');
         }
         return (
@@ -87,15 +71,15 @@ export default function Connection() {
               <Input
                 label="Connection Name"
                 placeholder="Connection Name"
-                {...register('connection_name')}
-                error={errors.connection_name?.message}
+                {...register('name')}
+                error={errors.name?.message}
                 className="flex-grow"
               />
               <Input
                 label="Hostname"
                 placeholder="Hostname"
-                {...register('hostname')}
-                error={errors.hostname?.message}
+                {...register('base_url')}
+                error={errors.base_url?.message}
                 className="flex-grow"
               />
               <Input

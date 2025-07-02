@@ -131,6 +131,13 @@ export interface IParamGetAllPatient extends IParamGetDataWithPagination {
 export interface IParamGetAllDoctor extends IParamGetDataWithPagination {
   from?: string;
   to?: string;
+  isFromMain?: boolean;
+}
+
+export interface IParamGetDoctorSharing extends IParamGetDataWithPagination {
+  from?: string;
+  to?: string;
+  isFromMain?: boolean;
 }
 
 export interface IParamGetAllDoctorForSubClinic extends IParamGetAllDoctor {
@@ -600,6 +607,7 @@ export interface IPayloadPatientAssignClinic {
 }
 
 export interface IPayloadClinicConnection {
+  base_url: string;
   name: string;
   access_token: string;
 }

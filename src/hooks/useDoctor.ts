@@ -22,11 +22,13 @@ import {
   putUpdateDoctorCost,
   deleteDoctorCost,
   getDoctorListFromMain,
+  getDoctorSharingFromMain,
 } from '@/service/doctor';
 
 import {
   IParamGetAllDoctor,
   IParamGetAllDoctorForSubClinic,
+  IParamGetDoctorSharing,
   IParamGetSpecialists,
 } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -35,8 +37,15 @@ export function useGetAllDoctors(params: IParamGetAllDoctor) {
   return useQuery({
     queryKey: ['doctors' + params],
     queryFn: async () => getDoctorList(params),
-    refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 10, // 10 minutes
+    enabled: params.isFromMain,
+  });
+}
+
+export function useGetDoctorSharingFromMain(params: IParamGetDoctorSharing) {
+  return useQuery({
+    queryKey: ['get-doctor-sharing-from-main' + params],
+    queryFn: async () => getDoctorSharingFromMain(params),
+    enabled: !params.isFromMain,
   });
 }
 

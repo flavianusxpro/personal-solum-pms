@@ -15,6 +15,7 @@ import {
   IParamGetAllDoctor,
   IParamGetAllDoctorForSubClinic,
   IParamGetDoctorByClinic,
+  IParamGetDoctorSharing,
   IParamGetSpecialists,
   IParamGetTreatments,
   IParamsGetDoctorAvailability,
@@ -65,6 +66,12 @@ export async function getDoctorListFromMain(
       },
     }
   );
+}
+
+export async function getDoctorSharingFromMain(params: IParamGetDoctorSharing) {
+  return await get<IGetAllDoctorsResponse>('/admin/doctor/sharing/doctor', {
+    params,
+  });
 }
 
 export async function getDoctorById(id: string) {
