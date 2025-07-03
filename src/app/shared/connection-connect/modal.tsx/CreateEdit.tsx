@@ -1,6 +1,6 @@
 'use client';
 
-import { Controller, SubmitHandler } from 'react-hook-form';
+import { SubmitHandler } from 'react-hook-form';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
@@ -14,19 +14,18 @@ import {
   ConnectionFormTypes,
 } from '@/validators/create-connection.schema';
 import { useRequesClinicConnection } from '@/hooks/useConnection';
-import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 
 export default function CreateEditConnectionModal() {
   const { closeModal } = useModal();
-  const { data: sessionData } = useSession();
 
   const { mutate } = useRequesClinicConnection();
 
   const onSubmit: SubmitHandler<ConnectionFormTypes> = (data) => {
     const payload = {
-      name: data.connection_name,
-      access_token: sessionData?.accessToken as string,
+      name: data.name,
+      access_token: data.access_token,
+      base_url: data.base_url,
     };
     mutate(payload, {
       onSuccess: () => {
@@ -59,8 +58,8 @@ export default function CreateEditConnectionModal() {
               <FormGroup title="Connection Name" isLabel>
                 <Input
                   placeholder="First Name"
-                  {...register('connection_name')}
-                  error={errors.connection_name?.message}
+                  {...register('name')}
+                  error={errors.name?.message}
                   className="flex-grow"
                 />
               </FormGroup>

@@ -158,7 +158,6 @@ export default function PickDoctorModal() {
     };
     mutateCreateDoctor(payload, {
       onSuccess: (data) => {
-        console.log('🚀 ~ PickDoctorModal ~ data:', data);
         toast.success('Doctor picked successfully');
         closeModal();
       },
