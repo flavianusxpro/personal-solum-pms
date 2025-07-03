@@ -17,9 +17,14 @@ export async function postClinicConnection(payload: IPayloadClinicConnection) {
 }
 
 export async function getStatusClinicConnection() {
-  return await get<IPostConnectMainClinicResponse>(
-    '/admin/connection/client/status'
+  return await post<IPostConnectMainClinicResponse>(
+    '/admin/connection/client/status',
+    {}
   );
+}
+
+export async function postDisconectClinicConnection() {
+  return await post('/admin/connection/client/disconnect', {});
 }
 
 export async function getApiKeyConnection(params: IParamsGetApiConnection) {

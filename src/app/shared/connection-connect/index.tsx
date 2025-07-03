@@ -10,16 +10,24 @@ import { Button, Flex, Input, Text, Title } from 'rizzui';
 import { useAtom } from 'jotai';
 import { connectionAtom } from '@/store/connection';
 import toast from 'react-hot-toast';
-import { useRequesClinicConnection } from '@/hooks/useConnection';
+import {
+  useGetStatusClinicConnection,
+  usePostDisconectClinicConnection,
+  useRequesClinicConnection,
+} from '@/hooks/useConnection';
 
 export default function Connection() {
   const [connectionValue, setConnectionValue] = useAtom(connectionAtom);
 
+  const { data: connectionStatus, refetch } = useGetStatusClinicConnection();
+
   const { mutateAsync, isPending } = useRequesClinicConnection();
+  const { mutate: mutateDisconnect } = usePostDisconectClinicConnection();
 
   const onSubmit: SubmitHandler<ConnectionFormTypes> = (data) => {
     mutateAsync(data, {
       onSuccess: (res) => {
+        refetch();
         setConnectionValue({
           connection_name: data.name,
           hostname: data.base_url,
@@ -36,10 +44,29 @@ export default function Connection() {
     });
   };
 
+  const handleDisconnect = () => {
+    mutateDisconnect(undefined, {
+      onSuccess: () => {
+        refetch();
+        setConnectionValue({
+          connection_name: '',
+          hostname: '',
+          x_token: '',
+          x_session_id: '',
+        });
+        toast.success('Disconnected successfully');
+      },
+      onError: (error) => {
+        const errorMessage =
+          (error as any)?.response?.data?.message || 'An error occurred';
+        toast.error(errorMessage);
+      },
+    });
+  };
+
   return (
     <Form<ConnectionFormTypes>
       validationSchema={connectionFormSchema}
-      // resetValues={reset}
       onSubmit={onSubmit}
       className="mx-auto w-full max-w-2xl rounded-xl bg-white py-8 shadow-md @container"
       useFormProps={{
@@ -89,6 +116,14 @@ export default function Connection() {
             </div>
 
             <Flex justify="end" className="px-6 pt-4">
+              <Button
+                variant="outline"
+                color="danger"
+                onClick={handleDisconnect}
+                className="mr-2"
+              >
+                Disconnect
+              </Button>
               <Button isLoading={isPending} type="submit">
                 Connect
               </Button>

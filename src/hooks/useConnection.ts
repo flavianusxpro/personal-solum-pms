@@ -1,8 +1,10 @@
 import {
   deleteApiKeyConnection,
   getApiKeyConnection,
+  getStatusClinicConnection,
   postClinicConnection,
   postCreateApiKeyConnection,
+  postDisconectClinicConnection,
   putUpdateApiKeyConnection,
 } from '@/service/connection';
 import { IParamsGetApiConnection } from '@/types/paramTypes';
@@ -11,6 +13,19 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 export function useRequesClinicConnection() {
   return useMutation({
     mutationFn: postClinicConnection,
+  });
+}
+
+export function useGetStatusClinicConnection() {
+  return useQuery({
+    queryKey: ['clinic-connection-status'],
+    queryFn: () => getStatusClinicConnection(),
+  });
+}
+
+export function usePostDisconectClinicConnection() {
+  return useMutation({
+    mutationFn: postDisconectClinicConnection,
   });
 }
 
