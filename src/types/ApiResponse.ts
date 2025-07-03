@@ -309,6 +309,7 @@ export interface IGetDoctorByIdResponse extends ApiResponse {
     clinics: Clinic[];
     setting: Setting;
     user: User;
+    sharing_doctor_id: number | null;
   };
 }
 

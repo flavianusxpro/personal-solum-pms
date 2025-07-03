@@ -151,6 +151,9 @@ export interface IParamGetDoctorScheduleForMainClinic {
   apiUrl?: string;
   doctorId?: number;
 }
+export interface IParamGetScheduleSharingDoctorForMainClinic {
+  sharingDoctorId?: number;
+}
 export interface IParamGetAllEmailTemplates
   extends IParamGetDataWithPagination {}
 export interface IParamGetAllSmsTemplates extends IParamGetDataWithPagination {}
@@ -270,6 +273,7 @@ export interface IPayloadUpdateAssignDoctor {
 
 export interface IParamGetListSchedule extends IParamGetDataWithPagination {
   doctorId?: number | string;
+  enabled?: boolean;
 }
 
 export interface IPayloadPostCreateSchedule {
@@ -427,6 +431,7 @@ interface Doctor {
   specialist_type: number[];
   treatment_type: number[];
   language: string[];
+  sharing_doctor_id?: number;
 }
 
 export interface IPayloadUpdateSmsNotificationSettings {

@@ -4,20 +4,14 @@ import { Controller, SubmitHandler } from 'react-hook-form';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { FieldError, Input } from 'rizzui';
+import { FieldError } from 'rizzui';
 import CSelect from '@/core/ui/select';
-import { genderOption, languageOption, stateOption } from '@/config/constants';
 import { IPayloadCreateDoctorUser } from '@/types/paramTypes';
-import {
-  doctorDetailsFormSchema,
-  DoctorDetailsFormTypes,
-} from '@/validators/create-doctor.schema';
 import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
 import { usePostCreateDoctorUser } from '@/hooks/useUser';
 import {
   useGetAllDoctors,
-  useGetAllDoctorsFromMain,
   useGetDoctorSharingFromMain,
 } from '@/hooks/useDoctor';
 import { useMemo } from 'react';
@@ -28,13 +22,9 @@ import {
   pickDoctorFormSchema,
   PickDoctorFormTypes,
 } from '@/validators/pick-doctor.schema';
-import { useAtom } from 'jotai';
-import { connectionAtom } from '@/store/connection';
-import { useGetDoctorScheduleByIdFromMainClinic } from '@/hooks/useSchedule';
 
 export default function PickDoctorModal() {
   const { closeModal } = useModal();
-  const [connectionValue] = useAtom(connectionAtom);
 
   const { mutate: mutateCreateDoctor, isPending } = usePostCreateDoctorUser();
 
@@ -163,10 +153,12 @@ export default function PickDoctorModal() {
           : typeof findDoctor.language === 'string'
             ? (JSON.parse(findDoctor.language) as string[])
             : [],
+        sharing_doctor_id: findDoctor.id,
       },
     };
     mutateCreateDoctor(payload, {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        console.log('🚀 ~ PickDoctorModal ~ data:', data);
         toast.success('Doctor picked successfully');
         closeModal();
       },

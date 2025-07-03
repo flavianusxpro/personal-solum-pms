@@ -3,6 +3,7 @@ import { IGetListScheduleResponse } from '@/types/ApiResponse';
 import {
   IParamGetDoctorScheduleForMainClinic,
   IParamGetListSchedule,
+  IParamGetScheduleSharingDoctorForMainClinic,
   IPayloadPostCreateSchedule,
   IPayloadPutUpdateSchedule,
 } from '@/types/paramTypes';
@@ -39,5 +40,13 @@ export async function getScheduleFromMainClinicByDoctorId(
       'X-Session-ID': params.xSessionId,
       'X-Token': params.xtoken,
     },
+  });
+}
+
+export async function getScheduleSharingDoctorFromMainClinic(
+  params: IParamGetScheduleSharingDoctorForMainClinic
+) {
+  return get<IGetListScheduleResponse>(`/admin/doctor/sharing/schedule`, {
+    params: { sharingDoctorId: params.sharingDoctorId },
   });
 }
