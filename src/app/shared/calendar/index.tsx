@@ -43,6 +43,7 @@ export default function EventCalendarView() {
   const { data: dataDoctor } = useGetAllDoctors({
     page: 1,
     perPage: 100,
+    isEnable: true,
   });
 
   const { data: dataAppointment, refetch } = useGetAppointments({

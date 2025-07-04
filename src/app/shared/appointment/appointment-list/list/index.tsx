@@ -16,6 +16,7 @@ import {
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import toast from 'react-hot-toast';
 import debounce from 'lodash/debounce';
+import dayjs from 'dayjs';
 
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
@@ -26,6 +27,7 @@ const FilterElement = dynamic(
 );
 
 const filterState = {
+  createdAt: [null, null],
   payment_status: null,
   status: null,
   by_reschedule: null,
@@ -52,6 +54,12 @@ export default function AppointmentListTable() {
     q: JSON.stringify({
       patientName: params.search,
     }),
+    from: filterStateValue?.createdAt?.[0]
+      ? dayjs(filterStateValue?.createdAt?.[0]).format('YYYY-MM-DD')
+      : undefined,
+    to: filterStateValue?.createdAt?.[1]
+      ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
+      : undefined,
     status: filterStateValue?.status || undefined,
     payment_status: filterStateValue?.payment_status || undefined,
     by_reschedule: filterStateValue?.by_reschedule || undefined,
