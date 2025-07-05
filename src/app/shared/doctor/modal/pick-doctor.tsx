@@ -14,7 +14,7 @@ import {
   useGetAllDoctors,
   useGetDoctorSharingFromMain,
 } from '@/hooks/useDoctor';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useGetRoles } from '@/hooks/useRole';
 import { useGetAllClinics } from '@/hooks/useClinic';
 import FormHeader from '@/core/components/form-header';
@@ -36,6 +36,7 @@ export default function PickDoctorModal() {
   const {
     data: dataGetAllDoctorsFromMain,
     isLoading: isLoadingGetAllDoctorsFromMain,
+    error: errorGetAllDoctorsFromMain,
   } = useGetDoctorSharingFromMain({
     page: 1,
     perPage: 100,
@@ -168,6 +169,16 @@ export default function PickDoctorModal() {
       },
     });
   };
+
+  useEffect(() => {
+    if (errorGetAllDoctorsFromMain) {
+      const errorMessage =
+        (errorGetAllDoctorsFromMain as any)?.response?.data?.message ||
+        errorGetAllDoctorsFromMain.message ||
+        'An error occurred while fetching doctors';
+      toast.error(errorMessage);
+    }
+  }, [errorGetAllDoctorsFromMain]);
 
   return (
     <Form<PickDoctorFormTypes>

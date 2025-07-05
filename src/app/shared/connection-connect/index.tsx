@@ -116,17 +116,20 @@ export default function Connection() {
             </div>
 
             <Flex justify="end" className="px-6 pt-4">
-              <Button
-                variant="outline"
-                color="danger"
-                onClick={handleDisconnect}
-                className="mr-2"
-              >
-                Disconnect
-              </Button>
-              <Button isLoading={isPending} type="submit">
-                Connect
-              </Button>
+              {connectionStatus?.data?.sessionId ? (
+                <Button
+                  variant="outline"
+                  color="danger"
+                  onClick={handleDisconnect}
+                  className="mr-2"
+                >
+                  Disconnect
+                </Button>
+              ) : (
+                <Button isLoading={isPending} type="submit">
+                  Connect
+                </Button>
+              )}
             </Flex>
           </div>
         );

@@ -1015,3 +1015,9 @@ export interface IPostConnectMainClinicResponse extends ApiResponse {
     access_token: string;
   };
 }
+
+export interface IPostConnectionStatusResponse extends ApiResponse {
+  data: {
+    sessionId: string;
+  };
+}

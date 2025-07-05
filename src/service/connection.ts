@@ -1,6 +1,7 @@
 import { del, get, post, put } from '@/config/base-api';
 import {
   IGetApiKeyConnectionResponse,
+  IPostConnectionStatusResponse,
   IPostConnectMainClinicResponse,
 } from '@/types/ApiResponse';
 import {
@@ -17,7 +18,7 @@ export async function postClinicConnection(payload: IPayloadClinicConnection) {
 }
 
 export async function getStatusClinicConnection() {
-  return await post<IPostConnectMainClinicResponse>(
+  return await post<IPostConnectionStatusResponse>(
     '/admin/connection/client/status',
     {}
   );
