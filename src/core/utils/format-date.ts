@@ -7,3 +7,8 @@ export function formatDate(
   if (!date) return '';
   return dayjs(date).utc().format(format);
 }
+
+export function formatTime(date?: Date, format: string = 'hh:mm'): string {
+  if (!date) return '';
+  return dayjs(date).format(format);
+}

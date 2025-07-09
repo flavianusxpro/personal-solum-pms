@@ -464,28 +464,30 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                   {findTreatment(item.treatmentId)}
                 </Text>
                 <Text className="w-1/2">{item.amount}</Text>
-                <Flex justify="end" className="w-1/2">
-                  <ActionTooltipButton
-                    tooltipContent="edit treatment cost"
-                    variant="outline"
-                    onClick={() =>
-                      treatmentCostModal(
-                        item.costId,
-                        item.treatmentId,
-                        item.amount
-                      )
-                    }
-                  >
-                    <PencilIcon className="h-4 w-4" />
-                  </ActionTooltipButton>
-                  <ActionTooltipButton
-                    tooltipContent="delete treatment cost"
-                    variant="outline"
-                    onClick={() => handleDeleteCost(item.costId as number)}
-                  >
-                    <PiTrash className="h-4 w-4" />
-                  </ActionTooltipButton>
-                </Flex>
+                {!isView && (
+                  <Flex justify="end" className="w-1/2">
+                    <ActionTooltipButton
+                      tooltipContent="edit treatment cost"
+                      variant="outline"
+                      onClick={() =>
+                        treatmentCostModal(
+                          item.costId,
+                          item.treatmentId,
+                          item.amount
+                        )
+                      }
+                    >
+                      <PencilIcon className="h-4 w-4" />
+                    </ActionTooltipButton>
+                    <ActionTooltipButton
+                      tooltipContent="delete treatment cost"
+                      variant="outline"
+                      onClick={() => handleDeleteCost(item.costId as number)}
+                    >
+                      <PiTrash className="h-4 w-4" />
+                    </ActionTooltipButton>
+                  </Flex>
+                )}
 
                 {/* <ActionIcon
                   variant="flat"
@@ -497,22 +499,23 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                 </ActionIcon> */}
               </Flex>
             ))}
-
-            <Button
-              onClick={
-                () => {
-                  treatmentCostModal();
+            {!isView && (
+              <Button
+                onClick={
+                  () => {
+                    treatmentCostModal();
+                  }
+                  // appendCosts({
+                  //   treatmentId: undefined,
+                  //   amount: '0',
+                  // })
                 }
-                // appendCosts({
-                //   treatmentId: undefined,
-                //   amount: '0',
-                // })
-              }
-              variant="flat"
-              className="w-1/4"
-            >
-              Add Treatment Cost
-            </Button>
+                variant="flat"
+                className="w-1/4"
+              >
+                Add Treatment Cost
+              </Button>
+            )}
           </FormGroup>
 
           <Divider className="" />
@@ -579,15 +582,17 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
             </Grid>
           </FormGroup>
         </div>
-        <FormFooter
-          isLoading={
-            isPendingUpdateMeeting ||
-            isPendingUpdateBilling ||
-            isPendingUpdateAppointment
-          }
-          altBtnText="Cancel"
-          submitBtnText="Save"
-        />
+        {!isView && (
+          <FormFooter
+            isLoading={
+              isPendingUpdateMeeting ||
+              isPendingUpdateBilling ||
+              isPendingUpdateAppointment
+            }
+            altBtnText="Cancel"
+            submitBtnText="Save"
+          />
+        )}
       </form>
     </div>
   );

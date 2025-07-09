@@ -51,8 +51,8 @@ export default function AppointmentPatientDoctor() {
     page: 1,
     perPage: 10,
     treatment_type: formData.treatment || formData.patient_type,
-    problem_type: formData.patient_problem,
-    doctorId: formData?.doctorId,
+    problem_type: 'Anxiety',
+    doctorId: formData.rescedule_by === 'date' ? formData?.doctorId : undefined,
   });
 
   const { data: dataDoctor, isLoading } = useGetDoctorByClinic(params);

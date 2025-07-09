@@ -1,4 +1,6 @@
-import { del, get, post, put } from '@/config/api';
+import { del, get, post, put } from '@/config/base-api';
+import { getSubClinicApi } from '@/config/sub-clinic-api';
+import { connectionAtom } from '@/store/connection';
 import {
   IGetAllDoctorsResponse,
   IGetAnalyticReportBillingByDoctorIdResponse,
@@ -11,7 +13,9 @@ import {
 } from '@/types/ApiResponse';
 import {
   IParamGetAllDoctor,
+  IParamGetAllDoctorForSubClinic,
   IParamGetDoctorByClinic,
+  IParamGetDoctorSharing,
   IParamGetSpecialists,
   IParamGetTreatments,
   IParamsGetDoctorAvailability,
@@ -23,6 +27,7 @@ import {
   IPayloadSettingBillingDoctor,
   IPayloadSettingMeetingDoctor,
 } from '@/types/paramTypes';
+import axios from 'axios';
 
 export async function getDoctorByClinic(params: IParamGetDoctorByClinic) {
   return await get<IGetDoctorByClinicResponse>(
@@ -44,6 +49,27 @@ export async function postGetDoctorAvailabilityByClinic(
 
 export async function getDoctorList(params: IParamGetAllDoctor) {
   return await get<IGetAllDoctorsResponse>('/admin/doctor', {
+    params,
+  });
+}
+
+export async function getDoctorListFromMain(
+  params: IParamGetAllDoctorForSubClinic
+) {
+  return await axios.get<IGetAllDoctorsResponse>(
+    params.apiUrl + '/api/doctor',
+    {
+      params,
+      headers: {
+        'X-Session-ID': params.xSessionId,
+        'X-Token': params.xtoken,
+      },
+    }
+  );
+}
+
+export async function getDoctorSharingFromMain(params: IParamGetDoctorSharing) {
+  return await get<IGetAllDoctorsResponse>('/admin/doctor/sharing/doctor', {
     params,
   });
 }

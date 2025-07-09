@@ -1,4 +1,4 @@
-import { post } from '@/config/api';
+import { post } from '@/config/base-api';
 import {
   IPostCouponCodeValidationResponse,
   IPostOneTimePaymentResponse,

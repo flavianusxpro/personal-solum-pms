@@ -4,88 +4,181 @@ import { Controller, SubmitHandler } from 'react-hook-form';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { FieldError, Input } from 'rizzui';
+import { FieldError } from 'rizzui';
 import CSelect from '@/core/ui/select';
-import { genderOption, languageOption, stateOption } from '@/config/constants';
 import { IPayloadCreateDoctorUser } from '@/types/paramTypes';
-import {
-  doctorDetailsFormSchema,
-  DoctorDetailsFormTypes,
-} from '@/validators/create-doctor.schema';
 import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
 import { usePostCreateDoctorUser } from '@/hooks/useUser';
-import { useGetSpecialists, useGetTreatments } from '@/hooks/useDoctor';
-import { useMemo } from 'react';
-import SelectLoader from '@/core/components/loader/select-loader';
-import dynamic from 'next/dynamic';
+import {
+  useGetAllDoctors,
+  useGetDoctorSharingFromMain,
+} from '@/hooks/useDoctor';
+import { useEffect, useMemo } from 'react';
 import { useGetRoles } from '@/hooks/useRole';
 import { useGetAllClinics } from '@/hooks/useClinic';
-import { PhoneNumber } from '@/core/ui/phone-input';
 import FormHeader from '@/core/components/form-header';
-import QuillLoader from '@/core/components/loader/quill-loader';
 import {
   pickDoctorFormSchema,
   PickDoctorFormTypes,
 } from '@/validators/pick-doctor.schema';
 
-const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
-  ssr: false,
-  loading: () => <QuillLoader className="col-span-full h-[143px]" />,
-});
-
-const MultySelect = dynamic(
-  () => import('rizzui').then((mod) => mod.MultiSelect),
-  {
-    ssr: false,
-    loading: () => <SelectLoader />,
-  }
-);
-
 export default function PickDoctorModal() {
   const { closeModal } = useModal();
 
-  // const { mutate: mutateCreateDoctor, isPending } = usePostCreateDoctorUser();
+  const { mutate: mutateCreateDoctor, isPending } = usePostCreateDoctorUser();
 
-  // const clinicsOptions = useMemo(() => {
-  //   if (!dataClinics) return [];
-  //   return dataClinics.data.map((clinic) => ({
-  //     label: clinic.name,
-  //     value: clinic.id.toString(),
-  //   }));
-  // }, [dataClinics]);
+  const { data: doctorRole } = useGetRoles({
+    page: 1,
+    perPage: 100,
+  });
+
+  const {
+    data: dataGetAllDoctorsFromMain,
+    isLoading: isLoadingGetAllDoctorsFromMain,
+    error: errorGetAllDoctorsFromMain,
+  } = useGetDoctorSharingFromMain({
+    page: 1,
+    perPage: 100,
+  });
+
+  const { data: dataDoctors } = useGetAllDoctors({
+    page: 1,
+    perPage: 100,
+    isEnable: true,
+  });
+
+  const { data: dataClinics } = useGetAllClinics({
+    page: 1,
+    perPage: 100,
+    role: 'admin',
+  });
+
+  const doctorsOptions = useMemo(() => {
+    const doctors = dataDoctors?.data;
+    if (!dataGetAllDoctorsFromMain) return [];
+    // Build a set of existing doctor full names using reduce
+    const existingDoctorNames = (doctors || []).reduce(
+      (acc: Set<string>, doctor: any) => {
+        if (doctor?.first_name && doctor?.last_name) {
+          acc.add((doctor.first_name + ' ' + doctor.last_name).toLowerCase());
+        }
+        return acc;
+      },
+      new Set<string>()
+    );
+
+    // Filter out doctors that already exist by full name
+    return (dataGetAllDoctorsFromMain?.data || [])
+      .filter(
+        (doctor) =>
+          !existingDoctorNames.has(
+            (doctor.first_name + ' ' + doctor.last_name).toLowerCase()
+          )
+      )
+      .map((doctor) => ({
+        label: doctor.first_name + ' ' + doctor.last_name,
+        value: doctor.id.toString(),
+      }));
+  }, [dataGetAllDoctorsFromMain, dataDoctors]);
 
   const onSubmit: SubmitHandler<PickDoctorFormTypes> = (data) => {
-    // if (!doctorRole) {
-    //   toast.error('Doctor Role not found');
-    //   return;
-    // }
-    // const payload: IPayloadCreateDoctorUser = {
-    //   name: data.first_name + ' ' + data.last_name,
-    //   email: data.email,
-    //   password: data.password as string,
-    //   roleId: doctorRole.id,
-    //   clinic_ids: data.clinic_ids.map((item) => parseInt(item)),
-    //   doctor: {
-    //     ...data,
-    //     description: data.about,
-    //     mobile_number: '+' + data.mobile_number,
-    //     specialist_type: data.specialist_type.map((item) => parseInt(item)),
-    //     treatment_type: data.treatment_type.map((item) => parseInt(item)),
-    //   },
-    // };
-    // mutateCreateDoctor(payload, {
-    //   onSuccess: () => {
-    //     toast.success('Doctor created successfully');
-    //     closeModal();
-    //   },
-    //   onError: (error) => {
-    //     const errorMessage =
-    //       (error as any)?.response?.data?.message || 'An error occurred';
-    //     toast.error(errorMessage);
-    //   },
-    // });
+    const findDoctorRole = doctorRole?.find((role) => role.name === 'doctor');
+
+    const findDoctor = dataGetAllDoctorsFromMain?.data?.find(
+      (doctor) => doctor.id === parseInt(data.doctorId)
+    );
+
+    if (!findDoctor) {
+      toast.error('Doctor not found');
+      return;
+    }
+
+    if (!findDoctorRole) {
+      toast.error('Doctor role not found');
+      return;
+    }
+
+    if (!dataClinics?.data?.[0]?.id) {
+      toast.error('Clinic not found');
+      return;
+    }
+
+    const specialistTypeDefaultValues = () => {
+      const parsedSpecialistType = JSON.parse(
+        findDoctor.specialist_type
+      ) as number[];
+      if (Array.isArray(parsedSpecialistType)) {
+        return parsedSpecialistType.map((item) => item);
+      }
+      return [];
+    };
+
+    const payload: IPayloadCreateDoctorUser = {
+      name: findDoctor.first_name + ' ' + findDoctor.last_name,
+      email: findDoctor.email,
+      password: '12345678',
+      roleId: findDoctorRole.id,
+      clinic_ids: [dataClinics?.data?.[0]?.id],
+      doctor: {
+        ...findDoctor,
+        description: findDoctor.description || '',
+        mobile_number: '+' + findDoctor.mobile_number,
+        specialist_type: specialistTypeDefaultValues(),
+        treatment_type: (() => {
+          if (Array.isArray(findDoctor.treatment_type)) {
+            return (findDoctor.treatment_type as (string | number)[]).map(
+              (item) => parseInt(item as string)
+            );
+          }
+          if (typeof findDoctor.treatment_type === 'string') {
+            // Handles string like '{"7","8","9"}'
+            const cleaned = findDoctor.treatment_type.replace(/[{}\"]+/g, '');
+            if (!cleaned) return [];
+            return cleaned
+              .split(',')
+              .map((item) => parseInt(item.trim()))
+              .filter((n) => !isNaN(n));
+          }
+          return [];
+        })(),
+        date_of_birth: findDoctor.date_of_birth || '',
+        gender: findDoctor.gender || '',
+        emergency_first_name: findDoctor.emergency_first_name || '',
+        emergency_last_name: findDoctor.emergency_last_name || '',
+        emergency_mobile_number: findDoctor.emergency_mobile_number || '',
+        emergency_email: findDoctor.emergency_email || '',
+        state: findDoctor.state || '',
+        language: Array.isArray(findDoctor.language)
+          ? (findDoctor.language as string[])
+          : typeof findDoctor.language === 'string'
+            ? (JSON.parse(findDoctor.language) as string[])
+            : [],
+        sharing_doctor_id: findDoctor.id,
+      },
+    };
+    mutateCreateDoctor(payload, {
+      onSuccess: (data) => {
+        toast.success('Doctor picked successfully');
+        closeModal();
+      },
+      onError: (error) => {
+        const errorMessage =
+          (error as any)?.response?.data?.message || 'An error occurred';
+        toast.error(errorMessage);
+      },
+    });
   };
+
+  useEffect(() => {
+    if (errorGetAllDoctorsFromMain) {
+      const errorMessage =
+        (errorGetAllDoctorsFromMain as any)?.response?.data?.message ||
+        errorGetAllDoctorsFromMain.message ||
+        'An error occurred while fetching doctors';
+      toast.error(errorMessage);
+    }
+  }, [errorGetAllDoctorsFromMain]);
 
   return (
     <Form<PickDoctorFormTypes>
@@ -110,9 +203,10 @@ export default function PickDoctorModal() {
                   render={({ field }) => (
                     <CSelect
                       {...field}
-                      options={[] /* Replace with actual options */}
+                      options={doctorsOptions}
                       placeholder="Select Doctor"
                       className="w-full"
+                      isLoading={isLoadingGetAllDoctorsFromMain}
                     />
                   )}
                 />

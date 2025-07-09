@@ -112,7 +112,7 @@ export default function TabRequirement({
                 className="w-full"
               />
             </Flex>
-            <UploadFile size="sm" />
+            <UploadFile disabled={isView} size="sm" />
           </Grid>
         </FormGroup>
 
@@ -150,7 +150,7 @@ export default function TabRequirement({
                 )}
               />
             </Flex>
-            <UploadFile size="sm" />
+            <UploadFile disabled={isView} size="sm" />
           </Grid>
         </FormGroup>
 
@@ -175,7 +175,12 @@ export default function TabRequirement({
                 />
               );
             })}
-            <UploadFile size="sm" handleUpload={handleUploadAsic} useFileName />
+            <UploadFile
+              disabled={isView}
+              size="sm"
+              handleUpload={handleUploadAsic}
+              useFileName
+            />
           </Grid>
         </FormGroup>
 
@@ -197,6 +202,7 @@ export default function TabRequirement({
               );
             })}
             <UploadFile
+              disabled={isView}
               size="sm"
               handleUpload={handleUploadAsic}
               useFileName
@@ -227,6 +233,7 @@ export default function TabRequirement({
             );
           })}
           <UploadFile
+            disabled={isView}
             size="sm"
             handleUpload={handleUploadAsic}
             useExpireDate
@@ -293,7 +300,12 @@ export default function TabRequirement({
               />
             );
           })}
-          <UploadFile size="sm" handleUpload={handleUploadAsic} useExpireDate />
+          <UploadFile
+            disabled={isView}
+            size="sm"
+            handleUpload={handleUploadAsic}
+            useExpireDate
+          />
         </Grid>
       </FormGroup>
 
@@ -326,7 +338,12 @@ export default function TabRequirement({
               />
             );
           })}
-          <UploadFile size="sm" handleUpload={handleUploadAsic} useExpireDate />
+          <UploadFile
+            disabled={isView}
+            size="sm"
+            handleUpload={handleUploadAsic}
+            useExpireDate
+          />
         </Grid>
       </FormGroup>
 
@@ -351,7 +368,12 @@ export default function TabRequirement({
               />
             );
           })}
-          <UploadFile size="sm" handleUpload={handleUploadCpr} useExpireDate />
+          <UploadFile
+            disabled={isView}
+            size="sm"
+            handleUpload={handleUploadCpr}
+            useExpireDate
+          />
         </Grid>
       </FormGroup>
 
@@ -378,12 +400,13 @@ export default function TabRequirement({
           />
         </FormGroup>
       </div>
-
-      <FormFooter
-        // isLoading={isLoading}
-        altBtnText="Cancel"
-        submitBtnText="Save"
-      />
+      {!isView && (
+        <FormFooter
+          // isLoading={isLoading}
+          altBtnText="Cancel"
+          submitBtnText="Save"
+        />
+      )}
     </form>
   );
 }

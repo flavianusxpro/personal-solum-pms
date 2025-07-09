@@ -17,7 +17,12 @@ import CreateScheduleForm from '../../calendar/create-schedule-form';
 import { Flex, Loader } from 'rizzui';
 import { DoctorSchedule } from '@/types/ApiResponse';
 import DetailsSchedule from '../../calendar/details-schedule';
-import { useGetListSchedule } from '@/hooks/useSchedule';
+import {
+  useGetListSchedule,
+  useGetScheduleSharingDoctorFromMainClinic,
+} from '@/hooks/useSchedule';
+import { useGetDoctorById } from '@/hooks/useDoctor';
+import { formatTime } from '@/core/utils/format-date';
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -43,15 +48,31 @@ export default function TabCalendar({
     to: dayjs().endOf('month').toDate(),
   });
 
+  const { data: dataDoctor } = useGetDoctorById(id);
+
   const { data: dataEvent } = useGetListSchedule({
     doctorId: id,
     page: 1,
     perPage: 100,
+    enabled: process.env.NEXT_PUBLIC_CLINIC_TYPE === 'MAIN',
   });
 
+  const { data: dataScheduleSharingDoctor } =
+    useGetScheduleSharingDoctorFromMainClinic({
+      sharingDoctorId: dataDoctor?.sharing_doctor_id ?? undefined,
+    });
+
+  const data = useMemo(() => {
+    if (process.env.NEXT_PUBLIC_CLINIC_TYPE === 'MAIN') {
+      return dataEvent;
+    } else {
+      return dataScheduleSharingDoctor?.data ?? [];
+    }
+  }, [dataEvent, dataScheduleSharingDoctor]);
+
   const events = useMemo(() => {
-    if (!dataEvent) return [];
-    return dataEvent.map((event) => ({
+    if (!data) return [];
+    return data.map((event) => ({
       title: event.title,
       id: Number(event.id),
       start_date: new Date(event.start_date),
@@ -62,7 +83,7 @@ export default function TabCalendar({
       created_at: event.created_at,
       updated_at: event.updated_at,
     }));
-  }, [dataEvent]);
+  }, [data]);
 
   const { views, scrollToTime, formats } = useMemo(
     () => ({
@@ -89,11 +110,11 @@ export default function TabCalendar({
   const handleSelectEvent = useCallback(
     (event: DoctorSchedule) => {
       openModal({
-        view: <DetailsSchedule doctorId={id} event={event} />,
+        view: <DetailsSchedule isView={isView} doctorId={id} event={event} />,
         customSize: '500px',
       });
     },
-    [id, openModal]
+    [id, isView, openModal]
   );
 
   const handleSelectSlot = useCallback(
@@ -121,12 +142,14 @@ export default function TabCalendar({
   return (
     <div className="@container">
       <Flex className="flex w-full items-center justify-end">
-        <ModalButton
-          label="Create Schedule"
-          view={<CreateScheduleForm doctorId={id} />}
-          customSize="600px"
-          className="mb-5 mt-0"
-        />
+        {!isView && (
+          <ModalButton
+            label="Create Schedule"
+            view={<CreateScheduleForm doctorId={id} />}
+            customSize="600px"
+            className="mb-5 mt-0"
+          />
+        )}
       </Flex>
 
       <Calendar
@@ -134,11 +157,14 @@ export default function TabCalendar({
         events={events}
         views={views}
         formats={formats}
+        titleAccessor={(event) =>
+          `${formatTime(event.start_date)} - ${formatTime(event.end_date)}`
+        }
         startAccessor="start_date"
         endAccessor="end_date"
         dayLayoutAlgorithm="no-overlap"
         onSelectEvent={handleSelectEvent}
-        onSelectSlot={handleSelectSlot}
+        onSelectSlot={!isView ? handleSelectSlot : undefined}
         selectable
         scrollToTime={scrollToTime}
         className={cn(

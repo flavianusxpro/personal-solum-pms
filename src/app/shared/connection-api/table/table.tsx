@@ -1,35 +1,24 @@
 'use client';
 
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
-import { getColumns } from '@/app/shared/doctor/tableDataDoctor/columns';
-import {
-  useDeleteDoctor,
-  useGetAllDoctors,
-  useGetSpecialists,
-} from '@/hooks/useDoctor';
 import { useColumn } from '@core/hooks/use-column';
 import { useTable } from '@core/hooks/use-table';
-import dynamic from 'next/dynamic';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import toast from 'react-hot-toast';
 import { useCopyToClipboard } from 'react-use';
-import debounce from 'lodash/debounce';
-import dayjs from 'dayjs';
 import TableFooter from '../../ui/table-footer';
-import useAcl from '@/core/hooks/use-acl';
-
-// dynamic import
-const FilterElement = dynamic(
-  () => import('@/app/shared/doctor/tableDataDoctor/filter-element'),
-  { ssr: false }
-);
+import {
+  useDeleteApiConnection,
+  useGetApiConnection,
+} from '@/hooks/useConnection';
+import { getColumns } from './columns';
+import toast from 'react-hot-toast';
 
 const filterState = {
   createdAt: [null, null],
 };
 
-export default function DoctorTable({}: {}) {
+export default function ApiTable({}: {}) {
   const { isOpen } = useModal();
   const [filterStateValue, setFilterStateValue] = useState(filterState);
   const [_, copyToClipboard] = useCopyToClipboard();
@@ -42,42 +31,15 @@ export default function DoctorTable({}: {}) {
 
   const {
     data,
-    isLoading: isLoadingGetAllDoctors,
+    isLoading: isLoadingGetApiConnection,
     refetch,
-  } = useGetAllDoctors({
+  } = useGetApiConnection({
     page: params.page,
     perPage: params.perPage,
-    from: filterStateValue?.createdAt?.[0]
-      ? dayjs(filterStateValue?.createdAt?.[0]).format('YYYY-MM-DD')
-      : undefined,
-    to: filterStateValue?.createdAt?.[1]
-      ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
-      : undefined,
     q: JSON.stringify({ name: params.search }),
-    isEnable: true,
   });
 
-  const { data: dataSpecialists } = useGetSpecialists({
-    page: 1,
-    perPage: 100,
-  });
-
-  const { mutate: mutateDeleteDoctor } = useDeleteDoctor();
-
-  const { permissions } = useAcl();
-
-  const isPermissionWriteDoctor = useMemo(
-    () => permissions?.some((permission) => permission.name === 'doctor-write'),
-    [permissions]
-  );
-
-  const dataSpecialistsOptions = React.useMemo(() => {
-    if (!dataSpecialists) return [];
-    return dataSpecialists?.data?.map((item) => ({
-      label: item.name,
-      value: item.id,
-    }));
-  }, [dataSpecialists]);
+  const { mutate } = useDeleteApiConnection();
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -85,51 +47,28 @@ export default function DoctorTable({}: {}) {
     },
   });
 
-  const onDeleteItem = useCallback(
-    (ids: number[]) => {
-      mutateDeleteDoctor(ids, {
-        onSuccess: () => {
-          refetch();
-          toast.success('Delete doctor successfully');
-        },
-        onError: (error: any) => {
-          toast.error(error.response.data.message || 'Delete doctor failed');
-        },
-      });
-    },
-    [mutateDeleteDoctor, refetch]
-  );
-
-  const updateFilter = useCallback(
-    (columnId: string, filterValue: string | any[]) => {
-      setFilterStateValue((prevState) => ({
-        ...prevState,
-        [columnId]: filterValue,
-      }));
-    },
-    []
-  );
-
-  const handlerSearch = debounce((value: string) => {
-    setParams((prevState) => ({
-      ...prevState,
-      search: value,
-    }));
-  }, 1000);
-
-  const handleReset = useCallback(() => {
-    setFilterStateValue(filterState);
-  }, []);
-
   const handleCopy = (text: string | number) => {
     copyToClipboard(String(text));
+  };
+
+  const onDeleteItem = (ids: number[]) => {
+    mutate(ids, {
+      onSuccess: () => {
+        toast.success('Api connection deleted successfully');
+        refetch();
+      },
+      onError: (error: any) => {
+        const errorMessage =
+          error?.response?.data?.message || 'An error occurred';
+        toast.error(errorMessage);
+      },
+    });
   };
 
   const {
     isLoading,
     isFiltered,
     tableData,
-    filters,
     searchTerm,
     handleSearch,
     sortConfig,
@@ -146,13 +85,10 @@ export default function DoctorTable({}: {}) {
         data: data?.data ?? [],
         sortConfig,
         checkedItems: selectedRowKeys,
-        onHeaderCellClick,
-        onDeleteItem,
         onChecked: handleRowSelect,
         handleSelectAll,
         handleCopy,
-        dataSpecialistsOptions,
-        isPermissionWriteDoctor,
+        onDeleteItem: onDeleteItem,
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -160,7 +96,6 @@ export default function DoctorTable({}: {}) {
       onHeaderCellClick,
       sortConfig.key,
       sortConfig.direction,
-      onDeleteItem,
       handleRowSelect,
       handleSelectAll,
     ]
@@ -176,7 +111,7 @@ export default function DoctorTable({}: {}) {
   return (
     <div>
       <ControlledTable
-        isLoading={isLoading || isLoadingGetAllDoctors}
+        isLoading={isLoading || isLoadingGetApiConnection}
         showLoadingText={true}
         data={tableData ?? []}
         // @ts-ignore
@@ -197,10 +132,8 @@ export default function DoctorTable({}: {}) {
           searchTerm,
           onSearchClear: () => {
             handleSearch('');
-            handlerSearch('');
           },
           onSearchChange: (event) => {
-            handlerSearch(event.target.value);
             handleSearch(event.target.value);
           },
           hasSearched: isFiltered,
@@ -210,20 +143,11 @@ export default function DoctorTable({}: {}) {
           setCheckedColumns,
           enableDrawerFilter: true,
         }}
-        filterElement={
-          <FilterElement
-            isFiltered={isFiltered}
-            filters={filters}
-            updateFilter={updateFilter}
-            handleReset={handleReset}
-          />
-        }
         tableFooter={
           <TableFooter
             checkedItems={selectedRowKeys}
             handleDelete={(ids: string[]) => {
               setSelectedRowKeys([]);
-              onDeleteItem(ids.map((id) => parseInt(id)));
             }}
           />
         }

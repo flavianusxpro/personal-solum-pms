@@ -1,4 +1,4 @@
-import { get, put } from '@/config/api';
+import { get, put } from '@/config/base-api';
 import { IGetAwsS3ConfigResponse } from '@/types/ApiResponse';
 import { IPayloadUpdateAwsS3Config } from '@/types/paramTypes';
 

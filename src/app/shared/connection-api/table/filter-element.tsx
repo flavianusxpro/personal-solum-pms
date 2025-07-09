@@ -3,30 +3,35 @@
 import React from 'react';
 import { PiTrashDuotone } from 'react-icons/pi';
 import DateFiled from '@/app/shared/ui/controlled-table/date-field';
+import PriceField from '@/app/shared/ui/controlled-table/price-field';
+import StatusField from '@/app/shared/ui/controlled-table/status-field';
 import { Badge, Text, Button } from 'rizzui';
 import { getDateRangeStateValues } from '@core/utils/get-formatted-date';
 import { useMedia } from '@core/hooks/use-media';
-import CSelect from '../../ui/select';
 
 const statusOptions = [
   {
-    value: '1',
-    label: 'Active',
+    value: 'completed',
+    label: 'Completed',
   },
   {
-    value: '0',
-    label: 'InActive',
+    value: 'pending',
+    label: 'Pending',
   },
   {
-    value: '2',
-    label: 'Suspended',
+    value: 'cancelled',
+    label: 'Cancelled',
+  },
+  {
+    value: 'refunded',
+    label: 'Refunded',
   },
 ];
 
 type FilterElementProps = {
   isFiltered: boolean;
   filters: { [key: string]: any };
-  updateFilter: (columnId: string, filterValue: string | any[] | null) => void;
+  updateFilter: (columnId: string, filterValue: string | any[]) => void;
   handleReset: () => void;
 };
 
@@ -37,7 +42,6 @@ export default function FilterElement({
   handleReset,
 }: FilterElementProps) {
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
-
   return (
     <>
       <DateFiled
@@ -62,26 +66,6 @@ export default function FilterElement({
         })}
       />
 
-      <CSelect
-        className="w-fit"
-        options={statusOptions}
-        placeholder="Select status"
-        value={filters['status']}
-        onChange={(value: string) => {
-          updateFilter('status', value);
-        }}
-        getOptionValue={(option: { value: any }) => option.value}
-        clearable
-        onClear={() => {
-          updateFilter('status', null);
-        }}
-        {...(isMediumScreen && {
-          label: 'Status',
-          labelClassName: 'font-medium text-gray-700',
-        })}
-        dropdownClassName="h-auto z-10 bg-white/90 dark:bg-gray-800/90"
-      />
-
       {isFiltered ? (
         <Button
           size="sm"
@@ -98,41 +82,18 @@ export default function FilterElement({
   );
 }
 
-function renderOptionDisplay(value: string) {
-  switch (value) {
-    case statusOptions[0].label:
-      return (
-        <div className="flex items-center">
-          <Badge color="success" renderAsDot />
-          <Text className="ms-2 font-medium capitalize text-green-dark">
-            {value}
-          </Text>
-        </div>
-      );
-    case statusOptions[1].label:
-      return (
-        <div className="flex items-center">
-          <Badge color="danger" renderAsDot />
-          <Text className="ms-2 font-medium capitalize text-red-dark">
-            {value}
-          </Text>
-        </div>
-      );
-    default:
-      return (
-        <div className="flex items-center">
-          <Badge renderAsDot className="bg-gray-400" />
-          <Text className="ms-2 font-medium capitalize text-gray-600">
-            {value}
-          </Text>
-        </div>
-      );
-  }
-}
-
-function renderConditionOptionDisplayValue(value: string) {
+function renderOptionDisplayValue(value: string) {
   switch (value.toLowerCase()) {
-    case '1':
+    case 'pending':
+      return (
+        <div className="flex items-center">
+          <Badge color="warning" renderAsDot />
+          <Text className="ms-2 font-medium capitalize text-orange-dark">
+            {value}
+          </Text>
+        </div>
+      );
+    case 'completed':
       return (
         <div className="flex items-center">
           <Badge color="success" renderAsDot />
@@ -141,7 +102,7 @@ function renderConditionOptionDisplayValue(value: string) {
           </Text>
         </div>
       );
-    case '0':
+    case 'cancelled':
       return (
         <div className="flex items-center">
           <Badge color="danger" renderAsDot />

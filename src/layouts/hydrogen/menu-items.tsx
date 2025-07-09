@@ -208,10 +208,24 @@ export const adminMenuItems = [
     ],
   },
   {
-    name: 'connection',
-    href: routes.connection,
+    name: 'Connection',
+    href: routes.connection.connect,
     icon: <PiPlugsConnected />,
     permissionReadName: ['management'],
+    dropdownItems: [
+      {
+        name: 'Connect',
+        href: routes.connection.connect,
+        icon: <PiPlugsConnected />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Api',
+        href: routes.connection.api,
+        icon: <PiPlugsConnected />,
+        permissionReadName: [],
+      },
+    ],
   },
 ];
 
