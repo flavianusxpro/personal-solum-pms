@@ -8,6 +8,8 @@ import { PiPlusBold } from 'react-icons/pi';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import CreateDoctorModal from '@/app/shared/doctor/modal/create-doctor';
 import DoctorTable from '@/app/shared/doctor/tableDataDoctor/table';
+import useAcl from '@/core/hooks/use-acl';
+import PickDoctorModal from '@/app/shared/doctor/modal/pick-doctor';
 
 const pageHeader = {
   title: 'Doctors',
@@ -24,6 +26,12 @@ const pageHeader = {
 
 export default function DoctorPage() {
   const { openModal } = useModal();
+  const { permissions } = useAcl();
+
+  const isPermissionWriteDoctor = permissions?.some(
+    (permission) => permission.name === 'doctor-write'
+  );
+
   return (
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
@@ -36,7 +44,11 @@ export default function DoctorPage() {
           <Button
             onClick={() => {
               openModal({
-                view: <CreateDoctorModal />,
+                view: isPermissionWriteDoctor ? (
+                  <CreateDoctorModal />
+                ) : (
+                  <PickDoctorModal />
+                ),
                 customSize: '600px',
               });
             }}
@@ -44,7 +56,7 @@ export default function DoctorPage() {
           >
             <Button as="span" className="w-full @lg:w-auto">
               <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
-              Add Doctor
+              {isPermissionWriteDoctor ? 'Add Doctor' : 'Pick Doctor'}
             </Button>
           </Button>
         </div>

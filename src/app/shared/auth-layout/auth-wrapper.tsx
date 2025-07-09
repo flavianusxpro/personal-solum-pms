@@ -104,7 +104,9 @@ function AuthHeader() {
   return (
     <header className="flex items-center justify-between p-4 lg:px-16 lg:py-6 2xl:px-24">
       <Link href={'/'}>
-        <Logo className="w-[180px]" />
+        <h2 className="text-[36px] font-bold text-black">
+          {process.env.NEXT_PUBLIC_CLINIC_NAME}
+        </h2>
       </Link>
       {/* <div className="flex items-center space-x-2 md:space-x-4">
         <AuthNavLink href={routes.auth.signIn}>
@@ -135,8 +137,8 @@ function AuthFooter() {
   return (
     <footer className="flex flex-col-reverse items-center justify-between px-4 py-5 lg:flex-row lg:px-16 lg:py-6 2xl:px-24 2xl:py-10">
       <div className="w-max text-center text-[12px] leading-relaxed text-gray-500 lg:text-start">
-        © Copyright 2025 by Solum Clinic Pty Ltd, all rights reserved. Develop
-        by Xpro Group Pty Ltd.
+        © Copyright 2025 by {process.env.NEXT_PUBLIC_CLINIC_NAME} Pty Ltd, all
+        rights reserved. Develop by Xpro Group Pty Ltd.
       </div>
       <div className="-mx-2.5 flex items-center justify-end pb-3 font-medium text-gray-700 lg:w-1/2 lg:pb-0">
         {footerMenu.map((item) => (

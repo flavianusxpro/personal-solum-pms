@@ -5,7 +5,7 @@
   "private": true,
   "author": "mochfathurrozi",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "lint": "next lint",
     "build": "bunx next build",
     "vercel": "next build && vercel --prod",

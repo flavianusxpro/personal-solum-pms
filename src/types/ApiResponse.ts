@@ -239,13 +239,13 @@ export interface IGetAllDoctorsResponse extends ApiResponseWithPagination {
     password: string;
     status: number;
     address: string;
-    date_of_birth: null;
+    date_of_birth: null | string;
     gender: null;
     url_photo: null;
     description: null;
     medicare_card_number: string;
     medicare_expired_date: string;
-    specialist: null;
+    specialist: null | string;
     problem: null;
     emergency_first_name: null;
     emergency_last_name: null;
@@ -255,6 +255,19 @@ export interface IGetAllDoctorsResponse extends ApiResponseWithPagination {
     timezone: string;
     created_at: string;
     updated_at: string;
+    treatment_type: string;
+    address_line_1: string;
+    address_line_2: string;
+    country: string;
+    unit_number: null;
+    street_name: string;
+    suburb: string;
+    state: string;
+    postcode: string;
+    medical_interest: string;
+    specialist_type: string;
+    problem_type: string;
+    language: string;
   }[];
 }
 
@@ -296,6 +309,7 @@ export interface IGetDoctorByIdResponse extends ApiResponse {
     clinics: Clinic[];
     setting: Setting;
     user: User;
+    sharing_doctor_id: number | null;
   };
 }
 
@@ -979,5 +993,31 @@ export interface IPostCouponCodeValidationResponse extends ApiResponse {
     restrict_patient: string;
     created_at: string;
     updated_at: string;
+  };
+}
+
+export interface IGetApiKeyConnectionResponse
+  extends ApiResponseWithPagination {
+  data: {
+    id: number;
+    hostname: string;
+    name: string;
+    token: string;
+    status: boolean;
+    created_at: string;
+    updated_at: string;
+  }[];
+}
+
+export interface IPostConnectMainClinicResponse extends ApiResponse {
+  data: {
+    sessionId: string;
+    access_token: string;
+  };
+}
+
+export interface IPostConnectionStatusResponse extends ApiResponse {
+  data: {
+    sessionId: string;
   };
 }

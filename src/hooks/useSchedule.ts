@@ -1,11 +1,15 @@
 import {
   deleteSchedule,
   getlistSchedule,
+  getScheduleFromMainClinicByDoctorId,
+  getScheduleSharingDoctorFromMainClinic,
   postCreateSchedule,
   putUpdateSchedule,
 } from '@/service/schedule';
 import {
+  IParamGetDoctorScheduleForMainClinic,
   IParamGetListSchedule,
+  IParamGetScheduleSharingDoctorForMainClinic,
   IPayloadPostCreateSchedule,
   IPayloadPutUpdateSchedule,
 } from '@/types/paramTypes';
@@ -15,6 +19,7 @@ export function useGetListSchedule(params: IParamGetListSchedule) {
   return useQuery({
     queryKey: ['getListSchedule' + params],
     queryFn: () => getlistSchedule(params),
+    enabled: params.enabled,
   });
 }
 
@@ -37,5 +42,29 @@ export function usePutUpdateSchedule() {
 export function useDeleteSchedule() {
   return useMutation({
     mutationFn: deleteSchedule,
+  });
+}
+
+export function useGetDoctorScheduleByIdFromMainClinic(
+  params: IParamGetDoctorScheduleForMainClinic
+) {
+  return useQuery({
+    queryKey: ['getDoctorScheduleByIdFromMainClinic', params],
+    queryFn: () => {
+      return getScheduleFromMainClinicByDoctorId(params);
+    },
+    enabled: !!params.doctorId,
+  });
+}
+
+export function useGetScheduleSharingDoctorFromMainClinic(
+  params: IParamGetScheduleSharingDoctorForMainClinic
+) {
+  return useQuery({
+    queryKey: ['getScheduleSharingDoctorFromMainClinic', params],
+    queryFn: () => {
+      return getScheduleSharingDoctorFromMainClinic(params);
+    },
+    enabled: !!params.sharingDoctorId,
   });
 }

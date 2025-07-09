@@ -15,8 +15,11 @@ export interface IParamGetDoctorByClinic extends IParamGetDataWithPagination {
   id: string;
   role?: RoleType;
   treatment_type: string;
-  problem_type: string;
+  problem_type?: string;
+  doctorId?: number;
 }
+
+export interface IParamsGetApiConnection extends IParamGetDataWithPagination {}
 
 export interface IPayloadRegisterForPatient extends RegisterSchema {}
 
@@ -128,6 +131,28 @@ export interface IParamGetAllPatient extends IParamGetDataWithPagination {
 export interface IParamGetAllDoctor extends IParamGetDataWithPagination {
   from?: string;
   to?: string;
+  isEnable?: boolean;
+}
+
+export interface IParamGetDoctorSharing extends IParamGetDataWithPagination {
+  from?: string;
+  to?: string;
+  isEnable?: boolean;
+}
+
+export interface IParamGetAllDoctorForSubClinic extends IParamGetAllDoctor {
+  xtoken?: string;
+  xSessionId?: string;
+  apiUrl?: string;
+}
+export interface IParamGetDoctorScheduleForMainClinic {
+  xtoken?: string;
+  xSessionId?: string;
+  apiUrl?: string;
+  doctorId?: number;
+}
+export interface IParamGetScheduleSharingDoctorForMainClinic {
+  sharingDoctorId?: number;
 }
 export interface IParamGetAllEmailTemplates
   extends IParamGetDataWithPagination {}
@@ -248,6 +273,7 @@ export interface IPayloadUpdateAssignDoctor {
 
 export interface IParamGetListSchedule extends IParamGetDataWithPagination {
   doctorId?: number | string;
+  enabled?: boolean;
 }
 
 export interface IPayloadPostCreateSchedule {
@@ -387,6 +413,7 @@ interface Doctor {
   email: string;
   password: string;
   mobile_number: string;
+  description?: string;
   date_of_birth: string;
   gender: string;
   country: string;
@@ -404,6 +431,7 @@ interface Doctor {
   specialist_type: number[];
   treatment_type: number[];
   language: string[];
+  sharing_doctor_id?: number;
 }
 
 export interface IPayloadUpdateSmsNotificationSettings {
@@ -581,4 +609,15 @@ export interface IParamsGetPatientDocumentation
 export interface IPayloadPatientAssignClinic {
   uuid: string;
   clinic_ids: number[];
+}
+
+export interface IPayloadClinicConnection {
+  base_url: string;
+  name: string;
+  access_token: string;
+}
+export interface IPayloadCreateEditApiConnection {
+  id?: number;
+  name: string;
+  hostname: string;
 }

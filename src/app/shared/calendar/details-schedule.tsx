@@ -13,9 +13,10 @@ import EditScheduleForm from './edit-schedule-form';
 interface DetailsScheduleProps {
   event: DoctorSchedule;
   doctorId?: string;
+  isView?: boolean;
 }
 
-function DetailsSchedule({ event, doctorId }: DetailsScheduleProps) {
+function DetailsSchedule({ event, doctorId, isView }: DetailsScheduleProps) {
   const { closeModal, openModal } = useModal();
 
   const { refetch } = useGetListSchedule({
@@ -105,16 +106,18 @@ function DetailsSchedule({ event, doctorId }: DetailsScheduleProps) {
             </li>
           )}
         </ul>
-        <div className={cn('grid grid-cols-2 gap-4 pt-5')}>
-          <Button
-            variant="outline"
-            onClick={() => handleDelete(event.id as unknown as number)}
-            isLoading={isPendingDeleteSchedule}
-          >
-            Delete
-          </Button>
-          <Button onClick={handleEditModal}>Edit</Button>
-        </div>
+        {!isView && (
+          <div className={cn('grid grid-cols-2 gap-4 pt-5')}>
+            <Button
+              variant="outline"
+              onClick={() => handleDelete(event.id as unknown as number)}
+              isLoading={isPendingDeleteSchedule}
+            >
+              Delete
+            </Button>
+            <Button onClick={handleEditModal}>Edit</Button>
+          </div>
+        )}
       </div>
     </div>
   );
