@@ -33,6 +33,8 @@ export const env = createEnv({
     NEXT_PUBLIC_BOOKING_API_URL: z.string(),
     NEXT_PUBLIC_STRIPE_KEY: z.string(),
     NEXT_PUBLIC_CLINIC_NAME: z.string(),
+    NEXT_PUBLIC_X_IDENTITY_ID: z.string(),
+    NEXT_PUBLIC_X_SECRET_KEY: z.string(),
   },
   runtimeEnv: process.env,
 });

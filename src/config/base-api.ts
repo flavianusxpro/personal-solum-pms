@@ -20,6 +20,8 @@ async function attachToken(
   if (session?.accessToken) {
     config.headers.set('Authorization', `Bearer ${session.accessToken}`);
   }
+  config.headers.set('X-Identity-ID', process.env.NEXT_PUBLIC_X_IDENTITY_ID);
+  config.headers.set('X-Secret-Key', process.env.NEXT_PUBLIC_X_SECRET_KEY);
   return config;
 }
 
