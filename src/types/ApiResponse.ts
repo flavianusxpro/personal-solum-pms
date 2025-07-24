@@ -145,6 +145,7 @@ export interface IGetProfileResponse extends ApiResponse {
     email: string;
     status: number;
     role: Role;
+    clinics: IClinic[];
   };
 }
 

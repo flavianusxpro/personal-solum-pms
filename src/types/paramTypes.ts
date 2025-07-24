@@ -570,6 +570,7 @@ export interface IPayloadCreateUpdateCoupon {
 }
 
 export interface IPayloadUpdateTwilioConfig {
+  clinicId: number;
   account_id: string;
   auth_token: string;
   from_number: string;
@@ -577,6 +578,7 @@ export interface IPayloadUpdateTwilioConfig {
 }
 
 export interface IPayloadUpdateSmtpConfig {
+  clinicId: number;
   smtp_host: string;
   smtp_port: string;
   smtp_username: string;
@@ -593,6 +595,7 @@ export interface IPayloadDoctorCost {
 }
 
 export interface IPayloadUpdateAwsS3Config {
+  clinicId: number;
   aws_access_id: string;
   aws_secret_key: string;
   bucket: string;
