@@ -49,7 +49,6 @@ const types: SelectOption[] = [
 export default function Communication() {
   const [smtpMode, setSmtpMode] = useState<'manual' | 'aws'>('manual');
   const { data: dataProfile } = useProfile(true);
-  console.log('🚀 ~ Communication ~ dataProfile:', dataProfile?.clinics[0]);
 
   const { data: dataSmtp, isLoading: isLoadingGetSmtp } = useGetSmtpConfig(
     dataProfile?.clinics[0].id
