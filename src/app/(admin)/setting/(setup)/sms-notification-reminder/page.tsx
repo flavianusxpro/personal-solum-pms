@@ -24,16 +24,18 @@ import { IPayloadUpdateSmsNotificationSettings } from '@/types/paramTypes';
 import { useGetSmsTemplates } from '@/hooks/useTemplate';
 import { useMemo, useState } from 'react';
 import CSelect from '@/app/shared/ui/select';
+import { useProfile } from '@/hooks/useProfile';
 
 export default function Setup() {
   const { data: dataSmsTemplates } = useGetSmsTemplates({
     page: 1,
     perPage: 100,
   });
+  const { data: dataProfile } = useProfile(true);
   const {
     data: dataSmsNotificationSettings,
     isLoading: isLoadingGetSmsNotification,
-  } = useGetSmsNotificationSettings();
+  } = useGetSmsNotificationSettings(dataProfile?.clinics[0].id);
 
   const { mutate: mutateUpdateSmsNotification } =
     useUpdateSmsNotificationSettings();
@@ -50,6 +52,7 @@ export default function Setup() {
     data
   ) => {
     const smsPayload: IPayloadUpdateSmsNotificationSettings = {
+      clinicId: dataProfile?.clinics[0].id || 0,
       booking_confirmation_sms_status:
         data?.booking_confirmation_sms_status || false,
       booking_confirmation_sms_text: data?.booking_confirmation_sms_text || '',

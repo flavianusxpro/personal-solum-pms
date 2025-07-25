@@ -14,6 +14,7 @@ import debounce from 'lodash/debounce';
 import toast from 'react-hot-toast';
 import dayjs from 'dayjs';
 import TableFooter from '../../ui/table-footer';
+import { useProfile } from '@/hooks/useProfile';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/patient/table/filter-element'),
@@ -54,6 +55,7 @@ export default function PatientTable() {
     search: '',
   });
 
+  const { data: dataProfile } = useProfile(true);
   const {
     data,
     isLoading: isLoadingGetAllPatients,
@@ -71,6 +73,7 @@ export default function PatientTable() {
       name: params.search,
       status: filterStateValue?.status || undefined,
     }),
+    clinicId: dataProfile?.clinics[0].id || 0,
   });
 
   const { mutate: mutateDeletePatient } = useDeletePatient();

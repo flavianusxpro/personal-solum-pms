@@ -9,6 +9,7 @@ interface IParamGetDataWithPagination {
 }
 export interface IParamGetAllClinic extends IParamGetDataWithPagination {
   role: RoleType;
+  clinicId?: number;
 }
 
 export interface IParamGetDoctorByClinic extends IParamGetDataWithPagination {
@@ -127,11 +128,13 @@ export interface IPayloadCreateEditDoctor {
 export interface IParamGetAllPatient extends IParamGetDataWithPagination {
   from?: string;
   to?: string;
+  clinicId?: number;
 }
 export interface IParamGetAllDoctor extends IParamGetDataWithPagination {
   from?: string;
   to?: string;
   isEnable?: boolean;
+  clinicId?: number;
 }
 
 export interface IParamGetDoctorSharing extends IParamGetDataWithPagination {
@@ -161,7 +164,9 @@ export interface IParamGetSpecialists extends IParamGetDataWithPagination {}
 export interface IParamGetTreatments extends IParamGetDataWithPagination {}
 export interface IParamGetRoles extends IParamGetDataWithPagination {}
 export interface IParamGetPermissions extends IParamGetDataWithPagination {}
-export interface IParamGetUsers extends IParamGetDataWithPagination {}
+export interface IParamGetUsers extends IParamGetDataWithPagination {
+  clinicId?: number;
+}
 export interface IParamGetTaxes extends IParamGetDataWithPagination {}
 export interface IParamsGetItems extends IParamGetDataWithPagination {}
 export interface IParamsGetPharmachies extends IParamGetDataWithPagination {}
@@ -445,9 +450,11 @@ export interface IPayloadUpdateSmsNotificationSettings {
   payment_confirmation_sms_text: string;
   reminder_sms_status: boolean;
   reminder_sms_text: string;
+  clinicId?: number;
 }
 
 export interface IPayloadUpdateEmailNotificationSettings {
+  clinicId?: number;
   booking_confirmation_email_status: boolean;
   booking_confirmation_email_html: string;
   reschedule_email_status: boolean;

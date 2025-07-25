@@ -17,6 +17,7 @@ import { useModal } from '@/app/shared/modal-views/use-modal';
 import toast from 'react-hot-toast';
 import debounce from 'lodash/debounce';
 import dayjs from 'dayjs';
+import { useProfile } from '@/hooks/useProfile';
 
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
@@ -44,6 +45,7 @@ export default function AppointmentListTable() {
     search: '',
   });
 
+  const { data: dataProfile } = useProfile(true);
   const {
     data: dataAppointments,
     isLoading: isLoadingGetAppointments,
@@ -63,6 +65,7 @@ export default function AppointmentListTable() {
     status: filterStateValue?.status || undefined,
     payment_status: filterStateValue?.payment_status || undefined,
     by_reschedule: filterStateValue?.by_reschedule || undefined,
+    clinicId: dataProfile?.clinics[0].id || 0,
   });
 
   const { mutate } = useDeleteAppointment();

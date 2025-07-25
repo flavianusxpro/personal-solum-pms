@@ -13,6 +13,7 @@ import debounce from 'lodash/debounce';
 import dayjs from 'dayjs';
 import { currencyAtom } from '@/store/currency';
 import { useAtom } from 'jotai';
+import { useProfile } from '@/hooks/useProfile';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/invoice/invoice-list/filter-element'),
@@ -34,7 +35,7 @@ const filterState = {
 
 export default function InvoiceTableList() {
   const [currencyData] = useAtom(currencyAtom);
-
+  const { data: dataProfile } = useProfile(true);
   const [filterStateValue, setFilterStateValue] = useState(filterState);
   const [params, setParams] = useState({
     page: 1,
@@ -57,6 +58,7 @@ export default function InvoiceTableList() {
       : undefined,
     status: filterStateValue?.status || undefined,
     q: JSON.stringify({ patientName: params.search }),
+    clinicId: dataProfile?.clinics[0].id || 0,
   });
 
   const { mutate: mutateDelete } = useDeleteInvoice();

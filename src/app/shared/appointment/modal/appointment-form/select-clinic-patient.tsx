@@ -10,6 +10,7 @@ import { useEffect, useMemo } from 'react';
 import { useGetAllClinics } from '@/hooks/useClinic';
 import { z } from 'zod';
 import { useGetAppointments } from '@/hooks/useAppointment';
+import { useProfile } from '@/hooks/useProfile';
 
 const FormSchema = appointmentBookSchema['selectPatientAndClinic'];
 
@@ -19,18 +20,26 @@ export default function SelectClinic() {
   const { gotoNextStep } = useStepperAppointment();
   const [formData, setFormData] = useAtom(formDataAtom);
 
+  const { data: dataProfile } = useProfile(true);
+
   const { data: dataClinics, isLoading: isLoadingClinics } = useGetAllClinics({
     page: 1,
     perPage: 10,
     role: 'admin',
+    clinicId: dataProfile?.clinics[0].id,
   });
   const { data: dataPatients, isLoading: isLoadingPatients } =
-    useGetAllPatients({ page: 1, perPage: 100 });
+    useGetAllPatients({
+      page: 1,
+      perPage: 100,
+      clinicId: dataProfile?.clinics[0].id,
+    });
 
   const { data: dataAppointment, refetch } = useGetAppointments({
     patientId: formData?.patient_id,
     page: 1,
     perPage: 1,
+    clinicId: dataProfile?.clinics[0].id,
   });
 
   const lastAppointment = useMemo(() => {

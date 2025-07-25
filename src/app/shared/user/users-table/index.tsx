@@ -9,6 +9,7 @@ import ControlledTable from '../../ui/controlled-table';
 import { useDeleteUserById, useGetUsers } from '@/hooks/useUser';
 import toast from 'react-hot-toast';
 import debounce from 'lodash/debounce';
+import { useProfile } from '@/hooks/useProfile';
 
 const FilterElement = dynamic(() => import('./filter-element'), { ssr: false });
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
@@ -30,6 +31,8 @@ export default function UsersTable() {
     search: '',
   });
 
+  const { data: dataProfile } = useProfile(true);
+
   const { data: dataUsers, refetch } = useGetUsers({
     ...params,
     q: JSON.stringify({
@@ -39,6 +42,7 @@ export default function UsersTable() {
         ? filterStateValue.role_name
         : undefined,
     }),
+    clinicId: dataProfile?.clinics[0].id || 0,
   });
   const { mutate: mutateDelete } = useDeleteUserById();
 

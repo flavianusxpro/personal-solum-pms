@@ -22,6 +22,7 @@ import { IPayloadUpdateEmailNotificationSettings } from '@/types/paramTypes';
 import { useGetEmailTemplates } from '@/hooks/useTemplate';
 import { useMemo, useState } from 'react';
 import CSelect from '@/app/shared/ui/select';
+import { useProfile } from '@/hooks/useProfile';
 
 const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
   ssr: false,
@@ -33,10 +34,12 @@ export default function Setup() {
     perPage: 100,
   });
 
+  const { data: dataProfile } = useProfile(true);
+
   const {
     data: dataEmailNotificationSettings,
     isLoading: isLoadingGetEmailNotification,
-  } = useGetEmailNotificationSettings();
+  } = useGetEmailNotificationSettings(dataProfile?.clinics[0].id);
 
   const {
     mutate: mutateUpdateEmailNotification,
@@ -55,6 +58,7 @@ export default function Setup() {
     data
   ) => {
     const emailPayload: IPayloadUpdateEmailNotificationSettings = {
+      clinicId: dataProfile?.clinics[0].id,
       booking_confirmation_email_status:
         data.booking_confirmation_email_status || false,
       booking_confirmation_email_html:
@@ -83,16 +87,21 @@ export default function Setup() {
       cancelled_email_html: data.cancelled_email_html || '',
     };
 
-    mutateUpdateEmailNotification(emailPayload, {
-      onSuccess: () => {
-        toast.success('Email notification settings updated successfully');
+    mutateUpdateEmailNotification(
+      {
+        ...emailPayload,
       },
-      onError: (error: any) => {
-        toast.error(
-          `Error updating email notification settings: ${error?.response?.data?.message}`
-        );
-      },
-    });
+      {
+        onSuccess: () => {
+          toast.success('Email notification settings updated successfully');
+        },
+        onError: (error: any) => {
+          toast.error(
+            `Error updating email notification settings: ${error?.response?.data?.message}`
+          );
+        },
+      }
+    );
   };
 
   if (isLoadingGetEmailNotification) {

@@ -13,6 +13,7 @@ import { PiArrowLeft, PiArrowRight } from 'react-icons/pi';
 import dayjs from 'dayjs';
 import ActionButton from '../../ui/action-tooltip-button';
 import { useGetAllClinics } from '@/hooks/useClinic';
+import { useProfile } from '@/hooks/useProfile';
 
 export default function GlobalCalendarTable({}: {}) {
   const { openModal } = useModal();
@@ -22,6 +23,7 @@ export default function GlobalCalendarTable({}: {}) {
   );
   const [selectedBranch, setSelectedBranch] = useState<number | null>(null);
 
+  const { data: dataProfile } = useProfile(true);
   const {
     data,
     isLoading: isLoadingGetAppointments,
@@ -32,7 +34,7 @@ export default function GlobalCalendarTable({}: {}) {
     sort: 'DESC',
     from: selectedDate,
     to: selectedDate,
-    clinicId: selectedBranch || undefined,
+    clinicId: selectedBranch || dataProfile?.clinics[0].id || 0,
   });
 
   const { data: dataClinics } = useGetAllClinics({
