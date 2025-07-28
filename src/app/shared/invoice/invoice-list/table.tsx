@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
@@ -17,15 +17,20 @@ import { useProfile } from '@/hooks/useProfile';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/invoice/invoice-list/filter-element'),
-  { ssr: false }
+  {
+    ssr: false,
+    loading: () => <div className="p-4 text-center">Loading filters...</div>,
+  }
 );
 
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
+  loading: () => <div className="p-4 text-center">Loading footer...</div>,
 });
 
 const TableHeader = dynamic(() => import('@/app/shared/ui/table-header'), {
   ssr: false,
+  loading: () => <div className="p-4 text-center">Loading header...</div>,
 });
 
 const filterState = {
@@ -92,16 +97,19 @@ export default function InvoiceTableList() {
     []
   );
 
-  const handlerSearch = debounce((value: string) => {
-    setParams((prevState) => ({
-      ...prevState,
-      search: value,
-    }));
-  }, 1000);
+  const handlerSearch = useCallback(
+    debounce((value: string) => {
+      setParams((prevState) => ({
+        ...prevState,
+        search: value,
+      }));
+    }, 500), // Reduced from 1000ms to 500ms
+    []
+  );
 
-  useEffect(() => {
-    refetch();
-  }, [refetch, filterStateValue]);
+  const processedData = useMemo(() => {
+    return dataInvoices?.data ?? [];
+  }, [dataInvoices?.data]);
 
   const {
     isLoading,
@@ -122,12 +130,12 @@ export default function InvoiceTableList() {
     handleSelectAll,
     handleDelete,
     handleReset,
-  } = useTable(dataInvoices?.data ?? [], params.pageSize, filterStateValue);
+  } = useTable(processedData, params.pageSize, filterStateValue);
 
-  const columns = React.useMemo(
+  const columns = useMemo(
     () =>
       getColumns({
-        data: dataInvoices?.data ?? [],
+        data: processedData,
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
@@ -138,6 +146,7 @@ export default function InvoiceTableList() {
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
+      processedData,
       selectedRowKeys,
       onHeaderCellClick,
       sortConfig.key,
@@ -151,9 +160,12 @@ export default function InvoiceTableList() {
   const { visibleColumns, checkedColumns, setCheckedColumns } =
     useColumn(columns);
 
+  // Optimized useEffect to prevent unnecessary refetches
   useEffect(() => {
-    refetch();
-  }, [params, refetch]);
+    if (params.page || params.pageSize || params.search) {
+      refetch();
+    }
+  }, [params.page, params.pageSize, params.search, refetch]);
 
   return (
     <>

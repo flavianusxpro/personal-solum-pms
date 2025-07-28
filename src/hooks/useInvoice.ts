@@ -12,7 +12,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 export function useGetInvoices(params: IParamGetAppointments) {
   return useQuery({
-    queryKey: ['getInvoices' + params],
+    queryKey: ['getInvoices', params],
     queryFn: async () => getInvoiceList(params),
     enabled: Boolean(params.clinicId),
   });

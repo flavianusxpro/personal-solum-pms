@@ -10,11 +10,17 @@ import type { TablePaginationProps } from '@/app/shared/ui/controlled-table/tabl
 import Table, { TableProps } from '../table';
 const TableFilter = dynamic(
   () => import('@/app/shared/ui/controlled-table/table-filter'),
-  { ssr: false }
+  {
+    ssr: false,
+    loading: () => <div className="p-4 text-center">Loading filter...</div>,
+  }
 );
 const TablePagination = dynamic(
   () => import('@/app/shared/ui/controlled-table/table-pagination'),
-  { ssr: false }
+  {
+    ssr: false,
+    loading: () => <div className="p-4 text-center">Loading pagination...</div>,
+  }
 );
 
 type ControlledTableProps = {

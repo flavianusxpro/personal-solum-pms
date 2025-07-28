@@ -1,6 +1,7 @@
 import { Title } from 'rizzui';
 import cn from '@core/utils/class-names';
 import Breadcrumb from '@core/ui/breadcrumb';
+import { memo } from 'react';
 
 export type PageHeaderTypes = {
   title: string;
@@ -8,7 +9,7 @@ export type PageHeaderTypes = {
   className?: string;
 };
 
-export default function PageHeader({
+function PageHeader({
   title,
   breadcrumb,
   children,
@@ -45,3 +46,5 @@ export default function PageHeader({
     </header>
   );
 }
+
+export default memo(PageHeader);
