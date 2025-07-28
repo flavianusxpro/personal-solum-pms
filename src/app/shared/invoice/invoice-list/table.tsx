@@ -58,7 +58,7 @@ export default function InvoiceTableList() {
       : undefined,
     status: filterStateValue?.status || undefined,
     q: JSON.stringify({ patientName: params.search }),
-    clinicId: dataProfile?.clinics[0].id || 0,
+    clinicId: dataProfile?.clinics?.[0]?.id,
   });
 
   const { mutate: mutateDelete } = useDeleteInvoice();

@@ -58,7 +58,7 @@ export default function DoctorTable({}: {}) {
       : undefined,
     q: JSON.stringify({ name: params.search }),
     isEnable: true,
-    clinicId: dataProfile?.clinics[0].id || 0,
+    clinicId: dataProfile?.clinics?.[0]?.id,
   });
 
   const { data: dataSpecialists } = useGetSpecialists({

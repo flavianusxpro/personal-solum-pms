@@ -37,7 +37,7 @@ export function useGetAllDoctors(params: IParamGetAllDoctor) {
   return useQuery({
     queryKey: ['doctors' + params],
     queryFn: async () => getDoctorList(params),
-    enabled: !!params && params.isEnable === true,
+    enabled: Boolean(params.clinicId),
   });
 }
 

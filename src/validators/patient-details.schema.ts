@@ -33,8 +33,14 @@ export const patientDetailsFormSchema = z.object({
   concession_card_number: z.string().optional(),
   concession_card_expiry: z.date().optional(),
 
-  medicare_card: z.string().min(10).max(13, { message: messages.maxLength }),
-  medicare_expiry: z.date(),
+  medicare_card: z
+    .string()
+    .optional()
+    .refine((val) => !val || (val.length >= 10 && val.length <= 13), {
+      message:
+        'Medicare card must be between 10 and 13 characters when provided',
+    }),
+  medicare_expiry: z.date().optional(),
   position_of_card: z
     .string()
     .max(2, { message: messages.maxLength })
