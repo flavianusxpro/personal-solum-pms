@@ -14,8 +14,11 @@ import {
 } from '@/validators/create-doctor.schema';
 import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
-import { usePostCreateDoctorUser } from '@/hooks/useUser';
-import { useGetSpecialists, useGetTreatments } from '@/hooks/useDoctor';
+import {
+  useCreateDoctor,
+  useGetSpecialists,
+  useGetTreatments,
+} from '@/hooks/useDoctor';
 import { useMemo } from 'react';
 import SelectLoader from '@/core/components/loader/select-loader';
 import dynamic from 'next/dynamic';
@@ -41,7 +44,7 @@ const MultySelect = dynamic(
 export default function CreatDoctorModal() {
   const { closeModal } = useModal();
 
-  const { mutate: mutateCreateDoctor, isPending } = usePostCreateDoctorUser();
+  const { mutate: mutateCreateDoctor, isPending } = useCreateDoctor();
   const { data: dataSpecialists } = useGetSpecialists({
     perPage: 100,
     page: 1,

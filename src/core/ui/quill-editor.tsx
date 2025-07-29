@@ -1,7 +1,8 @@
 import ReactQuill, { type ReactQuillProps } from 'react-quill';
-import { FieldError } from 'rizzui';
+import { FieldError, Loader } from 'rizzui';
 import cn from '../utils/class-names';
 import 'react-quill/dist/quill.snow.css';
+import { useEffect, useState } from 'react';
 
 interface QuillEditorProps extends ReactQuillProps {
   error?: string;
@@ -22,6 +23,8 @@ export default function QuillEditor({
   toolbarPosition = 'top',
   ...props
 }: QuillEditorProps) {
+  const [isLoading, setIsLoading] = useState(true);
+
   const quillModules = {
     toolbar: [
       // [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -59,6 +62,18 @@ export default function QuillEditor({
   //   'font',
   //   'align',
   // ];
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <Loader className="h-10 w-10" />;
+  }
 
   return (
     <div className={cn(className)}>
