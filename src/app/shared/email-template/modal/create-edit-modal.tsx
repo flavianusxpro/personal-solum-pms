@@ -21,6 +21,10 @@ import toast from 'react-hot-toast';
 import { IGetEmailTemplatesResponse } from '@/types/ApiResponse';
 import QuillLoader from '@/core/components/loader/quill-loader';
 import cn from '@/core/utils/class-names';
+import {
+  extractBodyContent,
+  wrapWithFullStructure,
+} from '@/core/utils/email-template-helper';
 
 const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
   ssr: false,
@@ -49,9 +53,17 @@ export default function CreateEditEmailTemplateModal({
     usePutUpdateEmailTemplate();
 
   const onSubmit: SubmitHandler<EmailTemplateFormTypes> = (formValues) => {
+    // Wrap the body content with full HTML structure before saving
+    const fullHtml = wrapWithFullStructure(formValues.html, formValues.name);
+
+    const payload = {
+      ...formValues,
+      html: fullHtml,
+    };
+
     if (data?.id) {
       mutateUpdate(
-        { ...formValues, id: data?.id.toString() },
+        { ...payload, id: data?.id.toString() },
         {
           onSuccess: () => {
             refetch();
@@ -68,7 +80,7 @@ export default function CreateEditEmailTemplateModal({
       );
       return;
     }
-    mutateCreate(formValues, {
+    mutateCreate(payload, {
       onSuccess: () => {
         refetch();
         closeModal();
@@ -108,7 +120,7 @@ export default function CreateEditEmailTemplateModal({
         mode: 'onChange',
         defaultValues: {
           name: data?.name || '',
-          html: data?.html || '',
+          html: extractBodyContent(data?.html || ''),
         },
       }}
     >

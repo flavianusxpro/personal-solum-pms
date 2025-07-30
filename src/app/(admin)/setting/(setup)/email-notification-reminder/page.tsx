@@ -20,21 +20,13 @@ import {
 } from '@/hooks/useNotification';
 import { IPayloadUpdateEmailNotificationSettings } from '@/types/paramTypes';
 import { useGetEmailTemplates } from '@/hooks/useTemplate';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import CSelect from '@/app/shared/ui/select';
 import { useProfile } from '@/hooks/useProfile';
 import {
-  emailAccountVerificationTemplateValidation,
-  emailForgotPasswordTemplateValidation,
-  emailBookingsTemplateValidation,
-  emailPaymentConfirmationTemplateValidation,
-  emailRescheduleTemplateValidation,
-  emailBirthdayTemplateValidation,
-  emailCancelledTemplateValidation,
-  emailRefundTemplateValidation,
-  emailReminderTemplateValidation,
-} from '@/validators/templates-validator';
-import { templateValidation } from '@/core/utils/validate-template';
+  extractBodyContent,
+  wrapWithFullStructure,
+} from '@/core/utils/email-template-helper';
 
 const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
   ssr: false,
@@ -69,34 +61,69 @@ export default function Setup() {
   const onSubmit: SubmitHandler<SettingNotificationReminderFormTypes> = (
     data
   ) => {
+    const fullHtmlBookingConfirmation = wrapWithFullStructure(
+      data.booking_confirmation_email_html || ''
+    );
+
+    const fullHtmlReschedule = wrapWithFullStructure(
+      data.reschedule_email_html || ''
+    );
+
+    const fullHtmlAccountCreated = wrapWithFullStructure(
+      data.account_created_email_html || ''
+    );
+
+    const fullHtmlAccountVerification = wrapWithFullStructure(
+      data.account_verification_email_html || ''
+    );
+
+    const fullHtmlBirthday = wrapWithFullStructure(
+      data.birthday_email_html || ''
+    );
+
+    const fullHtmlForgotPassword = wrapWithFullStructure(
+      data.forgot_password_email_html || ''
+    );
+
+    const fullHtmlPaymentConfirmation = wrapWithFullStructure(
+      data.payment_confirmation_email_html || ''
+    );
+
+    const fullHtmlCancelled = wrapWithFullStructure(
+      data.cancelled_email_html || ''
+    );
+
+    const fullHtmlRefund = wrapWithFullStructure(data.refund_email_html || '');
+
+    const fullHtmlReminder = wrapWithFullStructure(
+      data.reminder_email_html || ''
+    );
+
     const emailPayload: IPayloadUpdateEmailNotificationSettings = {
       clinicId: dataProfile?.clinics[0].id,
       booking_confirmation_email_status:
         data.booking_confirmation_email_status || false,
-      booking_confirmation_email_html:
-        data.booking_confirmation_email_html || '',
+      booking_confirmation_email_html: fullHtmlBookingConfirmation,
       account_created_email_status: data.account_created_email_status || false,
-      account_created_email_html: data.account_created_email_html || '',
+      account_created_email_html: fullHtmlAccountCreated,
       account_verification_email_status:
         data.account_verification_email_status || false,
-      account_verification_email_html:
-        data?.account_verification_email_html || '',
+      account_verification_email_html: fullHtmlAccountVerification,
       birthday_email_status: data.birthday_email_status || false,
-      birthday_email_html: data.birthday_email_html || '',
+      birthday_email_html: fullHtmlBirthday,
       forgot_password_email_status: data?.forgot_password_email_status || false,
-      forgot_password_email_html: data.forgot_password_email_html || '',
+      forgot_password_email_html: fullHtmlForgotPassword,
       payment_confirmation_email_status:
         data.payment_confirmation_email_status || false,
-      payment_confirmation_email_html:
-        data.payment_confirmation_email_html || '',
+      payment_confirmation_email_html: fullHtmlPaymentConfirmation,
       reschedule_email_status: data.reschedule_email_status || false,
-      reschedule_email_html: data.reschedule_email_html || '',
-      reminder_email_html: data.reminder_email_html || '',
+      reschedule_email_html: fullHtmlReschedule,
+      reminder_email_html: fullHtmlReminder,
       reminder_email_status: data.reminder_email_status || false,
       refund_email_status: data.refund_email_status || false,
-      refund_email_html: data.refund_email_html || '',
+      refund_email_html: fullHtmlRefund,
       cancelled_email_status: data.cancelled_email_status || false,
-      cancelled_email_html: data.cancelled_email_html || '',
+      cancelled_email_html: fullHtmlCancelled,
     };
 
     mutateUpdateEmailNotification(
@@ -129,17 +156,19 @@ export default function Setup() {
       useFormProps={{
         mode: 'onChange',
         defaultValues: {
-          booking_confirmation_email_html:
-            dataEmailNotificationSettings?.booking_confirmation_email_html ||
-            '',
+          booking_confirmation_email_html: extractBodyContent(
+            dataEmailNotificationSettings?.booking_confirmation_email_html || ''
+          ),
 
           reschedule_email_status:
             dataEmailNotificationSettings?.reschedule_email_status || false,
-          reschedule_email_html:
-            dataEmailNotificationSettings?.reschedule_email_html || '',
+          reschedule_email_html: extractBodyContent(
+            dataEmailNotificationSettings?.reschedule_email_html || ''
+          ),
 
-          account_created_email_html:
-            dataEmailNotificationSettings?.account_created_email_html || '',
+          account_created_email_html: extractBodyContent(
+            dataEmailNotificationSettings?.account_created_email_html || ''
+          ),
 
           booking_confirmation_email_status:
             dataEmailNotificationSettings?.booking_confirmation_email_status ||
@@ -148,29 +177,34 @@ export default function Setup() {
           account_verification_email_status:
             dataEmailNotificationSettings?.account_verification_email_status ||
             false,
-          forgot_password_email_html:
-            dataEmailNotificationSettings?.forgot_password_email_html || '',
+          forgot_password_email_html: extractBodyContent(
+            dataEmailNotificationSettings?.forgot_password_email_html || ''
+          ),
 
-          account_verification_email_html:
-            dataEmailNotificationSettings?.account_verification_email_html ||
-            '',
-          birthday_email_html:
-            dataEmailNotificationSettings?.birthday_email_html || '',
+          account_verification_email_html: extractBodyContent(
+            dataEmailNotificationSettings?.account_verification_email_html || ''
+          ),
+          birthday_email_html: extractBodyContent(
+            dataEmailNotificationSettings?.birthday_email_html || ''
+          ),
           birthday_email_status:
             dataEmailNotificationSettings?.birthday_email_status || false,
-          reminder_email_html:
-            dataEmailNotificationSettings?.reminder_email_html || '',
+          reminder_email_html: extractBodyContent(
+            dataEmailNotificationSettings?.reminder_email_html || ''
+          ),
           reminder_email_status:
             dataEmailNotificationSettings?.reminder_email_status || false,
 
           cancelled_email_status:
             dataEmailNotificationSettings?.cancelled_email_status || false,
-          cancelled_email_html:
-            dataEmailNotificationSettings?.cancelled_email_html || '',
+          cancelled_email_html: extractBodyContent(
+            dataEmailNotificationSettings?.cancelled_email_html || ''
+          ),
           refund_email_status:
             dataEmailNotificationSettings?.refund_email_status || false,
-          refund_email_html:
-            dataEmailNotificationSettings?.refund_email_html || '',
+          refund_email_html: extractBodyContent(
+            dataEmailNotificationSettings?.refund_email_html || ''
+          ),
         },
       }}
     >
