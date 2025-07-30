@@ -117,7 +117,6 @@ export interface IPayloadCreateEditDoctor {
   postcode?: string;
   country?: string;
   state?: string;
-  // treatment_type?: number[];
   treatment_type?: string[];
   specialist_type?: number[];
   problem_type?: string[];
@@ -386,6 +385,33 @@ interface Item {
 export interface IPayloadAssignDoctorToClinic {
   id: string;
   clinic_ids: number[];
+}
+
+export interface IPayloadCreateDoctor {
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  mobile_number: string;
+  address?: string;
+  medicare_card_number?: string;
+  medicare_expired_date?: string;
+  date_of_birth: string;
+  gender: string;
+  country: string;
+  street_name: string;
+  address_line_1: string;
+  address_line_2: string;
+  suburb: string;
+  state: string;
+  postcode: string;
+  emergency_first_name: string;
+  emergency_last_name: string;
+  emergency_mobile_number: string;
+  emergency_email?: string;
+  medical_interest: string;
+  specialist_type: number[];
+  treatment_type: number[];
 }
 
 export interface IPayloadCreateDoctorUser {

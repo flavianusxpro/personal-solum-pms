@@ -186,18 +186,24 @@ export default function Setup() {
                 name="booking_confirmation_sms_text"
                 control={control}
                 render={({ field }) => (
-                  <Textarea
-                    {...field}
-                    label="SMS Template"
-                    className="mt-4"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                    helperText={
-                      <Text className="text-sm text-gray-500">
-                        min. 50 / max. 65, Characters:{' '}
-                        {watch('booking_confirmation_sms_text')?.length || 0}
-                      </Text>
-                    }
-                  />
+                  <div>
+                    <Textarea
+                      {...field}
+                      label="SMS Template"
+                      className="mt-4"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                      helperText={
+                        <Text className="text-sm text-gray-500">
+                          min. 50 / max. 65, Characters:{' '}
+                          {watch('booking_confirmation_sms_text')?.length || 0}
+                        </Text>
+                      }
+                    />
+                    <div className="">
+                      Variables:{' '}
+                      {`{{Patient_Name}}, {{Doctor_Name}}, {{Appointment_Date}}, {{Appointment_Time}}, {{Clinic_Name}}, {{Appointment_Type}}, {{Clinic_Email}}, {{Clinic_Number}}, {{Clinic Address}}`}
+                    </div>
+                  </div>
                 )}
               />
             </StatusCard>
@@ -227,18 +233,24 @@ export default function Setup() {
                 name="reschedule_sms_text"
                 control={control}
                 render={({ field }) => (
-                  <Textarea
-                    {...field}
-                    label="SMS Template"
-                    className="mt-4"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                    helperText={
-                      <Text className="text-sm text-gray-500">
-                        min. 50 / max. 65, Characters:{' '}
-                        {watch('reschedule_sms_text')?.length || 0}
-                      </Text>
-                    }
-                  />
+                  <div>
+                    <Textarea
+                      {...field}
+                      label="SMS Template"
+                      className="mt-4"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                      helperText={
+                        <Text className="text-sm text-gray-500">
+                          min. 50 / max. 65, Characters:{' '}
+                          {watch('reschedule_sms_text')?.length || 0}
+                        </Text>
+                      }
+                    />
+                    <div className="">
+                      Variables:{' '}
+                      {`{{Patient_Name}}, {{Doctor_Name}}, {{Appointment_Date}}, {{Appointment_Time}}, {{Clinic_Name}}, {{Appointment_Type}}, {{Clinic_Email}}, {{Clinic_Number}}, {{Clinic Address}}`}
+                    </div>
+                  </div>
                 )}
               />
             </StatusCard>
@@ -274,18 +286,24 @@ export default function Setup() {
                 name="reminder_sms_text"
                 control={control}
                 render={({ field }) => (
-                  <Textarea
-                    {...field}
-                    label="SMS Template"
-                    className="mt-4"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                    helperText={
-                      <Text className="text-sm text-gray-500">
-                        min. 50 / max. 65, Characters:{' '}
-                        {watch('booking_confirmation_sms_text')?.length || 0}
-                      </Text>
-                    }
-                  />
+                  <div>
+                    <Textarea
+                      {...field}
+                      label="SMS Template"
+                      className="mt-4"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                      helperText={
+                        <Text className="text-sm text-gray-500">
+                          min. 50 / max. 65, Characters:{' '}
+                          {watch('booking_confirmation_sms_text')?.length || 0}
+                        </Text>
+                      }
+                    />
+                    <div className="">
+                      Variables:{' '}
+                      {`{{Patient_Name}}, {{Doctor_Name}}, {{Appointment_Date}}, {{Appointment_Time}}, {{Clinic_Name}}, {{Appointment_Type}}, {{Clinic_Email}}, {{Clinic_Number}}, {{Clinic Address}}`}
+                    </div>
+                  </div>
                 )}
               />
             </StatusCard>

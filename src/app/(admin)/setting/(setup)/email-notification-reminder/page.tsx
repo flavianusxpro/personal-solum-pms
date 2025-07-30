@@ -69,123 +69,6 @@ export default function Setup() {
   const onSubmit: SubmitHandler<SettingNotificationReminderFormTypes> = (
     data
   ) => {
-    const validationBookingConfirmation = templateValidation(
-      data.booking_confirmation_email_html,
-      emailBookingsTemplateValidation,
-      data.booking_confirmation_email_status || false
-    );
-
-    if (
-      !validationBookingConfirmation.isValid &&
-      validationBookingConfirmation.errorMessage
-    ) {
-      toast.error(
-        `Booking Confirmation: ${validationBookingConfirmation.errorMessage}`
-      );
-      return;
-    }
-
-    const validationReschedule = templateValidation(
-      data.reschedule_email_html,
-      emailRescheduleTemplateValidation,
-      data.reschedule_email_status || false
-    );
-
-    if (!validationReschedule.isValid && validationReschedule.errorMessage) {
-      toast.error(`Reschedule: ${validationReschedule.errorMessage}`);
-      return;
-    }
-
-    const validationPaymentConfirmation = templateValidation(
-      data.payment_confirmation_email_html,
-      emailPaymentConfirmationTemplateValidation,
-      data.payment_confirmation_email_status || false
-    );
-
-    if (
-      !validationPaymentConfirmation.isValid &&
-      validationPaymentConfirmation.errorMessage
-    ) {
-      toast.error(
-        `Payment Confirmation: ${validationPaymentConfirmation.errorMessage}`
-      );
-      return;
-    }
-
-    const validationAccountVerification = templateValidation(
-      data.account_verification_email_html,
-      emailAccountVerificationTemplateValidation,
-      data.account_verification_email_status || false
-    );
-
-    if (
-      !validationAccountVerification.isValid &&
-      validationAccountVerification.errorMessage
-    ) {
-      toast.error(
-        `Account Verification: ${validationAccountVerification.errorMessage}`
-      );
-      return;
-    }
-
-    const validationForgotPassword = templateValidation(
-      data.forgot_password_email_html,
-      emailForgotPasswordTemplateValidation,
-      data.forgot_password_email_status || false
-    );
-
-    if (
-      !validationForgotPassword.isValid &&
-      validationForgotPassword.errorMessage
-    ) {
-      toast.error(`Forgot Password: ${validationForgotPassword.errorMessage}`);
-      return;
-    }
-
-    const validationBirthday = templateValidation(
-      data.birthday_email_html,
-      emailBirthdayTemplateValidation,
-      data.birthday_email_status || false
-    );
-
-    if (!validationBirthday.isValid && validationBirthday.errorMessage) {
-      toast.error(`Birthday: ${validationBirthday.errorMessage}`);
-      return;
-    }
-
-    const validationCancelled = templateValidation(
-      data.cancelled_email_html,
-      emailCancelledTemplateValidation,
-      data.cancelled_email_status || false
-    );
-
-    if (!validationCancelled.isValid && validationCancelled.errorMessage) {
-      toast.error(`Cancelled: ${validationCancelled.errorMessage}`);
-      return;
-    }
-
-    const validationRefund = templateValidation(
-      data.refund_email_html,
-      emailRefundTemplateValidation,
-      data.refund_email_status || false
-    );
-
-    if (!validationRefund.isValid && validationRefund.errorMessage) {
-      toast.error(`Refund: ${validationRefund.errorMessage}`);
-      return;
-    }
-
-    const validationReminder = templateValidation(
-      data.reminder_email_html,
-      emailReminderTemplateValidation,
-      data.reminder_email_status || false
-    );
-
-    if (!validationReminder.isValid && validationReminder.errorMessage) {
-      toast.error(`Reminder: ${validationReminder.errorMessage}`);
-      return;
-    }
-
     const emailPayload: IPayloadUpdateEmailNotificationSettings = {
       clinicId: dataProfile?.clinics[0].id,
       booking_confirmation_email_status:
@@ -292,7 +175,6 @@ export default function Setup() {
       }}
     >
       {({ control, setValue, watch, formState: { errors } }) => {
-        console.log('🚀 ~ errors:', errors);
         return (
           <>
             <FormGroup
@@ -326,12 +208,18 @@ export default function Setup() {
                 name="booking_confirmation_email_html"
                 control={control}
                 render={({ field }) => (
-                  <QuillEditor
-                    {...field}
-                    label="Email Template"
-                    className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                  />
+                  <div>
+                    <QuillEditor
+                      {...field}
+                      label="Email Template"
+                      className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                    />
+                    <div className="">
+                      Variables:{' '}
+                      {`{{Patient_Name}}, {{Doctor_Name}}, {{Appointment_Date}}, {{Appointment_Time}}, {{Clinic_Name}}, {{Appointment_Type}}, {{Clinic_Email}}, {{Clinic_Number}}, {{Clinic Address}}`}
+                    </div>
+                  </div>
                 )}
               />
             </StatusCard>
@@ -361,12 +249,18 @@ export default function Setup() {
                 name="reschedule_email_html"
                 control={control}
                 render={({ field }) => (
-                  <QuillEditor
-                    {...field}
-                    label="Email Template"
-                    className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                  />
+                  <div>
+                    <QuillEditor
+                      {...field}
+                      label="Email Template"
+                      className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                    />
+                    <div className="">
+                      Variables:{' '}
+                      {`{{Patient_Name}}, {{Doctor_Name}}, {{Appointment_Date}}, {{Appointment_Time}}, {{Clinic_Name}}, {{Appointment_Type}}, {{Clinic_Email}}, {{Clinic_Number}}, {{Clinic Address}}`}
+                    </div>
+                  </div>
                 )}
               />
             </StatusCard>
@@ -396,12 +290,18 @@ export default function Setup() {
                 name="payment_confirmation_email_html"
                 control={control}
                 render={({ field }) => (
-                  <QuillEditor
-                    {...field}
-                    label="Email Template"
-                    className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                  />
+                  <div>
+                    <QuillEditor
+                      {...field}
+                      label="Email Template"
+                      className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                    />
+                    <div className="">
+                      Variables:{' '}
+                      {`{{Patient_Name}}, {{Doctor_Name}}, {{Appointment_Date}}, {{Appointment_Time}}, {{Clinic_Name}}, {{Appointment_Type}}, {{Clinic_Email}}, {{Clinic_Number}}, {{Clinic Address}}`}
+                    </div>
+                  </div>
                 )}
               />
             </StatusCard>
@@ -466,12 +366,18 @@ export default function Setup() {
                 name="forgot_password_email_html"
                 control={control}
                 render={({ field }) => (
-                  <QuillEditor
-                    {...field}
-                    label="Email Template"
-                    className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                  />
+                  <div>
+                    <QuillEditor
+                      {...field}
+                      label="Email Template"
+                      className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                    />
+                    <div className="">
+                      Variables:{' '}
+                      {`{{Patient_Name}}, {{Doctor_Name}}, {{Appointment_Date}}, {{Appointment_Time}}, {{Clinic_Name}}, {{Appointment_Type}}, {{Clinic_Email}}, {{Clinic_Number}}, {{Clinic Address}}`}
+                    </div>
+                  </div>
                 )}
               />
             </StatusCard>
@@ -501,12 +407,18 @@ export default function Setup() {
                 name="birthday_email_html"
                 control={control}
                 render={({ field }) => (
-                  <QuillEditor
-                    {...field}
-                    label="Email Template"
-                    className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                  />
+                  <div>
+                    <QuillEditor
+                      {...field}
+                      label="Email Template"
+                      className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                    />
+                    <div className="">
+                      Variables:{' '}
+                      {`{{Patient_Name}}, {{Doctor_Name}}, {{Appointment_Date}}, {{Appointment_Time}}, {{Clinic_Name}}, {{Appointment_Type}}, {{Clinic_Email}}, {{Clinic_Number}}, {{Clinic Address}}`}
+                    </div>
+                  </div>
                 )}
               />
             </StatusCard>
@@ -536,12 +448,18 @@ export default function Setup() {
                 name="cancelled_email_html"
                 control={control}
                 render={({ field }) => (
-                  <QuillEditor
-                    {...field}
-                    label="Email Template"
-                    className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                  />
+                  <div>
+                    <QuillEditor
+                      {...field}
+                      label="Email Template"
+                      className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                    />
+                    <div className="">
+                      Variables:{' '}
+                      {`{{Patient_Name}}, {{Doctor_Name}}, {{Appointment_Date}}, {{Appointment_Time}}, {{Clinic_Name}}, {{Appointment_Type}}, {{Clinic_Email}}, {{Clinic_Number}}, {{Clinic Address}}`}
+                    </div>
+                  </div>
                 )}
               />
             </StatusCard>
@@ -571,12 +489,18 @@ export default function Setup() {
                 name="refund_email_html"
                 control={control}
                 render={({ field }) => (
-                  <QuillEditor
-                    {...field}
-                    label="Email Template"
-                    className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                  />
+                  <div>
+                    <QuillEditor
+                      {...field}
+                      label="Email Template"
+                      className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                    />
+                    <div className="">
+                      Variables:{' '}
+                      {`{{Patient_Name}}, {{Doctor_Name}}, {{Appointment_Date}}, {{Appointment_Time}}, {{Clinic_Name}}, {{Appointment_Type}}, {{Clinic_Email}}, {{Clinic_Number}}, {{Clinic Address}}`}
+                    </div>
+                  </div>
                 )}
               />
             </StatusCard>
@@ -612,12 +536,18 @@ export default function Setup() {
                 name="reminder_email_html"
                 control={control}
                 render={({ field }) => (
-                  <QuillEditor
-                    {...field}
-                    label="Email Template"
-                    className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                  />
+                  <div>
+                    <QuillEditor
+                      {...field}
+                      label="Email Template"
+                      className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[400px]"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                    />
+                    <div className="">
+                      Variables:{' '}
+                      {`{{Patient_Name}}, {{Doctor_Name}}, {{Appointment_Date}}, {{Appointment_Time}}, {{Clinic_Name}}, {{Appointment_Type}}, {{Clinic_Email}}, {{Clinic_Number}}, {{Clinic Address}}`}
+                    </div>
+                  </div>
                 )}
               />
             </StatusCard>

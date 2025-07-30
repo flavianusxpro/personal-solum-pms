@@ -7,7 +7,11 @@ import { Form } from '@core/ui/form';
 import { FieldError, Input } from 'rizzui';
 import CSelect from '@/core/ui/select';
 import { genderOption, languageOption, stateOption } from '@/config/constants';
-import { IPayloadCreateDoctorUser } from '@/types/paramTypes';
+import {
+  IPayloadCreateDoctor,
+  IPayloadCreateDoctorUser,
+  IPayloadCreateEditDoctor,
+} from '@/types/paramTypes';
 import {
   doctorDetailsFormSchema,
   DoctorDetailsFormTypes,
@@ -98,19 +102,28 @@ export default function CreatDoctorModal() {
       return;
     }
 
-    const payload: IPayloadCreateDoctorUser = {
-      name: data.first_name + ' ' + data.last_name,
+    const payload: IPayloadCreateEditDoctor = {
+      first_name: data.first_name,
+      last_name: data.last_name,
       email: data.email,
       password: data.password as string,
-      roleId: doctorRole.id,
-      clinic_ids: data.clinic_ids.map((item) => parseInt(item)),
-      doctor: {
-        ...data,
-        description: data.about,
-        mobile_number: '+' + data.mobile_number,
-        specialist_type: data.specialist_type.map((item) => parseInt(item)),
-        treatment_type: data.treatment_type.map((item) => parseInt(item)),
-      },
+      mobile_number: data.mobile_number,
+      date_of_birth: data.date_of_birth,
+      gender: data.gender,
+      country: data.country,
+      street_name: data.street_name,
+      address_line_1: data.address_line_1,
+      address_line_2: data.address_line_2,
+      suburb: data.suburb,
+      state: data.state,
+      postcode: data.postcode,
+      emergency_first_name: data.emergency_first_name,
+      emergency_last_name: data.emergency_last_name,
+      emergency_mobile_number: data.emergency_mobile_number,
+      emergency_email: data.emergency_email,
+      medical_interest: data.medical_interest,
+      specialist_type: data.specialist_type.map((item) => Number(item)),
+      treatment_type: data.treatment_type.map((item) => item),
     };
 
     mutateCreateDoctor(payload, {
