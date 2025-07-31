@@ -177,6 +177,17 @@ export default function Setup() {
           account_verification_email_status:
             dataEmailNotificationSettings?.account_verification_email_status ||
             false,
+
+          payment_confirmation_email_status:
+            dataEmailNotificationSettings?.payment_confirmation_email_status ||
+            false,
+          payment_confirmation_email_html: extractBodyContent(
+            dataEmailNotificationSettings?.payment_confirmation_email_html || ''
+          ),
+
+          forgot_password_email_status:
+            dataEmailNotificationSettings?.forgot_password_email_status ||
+            false,
           forgot_password_email_html: extractBodyContent(
             dataEmailNotificationSettings?.forgot_password_email_html || ''
           ),
