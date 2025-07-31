@@ -57,44 +57,6 @@ export default function Setup() {
   const onSubmit: SubmitHandler<SettingNotificationReminderFormTypes> = (
     data
   ) => {
-    const validationBookingConfirmation = templateValidation(
-      data.booking_confirmation_sms_text,
-      smsBookingsTemplateValidation,
-      data.booking_confirmation_sms_status || false
-    );
-
-    if (
-      !validationBookingConfirmation.isValid &&
-      validationBookingConfirmation.errorMessage
-    ) {
-      toast.error(
-        `Booking Confirmation: ${validationBookingConfirmation.errorMessage}`
-      );
-      return;
-    }
-
-    const validationReschedule = templateValidation(
-      data.reschedule_sms_text,
-      smsRescheduleTemplateValidation,
-      data.reschedule_sms_status || false
-    );
-
-    if (!validationReschedule.isValid && validationReschedule.errorMessage) {
-      toast.error(`Reschedule: ${validationReschedule.errorMessage}`);
-      return;
-    }
-
-    const validationReminder = templateValidation(
-      data.reminder_sms_text,
-      smsReminderTemplateValidation,
-      data.reminder_sms_status || false
-    );
-
-    if (!validationReminder.isValid && validationReminder.errorMessage) {
-      toast.error(`Reminder: ${validationReminder.errorMessage}`);
-      return;
-    }
-
     const smsPayload: IPayloadUpdateSmsNotificationSettings = {
       clinicId: dataProfile?.clinics[0].id || 0,
       booking_confirmation_sms_status:
