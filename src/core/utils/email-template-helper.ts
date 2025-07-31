@@ -19,15 +19,8 @@ const DEFAULT_EMAIL_STRUCTURE: EmailTemplateStructure = {
 </head>`,
   body: `<body style="margin: 0; padding: 0; font-family: Arial, sans-serif;">
   <div class="email-container" style="max-width: 600px; margin: auto; border: 1px solid #e0e0e0; padding: 20px; background-color: #ffffff;">
-    <div class="header" style="text-align: center; background-color: #1976d2; color: white; padding: 20px 0;">
-      <h2>Email Template</h2>
-    </div>
     <div class="content" style="padding: 20px; line-height: 1.6; color: #333333;">
       <!-- Content will be inserted here -->
-    </div>
-    <div class="footer" style="text-align: center; font-size: 12px; color: #888888; padding-top: 20px;">
-      &copy; 2025 {{ Clinic_Name }}. All rights reserved.<br>
-      {{ Clinic_Address }}
     </div>
   </div>
 </body>`,
@@ -43,6 +36,14 @@ export function extractBodyContent(fullHtml: string): string {
   // Check if it's already just body content (no DOCTYPE)
   if (!fullHtml.includes('<!DOCTYPE html>') && !fullHtml.includes('<html')) {
     return fullHtml;
+  }
+
+  // Try to extract content from div.content first (most specific)
+  const contentMatch = fullHtml.match(
+    /<div[^>]*class="content"[^>]*>([\s\S]*?)<\/div>/i
+  );
+  if (contentMatch) {
+    return contentMatch[1].trim();
   }
 
   // Extract content from body tag
@@ -66,15 +67,42 @@ export function extractBodyContent(fullHtml: string): string {
  * Wraps body content with full HTML structure
  * Used when saving from Quill editor
  */
-export function wrapWithFullStructure(
-  bodyContent: string,
-  templateName: string = 'Email Template'
-): string {
-  const structure = { ...DEFAULT_EMAIL_STRUCTURE };
+export function wrapWithFullStructure(bodyContent: string): string {
+  // Check if bodyContent already contains full HTML structure
+  if (
+    bodyContent.includes('<!DOCTYPE html>') ||
+    bodyContent.includes('<html')
+  ) {
+    return bodyContent;
+  }
 
-  // Update title and header with template name
-  structure.head = structure.head.replace('Email Template', templateName);
-  structure.body = structure.body.replace('Email Template', templateName);
+  // Check if bodyContent already has header or footer elements
+  const hasHeader =
+    bodyContent.includes('class="header"') ||
+    bodyContent.includes('class="ql-align-center"');
+  const hasFooter =
+    bodyContent.includes('© 2025') ||
+    bodyContent.includes('{{ Clinic_Name }}') ||
+    bodyContent.includes('{{ Clinic_Address }}');
+
+  // If content already has header and footer, just wrap with basic structure
+  if (hasHeader || hasFooter) {
+    return `<!DOCTYPE html>
+<html lang="en" style="font-family: Arial, sans-serif;">
+<head>
+  <meta charset="UTF-8">
+  <title>Email Template</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif;">
+  <div class="email-container" style="max-width: 600px; margin: auto; border: 1px solid #e0e0e0; padding: 20px; background-color: #ffffff;">
+    ${bodyContent}
+  </div>
+</body>
+</html>`;
+  }
+
+  // If no header/footer, use default structure
+  const structure = { ...DEFAULT_EMAIL_STRUCTURE };
 
   // Insert body content into the content div
   const contentDivMatch = structure.body.match(
@@ -90,25 +118,4 @@ export function wrapWithFullStructure(
   }
 
   return `${structure.doctype}\n${structure.html}\n${structure.head}\n${structure.body}\n</html>`;
-}
-
-/**
- * Checks if HTML has full structure (DOCTYPE, html, head, body tags)
- */
-export function hasFullStructure(html: string): boolean {
-  return (
-    html.includes('<!DOCTYPE html>') &&
-    html.includes('<html') &&
-    html.includes('<head') &&
-    html.includes('<body')
-  );
-}
-
-/**
- * Creates a new email template with default structure
- */
-export function createNewEmailTemplate(
-  templateName: string = 'New Template'
-): string {
-  return wrapWithFullStructure('', templateName);
 }

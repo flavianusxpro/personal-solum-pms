@@ -54,7 +54,7 @@ export default function CreateEditEmailTemplateModal({
 
   const onSubmit: SubmitHandler<EmailTemplateFormTypes> = (formValues) => {
     // Wrap the body content with full HTML structure before saving
-    const fullHtml = wrapWithFullStructure(formValues.html, formValues.name);
+    const fullHtml = wrapWithFullStructure(formValues.html);
 
     const payload = {
       ...formValues,
