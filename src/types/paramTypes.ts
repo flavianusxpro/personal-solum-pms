@@ -53,6 +53,7 @@ export interface IPayloadPostPaymentMethod {
 }
 
 export interface IPayloadCreateEditPatient {
+  clinicId?: number;
   patient_id?: string;
   first_name?: string;
   last_name?: string;
@@ -90,6 +91,7 @@ export interface IPayloadCreateEditPatient {
 }
 
 export interface IPayloadCreateEditDoctor {
+  clinicId?: number;
   doctor_id?: string;
   first_name?: string;
   password?: string;
@@ -362,6 +364,7 @@ export interface IPayloadUploadImage {
 }
 
 export interface IPayloadCreateInvoice {
+  clinicId?: number;
   id?: number;
   patientId: number;
   invoice_date: string;

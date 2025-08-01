@@ -31,6 +31,7 @@ import { useGetAllClinics } from '@/hooks/useClinic';
 import { PhoneNumber } from '@/core/ui/phone-input';
 import FormHeader from '@/core/components/form-header';
 import QuillLoader from '@/core/components/loader/quill-loader';
+import { useProfile } from '@/hooks/useProfile';
 
 const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
   ssr: false,
@@ -49,6 +50,8 @@ export default function CreatDoctorModal() {
   const { closeModal } = useModal();
 
   const { mutate: mutateCreateDoctor, isPending } = useCreateDoctor();
+
+  const { data: dataProfile } = useProfile(true);
   const { data: dataSpecialists } = useGetSpecialists({
     perPage: 100,
     page: 1,
@@ -103,6 +106,7 @@ export default function CreatDoctorModal() {
     }
 
     const payload: IPayloadCreateEditDoctor = {
+      clinicId: dataProfile?.clinics[0].id,
       first_name: data.first_name,
       last_name: data.last_name,
       email: data.email,
