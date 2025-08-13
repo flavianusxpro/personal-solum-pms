@@ -42,20 +42,20 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
     if (!dataClinics) return [];
     return dataClinics.data.map((clinic) => ({
       label: clinic.name,
-      value: clinic.id.toString(),
+      value: clinic?.id?.toString(),
     }));
   }, [dataClinics]);
 
   const selectedClinics = useMemo(() => {
     if (!dataDoctor) return [];
-    return dataDoctor.user.clinics.map((clinic) => clinic.id.toString());
+    return dataDoctor?.user?.clinics?.map((clinic) => clinic?.id?.toString());
   }, [dataDoctor]);
 
   const onSubmit: SubmitHandler<AssignClinicTypes> = (data) => {
     mutate(
       {
         id,
-        clinic_ids: data.clinic.map((item) => parseInt(item)),
+        clinic_ids: data?.clinic?.map((item) => parseInt(item)),
       },
       {
         onSuccess: (data) => {

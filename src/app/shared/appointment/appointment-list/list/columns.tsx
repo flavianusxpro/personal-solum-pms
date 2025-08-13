@@ -133,7 +133,7 @@ export const GetColumns = ({
           number={row.doctor.mobile_number}
           src={row.doctor.photo ?? ''}
           name={`${row.doctor.first_name} ${row.doctor.last_name}`}
-          description={row.doctor.email}
+          description={row.doctor.timezone}
         />
       ),
     },
