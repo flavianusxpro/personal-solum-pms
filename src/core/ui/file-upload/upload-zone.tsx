@@ -19,6 +19,7 @@ interface UploadZoneProps {
   setValue: any;
   className?: string;
   error?: string;
+  disabled?: boolean;
 }
 
 interface FileType {
@@ -34,6 +35,7 @@ export default function UploadZone({
   getValues,
   setValue,
   error,
+  disabled,
 }: UploadZoneProps) {
   const [files, setFiles] = useState<File[]>([]);
 
@@ -84,7 +86,13 @@ export default function UploadZone({
   });
 
   return (
-    <div className={cn('grid @container', className)}>
+    <div
+      className={cn(
+        'grid @container',
+        className,
+        disabled && 'pointer-events-none bg-gray-100'
+      )}
+    >
       {label && <span className="mb-1.5 block text-gray-900">{label}</span>}
       <div
         className={cn(
@@ -102,7 +110,7 @@ export default function UploadZone({
               : 'flex-grow justify-center @xl:justify-start'
           )}
         >
-          <input {...getInputProps()} />
+          {!disabled && <input {...getInputProps()} />}
           <UploadIcon className="h-12 w-12" />
           <Text className="text-base font-medium">Drop or select file</Text>
         </div>

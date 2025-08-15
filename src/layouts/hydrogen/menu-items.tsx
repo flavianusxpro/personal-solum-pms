@@ -56,10 +56,10 @@ export const adminMenuItems = [
     permissionReadName: ['dashboard'],
   },
   {
-    name: 'Global Calendar (coming soon)',
+    name: 'Global Calendar',
     href: routes.globalCalendar,
     icon: <PiCalendar />,
-    permissionReadName: ['global-calendar'],
+    permissionReadName: ['calendar'],
   },
   {
     name: 'Invoice',

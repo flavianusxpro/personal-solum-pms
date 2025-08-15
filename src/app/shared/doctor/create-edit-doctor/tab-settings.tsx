@@ -531,7 +531,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                     label="Initial Appointment Duration"
                     placeholder="Select Initial Appointment Duration"
                     error={errors.initial_appointment_time?.message}
-                    disabled={isView}
+                    disabled={true}
                     options={[
                       { label: '15 minutes', value: 15 },
                       { label: '30 minutes', value: 30 },
@@ -550,7 +550,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                     label="Follow Up Appointment Duration"
                     placeholder="Select Follow Up Appointment Duration"
                     error={errors.follow_up_appointment_time?.message}
-                    disabled={isView}
+                    disabled={true}
                     options={[
                       { label: '15 minutes', value: 15 },
                       { label: '30 minutes', value: 30 },
@@ -574,7 +574,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                     label="Doctor Timezone"
                     placeholder="Select Doctor Timezone"
                     error={errors.doctor_timezone?.message}
-                    disabled={isView}
+                    disabled={true}
                     options={timeZoneOptions}
                   />
                 )}
@@ -632,7 +632,7 @@ function MeetingCard(props: IMeetingCard) {
             {content}
           </Text>
           <Accordion>
-            {useConfigure && (
+            {/* {useConfigure && (
               <Accordion.Header className="text-left" type="button">
                 {({ open }) => (
                   <span className="mt-3 inline-block w-auto flex-shrink-0 justify-start p-0 text-xs font-medium capitalize text-gray-900">
@@ -642,7 +642,7 @@ function MeetingCard(props: IMeetingCard) {
               </Accordion.Header>
             )}
 
-            <Accordion.Body className="pt-7">{children}</Accordion.Body>
+            <Accordion.Body className="pt-7">{children}</Accordion.Body> */}
           </Accordion>
         </div>
       </div>

@@ -20,6 +20,7 @@ export default function HydrogenLayout({
       routes.forms.profileSettings,
       routes.connection.api,
       routes.connection.connect,
+      routes.globalCalendar,
     ],
     []
   );

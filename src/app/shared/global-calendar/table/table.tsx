@@ -34,7 +34,7 @@ export default function GlobalCalendarTable({}: {}) {
     sort: 'DESC',
     from: selectedDate,
     to: selectedDate,
-    clinicId: selectedBranch || dataProfile?.clinics[0].id || 0,
+    clinicId: dataProfile?.clinics[0]?.id || 0,
   });
 
   const { data: dataClinics } = useGetAllClinics({

@@ -134,6 +134,7 @@ export default function TabRequirement({
                 control={control}
                 render={({ field: { onChange, value } }) => (
                   <CardExpiry
+                    disabled={isView}
                     isMask
                     formatType="custom"
                     placeholder="MM/YY"
@@ -396,6 +397,7 @@ export default function TabRequirement({
             name="contract"
             getValues={getValues}
             setValue={setValue}
+            disabled={isView}
             error={errors?.contract?.message as string}
           />
         </FormGroup>
