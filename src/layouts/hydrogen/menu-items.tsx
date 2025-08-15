@@ -116,6 +116,20 @@ export const adminMenuItems = [
     href: routes.user.dashboard,
     icon: <PiUser />,
     permissionReadName: ['user'],
+    dropdownItems: [
+      {
+        name: 'User List',
+        href: routes.user.dashboard,
+        icon: <PiUser />,
+        permissionReadName: ['user'],
+      },
+      {
+        name: 'Roles',
+        href: routes.setting.roles,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+    ],
   },
   {
     name: 'Management',
@@ -184,12 +198,6 @@ export const adminMenuItems = [
       {
         name: 'SMS Template',
         href: routes.setting.smsTemplate,
-        icon: <PiUser />,
-        permissionReadName: [],
-      },
-      {
-        name: 'Roles',
-        href: routes.setting.roles,
         icon: <PiUser />,
         permissionReadName: [],
       },
