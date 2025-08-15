@@ -144,7 +144,6 @@ export default function EventCalendarView() {
         month: true,
         week: true,
         day: true,
-        agenda: true,
       },
       scrollToTime: new Date(),
       formats: {
@@ -223,12 +222,7 @@ export default function EventCalendarView() {
       </div>
 
       <Calendar
-        components={{
-          //   month: { event: eventComponent },
-          //   week: { event: eventComponent },
-          //   day: { event: eventComponent },
-          agenda: { event: eventComponent },
-        }}
+        components={{}}
         timeslots={4}
         titleAccessor={'title'}
         step={15}
