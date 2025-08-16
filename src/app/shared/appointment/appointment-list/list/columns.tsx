@@ -124,15 +124,24 @@ export const GetColumns = ({
       dataIndex: 'date',
       key: 'date',
       width: 250,
-      render: (date: Date) =>
-        dayjs(date).tz(localTimezone).format('DD/MM/YYYY hh:mm A'),
+      render: (date: Date) => (
+        <div>
+          {dayjs(date).tz(localTimezone).format('DD/MM/YYYY hh:mm A')}
+          <div>{localTimezone}</div>
+        </div>
+      ),
     },
     {
       title: <HeaderCell title="Date" />,
       dataIndex: 'date',
       key: 'date',
       width: 250,
-      render: (date: Date) => dayjs(date).utc().format('DD/MM/YYYY hh:mm A'),
+      render: (date: Date, row: RowValue) => (
+        <div>
+          {dayjs(date).utc().format('DD/MM/YYYY hh:mm A')}
+          <div>{row.doctor.timezone}</div>
+        </div>
+      ),
     },
     {
       title: <HeaderCell title="Doctor" />,
@@ -144,7 +153,7 @@ export const GetColumns = ({
           number={row.doctor.mobile_number}
           src={row.doctor.photo ?? ''}
           name={`${row.doctor.first_name} ${row.doctor.last_name}`}
-          description={row.doctor.timezone}
+          description={row.doctor.email}
         />
       ),
     },
