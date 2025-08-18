@@ -112,10 +112,18 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
   function treatmentCostModal(
     id?: number,
     treatmentId?: number,
-    amount?: string
+    amount?: string,
+    amount_moderated?: string
   ) {
     return openModal({
-      view: <DoctorCost id={id} amount={amount} treatmentId={treatmentId} />,
+      view: (
+        <DoctorCost
+          id={id}
+          amount={amount}
+          treatmentId={treatmentId}
+          amount_moderated={amount_moderated}
+        />
+      ),
     });
   }
 
@@ -263,6 +271,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
         costId: item.id,
         treatmentId: item.treatmentId,
         amount: item.amount,
+        amount_moderated: item.amount_moderated,
       }));
       replaceCosts(costs);
     }
@@ -456,14 +465,14 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
             <Flex justify="between" align="center" gap="4">
               <Text className="font-semibold">Treatment</Text>
               <Text className="font-semibold">Amount</Text>
+              <Text className="font-semibold">Amount Moderated</Text>
               <Text className="font-semibold">Action</Text>
             </Flex>
             {fieldsCosts?.map((item, index) => (
               <Flex justify="between" align="center" key={item.id} gap="4">
-                <Text className="w-full">
-                  {findTreatment(item.treatmentId)}
-                </Text>
+                <Text className="w-1/2">{findTreatment(item.treatmentId)}</Text>
                 <Text className="w-1/2">{item.amount}</Text>
+                <Text className="w-1/2">{item.amount_moderated}</Text>
                 {!isView && (
                   <Flex justify="end" className="w-1/2">
                     <ActionTooltipButton
@@ -473,7 +482,8 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                         treatmentCostModal(
                           item.costId,
                           item.treatmentId,
-                          item.amount
+                          item.amount,
+                          item.amount_moderated
                         )
                       }
                     >

@@ -628,6 +628,7 @@ export interface IPayloadDoctorCost {
   doctorId: number;
   treatmentId: number;
   amount: number;
+  amount_moderated: number;
 }
 
 export interface IPayloadUpdateAwsS3Config {

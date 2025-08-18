@@ -938,6 +938,7 @@ export interface IGetDoctorCostByIdResponse extends ApiResponse {
     doctorId: number;
     treatmentId: number;
     amount: string;
+    amount_moderated: string;
     created_at: string;
     updated_at: string;
   }[];

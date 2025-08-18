@@ -20,17 +20,38 @@ import { useParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
 
-const costSchema = z.object({
-  amount: z.string().min(1, { message: 'Amount is required' }),
-  treatmentId: z.number().min(1, {
-    message: 'Treatment is required',
-  }),
-});
+const costSchema = z
+  .object({
+    amount: z.string().min(1, { message: 'Amount is required' }),
+    treatmentId: z.number().min(1, {
+      message: 'Treatment is required',
+    }),
+    amount_moderated: z
+      .string()
+      .min(1, { message: 'Amount Moderated is required' }),
+  })
+  .refine(
+    (data) => {
+      if (!data.amount || !data.amount_moderated) return true;
+
+      const amountNum = parseFloat(data.amount);
+      const moderatedNum = parseFloat(data.amount_moderated);
+
+      if (isNaN(amountNum) || isNaN(moderatedNum)) return true;
+
+      return moderatedNum >= amountNum;
+    },
+    {
+      message: 'Amount Moderated must be greater than or equal to Amount',
+      path: ['amount_moderated'],
+    }
+  );
 
 type IProps = {
   id?: number;
   amount?: string;
   treatmentId?: number;
+  amount_moderated?: string;
 };
 
 export default function DoctorCost(data: IProps) {
@@ -77,6 +98,7 @@ export default function DoctorCost(data: IProps) {
       doctorId,
       treatmentId: data.treatmentId,
       amount: Number(data.amount),
+      amount_moderated: Number(data.amount_moderated),
     };
     if (id) {
       mutateUpdate(payload, {
@@ -118,6 +140,7 @@ export default function DoctorCost(data: IProps) {
         defaultValues: {
           amount: Number(data?.amount).toString(),
           treatmentId: data?.treatmentId,
+          amount_moderated: Number(data?.amount_moderated).toString(),
         },
       }}
     >
@@ -143,13 +166,23 @@ export default function DoctorCost(data: IProps) {
                 )}
               />
               <Input
-                {...register(`amount`, {
-                  required: 'Amount is required',
-                })}
+                {...register(`amount`)}
                 prefix={`${currency.active.symbol}`}
                 label="Amount"
                 placeholder="Enter Amount"
                 error={errors?.amount?.message}
+                className="w-full"
+                type="number"
+                disabled={true}
+              />
+              <Input
+                {...register(`amount_moderated`, {
+                  required: 'Amount Moderated is required',
+                })}
+                prefix={`${currency.active.symbol}`}
+                label="Amount Moderated"
+                placeholder="Enter Amount Moderated"
+                error={errors?.amount_moderated?.message}
                 className="w-full"
                 type="number"
               />
