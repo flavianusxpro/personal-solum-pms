@@ -112,7 +112,6 @@ export default function GlobalCalendarTable({}: {}) {
   const tableData = useMemo(() => {
     return formatAppointments(data?.data ?? []);
   }, [data?.data, formatAppointments]);
-  console.log('🚀 ~ GlobalCalendarTable ~ tableData:', tableData);
 
   const columns = React.useMemo(
     () =>
