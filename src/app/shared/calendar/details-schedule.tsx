@@ -1,6 +1,6 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { PiCoffee, PiXBold } from 'react-icons/pi';
-import { ActionIcon, Button, Title } from 'rizzui';
+import { ActionIcon, Button, Text, Title } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { MdOutlineCalendarMonth } from 'react-icons/md';
 import toast from 'react-hot-toast';
@@ -54,9 +54,14 @@ function DetailsSchedule({ event, doctorId, isView }: DetailsScheduleProps) {
   return (
     <div className="m-auto p-4 md:px-7 md:pb-10 md:pt-6">
       <div className="mb-6 flex items-center justify-between">
-        <Title as="h3" className="text-xl xl:text-2xl">
-          Event Details
-        </Title>
+        <div className="">
+          <Title as="h3" className="text-xl xl:text-2xl">
+            Event Details
+          </Title>
+          <Text className="mt-2 text-xs text-gray-500">
+            All schedules follow Australia/Sydney timezone
+          </Text>
+        </div>
         <ActionIcon
           size="sm"
           variant="text"
