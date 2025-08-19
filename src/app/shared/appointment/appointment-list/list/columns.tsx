@@ -126,7 +126,7 @@ export const GetColumns = ({
       width: 250,
       render: (date: Date) => (
         <div>
-          {dayjs(date).tz(localTimezone).format('DD/MM/YYYY hh:mm A')}
+          {dayjs(date).format('DD/MM/YYYY hh:mm A')}
           <div>{localTimezone}</div>
         </div>
       ),

@@ -186,6 +186,7 @@ export interface IParamGetAppointments extends IParamGetDataWithPagination {
   by_reschedule?: boolean;
   q?: string;
   clinicId?: number;
+  timezone_client?: string;
 }
 export interface IParamGetInvoices extends IParamGetDataWithPagination {
   doctorId?: number;
