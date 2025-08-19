@@ -121,12 +121,12 @@ export const GetColumns = ({
     },
     {
       title: <HeaderCell title="Local Time" />,
-      dataIndex: 'date',
-      key: 'date',
+      dataIndex: 'local_date',
+      key: 'local_date',
       width: 250,
-      render: (date: Date) => (
+      render: (date: string) => (
         <div>
-          {dayjs(date).format('DD/MM/YYYY hh:mm A')}
+          {date}
           <div>{localTimezone}</div>
         </div>
       ),

@@ -401,6 +401,7 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
     doctorId: number;
     date: string;
     status: number;
+    local_date: string;
     type: string;
     meeting_link: null;
     meeting_id: null;
