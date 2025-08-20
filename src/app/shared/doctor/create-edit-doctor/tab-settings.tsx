@@ -465,14 +465,12 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
           <FormGroup title="Cost Setup">
             <Flex justify="between" align="center" gap="4">
               <Text className="font-semibold">Treatment</Text>
-              <Text className="font-semibold">Amount</Text>
               <Text className="font-semibold">Amount Moderated</Text>
               <Text className="font-semibold">Action</Text>
             </Flex>
             {fieldsCosts?.map((item, index) => (
               <Flex justify="between" align="center" key={item.id} gap="4">
                 <Text className="w-1/2">{findTreatment(item.treatmentId)}</Text>
-                <Text className="w-1/2">{item.amount}</Text>
                 <Text className="w-1/2">{item.amount_moderated}</Text>
                 {!isView && (
                   <Flex justify="end" className="w-1/2">
