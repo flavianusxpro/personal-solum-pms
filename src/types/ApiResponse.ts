@@ -690,6 +690,22 @@ export interface IGetTreatmentResponse extends ApiResponseWithPagination {
     amount: string;
   }[];
 }
+
+export interface IGetTreatmentsFromMasterResponse extends ApiResponse {
+  data: {
+    amount: string;
+    amount_moderated: string;
+    clinicId: number;
+    created_at: string;
+    doctorId: number;
+    id: number;
+    interval: number;
+    treatmentId: number;
+    updated_at: string;
+    name: string;
+  }[];
+}
+
 export interface IGetTaxesResponse extends ApiResponseWithPagination {
   data: {
     id: number;

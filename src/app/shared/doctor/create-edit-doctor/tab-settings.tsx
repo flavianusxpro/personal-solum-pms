@@ -51,6 +51,7 @@ import PencilIcon from '@core/components/icons/pencil';
 import { useModal } from '../../modal-views/use-modal';
 import DoctorCost from '../modal/doctor-cost';
 import ActionTooltipButton from '../../ui/action-button';
+import DoctorCostMaster from '../modal/doctor-cost-master';
 
 export default function TabSettings({ isView = false }: { isView?: boolean }) {
   const { openModal } = useModal();
@@ -118,6 +119,12 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
   ) {
     return openModal({
       view: <DoctorCost id={id} amount={amount} treatmentId={treatmentId} />,
+    });
+  }
+
+  function treatmentCostModalFromMaster(id?: number) {
+    return openModal({
+      view: <DoctorCostMaster />,
     });
   }
 
@@ -520,6 +527,15 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                 Add Treatment Cost
               </Button>
             )}
+            <Button
+              onClick={() => {
+                treatmentCostModalFromMaster();
+              }}
+              variant="flat"
+              className="w-1/4"
+            >
+              List Treatment Cost From Master
+            </Button>
           </FormGroup>
 
           <Divider className="" />

@@ -23,6 +23,7 @@ import {
   deleteDoctorCost,
   getDoctorListFromMain,
   getDoctorSharingFromMain,
+  getTreatmentsFromMaster,
 } from '@/service/doctor';
 
 import {
@@ -162,6 +163,16 @@ export function useGetTreatments(params: IParamGetTreatments) {
     },
     staleTime: 1000 * 60 * 10, // 10 minutes
     refetchOnWindowFocus: false,
+  });
+}
+
+export function useGetTreatmentsFromMaster(doctorId: number) {
+  return useQuery({
+    queryKey: ['getTreatmentsFromMaster' + doctorId],
+    queryFn: async () => {
+      return await getTreatmentsFromMaster(doctorId);
+    },
+    enabled: !!doctorId,
   });
 }
 
