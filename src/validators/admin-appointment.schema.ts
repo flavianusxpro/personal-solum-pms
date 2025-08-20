@@ -7,6 +7,9 @@ export const appointmentBookSchema = {
   }),
   appointmentDate: z.object({
     date: z.date({ required_error: 'Appointment date is required' }),
+    doctorId: z.number({ required_error: 'Doctor is required' }),
+    doctorTime: z.string({ required_error: 'Doctor time is required' }),
+    fee: z.string(),
   }),
   selectDoctorAndTime: z.object({
     doctorId: z.number({ required_error: 'Doctor is required' }),
@@ -14,15 +17,9 @@ export const appointmentBookSchema = {
     fee: z.string(),
   }),
   selectServiceType: z.object({
-    appointment_type: z.string().min(1, {
-      message: 'Appointment type is required',
-    }),
-    patient_type: z.string().min(1, {
-      message: 'Patient type is required',
-    }),
-    patient_problem: z.string().min(1, {
-      message: 'Patient problem is required',
-    }),
+    appointment_type: z.string().optional(),
+    patient_type: z.string().optional(),
+    patient_problem: z.string().optional(),
     // patient_problem: z.array(z.string()).min(1, {
     //   message: 'Patient problem is required',
     // }),

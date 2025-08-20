@@ -686,6 +686,8 @@ export interface IGetTreatmentResponse extends ApiResponseWithPagination {
     description: string;
     created_at: string;
     updated_at: string;
+    doctorId: number;
+    amount: string;
   }[];
 }
 export interface IGetTaxesResponse extends ApiResponseWithPagination {

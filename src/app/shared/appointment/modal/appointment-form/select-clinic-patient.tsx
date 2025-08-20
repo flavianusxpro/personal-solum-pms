@@ -11,6 +11,9 @@ import { useGetAllClinics } from '@/hooks/useClinic';
 import { z } from 'zod';
 import { useGetAppointments } from '@/hooks/useAppointment';
 import { useProfile } from '@/hooks/useProfile';
+import { PiHospital } from 'react-icons/pi';
+import { Text } from 'rizzui';
+import dayjs from 'dayjs';
 
 const FormSchema = appointmentBookSchema['selectPatientAndClinic'];
 
@@ -42,24 +45,11 @@ export default function SelectClinic() {
     clinicId: dataProfile?.clinics[0].id,
   });
 
-  const lastAppointment = useMemo(() => {
-    return dataAppointment?.data[0];
-  }, [dataAppointment]);
-
-  const lastClinic = useMemo(() => {
-    if (!lastAppointment) return null;
-    const clinic = dataClinics?.data.find(
-      (clinic) => clinic.id === lastAppointment.clinicId
-    );
-    return clinic;
-  }, [lastAppointment, dataClinics]);
-
   const {
     control,
     formState: { errors },
     setValue,
     handleSubmit,
-    watch,
   } = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -67,6 +57,23 @@ export default function SelectClinic() {
       patient_id: formData.patient_id,
     },
   });
+
+  const lastAppointment = useMemo(() => {
+    if (!formData.patient_id) return null;
+    return dataAppointment?.data[0];
+  }, [dataAppointment, formData.patient_id]);
+
+  const lastClinic = useMemo(() => {
+    if (!lastAppointment) return null;
+    const clinic = dataClinics?.data.find(
+      (clinic) => clinic.id === lastAppointment.clinicId
+    );
+
+    if (clinic) {
+      setValue('clinicId', clinic.id);
+    }
+    return clinic;
+  }, [lastAppointment, dataClinics?.data, setValue]);
 
   const clinicsOptions = useMemo(() => {
     if (!dataClinics) return [];
@@ -144,7 +151,33 @@ export default function SelectClinic() {
             />
           )}
         />
+
+        {lastAppointment && (
+          <div className="space-y-5">
+            <Text fontWeight="medium" className="text-gray-1000">
+              Last Appointment
+            </Text>
+            <div className="flex items-center gap-6">
+              <PiHospital className="h-8 w-8" />
+              <div>
+                <h3 className="rizzui-title-h3 mb-2 text-base font-medium text-gray-900 dark:text-gray-700">
+                  Clinic : {lastClinic?.name}
+                </h3>
+                <div className="flex items-center gap-2">
+                  <p className="rizzui-text-p text-sm font-normal text-gray-500">
+                    {lastClinic?.address}
+                  </p>
+                  <span className="h-1 w-1 rounded-full bg-gray-600"></span>
+                  <p className="rizzui-text-p text-sm font-normal text-gray-500">
+                    {dayjs(lastAppointment?.date).format('DD/MM/YYYY HH:mm')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+
       <Footer />
     </form>
   );

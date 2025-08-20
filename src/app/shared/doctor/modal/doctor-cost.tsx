@@ -65,6 +65,7 @@ export default function DoctorCost(data: IProps) {
   const { data: dataTreatments } = useGetTreatments({
     page: 1,
     perPage: 100,
+    doctorId,
   });
   const { data: dataDoctorCost, refetch: refetchDoctorCost } =
     useGetDoctorCostById(doctorId as unknown as number);
@@ -97,8 +98,7 @@ export default function DoctorCost(data: IProps) {
       id,
       doctorId,
       treatmentId: data.treatmentId,
-      amount: Number(data.amount),
-      amount_moderated: Number(data.amount_moderated),
+      amount: Number(data.amount_moderated),
     };
     if (id) {
       mutateUpdate(payload, {
@@ -144,7 +144,7 @@ export default function DoctorCost(data: IProps) {
         },
       }}
     >
-      {({ register, control, formState: { errors } }) => {
+      {({ register, control, setValue, formState: { errors } }) => {
         return (
           <div className="flex flex-col gap-6 pt-2">
             <FormHeader title={`${id ? 'Edit' : 'Create'} Treatment Cost`} />
@@ -156,6 +156,14 @@ export default function DoctorCost(data: IProps) {
                 render={({ field }) => (
                   <CSelect
                     {...field}
+                    onChange={(value) => {
+                      field.onChange(value);
+                      setValue(
+                        'amount',
+                        dataTreatments?.data.find((item) => item.id === value)
+                          ?.amount || ''
+                      );
+                    }}
                     label="Treatment"
                     placeholder="Select Treatment"
                     error={

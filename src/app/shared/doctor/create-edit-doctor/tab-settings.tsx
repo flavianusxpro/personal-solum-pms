@@ -62,6 +62,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
   const { data: dataTreatments } = useGetTreatments({
     page: 1,
     perPage: 100,
+    doctorId: Number(id),
   });
 
   const { mutate: mutateUpdateMeeting, isPending: isPendingUpdateMeeting } =

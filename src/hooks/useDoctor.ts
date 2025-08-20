@@ -30,6 +30,7 @@ import {
   IParamGetAllDoctorForSubClinic,
   IParamGetDoctorSharing,
   IParamGetSpecialists,
+  IParamGetTreatments,
 } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -153,7 +154,7 @@ export function useDeleteSpecialist() {
   });
 }
 
-export function useGetTreatments(params: IParamGetSpecialists) {
+export function useGetTreatments(params: IParamGetTreatments) {
   return useQuery({
     queryKey: ['getTreatments'],
     queryFn: async () => {

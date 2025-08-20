@@ -86,9 +86,10 @@ export default function AppointmentServices() {
     mode: 'all',
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      appointment_type: formData?.appointment_type,
-      patient_type: formData?.patient_type,
-      patient_problem: formData?.patient_problem,
+      // appointment_type: formData?.appointment_type,
+      // patient_type: formData?.patient_type,
+      // patient_problem: formData?.patient_problem,
+      treatment: formData?.patient_type || lastAppointment?.patient_type,
       note: formData?.note,
     },
   });
@@ -123,9 +124,9 @@ export default function AppointmentServices() {
   const onSubmit: SubmitHandler<FormSchemaType> = (data) => {
     setFormData((prev) => ({
       ...prev,
-      appointment_type: data.appointment_type,
-      patient_type: data.patient_type,
-      patient_problem: data.patient_problem,
+      // appointment_type: data.appointment_type,
+      // patient_type: data.patient_type,
+      // patient_problem: data.patient_problem,
       treatment: data.treatment,
       note: data.note ?? '',
     }));
@@ -144,9 +145,9 @@ export default function AppointmentServices() {
       //       ? lastAppointment.patient_problem
       //       : [];
 
-      setValue('appointment_type', lastAppointment.type);
-      setValue('patient_type', lastAppointment.patient_type);
-      setValue('patient_problem', lastAppointment.patient_problem);
+      // setValue('appointment_type', lastAppointment.type);
+      // setValue('patient_type', lastAppointment.patient_type);
+      setValue('patient_problem', lastAppointment.patient_type);
       setValue('note', lastAppointment.note || '');
     }
   }, [lastAppointment, setFormData, setValue]);
@@ -154,7 +155,7 @@ export default function AppointmentServices() {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-5 px-5 pb-6 pt-5 md:px-7 md:pb-9 md:pt-7">
-        <Controller
+        {/* <Controller
           control={control}
           name="appointment_type"
           render={({ field }) => (
@@ -177,8 +178,8 @@ export default function AppointmentServices() {
               error={errors?.appointment_type?.message as string}
             />
           )}
-        />
-        <Controller
+        /> */}
+        {/* <Controller
           control={control}
           name="patient_type"
           render={({ field }) => (
@@ -192,12 +193,12 @@ export default function AppointmentServices() {
               error={errors?.patient_type?.message as string}
             />
           )}
-        />
-        <Controller
+        /> */}
+        {/* <Controller
           control={control}
           name="patient_problem"
           render={({ field }) => (
-            <CSelect
+            <Cinp
               {...field}
               className="col-span-full md:col-span-1"
               labelClassName="font-medium text-gray-1000 dark:text-white"
@@ -207,7 +208,7 @@ export default function AppointmentServices() {
               error={errors?.patient_problem?.message as string}
             />
           )}
-        />
+        /> */}
         <Controller
           control={control}
           name="treatment"
@@ -238,31 +239,6 @@ export default function AppointmentServices() {
             />
           )}
         />
-
-        {lastAppointment && (
-          <div className="space-y-5">
-            <Text fontWeight="medium" className="text-gray-1000">
-              Last Appointment
-            </Text>
-            <div className="flex items-center gap-6">
-              <PiHospital className="h-8 w-8" />
-              <div>
-                <h3 className="rizzui-title-h3 mb-2 text-base font-medium text-gray-900 dark:text-gray-700">
-                  Clinic : {lastClinic?.name}
-                </h3>
-                <div className="flex items-center gap-2">
-                  <p className="rizzui-text-p text-sm font-normal text-gray-500">
-                    {lastClinic?.address}
-                  </p>
-                  <span className="h-1 w-1 rounded-full bg-gray-600"></span>
-                  <p className="rizzui-text-p text-sm font-normal text-gray-500">
-                    {dayjs(lastAppointment?.date).format('DD/MM/YYYY HH:mm')}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       <Footer />

@@ -162,7 +162,9 @@ export interface IParamGetAllEmailTemplates
   extends IParamGetDataWithPagination {}
 export interface IParamGetAllSmsTemplates extends IParamGetDataWithPagination {}
 export interface IParamGetSpecialists extends IParamGetDataWithPagination {}
-export interface IParamGetTreatments extends IParamGetDataWithPagination {}
+export interface IParamGetTreatments extends IParamGetDataWithPagination {
+  doctorId?: number;
+}
 export interface IParamGetRoles extends IParamGetDataWithPagination {}
 export interface IParamGetPermissions extends IParamGetDataWithPagination {}
 export interface IParamGetUsers extends IParamGetDataWithPagination {
@@ -629,7 +631,6 @@ export interface IPayloadDoctorCost {
   doctorId: number;
   treatmentId: number;
   amount: number;
-  amount_moderated: number;
 }
 
 export interface IPayloadUpdateAwsS3Config {
