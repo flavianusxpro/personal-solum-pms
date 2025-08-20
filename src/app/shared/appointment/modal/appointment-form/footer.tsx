@@ -119,12 +119,12 @@ export default function Footer({ className }: FooterProps) {
             {isEdit ? 'Save Update' : 'Payment'}
           </Button>
         )}
-        {step !== 4 && step !== 3 && (
+        {step !== 2 && (
           <Button className="!w-auto" type="submit" rounded="lg">
             Next
           </Button>
         )}
-        {step === 4 && (
+        {step === 3 && (
           <Button
             className="!w-auto"
             type="button"

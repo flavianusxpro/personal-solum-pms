@@ -29,35 +29,14 @@ export const settingsDoctorSchema = z.object({
   // initial_appointment_fee: z.number().optional(),
   // follow_up_appointment_fee: z.number().optional(),
   // script_renewal_fee: z.number().optional(),
-  costs: z
-    .array(
-      z.object({
-        costId: z.number().optional(),
-        treatmentId: z.number(),
-        amount: z.string().optional(),
-        amount_moderated: z
-          .string()
-          .min(1, { message: 'Amount Moderated is required' }),
-      })
-    )
-    .refine(
-      (costs) => {
-        return costs.every((cost) => {
-          if (!cost.amount || !cost.amount_moderated) return true;
-
-          const amountNum = parseFloat(cost.amount);
-          const moderatedNum = parseFloat(cost.amount_moderated);
-
-          if (isNaN(amountNum) || isNaN(moderatedNum)) return true;
-
-          return moderatedNum >= amountNum;
-        });
-      },
-      {
-        message: 'Amount Moderated must be greater than or equal to Amount',
-        path: ['costs'],
-      }
-    ),
+  costs: z.array(
+    z.object({
+      costId: z.number().optional(),
+      treatmentId: z.number(),
+      amount: z.string().optional(),
+      amount_moderated: z.string().optional(),
+    })
+  ),
   doctor_timezone: z.string().optional(),
   initial_appointment_time: z.number().optional(),
   follow_up_appointment_time: z.number().optional(),

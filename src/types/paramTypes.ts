@@ -18,6 +18,7 @@ export interface IParamGetDoctorByClinic extends IParamGetDataWithPagination {
   treatment_type: string;
   problem_type?: string;
   doctorId?: number;
+  date?: string;
 }
 
 export interface IParamsGetApiConnection extends IParamGetDataWithPagination {}
@@ -33,6 +34,7 @@ export interface IParamsGetDoctorAvailability {
   doctorId: number;
   appointment_date: string;
   appointment_type: string;
+  timezone: string;
 }
 
 export interface IPayloadPostBookAppoinment {

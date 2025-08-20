@@ -11,12 +11,12 @@ const SelectClinic = dynamic(
     ssr: false,
   }
 );
-const SelectDoctorTime = dynamic(
-  () => import('@/app/shared/appointment/modal/appointment-form/doctor-time'),
-  {
-    ssr: false,
-  }
-);
+// const SelectDoctorTime = dynamic(
+//   () => import('@/app/shared/appointment/modal/appointment-form/doctor-time'),
+//   {
+//     ssr: false,
+//   }
+// );
 const SelectDate = dynamic(
   () => import('@/app/shared/appointment/modal/appointment-form/select-date'),
   {
@@ -90,7 +90,7 @@ enum Step {
   SelectClinic,
   SelectService,
   SelectDate,
-  SelectDoctorTime,
+  // SelectDoctorTime,
   Payment,
 }
 
@@ -126,7 +126,7 @@ export function useStepperAppointment() {
 const MAP_STEP_TO_COMPONENT = {
   [Step.SelectClinic]: SelectClinic,
   [Step.SelectDate]: SelectDate,
-  [Step.SelectDoctorTime]: SelectDoctorTime,
+  // [Step.SelectDoctorTime]: SelectDoctorTime,
   [Step.SelectService]: SelectService,
   [Step.Payment]: Payment,
 };

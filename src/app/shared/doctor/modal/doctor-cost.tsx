@@ -20,38 +20,17 @@ import { useParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
 
-const costSchema = z
-  .object({
-    amount: z.string().min(1, { message: 'Amount is required' }),
-    treatmentId: z.number().min(1, {
-      message: 'Treatment is required',
-    }),
-    amount_moderated: z
-      .string()
-      .min(1, { message: 'Amount Moderated is required' }),
-  })
-  .refine(
-    (data) => {
-      if (!data.amount || !data.amount_moderated) return true;
-
-      const amountNum = parseFloat(data.amount);
-      const moderatedNum = parseFloat(data.amount_moderated);
-
-      if (isNaN(amountNum) || isNaN(moderatedNum)) return true;
-
-      return moderatedNum >= amountNum;
-    },
-    {
-      message: 'Amount Moderated must be greater than or equal to Amount',
-      path: ['amount_moderated'],
-    }
-  );
+const costSchema = z.object({
+  amount: z.string().min(1, { message: 'Amount is required' }),
+  treatmentId: z.number().min(1, {
+    message: 'Treatment is required',
+  }),
+});
 
 type IProps = {
   id?: number;
   amount?: string;
   treatmentId?: number;
-  amount_moderated?: string;
 };
 
 export default function DoctorCost(data: IProps) {
@@ -70,8 +49,10 @@ export default function DoctorCost(data: IProps) {
   const { data: dataDoctorCost, refetch: refetchDoctorCost } =
     useGetDoctorCostById(doctorId as unknown as number);
 
-  const { mutate: mutateCreate } = usePostCreateDoctorCost();
-  const { mutate: mutateUpdate } = usePutUpdateDoctorCost();
+  const { mutate: mutateCreate, isPending: isPendingCreate } =
+    usePostCreateDoctorCost();
+  const { mutate: mutateUpdate, isPending: isPendingUpdate } =
+    usePutUpdateDoctorCost();
 
   const treatmentOptions = useMemo(() => {
     if (!dataTreatments) return [];
@@ -98,7 +79,7 @@ export default function DoctorCost(data: IProps) {
       id,
       doctorId,
       treatmentId: data.treatmentId,
-      amount: Number(data.amount_moderated),
+      amount: Number(data.amount),
     };
     if (id) {
       mutateUpdate(payload, {
@@ -140,7 +121,6 @@ export default function DoctorCost(data: IProps) {
         defaultValues: {
           amount: Number(data?.amount).toString(),
           treatmentId: data?.treatmentId,
-          amount_moderated: Number(data?.amount_moderated).toString(),
         },
       }}
     >
@@ -173,7 +153,7 @@ export default function DoctorCost(data: IProps) {
                   />
                 )}
               />
-              <Input
+              {/* <Input
                 {...register(`amount`)}
                 prefix={`${currency.active.symbol}`}
                 label="Amount"
@@ -182,22 +162,20 @@ export default function DoctorCost(data: IProps) {
                 className="w-full"
                 type="number"
                 disabled={true}
-              />
+              /> */}
               <Input
-                {...register(`amount_moderated`, {
-                  required: 'Amount Moderated is required',
-                })}
+                {...register(`amount`)}
                 prefix={`${currency.active.symbol}`}
-                label="Amount Moderated"
-                placeholder="Enter Amount Moderated"
-                error={errors?.amount_moderated?.message}
+                label="Amount"
+                placeholder="Enter Amount"
+                error={errors?.amount?.message}
                 className="w-full"
                 type="number"
               />
             </div>
             <FormFooter
               className="rounded-b-xl"
-              //   isLoading={isPending}
+              isLoading={isPendingCreate || isPendingUpdate}
               altBtnText="Cancel"
               submitBtnText="Save"
             />

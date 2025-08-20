@@ -117,14 +117,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
     amount_moderated?: string
   ) {
     return openModal({
-      view: (
-        <DoctorCost
-          id={id}
-          amount={amount}
-          treatmentId={treatmentId}
-          amount_moderated={amount_moderated}
-        />
-      ),
+      view: <DoctorCost id={id} amount={amount} treatmentId={treatmentId} />,
     });
   }
 

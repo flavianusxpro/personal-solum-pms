@@ -34,9 +34,9 @@ export function useGetClinicByIdForPatient(id: string) {
 
 export function useGetDoctorByClinic(params: IParamGetDoctorByClinic) {
   return useQuery({
-    queryKey: ['clinic-by-clinic-for-patient' + params.id],
+    queryKey: ['clinic-by-clinic-for-patient' + JSON.stringify(params)],
     queryFn: async () => getDoctorByClinic(params),
-    enabled: !!params.id,
+    enabled: !!params.id && !!params.date,
   });
 }
 
