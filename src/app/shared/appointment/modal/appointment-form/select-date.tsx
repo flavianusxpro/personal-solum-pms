@@ -28,7 +28,7 @@ import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
 import { IParamGetDoctorByClinic } from '@/types/paramTypes';
 import { IGetDoctorByClinicResponse } from '@/types/ApiResponse';
 import cn from '@/core/utils/class-names';
-import { PiBell } from 'react-icons/pi';
+import { PiBell, PiCalendar } from 'react-icons/pi';
 
 // generate form types from zod validation schema
 
@@ -130,7 +130,7 @@ export default function DateTime() {
           </div>
         </div>
 
-        <div className="space-y-5 pb-6 pt-5 md:pt-7">
+        <div className="space-y-5 pb-6 pr-6 pt-5 md:pt-7">
           <Flex justify="between" align="center">
             <Input
               label="Doctor"
@@ -161,6 +161,13 @@ export default function DateTime() {
                 </Text>
               </div>
             )}
+            {!formData.date && (
+              <div className="flex flex-col items-center justify-center gap-4">
+                <PiCalendar className="text-primary" size={48} />
+                <Text className="text-2xl font-medium">Please Select Date</Text>
+              </div>
+            )}
+
             {dataDoctor?.map((doctor, index: number) => {
               if (!doctor.id) return null;
 
@@ -231,7 +238,7 @@ function DoctorTime({
   setValue: UseFormSetValue<FormSchemaType>;
   localTimezone: string;
 }) {
-  const [formData] = useAtom(formDataAtom);
+  const [formData, setFormData] = useAtom(formDataAtom);
 
   const appointmentType = useMemo(() => {
     if (formData?.appointment_type?.includes('FOLLOWUP')) {
@@ -290,6 +297,12 @@ function DoctorTime({
                   setValue('doctorTime', valueTime);
                   setValue('doctorId', doctor.id as number);
                   setValue('fee', doctor.cost.amount || '');
+                  setFormData((prev) => ({
+                    ...prev,
+                    doctorTime: valueTime,
+                    doctorId: doctor.id as number,
+                    fee: doctor.cost.amount || '',
+                  }));
                 }}
               >
                 {availTime}

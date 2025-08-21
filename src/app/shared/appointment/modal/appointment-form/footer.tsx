@@ -18,9 +18,10 @@ import { useModal } from '@/app/shared/modal-views/use-modal';
 
 interface FooterProps {
   className?: string;
+  showSaveButton?: boolean;
 }
 
-export default function Footer({ className }: FooterProps) {
+export default function Footer({ className, showSaveButton }: FooterProps) {
   const { step, gotoPrevStep } = useStepperAppointment();
   const { closeModal } = useModal();
 
@@ -98,7 +99,7 @@ export default function Footer({ className }: FooterProps) {
       </div>
 
       <div className="flex gap-3">
-        {step > 0 && step <= 4 && (
+        {step > 0 && step <= 1 && (
           <Button
             onClick={gotoPrevStep}
             variant="outline"
@@ -108,7 +109,7 @@ export default function Footer({ className }: FooterProps) {
             Back
           </Button>
         )}
-        {step === 3 && (
+        {step === 1 && (
           <Button
             className="!w-auto"
             type={isEdit ? 'button' : 'submit'}
@@ -119,12 +120,12 @@ export default function Footer({ className }: FooterProps) {
             {isEdit ? 'Save Update' : 'Payment'}
           </Button>
         )}
-        {step !== 2 && (
+        {step < 1 && (
           <Button className="!w-auto" type="submit" rounded="lg">
             Next
           </Button>
         )}
-        {step === 3 && (
+        {step === 2 && showSaveButton && (
           <Button
             className="!w-auto"
             type="button"

@@ -4,6 +4,10 @@ export const appointmentBookSchema = {
   selectPatientAndClinic: z.object({
     patient_id: z.number().min(1, { message: 'Patient is required' }),
     clinicId: z.number().min(1, { message: 'Clinic is required' }),
+    treatment: z.string().min(1, {
+      message: 'Treatment is required',
+    }),
+    note: z.string().optional(),
   }),
   appointmentDate: z.object({
     date: z.date({ required_error: 'Appointment date is required' }),

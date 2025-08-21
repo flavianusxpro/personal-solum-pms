@@ -94,15 +94,6 @@ export default function AppointmentServices() {
     },
   });
 
-  const patientProblemOptions = useMemo(
-    () =>
-      dataPatientProblem?.data.map((item) => ({
-        label: item.name,
-        value: item.name,
-      })) ?? [],
-    [dataPatientProblem]
-  );
-
   const treatmentOptions = useMemo(
     () =>
       dataTreatments?.data.map((item) => ({
@@ -110,15 +101,6 @@ export default function AppointmentServices() {
         value: item.name,
       })) ?? [],
     [dataTreatments]
-  );
-
-  const patientTypeOptions = useMemo(
-    () =>
-      dataPatientTypes?.map((item) => ({
-        label: item.name,
-        value: item.name,
-      })) ?? [],
-    [dataPatientTypes]
   );
 
   const onSubmit: SubmitHandler<FormSchemaType> = (data) => {
