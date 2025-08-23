@@ -87,6 +87,7 @@ export default function AvatarUpload({
                 alt="user avatar"
                 src={formValue}
                 className="rounded-full"
+                sizes="160px"
               />
             </figure>
             <div

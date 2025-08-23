@@ -72,7 +72,7 @@ export default function GlobalCalendarTable({}: {}) {
 
   const formatAppointments = useCallback(
     (data: IGetAppointmentListResponse['data']) => {
-      const timeSlots = getTimeSlots('09:00', '17:00', 15);
+      const timeSlots = getTimeSlots('00:00', '23:59', 15);
 
       const doctors = Array.from(
         new Set(
