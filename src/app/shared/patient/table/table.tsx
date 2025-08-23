@@ -73,7 +73,7 @@ export default function PatientTable() {
       name: params.search,
       status: filterStateValue?.status || undefined,
     }),
-    clinicId: dataProfile?.clinics[0].id || 0,
+    clinicId: dataProfile?.clinics?.[0]?.id || 0,
   });
 
   const { mutate: mutateDeletePatient } = useDeletePatient();
