@@ -128,6 +128,7 @@ export default function CreatDoctorModal() {
       medical_interest: data.medical_interest,
       specialist_type: data.specialist_type.map((item) => Number(item)),
       treatment_type: data.treatment_type.map((item) => item),
+      description: data.description,
     };
 
     mutateCreateDoctor(payload, {
@@ -442,14 +443,14 @@ export default function CreatDoctorModal() {
               </div>
 
               <Controller
-                name="about"
+                name="description"
                 control={control}
                 render={({ field }) => (
                   <QuillEditor
                     {...field}
                     label="Doctor Description"
                     placeholder="Doctor Description"
-                    error={errors.about?.message}
+                    error={errors.description?.message}
                     labelClassName="font-medium text-sm"
                     className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[300px]"
                   />
