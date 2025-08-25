@@ -35,6 +35,9 @@ import CancelForm from '../../modal/cancel-form';
 import RescheduleAppointmentForm from '../../modal/reschedule';
 import RevertForm from '../../modal/revert-form';
 import ShowNote from '../../modal/show-notes';
+import timezonePlugin from 'dayjs/plugin/timezone';
+dayjs.extend(timezonePlugin);
+const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 const aptStatusOptions = [
   { label: 'Draft', value: 1 },
@@ -117,11 +120,28 @@ export const GetColumns = ({
       ),
     },
     {
+      title: <HeaderCell title="Local Time" />,
+      dataIndex: 'local_date',
+      key: 'local_date',
+      width: 250,
+      render: (date: string) => (
+        <div>
+          {date}
+          <div>{localTimezone}</div>
+        </div>
+      ),
+    },
+    {
       title: <HeaderCell title="Date" />,
       dataIndex: 'date',
       key: 'date',
       width: 250,
-      render: (date: Date) => dayjs(date).utc().format('DD/MM/YYYY hh:mm A'),
+      render: (date: Date, row: RowValue) => (
+        <div>
+          {dayjs(date).utc().format('DD/MM/YYYY hh:mm A')}
+          <div>{row.doctor.timezone}</div>
+        </div>
+      ),
     },
     {
       title: <HeaderCell title="Doctor" />,

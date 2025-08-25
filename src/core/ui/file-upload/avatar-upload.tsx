@@ -75,7 +75,8 @@ export default function AvatarUpload({
     <div className={cn('grid gap-5', className)}>
       <div
         className={cn(
-          'relative grid h-40 w-40 place-content-center rounded-full border-[1.8px]'
+          'relative grid h-40 w-40 place-content-center rounded-full border-[1.8px]',
+          disabled && 'pointer-events-none bg-gray-100'
         )}
       >
         {formValue ? (
@@ -86,6 +87,7 @@ export default function AvatarUpload({
                 alt="user avatar"
                 src={formValue}
                 className="rounded-full"
+                sizes="160px"
               />
             </figure>
             <div
@@ -106,7 +108,7 @@ export default function AvatarUpload({
               'absolute inset-0 z-10 grid cursor-pointer place-content-center'
             )}
           >
-            <input {...getInputProps()} />
+            {!disabled && <input {...getInputProps()} />}
 
             {isPending ? (
               <>

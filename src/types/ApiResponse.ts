@@ -145,6 +145,7 @@ export interface IGetProfileResponse extends ApiResponse {
     email: string;
     status: number;
     role: Role;
+    clinics: IClinic[];
   };
 }
 
@@ -400,6 +401,7 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
     doctorId: number;
     date: string;
     status: number;
+    local_date: string;
     type: string;
     meeting_link: null;
     meeting_id: null;
@@ -684,8 +686,26 @@ export interface IGetTreatmentResponse extends ApiResponseWithPagination {
     description: string;
     created_at: string;
     updated_at: string;
+    doctorId: number;
+    amount: string;
   }[];
 }
+
+export interface IGetTreatmentsFromMasterResponse extends ApiResponse {
+  data: {
+    amount: string;
+    amount_moderated: string;
+    clinicId: number;
+    created_at: string;
+    doctorId: number;
+    id: number;
+    interval: number;
+    treatmentId: number;
+    updated_at: string;
+    name: string;
+  }[];
+}
+
 export interface IGetTaxesResponse extends ApiResponseWithPagination {
   data: {
     id: number;
@@ -937,6 +957,7 @@ export interface IGetDoctorCostByIdResponse extends ApiResponse {
     doctorId: number;
     treatmentId: number;
     amount: string;
+    amount_moderated: string;
     created_at: string;
     updated_at: string;
   }[];

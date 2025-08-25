@@ -9,6 +9,7 @@ interface IParamGetDataWithPagination {
 }
 export interface IParamGetAllClinic extends IParamGetDataWithPagination {
   role: RoleType;
+  clinicId?: number;
 }
 
 export interface IParamGetDoctorByClinic extends IParamGetDataWithPagination {
@@ -17,6 +18,7 @@ export interface IParamGetDoctorByClinic extends IParamGetDataWithPagination {
   treatment_type: string;
   problem_type?: string;
   doctorId?: number;
+  date?: string;
 }
 
 export interface IParamsGetApiConnection extends IParamGetDataWithPagination {}
@@ -32,6 +34,7 @@ export interface IParamsGetDoctorAvailability {
   doctorId: number;
   appointment_date: string;
   appointment_type: string;
+  timezone: string;
 }
 
 export interface IPayloadPostBookAppoinment {
@@ -52,6 +55,7 @@ export interface IPayloadPostPaymentMethod {
 }
 
 export interface IPayloadCreateEditPatient {
+  clinicId?: number;
   patient_id?: string;
   first_name?: string;
   last_name?: string;
@@ -89,6 +93,7 @@ export interface IPayloadCreateEditPatient {
 }
 
 export interface IPayloadCreateEditDoctor {
+  clinicId?: number;
   doctor_id?: string;
   first_name?: string;
   password?: string;
@@ -116,7 +121,6 @@ export interface IPayloadCreateEditDoctor {
   postcode?: string;
   country?: string;
   state?: string;
-  // treatment_type?: number[];
   treatment_type?: string[];
   specialist_type?: number[];
   problem_type?: string[];
@@ -127,11 +131,13 @@ export interface IPayloadCreateEditDoctor {
 export interface IParamGetAllPatient extends IParamGetDataWithPagination {
   from?: string;
   to?: string;
+  clinicId?: number;
 }
 export interface IParamGetAllDoctor extends IParamGetDataWithPagination {
   from?: string;
   to?: string;
   isEnable?: boolean;
+  clinicId?: number;
 }
 
 export interface IParamGetDoctorSharing extends IParamGetDataWithPagination {
@@ -158,10 +164,14 @@ export interface IParamGetAllEmailTemplates
   extends IParamGetDataWithPagination {}
 export interface IParamGetAllSmsTemplates extends IParamGetDataWithPagination {}
 export interface IParamGetSpecialists extends IParamGetDataWithPagination {}
-export interface IParamGetTreatments extends IParamGetDataWithPagination {}
+export interface IParamGetTreatments extends IParamGetDataWithPagination {
+  doctorId?: number;
+}
 export interface IParamGetRoles extends IParamGetDataWithPagination {}
 export interface IParamGetPermissions extends IParamGetDataWithPagination {}
-export interface IParamGetUsers extends IParamGetDataWithPagination {}
+export interface IParamGetUsers extends IParamGetDataWithPagination {
+  clinicId?: number;
+}
 export interface IParamGetTaxes extends IParamGetDataWithPagination {}
 export interface IParamsGetItems extends IParamGetDataWithPagination {}
 export interface IParamsGetPharmachies extends IParamGetDataWithPagination {}
@@ -180,6 +190,7 @@ export interface IParamGetAppointments extends IParamGetDataWithPagination {
   by_reschedule?: boolean;
   q?: string;
   clinicId?: number;
+  timezone_client?: string;
 }
 export interface IParamGetInvoices extends IParamGetDataWithPagination {
   doctorId?: number;
@@ -358,6 +369,7 @@ export interface IPayloadUploadImage {
 }
 
 export interface IPayloadCreateInvoice {
+  clinicId?: number;
   id?: number;
   patientId: number;
   invoice_date: string;
@@ -381,6 +393,33 @@ interface Item {
 export interface IPayloadAssignDoctorToClinic {
   id: string;
   clinic_ids: number[];
+}
+
+export interface IPayloadCreateDoctor {
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  mobile_number: string;
+  address?: string;
+  medicare_card_number?: string;
+  medicare_expired_date?: string;
+  date_of_birth: string;
+  gender: string;
+  country: string;
+  street_name: string;
+  address_line_1: string;
+  address_line_2: string;
+  suburb: string;
+  state: string;
+  postcode: string;
+  emergency_first_name: string;
+  emergency_last_name: string;
+  emergency_mobile_number: string;
+  emergency_email?: string;
+  medical_interest: string;
+  specialist_type: number[];
+  treatment_type: number[];
 }
 
 export interface IPayloadCreateDoctorUser {
@@ -445,9 +484,11 @@ export interface IPayloadUpdateSmsNotificationSettings {
   payment_confirmation_sms_text: string;
   reminder_sms_status: boolean;
   reminder_sms_text: string;
+  clinicId?: number;
 }
 
 export interface IPayloadUpdateEmailNotificationSettings {
+  clinicId?: number;
   booking_confirmation_email_status: boolean;
   booking_confirmation_email_html: string;
   reschedule_email_status: boolean;
@@ -570,6 +611,7 @@ export interface IPayloadCreateUpdateCoupon {
 }
 
 export interface IPayloadUpdateTwilioConfig {
+  clinicId: number;
   account_id: string;
   auth_token: string;
   from_number: string;
@@ -577,6 +619,7 @@ export interface IPayloadUpdateTwilioConfig {
 }
 
 export interface IPayloadUpdateSmtpConfig {
+  clinicId: number;
   smtp_host: string;
   smtp_port: string;
   smtp_username: string;
@@ -593,6 +636,7 @@ export interface IPayloadDoctorCost {
 }
 
 export interface IPayloadUpdateAwsS3Config {
+  clinicId: number;
   aws_access_id: string;
   aws_secret_key: string;
   bucket: string;

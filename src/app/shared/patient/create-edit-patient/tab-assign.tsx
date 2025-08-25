@@ -17,6 +17,7 @@ import { useParams } from 'next/navigation';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
 import { useEffect, useMemo, useState } from 'react';
 import { useGetAllClinics } from '@/hooks/useClinic';
+import { useProfile } from '@/hooks/useProfile';
 
 const MultySelect = dynamic(
   () => import('rizzui').then((mod) => mod.MultiSelect),
@@ -33,7 +34,7 @@ const MultySelect = dynamic(
 export default function TabAssign({ isView = false }: { isView?: boolean }) {
   const id = useParams().id as string;
 
-  const [clinicIds, setClinicIds] = useState<string[]>([]);
+  const { data: dataClinic } = useProfile(true);
 
   const {
     data: dataPatient,
@@ -54,8 +55,8 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
   } = useGetAllDoctors({
     page: 1,
     perPage: 50,
-    q: clinicIds.length
-      ? JSON.stringify({ clinic_ids: clinicIds.map((id) => parseInt(id)) })
+    q: dataClinic?.clinics?.[0]?.id
+      ? JSON.stringify({ clinic_ids: [dataClinic?.clinics?.[0]?.id] })
       : undefined,
   });
 
@@ -113,12 +114,6 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
     );
   };
 
-  useEffect(() => {
-    if (clinicIds.length > 0) {
-      refetch();
-    }
-  }, [clinicIds, refetch]);
-
   if (isLoading || isloadingGetDoctors) return <Loader />;
 
   return (
@@ -145,28 +140,6 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
             <Flex direction="col" className="" gap="7">
               <FormGroup title="Assign" className="" />
               <div className="mb-10 grid w-full grid-cols-1 gap-7">
-                <FormGroup title="Clinic" isLabel>
-                  <Controller
-                    name="clinic"
-                    control={control}
-                    render={({ field }) => (
-                      <MultySelect
-                        {...field}
-                        onChange={(value: string[]) => {
-                          field.onChange(value);
-                          setClinicIds(value);
-                        }}
-                        onClear={() => field.onChange([])}
-                        options={clinicsOptions}
-                        clearable
-                        placeholder="Select Clinic"
-                        error={errors.clinic?.message}
-                        className="flex-grow"
-                        disabled={isView}
-                      />
-                    )}
-                  />
-                </FormGroup>
                 <FormGroup title="Doctors" isLabel>
                   <Controller
                     name="doctor"

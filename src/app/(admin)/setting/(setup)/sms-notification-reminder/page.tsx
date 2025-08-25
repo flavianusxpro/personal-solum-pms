@@ -24,16 +24,24 @@ import { IPayloadUpdateSmsNotificationSettings } from '@/types/paramTypes';
 import { useGetSmsTemplates } from '@/hooks/useTemplate';
 import { useMemo, useState } from 'react';
 import CSelect from '@/app/shared/ui/select';
+import { useProfile } from '@/hooks/useProfile';
+import { templateValidation } from '@/core/utils/validate-template';
+import {
+  smsBookingsTemplateValidation,
+  smsReminderTemplateValidation,
+  smsRescheduleTemplateValidation,
+} from '@/validators/templates-validator';
 
 export default function Setup() {
   const { data: dataSmsTemplates } = useGetSmsTemplates({
     page: 1,
     perPage: 100,
   });
+  const { data: dataProfile } = useProfile(true);
   const {
     data: dataSmsNotificationSettings,
     isLoading: isLoadingGetSmsNotification,
-  } = useGetSmsNotificationSettings();
+  } = useGetSmsNotificationSettings(dataProfile?.clinics[0].id);
 
   const { mutate: mutateUpdateSmsNotification } =
     useUpdateSmsNotificationSettings();
@@ -50,6 +58,7 @@ export default function Setup() {
     data
   ) => {
     const smsPayload: IPayloadUpdateSmsNotificationSettings = {
+      clinicId: dataProfile?.clinics[0].id || 0,
       booking_confirmation_sms_status:
         data?.booking_confirmation_sms_status || false,
       booking_confirmation_sms_text: data?.booking_confirmation_sms_text || '',
@@ -91,13 +100,22 @@ export default function Setup() {
         defaultValues: {
           booking_confirmation_sms_text:
             dataSmsNotificationSettings?.booking_confirmation_sms_text || '',
-          reschedule_email_status:
-            dataSmsNotificationSettings?.account_created_sms_status || false,
-          account_created_sms_text:
-            dataSmsNotificationSettings?.account_created_sms_text || '',
           booking_confirmation_sms_status:
             dataSmsNotificationSettings?.booking_confirmation_sms_status ||
             false,
+          reschedule_sms_status:
+            dataSmsNotificationSettings?.reschedule_sms_status || false,
+          reschedule_sms_text:
+            dataSmsNotificationSettings?.reschedule_sms_text || '',
+          account_created_sms_status:
+            dataSmsNotificationSettings?.account_created_sms_status || false,
+          account_created_sms_text:
+            dataSmsNotificationSettings?.account_created_sms_text || '',
+          payment_confirmation_sms_status:
+            dataSmsNotificationSettings?.payment_confirmation_sms_status ||
+            false,
+          payment_confirmation_sms_text:
+            dataSmsNotificationSettings?.payment_confirmation_sms_text || '',
           reminder_sms_status:
             dataSmsNotificationSettings?.reminder_sms_status || false,
           reminder_sms_text:
@@ -139,18 +157,118 @@ export default function Setup() {
                 name="booking_confirmation_sms_text"
                 control={control}
                 render={({ field }) => (
-                  <Textarea
-                    {...field}
-                    label="SMS Template"
-                    className="mt-4"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                    helperText={
-                      <Text className="text-sm text-gray-500">
-                        min. 50 / max. 65, Characters:{' '}
-                        {watch('booking_confirmation_sms_text')?.length || 0}
-                      </Text>
-                    }
-                  />
+                  <div>
+                    <Textarea
+                      {...field}
+                      label="SMS Template"
+                      className="mt-4"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                      helperText={
+                        <Text className="text-sm text-gray-500">
+                          min. 50 / max. 65, Characters:{' '}
+                          {watch('booking_confirmation_sms_text')?.length || 0}
+                        </Text>
+                      }
+                    />
+                    <div className="">
+                      Variables:{' '}
+                      {`{{Patient_Name}}, {{Doctor_Name}}, {{Appointment_Date}}, {{Appointment_Time}}, {{Clinic_Name}}, {{Appointment_Type}}, {{Clinic_Email}}, {{Clinic_Number}}, {{Clinic Address}}`}
+                    </div>
+                  </div>
+                )}
+              />
+            </StatusCard>
+
+            <StatusCard
+              icon={<IoChevronDownCircleOutline />}
+              meetName="Account Created"
+              content="Notification for account created"
+              onSwitchChange={(checked) => {
+                setValue('account_created_sms_status', checked);
+              }}
+              switchValue={watch('account_created_sms_status')}
+              className="mb-10"
+            >
+              <Flex justify="end" className="">
+                <CSelect
+                  searchable
+                  placeholder="Select Template"
+                  options={smsTemplateOptions}
+                  onChange={(value: string) =>
+                    setValue('account_created_sms_text', value)
+                  }
+                  className="w-fit"
+                />
+              </Flex>
+              <Controller
+                name="account_created_sms_text"
+                control={control}
+                render={({ field }) => (
+                  <div>
+                    <Textarea
+                      {...field}
+                      label="SMS Template"
+                      className="mt-4"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                      helperText={
+                        <Text className="text-sm text-gray-500">
+                          min. 50 / max. 65, Characters:{' '}
+                          {watch('account_created_sms_text')?.length || 0}
+                        </Text>
+                      }
+                    />
+                    <div className="">
+                      Variables:{' '}
+                      {`{{Patient_Name}}, {{Doctor_Name}}, {{Appointment_Date}}, {{Appointment_Time}}, {{Clinic_Name}}, {{Appointment_Type}}, {{Clinic_Email}}, {{Clinic_Number}}, {{Clinic Address}}`}
+                    </div>
+                  </div>
+                )}
+              />
+            </StatusCard>
+
+            <StatusCard
+              icon={<IoChevronDownCircleOutline />}
+              meetName="Payment Confirmation"
+              content="Notification for payment confirmation"
+              onSwitchChange={(checked) => {
+                setValue('payment_confirmation_sms_status', checked);
+              }}
+              switchValue={watch('payment_confirmation_sms_status')}
+              className="mb-10"
+            >
+              <Flex justify="end" className="">
+                <CSelect
+                  searchable
+                  placeholder="Select Template"
+                  options={smsTemplateOptions}
+                  onChange={(value: string) =>
+                    setValue('payment_confirmation_sms_text', value)
+                  }
+                  className="w-fit"
+                />
+              </Flex>
+              <Controller
+                name="payment_confirmation_sms_text"
+                control={control}
+                render={({ field }) => (
+                  <div>
+                    <Textarea
+                      {...field}
+                      label="SMS Template"
+                      className="mt-4"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                      helperText={
+                        <Text className="text-sm text-gray-500">
+                          min. 50 / max. 65, Characters:{' '}
+                          {watch('payment_confirmation_sms_text')?.length || 0}
+                        </Text>
+                      }
+                    />
+                    <div className="">
+                      Variables:{' '}
+                      {`{{Patient_Name}}, {{Doctor_Name}}, {{Appointment_Date}}, {{Appointment_Time}}, {{Clinic_Name}}, {{Appointment_Type}}, {{Clinic_Email}}, {{Clinic_Number}}, {{Clinic Address}}`}
+                    </div>
+                  </div>
                 )}
               />
             </StatusCard>
@@ -180,18 +298,24 @@ export default function Setup() {
                 name="reschedule_sms_text"
                 control={control}
                 render={({ field }) => (
-                  <Textarea
-                    {...field}
-                    label="SMS Template"
-                    className="mt-4"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                    helperText={
-                      <Text className="text-sm text-gray-500">
-                        min. 50 / max. 65, Characters:{' '}
-                        {watch('reschedule_sms_text')?.length || 0}
-                      </Text>
-                    }
-                  />
+                  <div>
+                    <Textarea
+                      {...field}
+                      label="SMS Template"
+                      className="mt-4"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                      helperText={
+                        <Text className="text-sm text-gray-500">
+                          min. 50 / max. 65, Characters:{' '}
+                          {watch('reschedule_sms_text')?.length || 0}
+                        </Text>
+                      }
+                    />
+                    <div className="">
+                      Variables:{' '}
+                      {`{{Patient_Name}}, {{Doctor_Name}}, {{Appointment_Date}}, {{Appointment_Time}}, {{Clinic_Name}}, {{Appointment_Type}}, {{Clinic_Email}}, {{Clinic_Number}}, {{Clinic Address}}`}
+                    </div>
+                  </div>
                 )}
               />
             </StatusCard>
@@ -227,18 +351,24 @@ export default function Setup() {
                 name="reminder_sms_text"
                 control={control}
                 render={({ field }) => (
-                  <Textarea
-                    {...field}
-                    label="SMS Template"
-                    className="mt-4"
-                    labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                    helperText={
-                      <Text className="text-sm text-gray-500">
-                        min. 50 / max. 65, Characters:{' '}
-                        {watch('booking_confirmation_sms_text')?.length || 0}
-                      </Text>
-                    }
-                  />
+                  <div>
+                    <Textarea
+                      {...field}
+                      label="SMS Template"
+                      className="mt-4"
+                      labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
+                      helperText={
+                        <Text className="text-sm text-gray-500">
+                          min. 50 / max. 65, Characters:{' '}
+                          {watch('booking_confirmation_sms_text')?.length || 0}
+                        </Text>
+                      }
+                    />
+                    <div className="">
+                      Variables:{' '}
+                      {`{{Patient_Name}}, {{Doctor_Name}}, {{Appointment_Date}}, {{Appointment_Time}}, {{Clinic_Name}}, {{Appointment_Type}}, {{Clinic_Email}}, {{Clinic_Number}}, {{Clinic Address}}`}
+                    </div>
+                  </div>
                 )}
               />
             </StatusCard>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import isString from 'lodash/isString';
 
 interface AnyObject {
@@ -24,21 +24,27 @@ export function useTable<T extends AnyObject>(
    * Handle row selection
    */
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
-  const handleRowSelect = (recordKey: string) => {
-    const selectedKeys = [...selectedRowKeys];
-    if (selectedKeys.includes(recordKey)) {
-      setSelectedRowKeys(selectedKeys.filter((key) => key !== recordKey));
-    } else {
-      setSelectedRowKeys([...selectedKeys, recordKey]);
-    }
-  };
-  const handleSelectAll = () => {
-    if (selectedRowKeys.length === data.length) {
-      setSelectedRowKeys([]);
-    } else {
-      setSelectedRowKeys(data.map((record) => record.id));
-    }
-  };
+
+  // ✅ Gunakan useCallback untuk mencegah function dibuat ulang
+  const handleRowSelect = useCallback((recordKey: string) => {
+    setSelectedRowKeys((prev) => {
+      if (prev.includes(recordKey)) {
+        return prev.filter((key) => key !== recordKey);
+      } else {
+        return [...prev, recordKey];
+      }
+    });
+  }, []);
+
+  const handleSelectAll = useCallback(() => {
+    setSelectedRowKeys((prev) => {
+      if (prev.length === data.length) {
+        return [];
+      } else {
+        return data.map((record) => record.id);
+      }
+    });
+  }, [data.length]);
 
   /*
    * Handle sorting
@@ -48,63 +54,75 @@ export function useTable<T extends AnyObject>(
     direction: null,
   });
 
-  function sortData(data: T[], sortKey: string, sortDirection: string) {
-    return [...data].sort((a, b) => {
-      const aValue = a[sortKey];
-      const bValue = b[sortKey];
+  // ✅ Gunakan useCallback untuk mencegah function dibuat ulang
+  const sortData = useCallback(
+    (data: T[], sortKey: string, sortDirection: string) => {
+      return [...data].sort((a, b) => {
+        const aValue = a[sortKey];
+        const bValue = b[sortKey];
 
-      if (aValue < bValue) {
-        return sortDirection === 'asc' ? -1 : 1;
-      } else if (aValue > bValue) {
-        return sortDirection === 'asc' ? 1 : -1;
-      }
-      return 0;
-    });
-  }
+        if (aValue < bValue) {
+          return sortDirection === 'asc' ? -1 : 1;
+        } else if (aValue > bValue) {
+          return sortDirection === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+    },
+    []
+  );
 
   const sortedData = useMemo(() => {
-    let newData = data;
     if (!sortConfig.key) {
-      return newData;
+      return data;
     }
-    return sortData(newData, sortConfig.key, sortConfig.direction);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortConfig, data]);
+    return sortData(data, sortConfig.key, sortConfig.direction);
+  }, [sortConfig, data, sortData]);
 
-  function handleSort(key: string) {
-    let direction = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
-    }
-    setSortConfig({ key, direction });
-  }
+  // ✅ Gunakan useCallback untuk mencegah function dibuat ulang
+  const handleSort = useCallback((key: string) => {
+    setSortConfig((prev) => {
+      let direction = 'asc';
+      if (prev.key === key && prev.direction === 'asc') {
+        direction = 'desc';
+      }
+      return { key, direction };
+    });
+  }, []);
 
   /*
    * Handle pagination
    */
   const [currentPage, setCurrentPage] = useState(1);
-  function paginatedData(data: T[] = sortedData) {
-    const start = (currentPage - 1) * countPerPage;
-    const end = start + countPerPage;
 
-    if (data.length > start) return data.slice(start, end);
-    return data;
-  }
+  // ✅ Gunakan useCallback untuk mencegah function dibuat ulang
+  const paginatedData = useCallback(
+    (data: T[] = sortedData) => {
+      const start = (currentPage - 1) * countPerPage;
+      const end = start + countPerPage;
 
-  function handlePaginate(pageNumber: number) {
+      if (data.length > start) return data.slice(start, end);
+      return data;
+    },
+    [currentPage, countPerPage, sortedData]
+  );
+
+  const handlePaginate = useCallback((pageNumber: number) => {
     setCurrentPage(pageNumber);
-  }
+  }, []);
 
   /*
    * Handle delete
    */
-  function handleDelete(id: string | string[]) {
-    const updatedData = Array.isArray(id)
-      ? data.filter((item) => !id.includes(item.id))
-      : data.filter((item) => item.id !== id);
-
-    setData(updatedData);
-  }
+  const handleDelete = useCallback((id: string | string[]) => {
+    setData((prev) => {
+      if (Array.isArray(id)) {
+        return prev.filter((item) => !id.includes(item.id));
+      } else {
+        return prev.filter((item) => item.id !== id);
+      }
+    });
+  }, []);
 
   /*
    * Handle Filters and searching
@@ -114,83 +132,82 @@ export function useTable<T extends AnyObject>(
     initialFilterState ?? {}
   );
 
-  function updateFilter(columnId: string, filterValue: string | any[]) {
-    if (!Array.isArray(filterValue) && !isString(filterValue)) {
-      throw new Error('filterValue data type should be string or array of any');
-    }
+  // ✅ Gunakan useCallback untuk mencegah function dibuat ulang
+  const updateFilter = useCallback(
+    (columnId: string, filterValue: string | any[]) => {
+      if (!Array.isArray(filterValue) && !isString(filterValue)) {
+        throw new Error(
+          'filterValue data type should be string or array of any'
+        );
+      }
 
-    if (Array.isArray(filterValue) && filterValue.length !== 2) {
-      throw new Error('filterValue data must be an array of length 2');
-    }
+      if (Array.isArray(filterValue) && filterValue.length !== 2) {
+        throw new Error('filterValue data must be an array of length 2');
+      }
 
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [columnId]: filterValue,
-    }));
-  }
+      setFilters((prev) => ({
+        ...prev,
+        [columnId]: filterValue,
+      }));
+    },
+    []
+  );
 
-  function applyFilters() {
+  // ✅ Gunakan useMemo untuk mencegah applyFilters dihitung ulang
+  const applyFilters = useMemo(() => {
     const searchTermLower = searchTerm.toLowerCase();
 
-    return (
-      sortedData
-        .filter((item) => {
-          const isMatchingItem = Object.entries(filters).some(
-            ([columnId, filterValue]) => {
-              if (
-                Array.isArray(filterValue) &&
-                typeof filterValue[1] === 'object'
-              ) {
-                const itemValue = new Date(item[columnId]);
-                return (
-                  // @ts-ignore
-                  itemValue >= filterValue[0] && itemValue <= filterValue[1]
-                );
-              }
-              if (
-                Array.isArray(filterValue) &&
-                typeof filterValue[1] === 'string'
-              ) {
-                const itemPrice = Math.ceil(Number(item[columnId]));
-                return (
-                  itemPrice >= Number(filterValue[0]) &&
-                  itemPrice <= Number(filterValue[1])
-                );
-              }
-              if (isString(filterValue) && !Array.isArray(filterValue)) {
-                const itemValue = item[columnId]?.toString().toLowerCase();
-                if (itemValue !== filterValue.toString().toLowerCase()) {
-                  return false;
-                }
-                return true;
-              }
+    return sortedData
+      .filter((item) => {
+        const isMatchingItem = Object.entries(filters).some(
+          ([columnId, filterValue]) => {
+            if (
+              Array.isArray(filterValue) &&
+              typeof filterValue[1] === 'object'
+            ) {
+              const itemValue = new Date(item[columnId]);
+              return (
+                // @ts-ignore
+                itemValue >= filterValue[0] && itemValue <= filterValue[1]
+              );
             }
-          );
-          return isMatchingItem;
-        })
-        // global search after running filters
-        .filter((item) =>
-          Object.values(item).some((value) =>
-            typeof value === 'object'
-              ? value &&
-                Object.values(value).some(
-                  (nestedItem) =>
-                    nestedItem &&
-                    String(nestedItem).toLowerCase().includes(searchTermLower)
-                )
-              : value && String(value).toLowerCase().includes(searchTermLower)
-          )
+            if (
+              Array.isArray(filterValue) &&
+              typeof filterValue[1] === 'string'
+            ) {
+              const itemPrice = Math.ceil(Number(item[columnId]));
+              return (
+                itemPrice >= Number(filterValue[0]) &&
+                itemPrice <= Number(filterValue[1])
+              );
+            }
+            if (isString(filterValue) && !Array.isArray(filterValue)) {
+              const itemValue = item[columnId]?.toString().toLowerCase();
+              if (itemValue !== filterValue.toString().toLowerCase()) {
+                return false;
+              }
+              return true;
+            }
+          }
+        );
+        return isMatchingItem;
+      })
+      .filter((item) =>
+        Object.values(item).some((value) =>
+          typeof value === 'object'
+            ? value &&
+              Object.values(value).some(
+                (nestedItem) =>
+                  nestedItem &&
+                  String(nestedItem).toLowerCase().includes(searchTermLower)
+              )
+            : value && String(value).toLowerCase().includes(searchTermLower)
         )
-    );
-  }
-  /*
-   * Handle searching
-   */
-  function handleSearch(searchValue: string) {
-    setSearchTerm(searchValue);
-  }
+      );
+  }, [sortedData, filters, searchTerm]);
 
-  function searchedData() {
+  // ✅ Gunakan useMemo untuk mencegah searchedData dihitung ulang
+  const searchedData = useMemo(() => {
     if (!searchTerm) return sortedData;
 
     const searchTermLower = searchTerm.toLowerCase();
@@ -207,43 +224,75 @@ export function useTable<T extends AnyObject>(
           : value && String(value).toLowerCase().includes(searchTermLower)
       )
     );
-  }
+  }, [sortedData, searchTerm]);
+
+  /*
+   * Handle searching
+   */
+  const handleSearch = useCallback((searchValue: string) => {
+    setSearchTerm(searchValue);
+  }, []);
 
   /*
    * Reset search and filters
    */
-  function handleReset() {
-    setData(() => initialData);
-    handleSearch('');
-    if (initialFilterState) return setFilters(initialFilterState);
-  }
+  const handleReset = useCallback(() => {
+    setData(initialData);
+    setSearchTerm('');
+    if (initialFilterState) {
+      setFilters(initialFilterState);
+    }
+  }, [initialData, initialFilterState]);
 
   /*
    * Set isFiltered and final filtered data
    */
-  const isFiltered = applyFilters().length > 0;
-  function calculateTotalItems() {
+  const isFiltered = applyFilters.length > 0;
+
+  // ✅ Gunakan useMemo untuk mencegah calculateTotalItems dihitung ulang
+  const totalItems = useMemo(() => {
     if (isFiltered) {
-      return applyFilters().length;
+      return applyFilters.length;
     }
     if (searchTerm) {
-      return searchedData().length;
+      return searchedData.length;
     }
     return sortedData.length;
-  }
-  const filteredAndSearchedData = isFiltered ? applyFilters() : searchedData();
-  const tableData = paginatedData(filteredAndSearchedData);
+  }, [
+    isFiltered,
+    applyFilters.length,
+    searchTerm,
+    searchedData.length,
+    sortedData.length,
+  ]);
+
+  // ✅ Gunakan useMemo untuk mencegah filteredAndSearchedData dihitung ulang
+  const filteredAndSearchedData = useMemo(() => {
+    return isFiltered ? applyFilters : searchedData;
+  }, [isFiltered, applyFilters, searchedData]);
+
+  // ✅ Gunakan useMemo untuk mencegah tableData dihitung ulang
+  const tableData = useMemo(() => {
+    return paginatedData(filteredAndSearchedData);
+  }, [paginatedData, filteredAndSearchedData]);
 
   /*
    * Go to first page when data is filtered and searched
    */
   useEffect(() => {
     handlePaginate(1);
-  }, [isFiltered, searchTerm]);
+  }, [isFiltered, searchTerm, handlePaginate]);
 
+  // ✅ Optimasi: Hanya update data jika benar-benar berubah
   useEffect(() => {
     if (!initialData) return;
-    setData(initialData);
+    // Gunakan JSON.stringify untuk deep comparison
+    setData((prev) => {
+      if (JSON.stringify(prev) !== JSON.stringify(initialData)) {
+        return initialData;
+      }
+      return prev;
+    });
   }, [initialData]);
 
   useEffect(() => {
@@ -259,7 +308,7 @@ export function useTable<T extends AnyObject>(
     // pagination
     currentPage,
     handlePaginate,
-    totalItems: calculateTotalItems(),
+    totalItems,
     // sorting
     sortConfig,
     handleSort,

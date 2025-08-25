@@ -2,8 +2,12 @@ import { get, put } from '@/config/base-api';
 import { IGetSmtpConfigResponse } from '@/types/ApiResponse';
 import { IPayloadUpdateSmtpConfig } from '@/types/paramTypes';
 
-export async function getSmptConfig() {
-  return get<IGetSmtpConfigResponse>('/admin/setting/smtp');
+export async function getSmptConfig(clinicId?: number) {
+  return get<IGetSmtpConfigResponse>('/admin/setting/smtp', {
+    params: {
+      clinicId,
+    },
+  });
 }
 
 export async function putUpdateSmptConfig(payload: IPayloadUpdateSmtpConfig) {

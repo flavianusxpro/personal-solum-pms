@@ -47,7 +47,7 @@ export const doctorDetailsFormSchema = z.object({
     }),
 
   doctorType: z.array(z.string()).optional(),
-  about: z.string().optional(),
+  description: z.string().optional(),
   avatar: fileSchema.optional().nullable(),
 });
 

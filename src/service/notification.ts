@@ -8,15 +8,15 @@ import {
   IPayloadUpdateSmsNotificationSettings,
 } from '@/types/paramTypes';
 
-export async function getEmailNotificationSettings() {
+export async function getEmailNotificationSettings(clinicId?: number) {
   return get<IGetEmailNotificationSettingsResponse>(
-    '/admin/notification/email'
+    `/admin/notification/email?clinicId=${clinicId}`
   ).then((res) => res.data);
 }
 
-export async function getSmsNotificationSettings() {
+export async function getSmsNotificationSettings(clinicId?: number) {
   return get<IGetSmsNotificationSettingsResponse>(
-    '/admin/notification/sms'
+    `/admin/notification/sms?clinicId=${clinicId}`
   ).then((res) => res.data);
 }
 

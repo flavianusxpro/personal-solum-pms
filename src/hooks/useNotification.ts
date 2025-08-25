@@ -6,17 +6,19 @@ import {
 } from '@/service/notification';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-export function useGetEmailNotificationSettings() {
+export function useGetEmailNotificationSettings(clinicId?: number) {
   return useQuery({
     queryKey: ['getEmailNotificationSettings'],
-    queryFn: () => getEmailNotificationSettings(),
+    queryFn: () => getEmailNotificationSettings(clinicId),
+    enabled: !!clinicId,
   });
 }
 
-export function useGetSmsNotificationSettings() {
+export function useGetSmsNotificationSettings(clinicId?: number) {
   return useQuery({
     queryKey: ['getSmsNotificationSettings'],
-    queryFn: () => getSmsNotificationSettings(),
+    queryFn: () => getSmsNotificationSettings(clinicId),
+    enabled: !!clinicId,
   });
 }
 

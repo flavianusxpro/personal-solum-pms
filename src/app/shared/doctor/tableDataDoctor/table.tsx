@@ -18,6 +18,7 @@ import debounce from 'lodash/debounce';
 import dayjs from 'dayjs';
 import TableFooter from '../../ui/table-footer';
 import useAcl from '@/core/hooks/use-acl';
+import { useProfile } from '@/hooks/useProfile';
 
 // dynamic import
 const FilterElement = dynamic(
@@ -40,6 +41,8 @@ export default function DoctorTable({}: {}) {
     search: '',
   });
 
+  const { data: dataProfile } = useProfile(true);
+
   const {
     data,
     isLoading: isLoadingGetAllDoctors,
@@ -55,6 +58,7 @@ export default function DoctorTable({}: {}) {
       : undefined,
     q: JSON.stringify({ name: params.search }),
     isEnable: true,
+    clinicId: dataProfile?.clinics?.[0]?.id,
   });
 
   const { data: dataSpecialists } = useGetSpecialists({

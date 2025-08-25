@@ -44,12 +44,15 @@ export default function DoctorCost(data: IProps) {
   const { data: dataTreatments } = useGetTreatments({
     page: 1,
     perPage: 100,
+    doctorId,
   });
   const { data: dataDoctorCost, refetch: refetchDoctorCost } =
     useGetDoctorCostById(doctorId as unknown as number);
 
-  const { mutate: mutateCreate } = usePostCreateDoctorCost();
-  const { mutate: mutateUpdate } = usePutUpdateDoctorCost();
+  const { mutate: mutateCreate, isPending: isPendingCreate } =
+    usePostCreateDoctorCost();
+  const { mutate: mutateUpdate, isPending: isPendingUpdate } =
+    usePutUpdateDoctorCost();
 
   const treatmentOptions = useMemo(() => {
     if (!dataTreatments) return [];
@@ -121,7 +124,7 @@ export default function DoctorCost(data: IProps) {
         },
       }}
     >
-      {({ register, control, formState: { errors } }) => {
+      {({ register, control, setValue, formState: { errors } }) => {
         return (
           <div className="flex flex-col gap-6 pt-2">
             <FormHeader title={`${id ? 'Edit' : 'Create'} Treatment Cost`} />
@@ -133,6 +136,14 @@ export default function DoctorCost(data: IProps) {
                 render={({ field }) => (
                   <CSelect
                     {...field}
+                    onChange={(value) => {
+                      field.onChange(value);
+                      setValue(
+                        'amount',
+                        dataTreatments?.data.find((item) => item.id === value)
+                          ?.amount || ''
+                      );
+                    }}
                     label="Treatment"
                     placeholder="Select Treatment"
                     error={
@@ -142,10 +153,18 @@ export default function DoctorCost(data: IProps) {
                   />
                 )}
               />
+              {/* <Input
+                {...register(`amount`)}
+                prefix={`${currency.active.symbol}`}
+                label="Amount"
+                placeholder="Enter Amount"
+                error={errors?.amount?.message}
+                className="w-full"
+                type="number"
+                disabled={true}
+              /> */}
               <Input
-                {...register(`amount`, {
-                  required: 'Amount is required',
-                })}
+                {...register(`amount`)}
                 prefix={`${currency.active.symbol}`}
                 label="Amount"
                 placeholder="Enter Amount"
@@ -156,7 +175,7 @@ export default function DoctorCost(data: IProps) {
             </div>
             <FormFooter
               className="rounded-b-xl"
-              //   isLoading={isPending}
+              isLoading={isPendingCreate || isPendingUpdate}
               altBtnText="Cancel"
               submitBtnText="Save"
             />

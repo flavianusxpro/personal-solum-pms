@@ -1,12 +1,11 @@
 import { del, get, post, put } from '@/config/base-api';
-import { getSubClinicApi } from '@/config/sub-clinic-api';
-import { connectionAtom } from '@/store/connection';
 import {
   IGetAllDoctorsResponse,
   IGetAnalyticReportBillingByDoctorIdResponse,
   IGetDoctorByClinicResponse,
   IGetDoctorByIdResponse,
   IGetDoctorCostByIdResponse,
+  IGetTreatmentsFromMasterResponse,
   IGetSpecialistResponse,
   IGetTreatmentResponse,
   IPostGetDoctorAvailabilityByClinicResponse,
@@ -194,4 +193,10 @@ export async function putUpdateDoctorCost(payload: IPayloadDoctorCost) {
 
 export async function deleteDoctorCost(ids: number[]) {
   return await del<any>(`/admin/doctor/cost/`, { data: { ids } });
+}
+
+export async function getTreatmentsFromMaster(doctorId: number) {
+  return await get<IGetTreatmentsFromMasterResponse>(
+    `/admin/doctor/cost/master/${doctorId}`
+  );
 }

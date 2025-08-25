@@ -22,9 +22,11 @@ const STEP = {
 const PriceEstimationCost = ({
   className,
   showCancelButton = true,
+  onSuccessPayment,
 }: {
   className?: string;
   showCancelButton?: boolean;
+  onSuccessPayment?: () => void;
 }) => {
   const { closeModal } = useModal();
 
@@ -90,6 +92,7 @@ const PriceEstimationCost = ({
       onSuccess: () => {
         setStep(STEP.CONFIRM);
         toast.success('Booking successful!');
+        onSuccessPayment?.();
       },
       onError: (error: any) => {
         toast.error('Booking failed: ' + error.response.data.message);

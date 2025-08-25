@@ -5,6 +5,7 @@ import {
   Calendar,
   dayjsLocalizer,
   NavigateAction,
+  ToolbarProps,
   View,
 } from 'react-big-calendar';
 import dayjs from 'dayjs';
@@ -14,7 +15,7 @@ import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import { useParams } from 'next/navigation';
 import ModalButton from '../../ui/modal/modal-button';
 import CreateScheduleForm from '../../calendar/create-schedule-form';
-import { Flex, Loader } from 'rizzui';
+import { Button, Flex, Loader, Text } from 'rizzui';
 import { DoctorSchedule } from '@/types/ApiResponse';
 import DetailsSchedule from '../../calendar/details-schedule';
 import {
@@ -23,6 +24,7 @@ import {
 } from '@/hooks/useSchedule';
 import { useGetDoctorById } from '@/hooks/useDoctor';
 import { formatTime } from '@/core/utils/format-date';
+import { PiPlus } from 'react-icons/pi';
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -91,7 +93,6 @@ export default function TabCalendar({
         month: true,
         week: true,
         day: true,
-        agenda: true,
       },
       scrollToTime: new Date(),
       formats: {
@@ -139,6 +140,48 @@ export default function TabCalendar({
     []
   );
 
+  const CustomToolbar = useCallback(
+    (props: ToolbarProps<DoctorSchedule, any>) => {
+      const { label, views, onView, onNavigate } = props;
+      return (
+        <div className="rbc-toolbar flex w-full items-center justify-between">
+          <div className="">
+            <span className="rbc-btn-group">
+              <button onClick={() => onNavigate('TODAY')} type="button">
+                Today
+              </button>
+              <button onClick={() => onNavigate('PREV')} type="button">
+                Back
+              </button>
+              <button onClick={() => onNavigate('NEXT')} type="button">
+                Next
+              </button>
+            </span>
+            <Text className="mt-2 text-xs text-gray-500">
+              All schedules follow Australia/Sydney timezone
+            </Text>
+          </div>
+          <div className="rbc-toolbar-label">
+            <Text className="">{label}</Text>
+          </div>
+          <div className="rbc-btn-group">
+            {(views as string[])?.map((view: string) => (
+              <button
+                type="button"
+                className="capitalize"
+                key={view}
+                onClick={() => onView(view as View)}
+              >
+                {view}
+              </button>
+            ))}
+          </div>
+        </div>
+      );
+    },
+    []
+  );
+
   return (
     <div className="@container">
       <Flex className="flex w-full items-center justify-end">
@@ -172,6 +215,9 @@ export default function TabCalendar({
           calendarToolbarClassName,
           colorPresetName === 'black' && rtcEventClassName
         )}
+        components={{
+          toolbar: CustomToolbar,
+        }}
         onNavigate={onNavigate}
       />
     </div>
