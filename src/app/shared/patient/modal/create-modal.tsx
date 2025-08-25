@@ -19,10 +19,12 @@ import dayjs from 'dayjs';
 import { DatePicker } from '@/core/ui/datepicker';
 import { PhoneNumber } from '@/core/ui/phone-input';
 import FormHeader from '@/core/components/form-header';
+import { useProfile } from '@/hooks/useProfile';
 
 export default function CreatePatienModal() {
   const { closeModal } = useModal();
 
+  const { data: dataProfile } = useProfile(true);
   const { refetch } = useGetAllPatients({
     page: 1,
     perPage: 10,
@@ -52,6 +54,7 @@ export default function CreatePatienModal() {
       country: data.country,
       position_of_card: data.position_of_card,
       patient_type: 'New Patient',
+      clinicId: dataProfile?.clinics[0].id,
     };
 
     mutateCreatePatient(payload, {

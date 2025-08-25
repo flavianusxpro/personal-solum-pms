@@ -33,7 +33,8 @@ export const settingsDoctorSchema = z.object({
     z.object({
       costId: z.number().optional(),
       treatmentId: z.number(),
-      amount: z.string().min(1, { message: 'Amount is required' }),
+      amount: z.string().optional(),
+      amount_moderated: z.string().optional(),
     })
   ),
   doctor_timezone: z.string().optional(),

@@ -91,6 +91,7 @@ export default function CreateEditSmsTemplateModal({
       }}
     >
       {({ register, control, watch, formState: { errors } }) => {
+        console.log('🚀 ~ errors:', errors);
         return (
           <div className="flex flex-col gap-6 px-6 pt-6">
             <Flex justify="between" align="center" gap="4">
@@ -122,10 +123,11 @@ export default function CreateEditSmsTemplateModal({
                   labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
                   helperText={
                     <Text className="text-sm text-gray-500">
-                      min. 10 / max. 100, Characters:{' '}
+                      min. 10 / max. 300, Characters:{' '}
                       {watch('text')?.length || 0}
                     </Text>
                   }
+                  error={errors.text?.message}
                 />
               )}
             />

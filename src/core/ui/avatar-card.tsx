@@ -42,7 +42,13 @@ export default function AvatarCard({
 
   return (
     <figure className={cn('flex items-center gap-3', className)}>
-      <Avatar name={name} src={src} {...avatarProps} />
+      <div
+        onContextMenu={(e) => e.preventDefault()}
+        style={{ userSelect: 'none' }}
+        className="select-none"
+      >
+        <Avatar name={name} src={src} {...avatarProps} />
+      </div>
       <figcaption className="grid gap-0.5">
         <div className="flex items-center gap-2">
           <Text

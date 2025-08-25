@@ -25,6 +25,7 @@ import {
 import { useGetSmtpConfig, useUpdateSmtpConfig } from '@/hooks/useSmpt';
 import { useGetAwsS3Config, useUpdateAwsS3Config } from '@/hooks/useAws';
 import { useState } from 'react';
+import { useProfile } from '@/hooks/useProfile';
 
 const types: SelectOption[] = [
   {
@@ -47,11 +48,16 @@ const types: SelectOption[] = [
 
 export default function Communication() {
   const [smtpMode, setSmtpMode] = useState<'manual' | 'aws'>('manual');
+  const { data: dataProfile } = useProfile(true);
 
-  const { data: dataSmtp, isLoading: isLoadingGetSmtp } = useGetSmtpConfig();
+  const { data: dataSmtp, isLoading: isLoadingGetSmtp } = useGetSmtpConfig(
+    dataProfile?.clinics[0].id
+  );
   const { data: dataTwilio, isLoading: isLoadingGetTwilio } =
-    useGetTwilioConfig();
-  const { data: dataAwsS3, isLoading: isLoadingGetAwsS3 } = useGetAwsS3Config();
+    useGetTwilioConfig(dataProfile?.clinics[0].id);
+  const { data: dataAwsS3, isLoading: isLoadingGetAwsS3 } = useGetAwsS3Config(
+    dataProfile?.clinics[0].id
+  );
 
   const { mutate: mutateUpdateSmtp, isPending: isPendingUpdateSmtp } =
     useUpdateSmtpConfig();
@@ -62,6 +68,7 @@ export default function Communication() {
 
   const onSubmit: SubmitHandler<SettingCommunicationFormTypes> = (data) => {
     const payloadTwilioConfig: IPayloadUpdateTwilioConfig = {
+      clinicId: dataProfile?.clinics[0].id || 0,
       account_id: data.twillio_id_key || '',
       auth_token: data.twillio_auth_token || '',
       from_number: data.twillio_phone_number || '',
@@ -69,6 +76,7 @@ export default function Communication() {
     };
 
     const payloadSmtpConfig: IPayloadUpdateSmtpConfig = {
+      clinicId: dataProfile?.clinics[0].id || 0,
       smtp_host: data.smtp_host || '',
       mail_from: data.smtp_email_address || '',
       smtp_port: data.smtp_port || '',
@@ -78,6 +86,7 @@ export default function Communication() {
     };
 
     const payloadAwsS3Config: IPayloadUpdateAwsS3Config = {
+      clinicId: dataProfile?.clinics[0].id || 0,
       aws_access_id: data.aws_id || '',
       aws_secret_key: data.aws_secret_key || '',
       bucket: data.aws_bucket || '',

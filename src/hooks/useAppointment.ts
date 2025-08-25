@@ -12,7 +12,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 export function useGetAppointments(params: IParamGetAppointments) {
   return useQuery({
-    queryKey: ['getAppointments' + params],
+    queryKey: ['getAppointments' + params + params.patientId],
     queryFn: async () => getAppointmentList(params),
   });
 }

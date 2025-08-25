@@ -40,23 +40,19 @@ export const getColumns = ({ data, openModal }: Columns) => {
 
 function getRowAppointment(value: string, type: string) {
   let bgColor = '';
-  switch (type) {
-    case 'INITIAL':
-      bgColor = 'bg-green-600';
-      break;
-    case 'FOLLOWUP':
-      bgColor = 'bg-blue-600';
-      break;
-    case 'SCRIPT_RENEWAL':
-      bgColor = 'bg-yellow-600';
-      break;
-    case 'RESCHEDULED':
-      bgColor = 'bg-pink-600';
-      break;
-    default:
-      bgColor = '';
-      break;
+  if (type?.toLowerCase().includes('initial')) {
+    bgColor = 'bg-green-600';
+  } else if (type?.toLowerCase().includes('follow')) {
+    bgColor = 'bg-blue-600';
+  } else if (type?.toLowerCase().includes('script')) {
+    bgColor = 'bg-yellow-600';
+  } else if (type?.toLowerCase().includes('rescheduled')) {
+    bgColor = 'bg-pink-600';
+  } else {
+    bgColor = 'bg-gray-600';
   }
+
+  if (!value) return null;
 
   return (
     <div className={cn('w-fit rounded-md p-2', bgColor)}>

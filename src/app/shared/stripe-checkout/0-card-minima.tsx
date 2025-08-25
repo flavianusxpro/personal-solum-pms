@@ -84,6 +84,7 @@ function CheckoutForm({
       <CardElement
         className="rounded-md border border-gray-300 p-2"
         options={{
+          hidePostalCode: true,
           style: {
             base: {
               fontSize: '16px',

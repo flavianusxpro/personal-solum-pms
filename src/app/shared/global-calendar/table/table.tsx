@@ -7,12 +7,11 @@ import { useModal } from '../../modal-views/use-modal';
 import { useGetAppointments } from '@/hooks/useAppointment';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 import TableHeader from '../../ui/table-header';
-import CSelect from '../../ui/select';
 import { Flex, Input, Loader } from 'rizzui';
 import { PiArrowLeft, PiArrowRight } from 'react-icons/pi';
 import dayjs from 'dayjs';
 import ActionButton from '../../ui/action-tooltip-button';
-import { useGetAllClinics } from '@/hooks/useClinic';
+import { useProfile } from '@/hooks/useProfile';
 
 export default function GlobalCalendarTable({}: {}) {
   const { openModal } = useModal();
@@ -20,8 +19,8 @@ export default function GlobalCalendarTable({}: {}) {
   const [selectedDate, setSelectedDate] = useState(
     dayjs().format('YYYY-MM-DD')
   );
-  const [selectedBranch, setSelectedBranch] = useState<number | null>(null);
 
+  const { data: dataProfile } = useProfile(true);
   const {
     data,
     isLoading: isLoadingGetAppointments,
@@ -32,25 +31,8 @@ export default function GlobalCalendarTable({}: {}) {
     sort: 'DESC',
     from: selectedDate,
     to: selectedDate,
-    clinicId: selectedBranch || undefined,
+    clinicId: dataProfile?.clinics[0]?.id || 0,
   });
-
-  const { data: dataClinics } = useGetAllClinics({
-    page: 1,
-    perPage: 100,
-    sort: 'DESC',
-    role: 'admin',
-  });
-
-  const clinicOptions = useMemo(() => {
-    if (dataClinics?.data) {
-      return dataClinics.data.map((clinic) => ({
-        label: clinic.name,
-        value: clinic.id,
-      }));
-    }
-    return [];
-  }, [dataClinics]);
 
   function previousDate() {
     setSelectedDate((prevDate) => {
@@ -90,7 +72,7 @@ export default function GlobalCalendarTable({}: {}) {
 
   const formatAppointments = useCallback(
     (data: IGetAppointmentListResponse['data']) => {
-      const timeSlots = getTimeSlots('09:00', '17:00', 15);
+      const timeSlots = getTimeSlots('00:00', '23:59', 15);
 
       const doctors = Array.from(
         new Set(
@@ -142,7 +124,7 @@ export default function GlobalCalendarTable({}: {}) {
 
   useEffect(() => {
     refetch();
-  }, [selectedDate, selectedBranch, refetch]);
+  }, [selectedDate, refetch]);
 
   return (
     <div>
@@ -156,14 +138,6 @@ export default function GlobalCalendarTable({}: {}) {
           variant="bordered"
           tableHeader={
             <TableHeader isCustomHeader checkedItems={[]}>
-              <CSelect
-                value={selectedBranch}
-                className="w-40"
-                placeholder="Select Branch"
-                options={clinicOptions}
-                onChange={(val: number) => setSelectedBranch(val)}
-              />
-
               <Flex className="w-fit" align="center">
                 <ActionButton
                   variant="outline"

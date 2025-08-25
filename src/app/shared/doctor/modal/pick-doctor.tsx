@@ -22,30 +22,30 @@ import {
   pickDoctorFormSchema,
   PickDoctorFormTypes,
 } from '@/validators/pick-doctor.schema';
+import { useProfile } from '@/hooks/useProfile';
 
 export default function PickDoctorModal() {
   const { closeModal } = useModal();
 
   const { mutate: mutateCreateDoctor, isPending } = usePostCreateDoctorUser();
 
+  const { data: dataProfile } = useProfile(true);
   const { data: doctorRole } = useGetRoles({
     page: 1,
     perPage: 100,
   });
 
-  const {
-    data: dataGetAllDoctorsFromMain,
-    isLoading: isLoadingGetAllDoctorsFromMain,
-    error: errorGetAllDoctorsFromMain,
-  } = useGetDoctorSharingFromMain({
+  const { data: dataGetAllDoctorsFromMain } = useGetAllDoctors({
     page: 1,
     perPage: 100,
+    isEnable: true,
   });
 
   const { data: dataDoctors } = useGetAllDoctors({
     page: 1,
     perPage: 100,
     isEnable: true,
+    clinicId: dataProfile?.clinics?.[0]?.id,
   });
 
   const { data: dataClinics } = useGetAllClinics({
@@ -170,16 +170,6 @@ export default function PickDoctorModal() {
     });
   };
 
-  useEffect(() => {
-    if (errorGetAllDoctorsFromMain) {
-      const errorMessage =
-        (errorGetAllDoctorsFromMain as any)?.response?.data?.message ||
-        errorGetAllDoctorsFromMain.message ||
-        'An error occurred while fetching doctors';
-      toast.error(errorMessage);
-    }
-  }, [errorGetAllDoctorsFromMain]);
-
   return (
     <Form<PickDoctorFormTypes>
       validationSchema={pickDoctorFormSchema}
@@ -206,7 +196,7 @@ export default function PickDoctorModal() {
                       options={doctorsOptions}
                       placeholder="Select Doctor"
                       className="w-full"
-                      isLoading={isLoadingGetAllDoctorsFromMain}
+                      isLoading={isPending}
                     />
                   )}
                 />

@@ -51,6 +51,7 @@ import PencilIcon from '@core/components/icons/pencil';
 import { useModal } from '../../modal-views/use-modal';
 import DoctorCost from '../modal/doctor-cost';
 import ActionTooltipButton from '../../ui/action-button';
+import DoctorCostMaster from '../modal/doctor-cost-master';
 
 export default function TabSettings({ isView = false }: { isView?: boolean }) {
   const { openModal } = useModal();
@@ -62,6 +63,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
   const { data: dataTreatments } = useGetTreatments({
     page: 1,
     perPage: 100,
+    doctorId: Number(id),
   });
 
   const { mutate: mutateUpdateMeeting, isPending: isPendingUpdateMeeting } =
@@ -112,10 +114,17 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
   function treatmentCostModal(
     id?: number,
     treatmentId?: number,
-    amount?: string
+    amount?: string,
+    amount_moderated?: string
   ) {
     return openModal({
       view: <DoctorCost id={id} amount={amount} treatmentId={treatmentId} />,
+    });
+  }
+
+  function treatmentCostModalFromMaster(id?: number) {
+    return openModal({
+      view: <DoctorCostMaster />,
     });
   }
 
@@ -263,6 +272,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
         costId: item.id,
         treatmentId: item.treatmentId,
         amount: item.amount,
+        amount_moderated: item.amount_moderated,
       }));
       replaceCosts(costs);
     }
@@ -455,15 +465,13 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
           <FormGroup title="Cost Setup">
             <Flex justify="between" align="center" gap="4">
               <Text className="font-semibold">Treatment</Text>
-              <Text className="font-semibold">Amount</Text>
+              <Text className="font-semibold">Amount Moderated</Text>
               <Text className="font-semibold">Action</Text>
             </Flex>
             {fieldsCosts?.map((item, index) => (
               <Flex justify="between" align="center" key={item.id} gap="4">
-                <Text className="w-full">
-                  {findTreatment(item.treatmentId)}
-                </Text>
-                <Text className="w-1/2">{item.amount}</Text>
+                <Text className="w-1/2">{findTreatment(item.treatmentId)}</Text>
+                <Text className="w-1/2">{item.amount_moderated}</Text>
                 {!isView && (
                   <Flex justify="end" className="w-1/2">
                     <ActionTooltipButton
@@ -473,7 +481,8 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                         treatmentCostModal(
                           item.costId,
                           item.treatmentId,
-                          item.amount
+                          item.amount,
+                          item.amount_moderated
                         )
                       }
                     >
@@ -516,6 +525,15 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                 Add Treatment Cost
               </Button>
             )}
+            <Button
+              onClick={() => {
+                treatmentCostModalFromMaster();
+              }}
+              variant="flat"
+              className="w-1/4"
+            >
+              List Treatment Cost From Master
+            </Button>
           </FormGroup>
 
           <Divider className="" />
@@ -531,7 +549,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                     label="Initial Appointment Duration"
                     placeholder="Select Initial Appointment Duration"
                     error={errors.initial_appointment_time?.message}
-                    disabled={isView}
+                    disabled={true}
                     options={[
                       { label: '15 minutes', value: 15 },
                       { label: '30 minutes', value: 30 },
@@ -550,7 +568,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                     label="Follow Up Appointment Duration"
                     placeholder="Select Follow Up Appointment Duration"
                     error={errors.follow_up_appointment_time?.message}
-                    disabled={isView}
+                    disabled={true}
                     options={[
                       { label: '15 minutes', value: 15 },
                       { label: '30 minutes', value: 30 },
@@ -574,7 +592,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
                     label="Doctor Timezone"
                     placeholder="Select Doctor Timezone"
                     error={errors.doctor_timezone?.message}
-                    disabled={isView}
+                    disabled={true}
                     options={timeZoneOptions}
                   />
                 )}
@@ -632,7 +650,7 @@ function MeetingCard(props: IMeetingCard) {
             {content}
           </Text>
           <Accordion>
-            {useConfigure && (
+            {/* {useConfigure && (
               <Accordion.Header className="text-left" type="button">
                 {({ open }) => (
                   <span className="mt-3 inline-block w-auto flex-shrink-0 justify-start p-0 text-xs font-medium capitalize text-gray-900">
@@ -642,7 +660,7 @@ function MeetingCard(props: IMeetingCard) {
               </Accordion.Header>
             )}
 
-            <Accordion.Body className="pt-7">{children}</Accordion.Body>
+            <Accordion.Body className="pt-7">{children}</Accordion.Body> */}
           </Accordion>
         </div>
       </div>

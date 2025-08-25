@@ -9,12 +9,12 @@ import {
 } from '@/service/invoice';
 import { IParamGetAppointments } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import dayjs from 'dayjs';
 
 export function useGetInvoices(params: IParamGetAppointments) {
   return useQuery({
-    queryKey: ['getInvoices' + params],
+    queryKey: ['getInvoices', params],
     queryFn: async () => getInvoiceList(params),
+    enabled: Boolean(params.clinicId),
   });
 }
 

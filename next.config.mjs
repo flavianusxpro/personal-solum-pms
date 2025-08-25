@@ -62,6 +62,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'cdn.alarmexpert.com.au',
       },
+      {
+        protocol: 'https',
+        hostname: 'saas-clinic.s3.ap-southeast-2.amazonaws.com',
+      },
     ],
   },
   reactStrictMode: false,

@@ -23,6 +23,7 @@ import {
   deleteDoctorCost,
   getDoctorListFromMain,
   getDoctorSharingFromMain,
+  getTreatmentsFromMaster,
 } from '@/service/doctor';
 
 import {
@@ -30,6 +31,7 @@ import {
   IParamGetAllDoctorForSubClinic,
   IParamGetDoctorSharing,
   IParamGetSpecialists,
+  IParamGetTreatments,
 } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -37,7 +39,7 @@ export function useGetAllDoctors(params: IParamGetAllDoctor) {
   return useQuery({
     queryKey: ['doctors' + params],
     queryFn: async () => getDoctorList(params),
-    enabled: !!params && params.isEnable === true,
+    enabled: Boolean(params.clinicId),
   });
 }
 
@@ -153,7 +155,7 @@ export function useDeleteSpecialist() {
   });
 }
 
-export function useGetTreatments(params: IParamGetSpecialists) {
+export function useGetTreatments(params: IParamGetTreatments) {
   return useQuery({
     queryKey: ['getTreatments'],
     queryFn: async () => {
@@ -161,6 +163,16 @@ export function useGetTreatments(params: IParamGetSpecialists) {
     },
     staleTime: 1000 * 60 * 10, // 10 minutes
     refetchOnWindowFocus: false,
+  });
+}
+
+export function useGetTreatmentsFromMaster(doctorId: number) {
+  return useQuery({
+    queryKey: ['getTreatmentsFromMaster' + doctorId],
+    queryFn: async () => {
+      return await getTreatmentsFromMaster(doctorId);
+    },
+    enabled: !!doctorId,
   });
 }
 

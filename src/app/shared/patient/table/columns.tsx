@@ -155,7 +155,7 @@ export const getColumns = ({
     key: 'status',
     width: 110,
     render: (value: number, row: Row) => (
-      <StatusSelect selectItem={value} id={row?.patient_id} />
+      <StatusSelect selectItem={value || 1} id={row?.patient_id} />
     ),
   },
   {

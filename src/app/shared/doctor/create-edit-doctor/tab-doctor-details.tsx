@@ -358,6 +358,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
                     placeholder="About Doctor"
                     error={errors.about?.message}
                     className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[300px]"
+                    readOnly={isView}
                   />
                 )}
               />

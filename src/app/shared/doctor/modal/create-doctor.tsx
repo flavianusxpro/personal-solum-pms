@@ -7,15 +7,22 @@ import { Form } from '@core/ui/form';
 import { FieldError, Input } from 'rizzui';
 import CSelect from '@/core/ui/select';
 import { genderOption, languageOption, stateOption } from '@/config/constants';
-import { IPayloadCreateDoctorUser } from '@/types/paramTypes';
+import {
+  IPayloadCreateDoctor,
+  IPayloadCreateDoctorUser,
+  IPayloadCreateEditDoctor,
+} from '@/types/paramTypes';
 import {
   doctorDetailsFormSchema,
   DoctorDetailsFormTypes,
 } from '@/validators/create-doctor.schema';
 import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
-import { usePostCreateDoctorUser } from '@/hooks/useUser';
-import { useGetSpecialists, useGetTreatments } from '@/hooks/useDoctor';
+import {
+  useCreateDoctor,
+  useGetSpecialists,
+  useGetTreatments,
+} from '@/hooks/useDoctor';
 import { useMemo } from 'react';
 import SelectLoader from '@/core/components/loader/select-loader';
 import dynamic from 'next/dynamic';
@@ -24,6 +31,7 @@ import { useGetAllClinics } from '@/hooks/useClinic';
 import { PhoneNumber } from '@/core/ui/phone-input';
 import FormHeader from '@/core/components/form-header';
 import QuillLoader from '@/core/components/loader/quill-loader';
+import { useProfile } from '@/hooks/useProfile';
 
 const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
   ssr: false,
@@ -41,7 +49,9 @@ const MultySelect = dynamic(
 export default function CreatDoctorModal() {
   const { closeModal } = useModal();
 
-  const { mutate: mutateCreateDoctor, isPending } = usePostCreateDoctorUser();
+  const { mutate: mutateCreateDoctor, isPending } = useCreateDoctor();
+
+  const { data: dataProfile } = useProfile(true);
   const { data: dataSpecialists } = useGetSpecialists({
     perPage: 100,
     page: 1,
@@ -95,19 +105,30 @@ export default function CreatDoctorModal() {
       return;
     }
 
-    const payload: IPayloadCreateDoctorUser = {
-      name: data.first_name + ' ' + data.last_name,
+    const payload: IPayloadCreateEditDoctor = {
+      clinicId: dataProfile?.clinics[0].id,
+      first_name: data.first_name,
+      last_name: data.last_name,
       email: data.email,
       password: data.password as string,
-      roleId: doctorRole.id,
-      clinic_ids: data.clinic_ids.map((item) => parseInt(item)),
-      doctor: {
-        ...data,
-        description: data.about,
-        mobile_number: '+' + data.mobile_number,
-        specialist_type: data.specialist_type.map((item) => parseInt(item)),
-        treatment_type: data.treatment_type.map((item) => parseInt(item)),
-      },
+      mobile_number: data.mobile_number,
+      date_of_birth: data.date_of_birth,
+      gender: data.gender,
+      country: data.country,
+      street_name: data.street_name,
+      address_line_1: data.address_line_1,
+      address_line_2: data.address_line_2,
+      suburb: data.suburb,
+      state: data.state,
+      postcode: data.postcode,
+      emergency_first_name: data.emergency_first_name,
+      emergency_last_name: data.emergency_last_name,
+      emergency_mobile_number: data.emergency_mobile_number,
+      emergency_email: data.emergency_email,
+      medical_interest: data.medical_interest,
+      specialist_type: data.specialist_type.map((item) => Number(item)),
+      treatment_type: data.treatment_type.map((item) => item),
+      description: data.description,
     };
 
     mutateCreateDoctor(payload, {
@@ -422,14 +443,14 @@ export default function CreatDoctorModal() {
               </div>
 
               <Controller
-                name="about"
+                name="description"
                 control={control}
                 render={({ field }) => (
                   <QuillEditor
                     {...field}
                     label="Doctor Description"
                     placeholder="Doctor Description"
-                    error={errors.about?.message}
+                    error={errors.description?.message}
                     labelClassName="font-medium text-sm"
                     className="@3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[300px]"
                   />

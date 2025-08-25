@@ -27,12 +27,15 @@ import { routes } from '@/config/routes';
 import { useGetTaxes } from '@/hooks/useTax';
 import { currencyAtom } from '@/store/currency';
 import { useAtom } from 'jotai';
+import { useProfile } from '@/hooks/useProfile';
 
 export default function CreateEditInvoice({ id }: { id?: string }) {
   const router = useRouter();
   const [currencyData] = useAtom(currencyAtom);
 
   const [isLoading, setLoading] = useState(false);
+
+  const { data: dataProfile } = useProfile(true);
 
   const { data: dataPatients, isLoading: isLoadingGetPatients } =
     useGetAllPatients({
@@ -128,6 +131,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
     }
     mutateCreate(
       {
+        clinicId: dataProfile?.clinics[0].id,
         invoice_date: dayjs(data.invoice_date).format('YYYY-MM-DD'),
         due_date: dayjs(data.due_date).format('YYYY-MM-DD'),
         items: (data.items || []).map((item) => ({

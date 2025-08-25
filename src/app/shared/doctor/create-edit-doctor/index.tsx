@@ -20,10 +20,10 @@ export const navItems = [
     value: 'doctor',
     label: 'Doctor Details',
   },
-  {
-    value: 'password',
-    label: 'Password',
-  },
+  // {
+  //   value: 'password',
+  //   label: 'Password',
+  // },
   {
     value: 'emergency',
     label: 'Emergency Contact',
@@ -40,10 +40,10 @@ export const navItems = [
     value: 'calendar',
     label: 'Calendar',
   },
-  {
-    value: 'assign',
-    label: 'Assign',
-  },
+  // {
+  //   value: 'assign',
+  //   label: 'Assign',
+  // },
   {
     value: 'settings',
     label: 'Settings',
@@ -99,12 +99,12 @@ export default function CreateEditDoctor({
           </nav>
         </SimpleBar>
 
-        {tab === 'doctor' && <DoctorDetails isView={isView} />}
+        {tab === 'doctor' && <DoctorDetails isView={true} />}
         {tab === 'password' && <TabPassword isView={isView} />}
-        {tab === 'emergency' && <TabEmergencyContact isView={isView} />}
+        {tab === 'emergency' && <TabEmergencyContact isView={true} />}
         {tab === 'billing' && <TabBillingAppointments isView={isView} />}
-        {tab === 'compliance' && <TabCompliance isView={isView} />}
-        {tab === 'calendar' && <TabCalendar isView={isView} />}
+        {tab === 'compliance' && <TabCompliance isView={true} />}
+        {tab === 'calendar' && <TabCalendar isView={true} />}
         {tab === 'assign' && <TabAssign isView={isView} />}
         {tab === 'settings' && <TabSettings isView={isView} />}
       </div>

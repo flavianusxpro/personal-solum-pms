@@ -1,10 +1,11 @@
 import { getTwilioConfig, putUpdateTwilioConfig } from '@/service/twilio';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-export function useGetTwilioConfig() {
+export function useGetTwilioConfig(clinicId?: number) {
   return useQuery({
     queryKey: ['twilioConfig'],
-    queryFn: () => getTwilioConfig(),
+    queryFn: () => getTwilioConfig(clinicId),
+    enabled: !!clinicId,
   });
 }
 

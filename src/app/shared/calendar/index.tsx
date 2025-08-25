@@ -20,6 +20,7 @@ import { PiInfo } from 'react-icons/pi';
 import ActionTooltipButton from '../ui/action-button';
 import { Text } from 'rizzui';
 import dynamic from 'next/dynamic';
+import { useProfile } from '@/hooks/useProfile';
 
 const localizer = dayjsLocalizer(dayjs);
 const MultiSelect = dynamic(
@@ -40,10 +41,12 @@ export default function EventCalendarView() {
     return view === 'agenda';
   }, [view]);
 
+  const { data: dataProfile } = useProfile(true);
+
   const { data: dataDoctor } = useGetAllDoctors({
     page: 1,
     perPage: 100,
-    isEnable: true,
+    clinicId: dataProfile?.clinics[0]?.id,
   });
 
   const { data: dataAppointment, refetch } = useGetAppointments({
@@ -52,6 +55,7 @@ export default function EventCalendarView() {
     q: JSON.stringify({
       doctor_ids: selectDoctor,
     }),
+    clinicId: dataProfile?.clinics[0]?.id,
   });
 
   const events: CalendarEvent[] = useMemo(() => {
@@ -140,7 +144,6 @@ export default function EventCalendarView() {
         month: true,
         week: true,
         day: true,
-        agenda: true,
       },
       scrollToTime: new Date(),
       formats: {
@@ -219,12 +222,7 @@ export default function EventCalendarView() {
       </div>
 
       <Calendar
-        components={{
-          //   month: { event: eventComponent },
-          //   week: { event: eventComponent },
-          //   day: { event: eventComponent },
-          agenda: { event: eventComponent },
-        }}
+        components={{}}
         timeslots={4}
         titleAccessor={'title'}
         step={15}
