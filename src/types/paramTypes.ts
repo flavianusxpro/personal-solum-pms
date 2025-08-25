@@ -327,10 +327,9 @@ export interface IPayloadPostAppoinment {
   doctorId: number;
   date: string;
   note?: string;
-  // appointment_type: string;
   patient_type: string;
   patient_problem: string;
-  payment_id?: string;
+  payment_method?: string;
   meeting_preference: string;
   additional_information: Additionalinformation;
 }

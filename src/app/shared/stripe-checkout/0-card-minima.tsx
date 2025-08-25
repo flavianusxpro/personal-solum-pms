@@ -62,20 +62,7 @@ function CheckoutForm({
       setError(errorFromStripe);
     } else {
       setError(null);
-      console.log('[PaymentMethod]', paymentMethod);
-      mutateOneTimePayment(
-        { amount: 10000, payment_method: paymentMethod.id },
-        {
-          onSuccess: (response) => {
-            toast.success('Payment successful');
-            onSuccess(response.data.id);
-          },
-          onError: (error: any) => {
-            console.log('🚀 ~ handleSubmit ~ error:', error);
-            toast.error('Payment failed: ' + error.response.data.message);
-          },
-        }
-      );
+      onSuccess(paymentMethod.id);
     }
   };
 
