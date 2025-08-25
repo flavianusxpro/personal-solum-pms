@@ -189,8 +189,8 @@ export default function SelectClinic() {
                 {...field}
                 className="col-span-full md:col-span-1"
                 labelClassName="font-medium text-gray-1000 dark:text-white"
-                placeholder="Select treatment..."
-                label="Patient Treatment"
+                placeholder="Select Appointment Type"
+                label="Appointment Type"
                 options={treatmentOptions}
                 error={errors?.treatment?.message as string}
               />
