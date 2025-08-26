@@ -236,7 +236,7 @@ function RenderAction({
   const { openModal, closeModal } = useModal();
 
   const isShowCancel = [1, 2, 3].includes(row.status);
-  const isShowReschedule = [3].includes(row.status);
+  const isShowReschedule = [2, 3].includes(row.status);
   const isHasNote = !!row.note;
 
   function handleCreateModal() {
