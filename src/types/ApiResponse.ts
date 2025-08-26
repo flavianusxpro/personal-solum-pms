@@ -1043,3 +1043,24 @@ export interface IPostConnectionStatusResponse extends ApiResponse {
     sessionId: string;
   };
 }
+
+export interface IGetClinicByIdResponse extends ApiResponse {
+  data: IGetClinicByIdResponseData;
+}
+
+interface IGetClinicByIdResponseData {
+  id: number;
+  name: string;
+  email: string;
+  mobile_number: string;
+  address: string;
+  logo: string;
+  default: boolean;
+  status: number;
+  description: null;
+  clinic_identity: string;
+  secret_key: string;
+  frontend_url: null;
+  created_at: string;
+  updated_at: string;
+}

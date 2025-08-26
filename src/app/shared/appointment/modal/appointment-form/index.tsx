@@ -173,7 +173,7 @@ export default function CreateUpdateAppointmentForm({
         meeting_preference: '',
         note: data?.note || '',
         patient_id: data?.patientId,
-        patient_problem: data.patient_problem,
+        patient_problem: data.patient_problem || '',
         patient_type: data?.patient_type,
         followup_fee: '',
         initial_fee: '',

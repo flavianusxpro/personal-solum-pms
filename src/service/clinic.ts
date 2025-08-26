@@ -3,6 +3,7 @@ import {
   IGetAllClinicForPatientResponse,
   IGetCalendarScheduleByClinicIdResponse,
   IGetClinicByIdForPatientResponse,
+  IGetClinicByIdResponse,
 } from '@/types/ApiResponse';
 import {
   IParamGetAllClinic,
@@ -41,4 +42,8 @@ export async function getCalendarScheduleByClinicId(clinicId: number) {
       params: { clinicId },
     }
   );
+}
+
+export async function getClinicById(clinicId?: number) {
+  return await get<IGetClinicByIdResponse>(`/admin/clinic/detail/${clinicId}`);
 }

@@ -2,6 +2,7 @@ import {
   deleteClinic,
   getAllClinics,
   getCalendarScheduleByClinicId,
+  getClinicById,
   getClinicByIdForPatient,
   postCreateClinic,
   putUpdateClinic,
@@ -71,6 +72,14 @@ export function useGetCalendarScheduleByClinicId(clinicId: number) {
   return useQuery({
     queryKey: ['calendar-schedule-by-clinic' + clinicId],
     queryFn: async () => getCalendarScheduleByClinicId(clinicId),
+    enabled: !!clinicId,
+  });
+}
+
+export function useGetClinicById(clinicId?: number) {
+  return useQuery({
+    queryKey: ['clinic-by-id', clinicId],
+    queryFn: async () => getClinicById(clinicId),
     enabled: !!clinicId,
   });
 }

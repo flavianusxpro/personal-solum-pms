@@ -563,6 +563,7 @@ export interface IPayloadCreateUpdateClinic {
   url_logo?: string;
   default: boolean;
   status: number;
+  frontend_url?: string;
 }
 
 export interface IPayloadCreateEditPharmachy {

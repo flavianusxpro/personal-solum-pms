@@ -414,6 +414,13 @@ export function getPaymentStatusBadge(status: number | string | undefined) {
           <Text className="font-medium text-gray-600">Not Paid</Text>
         </div>
       );
+    case 4:
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="warning" renderAsDot />
+          <Text className="font-medium text-red-dark">Unpaid</Text>
+        </Flex>
+      );
     default:
       return (
         <div className="flex items-center">

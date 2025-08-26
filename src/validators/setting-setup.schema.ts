@@ -7,18 +7,12 @@ export const settingSetupFormSchema = z.object({
   logo: z.string().optional(),
   favicon: z.string().optional(),
   clinic_name: z.string().min(1, { message: messages.clinicNameRequired }),
-  clinic_address: z.array(
-    z.object({
-      address: z.string().min(1, { message: messages.clinicAddressRequired }),
-    })
-  ),
-  phone_numbers: z.array(
-    z.object({
-      phone_number: z
-        .string()
-        .min(1, { message: messages.phoneNumberIsRequired }),
-    })
-  ),
+  clinic_address: z
+    .string()
+    .min(1, { message: messages.clinicAddressRequired }),
+  phone_numbers: z.string().min(1, { message: messages.phoneNumberIsRequired }),
+  clinic_email: z.string().email({ message: messages.emailIsRequired }),
+  frontend_url: z.string().optional(),
   contact_details: z.string().optional(),
   map_location: z.string().optional(),
 
