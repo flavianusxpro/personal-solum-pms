@@ -2,9 +2,10 @@
 
 import { useParams } from 'next/navigation';
 import { Controller, SubmitHandler } from 'react-hook-form';
+import { useEffect } from 'react';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { Flex, Input, Loader, Switch, Text, Textarea } from 'rizzui';
+import { Input, Loader, Switch, Text, Textarea } from 'rizzui';
 import toast from 'react-hot-toast';
 import FormGroup from '@/app/shared/ui/form-group';
 import { FiAlertCircle } from 'react-icons/fi';
@@ -17,9 +18,14 @@ import {
 import { useGetClinicById, usePutUpdateClinic } from '@/hooks/useClinic';
 import { IPayloadCreateUpdateClinic } from '@/types/paramTypes';
 import { useProfile } from '@/hooks/useProfile';
+import { daysOptions } from '@/config/constants';
+import CSelect from '@/app/shared/ui/select';
+import dayjs from 'dayjs';
+import { IGetClinicByIdResponse } from '@/types/ApiResponse';
 
 export default function Setup() {
   const { id } = useParams();
+  const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const { data: dataprofile } = useProfile(true);
 
@@ -32,7 +38,69 @@ export default function Setup() {
   const { mutate: mutateUpdateSetup, isPending: isPendingUpdate } =
     usePutUpdateClinic();
 
+  // Initialize form data for clinic schedules (24-hour format)
+  const defaultSchedules = [
+    {
+      day: 1, // Monday
+      start_hour: new Date('1970-01-01T09:00:00'), // 09:00
+      end_hour: new Date('1970-01-01T17:00:00'), // 17:00
+      is_open: true,
+    },
+    {
+      day: 2, // Tuesday
+      start_hour: new Date('1970-01-01T09:00:00'), // 09:00
+      end_hour: new Date('1970-01-01T17:00:00'), // 17:00
+      is_open: true,
+    },
+    {
+      day: 3, // Wednesday
+      start_hour: new Date('1970-01-01T09:00:00'), // 09:00
+      end_hour: new Date('1970-01-01T17:00:00'), // 17:00
+      is_open: true,
+    },
+    {
+      day: 4, // Thursday
+      start_hour: new Date('1970-01-01T09:00:00'), // 09:00
+      end_hour: new Date('1970-01-01T17:00:00'), // 17:00
+      is_open: true,
+    },
+    {
+      day: 5, // Friday
+      start_hour: new Date('1970-01-01T09:00:00'), // 09:00
+      end_hour: new Date('1970-01-01T17:00:00'), // 17:00
+      is_open: true,
+    },
+    {
+      day: 6, // Saturday
+      start_hour: new Date('1970-01-01T09:00:00'), // 09:00
+      end_hour: new Date('1970-01-01T17:00:00'), // 17:00
+      is_open: false,
+    },
+    {
+      day: 0, // Sunday
+      start_hour: new Date('1970-01-01T09:00:00'), // 09:00
+      end_hour: new Date('1970-01-01T17:00:00'), // 17:00
+      is_open: false,
+    },
+  ];
+
   const onSubmit: SubmitHandler<SettingSetupFormTypes> = (formValues) => {
+    const validSchedules = formValues.clinic_schedules
+      .filter(
+        (schedule) =>
+          schedule &&
+          schedule.day !== undefined &&
+          schedule.start_hour instanceof Date &&
+          schedule.end_hour instanceof Date &&
+          schedule.is_open !== undefined
+      )
+      .map((schedule) => ({
+        day: schedule.day,
+        start_hour: dayjs(schedule.start_hour).format('YYYY-MM-DD HH:mm:ss'),
+        end_hour: dayjs(schedule.end_hour).format('YYYY-MM-DD HH:mm:ss'),
+        is_open: schedule.is_open,
+      }));
+
     const payload: IPayloadCreateUpdateClinic = {
       id: dataprofile?.clinics?.[0]?.id?.toString(),
       name: formValues.clinic_name,
@@ -43,6 +111,8 @@ export default function Setup() {
       status: 1,
       default: true,
       frontend_url: formValues.frontend_url,
+      clinic_schedules: validSchedules,
+      client_timezone: localTimezone,
     };
 
     mutateUpdateSetup(
@@ -62,14 +132,121 @@ export default function Setup() {
     );
   };
 
-  // Helper function to convert string dates to Date objects
-  const parseDate = (dateString?: string): globalThis.Date | undefined => {
-    if (!dateString) return undefined;
-    const date = new globalThis.Date(dateString);
-    return isNaN(date.getTime()) ? undefined : date;
+  const setupData = clinicSetupData?.data;
+
+  // Helper function to normalize different time formats
+  const normalizeTime = (timeValue: any): Date => {
+    if (!timeValue) {
+      return new Date();
+    }
+
+    if (timeValue instanceof Date) {
+      return timeValue;
+    }
+
+    if (typeof timeValue === 'string') {
+      // Handle different string formats
+      const parsed = new Date(timeValue);
+      if (!isNaN(parsed.getTime())) {
+        return parsed;
+      }
+
+      // Try to parse time-only strings like "09:00" or "17:00" (24-hour format)
+      const timeMatch = timeValue.match(/(\d{1,2}):(\d{2})/);
+      if (timeMatch) {
+        const hour = parseInt(timeMatch[1]);
+        const minute = timeMatch[2];
+
+        // Validate hour and minute ranges
+        if (
+          hour >= 0 &&
+          hour <= 23 &&
+          parseInt(minute) >= 0 &&
+          parseInt(minute) <= 59
+        ) {
+          return new Date(
+            `1970-01-01T${hour.toString().padStart(2, '0')}:${minute}:00`
+          );
+        }
+      }
+    }
+
+    // Fallback to default
+    return new Date();
   };
 
-  const setupData = clinicSetupData?.data;
+  // Helper function to get available days for selection
+  const getAvailableDays = (currentSchedules: any[], excludeIndex?: number) => {
+    const usedDays = new Set(
+      currentSchedules
+        .map((s, i) =>
+          excludeIndex !== undefined && i !== excludeIndex ? s.day : null
+        )
+        .filter(Boolean)
+    );
+    const availableDays = daysOptions.filter((day) => !usedDays.has(day.value));
+
+    return availableDays;
+  };
+
+  // Helper function to validate and fix duplicate days
+  const validateAndFixSchedules = (schedules: any[]) => {
+    const dayCounts = new Map<number, number>();
+    const fixedSchedules = [...schedules];
+
+    // Count occurrences of each day
+    fixedSchedules.forEach((schedule: any, index: number) => {
+      if (dayCounts.has(schedule.day)) {
+        dayCounts.set(schedule.day, (dayCounts.get(schedule.day) || 0) + 1);
+      } else {
+        dayCounts.set(schedule.day, 1);
+      }
+    });
+
+    // Fix duplicates by finding next available day
+    fixedSchedules.forEach((schedule: any, index: number) => {
+      if (dayCounts.get(schedule.day) && dayCounts.get(schedule.day)! > 1) {
+        const availableDays = getAvailableDays(fixedSchedules, index);
+        if (availableDays.length > 0) {
+          schedule.day = availableDays[0].value;
+          dayCounts.set(schedule.day, 1);
+          const currentCount = dayCounts.get(schedule.day) || 0;
+          dayCounts.set(schedule.day, Math.max(0, currentCount - 1));
+        }
+      }
+    });
+
+    return fixedSchedules;
+  };
+
+  // Helper function to parse clinic schedules from API response
+  const parseClinicSchedules = (apiData?: IGetClinicByIdResponse['data']) => {
+    if (
+      !apiData?.clinic_schedules ||
+      !Array.isArray(apiData.clinic_schedules)
+    ) {
+      return defaultSchedules;
+    }
+
+    const parsedSchedules = apiData.clinic_schedules.map(
+      (schedule: any, index: number) => {
+        // Use the helper function to normalize time values
+        const startHour = normalizeTime(schedule.start_hour);
+        const endHour = normalizeTime(schedule.end_hour);
+
+        const parsedSchedule = {
+          day: Number(schedule.day),
+          start_hour: startHour,
+          end_hour: endHour,
+          is_open:
+            typeof schedule.is_open === 'boolean' ? schedule.is_open : true,
+        };
+
+        return parsedSchedule;
+      }
+    );
+    return parsedSchedules;
+  };
 
   if (isLoadingSetup) {
     return <Loader />;
@@ -89,6 +266,7 @@ export default function Setup() {
           phone_numbers: setupData?.mobile_number || '',
           clinic_email: setupData?.email || '',
           frontend_url: setupData?.frontend_url || '',
+          clinic_schedules: parseClinicSchedules(setupData),
         },
       }}
     >
@@ -236,59 +414,192 @@ export default function Setup() {
             </div>
 
             <FormGroup
-              title="Opening Hours"
-              description="Set your clinic opening and closing hours"
+              title="Clinic Schedules"
+              description="Set your clinic opening and closing hours for each day"
               className="mt-4 border-t border-t-slate-300 pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
             />
 
-            <div className="mb-10 grid grid-cols-1 gap-7 divide-y divide-dashed divide-gray-200 @2xl:gap-9 @3xl:gap-11">
-              <FormGroup
-                title="Clinic Hours"
-                isLabel
-                className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
-              >
-                <Flex className="w-full gap-4">
-                  <DatePicker
-                    popperPlacement="top-start"
-                    selected={watch('clinic_opening_hours')}
-                    onChange={(value) =>
-                      setValue('clinic_opening_hours', value || undefined)
-                    }
-                    selectsStart
-                    minDate={new Date()}
-                    showTimeSelect
-                    showTimeSelectOnly
-                    dateFormat="h:mm aa"
-                    placeholderText="Start Time"
-                    className="w-full"
-                  />
+            <FormGroup
+              title="Schedules"
+              className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+              isLabel
+            >
+              <div className="mb-10 grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11">
+                <div className="space-y-6">
+                  {(() => {
+                    const schedules = watch('clinic_schedules') || [];
+                    return schedules
+                      .filter(
+                        (schedule) =>
+                          schedule !== null &&
+                          schedule !== undefined &&
+                          typeof schedule === 'object' &&
+                          'day' in schedule &&
+                          'start_hour' in schedule &&
+                          'end_hour' in schedule &&
+                          'is_open' in schedule
+                      )
+                      .map((schedule, index) => (
+                        <div
+                          key={index}
+                          className="rounded-lg border border-gray-200 p-6"
+                        >
+                          <div className="mb-4 flex items-center justify-between">
+                            <Text className="text-lg font-semibold">
+                              {daysOptions.find(
+                                (day) => day.value === schedule.day
+                              )?.label || `Day ${schedule.day}`}
+                            </Text>
+                            <div className="flex items-center gap-2">
+                              <Switch
+                                checked={schedule.is_open}
+                                onChange={(e) =>
+                                  setValue(
+                                    `clinic_schedules.${index}.is_open`,
+                                    e.target.checked
+                                  )
+                                }
+                              />
+                              <Text className="text-sm">
+                                {schedule.is_open ? 'Open' : 'Closed'}
+                              </Text>
+                            </div>
+                          </div>
 
-                  <DatePicker
-                    popperPlacement="top-start"
-                    selected={watch('clinic_closing_hours')}
-                    onChange={(value) =>
-                      setValue('clinic_closing_hours', value || undefined)
-                    }
-                    selectsEnd
-                    showTimeSelect
-                    showTimeSelectOnly
-                    dateFormat="h:mm aa"
-                    placeholderText="End Time"
-                    className="w-full"
-                  />
+                          {schedule.is_open && (
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                              <div>
+                                <Text className="mb-2 text-sm font-medium">
+                                  Day
+                                </Text>
+                                <Controller
+                                  control={control}
+                                  name={`clinic_schedules.${index}.day`}
+                                  render={({ field: dayField }) => {
+                                    const currentSchedules =
+                                      watch('clinic_schedules') || [];
+                                    const availableDays = getAvailableDays(
+                                      currentSchedules,
+                                      index
+                                    );
 
-                  <div className="flex items-center gap-2">
-                    <Switch
-                      checked={watch('clinic_opening_status')}
-                      onChange={(e) =>
-                        setValue('clinic_opening_status', e.target.checked)
-                      }
-                    />
-                    <Text>Open</Text>
-                  </div>
-                </Flex>
-              </FormGroup>
-            </div>
+                                    return (
+                                      <CSelect
+                                        options={availableDays}
+                                        placeholder="Select Day"
+                                        className="w-full"
+                                        {...dayField}
+                                      />
+                                    );
+                                  }}
+                                />
+                              </div>
+
+                              <div>
+                                <Text className="mb-2 text-sm font-medium">
+                                  Opening Time
+                                </Text>
+                                <DatePicker
+                                  popperPlacement="top-start"
+                                  selected={schedule.start_hour}
+                                  onChange={(value) =>
+                                    setValue(
+                                      `clinic_schedules.${index}.start_hour`,
+                                      value || new Date('1970-01-01T09:00:00') // 09:00
+                                    )
+                                  }
+                                  showTimeSelect
+                                  showTimeSelectOnly
+                                  dateFormat="HH:mm"
+                                  placeholderText="Start Time"
+                                  className="w-full"
+                                />
+                              </div>
+
+                              <div>
+                                <Text className="mb-2 text-sm font-medium">
+                                  Closing Time
+                                </Text>
+                                <DatePicker
+                                  popperPlacement="top-start"
+                                  selected={schedule.end_hour}
+                                  onChange={(value) =>
+                                    setValue(
+                                      `clinic_schedules.${index}.end_hour`,
+                                      value || new Date('1970-01-01T17:00:00') // 17:00
+                                    )
+                                  }
+                                  showTimeSelect
+                                  showTimeSelectOnly
+                                  dateFormat="HH:mm"
+                                  placeholderText="End Time"
+                                  className="w-full"
+                                />
+                              </div>
+                            </div>
+                          )}
+
+                          {schedules.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newSchedules = schedules.filter(
+                                  (_, i) => i !== index
+                                );
+                                setValue('clinic_schedules', newSchedules);
+                              }}
+                              className="mt-4 text-sm font-medium text-red-600 hover:text-red-800"
+                            >
+                              Remove Day
+                            </button>
+                          )}
+                        </div>
+                      ));
+                  })()}
+
+                  {(() => {
+                    const currentSchedules = watch('clinic_schedules') || [];
+                    const usedDays = new Set(
+                      currentSchedules.map((s) => s.day)
+                    );
+                    // Check if all 7 days (0-6) are used
+                    const allDaysUsed = usedDays.size >= 7;
+                    const availableDays = getAvailableDays(currentSchedules);
+
+                    return (
+                      <button
+                        type="button"
+                        disabled={allDaysUsed}
+                        onClick={() => {
+                          // Only allow adding if there are available days
+                          if (availableDays.length > 0) {
+                            const nextAvailableDay = availableDays[0]?.value;
+                            setValue('clinic_schedules', [
+                              ...currentSchedules,
+                              {
+                                day: nextAvailableDay,
+                                start_hour: new Date('1970-01-01T09:00:00'), // 09:00
+                                end_hour: new Date('1970-01-01T17:00:00'), // 17:00
+                                is_open: true,
+                              },
+                            ]);
+                          }
+                        }}
+                        className={`w-full rounded-lg border-2 border-dashed px-4 py-3 transition-colors ${
+                          allDaysUsed
+                            ? 'cursor-not-allowed border-gray-200 bg-gray-50 text-gray-400'
+                            : 'border-gray-300 text-gray-600 hover:border-gray-400 hover:text-gray-800'
+                        }`}
+                      >
+                        {allDaysUsed
+                          ? 'All 7 days have been added'
+                          : `+ Add Another Day (${availableDays.length} days available)`}
+                      </button>
+                    );
+                  })()}
+                </div>
+              </div>
+            </FormGroup>
 
             <FormGroup
               title="SEO"

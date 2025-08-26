@@ -1,0 +1,313 @@
+# Clinic Management Frontend - AI Assistant Guidelines
+
+## Project Overview
+
+This is a Next.js 14 clinic management frontend application built with TypeScript, React, and modern web technologies. The system manages appointments, patients, doctors, clinics, and administrative functions.
+
+## Core Technologies & Architecture
+
+- **Framework**: Next.js 14 with App Router
+- **Language**: TypeScript (strict mode)
+- **Styling**: Tailwind CSS with RizzUI components
+- **State Management**: Jotai for global state, React Query for server state
+- **Authentication**: NextAuth.js
+- **Date/Time**: Day.js for timezone handling
+- **Forms**: React Hook Form with Zod validation
+- **Payment**: Stripe integration
+- **File Upload**: AWS S3 integration
+
+## Code Quality Standards
+
+### TypeScript & Type Safety
+
+- Always use strict TypeScript with proper type definitions
+- Prefer interfaces over types for object shapes
+- Use union types for discriminated unions
+- Avoid `any` type - use proper typing or `unknown`
+- Ensure all API responses have proper TypeScript interfaces
+
+### React Best Practices
+
+- Use functional components with hooks
+- Prefer `useCallback` and `useMemo` for expensive operations
+- Use proper dependency arrays in useEffect
+- Implement proper error boundaries
+- Follow React 18+ patterns and concurrent features
+
+### Performance & Efficiency
+
+- Implement proper memoization for expensive calculations
+- Use React Query for efficient data fetching and caching
+- Optimize bundle size with dynamic imports when appropriate
+- Implement proper loading states and error handling
+- Use React.memo for expensive components
+
+### Security Considerations
+
+- Never expose API keys or sensitive data in client-side code
+- Validate all user inputs with Zod schemas
+- Implement proper authentication checks
+- Use environment variables for configuration
+- Sanitize data before rendering
+
+## Project-Specific Patterns
+
+### File Structure
+
+- Follow Next.js 14 App Router conventions
+- Use shared components in `src/app/shared/`
+- Keep admin functionality in `src/app/(admin)/`
+- Organize by feature, not by type
+- Use consistent naming: kebab-case for files, PascalCase for components
+
+### Component Architecture
+
+- Use controlled components with proper state management
+- Implement proper prop drilling or use context when needed
+- Follow atomic design principles
+- Use RizzUI components for consistency
+- Implement proper loading and error states
+
+### Data Fetching
+
+- Use React Query hooks for API calls
+- Implement proper error handling and retry logic
+- Use optimistic updates when appropriate
+- Cache data efficiently with proper invalidation
+- Handle loading states gracefully
+
+### Form Handling
+
+- Use React Hook Form with Zod validation
+- Implement proper error messages and validation
+- Use controlled inputs with proper state management
+- Handle form submission states properly
+- Implement proper form reset and cleanup
+
+### State Management
+
+- Use Jotai for global application state
+- Use React Query for server state
+- Keep local component state minimal
+- Use proper state update patterns
+- Implement proper state persistence when needed
+
+## Business Logic & Domain Knowledge
+
+### Appointment System
+
+- Appointments have statuses, types, and timezone considerations
+- Handle timezone conversions properly using Day.js
+- Respect clinic operating hours and doctor availability
+- Implement proper appointment validation rules
+- Handle rescheduling and cancellation logic
+
+### User Management
+
+- Support multiple user roles (admin, doctor, patient)
+- Implement proper role-based access control
+- Handle user authentication and authorization
+- Manage user profiles and preferences
+- Implement proper user session management
+
+### Clinic Operations
+
+- Support multiple clinics with different configurations
+- Handle clinic-specific settings and preferences
+- Manage doctor schedules and availability
+- Implement proper clinic-patient relationships
+- Handle clinic-specific business rules
+
+### Payment & Billing
+
+- Integrate with Stripe for payment processing
+- Handle different appointment types and pricing
+- Implement proper invoice generation
+- Handle payment status tracking
+- Implement proper refund and cancellation logic
+
+## Error Handling & Debugging
+
+### Error Boundaries
+
+- Implement proper error boundaries for React components
+- Handle API errors gracefully
+- Provide meaningful error messages to users
+- Log errors appropriately for debugging
+- Implement proper fallback UI
+
+### Validation
+
+- Use Zod schemas for all data validation
+- Implement proper client-side validation
+- Handle validation errors gracefully
+- Provide clear error messages
+- Implement proper form validation feedback
+
+### Logging & Monitoring
+
+- Use proper console logging for development
+- Implement error tracking when appropriate
+- Monitor performance metrics
+- Track user interactions for analytics
+- Implement proper debugging tools
+
+## Testing & Quality Assurance
+
+### Code Quality
+
+- Write clean, readable, and maintainable code
+- Follow consistent naming conventions
+- Use proper TypeScript types
+- Implement proper error handling
+- Write self-documenting code
+
+### Performance
+
+- Optimize bundle size and loading times
+- Implement proper lazy loading
+- Use proper caching strategies
+- Monitor and optimize render performance
+- Implement proper loading states
+
+### Accessibility
+
+- Follow WCAG guidelines
+- Implement proper ARIA labels
+- Ensure keyboard navigation works
+- Provide proper focus management
+- Test with screen readers
+
+## Development Workflow
+
+### Code Organization
+
+- Keep components focused and single-purpose
+- Use proper separation of concerns
+- Implement proper abstraction layers
+- Follow DRY principles
+- Use consistent patterns across the codebase
+
+### Naming Conventions
+
+- Use descriptive and meaningful names
+- Follow consistent naming patterns
+- Use proper abbreviations and acronyms
+- Implement proper naming for files and folders
+- Use consistent naming for variables and functions
+
+### Documentation
+
+- Write clear and concise code comments
+- Document complex business logic
+- Provide proper README files
+- Document API interfaces and types
+- Keep documentation up to date
+
+## Safety & Security Guidelines
+
+### Data Protection
+
+- Never expose sensitive data in client-side code
+- Implement proper data encryption when needed
+- Handle PII (Personal Identifiable Information) carefully
+- Implement proper data retention policies
+- Follow GDPR and privacy regulations
+
+### Authentication & Authorization
+
+- Implement proper authentication flows
+- Use secure session management
+- Implement proper role-based access control
+- Handle authentication errors gracefully
+- Implement proper logout and session cleanup
+
+### Input Validation
+
+- Validate all user inputs thoroughly
+- Sanitize data before processing
+- Implement proper CSRF protection
+- Handle file uploads securely
+- Implement proper rate limiting
+
+## Decision Making Framework
+
+### When Making Changes
+
+1. **Assess Impact**: Consider how changes affect existing functionality
+2. **Check Dependencies**: Ensure changes don't break other parts
+3. **Validate Types**: Ensure TypeScript types are properly updated
+4. **Test Functionality**: Verify changes work as expected
+5. **Update Documentation**: Keep relevant docs up to date
+
+### When Adding Features
+
+1. **Follow Patterns**: Use existing patterns and conventions
+2. **Consider Performance**: Ensure new features don't degrade performance
+3. **Handle Errors**: Implement proper error handling
+4. **Validate Data**: Use proper validation schemas
+5. **Test Thoroughly**: Ensure new features work correctly
+
+### When Refactoring
+
+1. **Maintain Functionality**: Ensure behavior doesn't change
+2. **Update Types**: Keep TypeScript types in sync
+3. **Test Changes**: Verify refactoring doesn't break anything
+4. **Document Changes**: Update relevant documentation
+5. **Consider Dependencies**: Ensure other parts still work
+
+## Common Patterns & Anti-Patterns
+
+### Do's
+
+- ✅ Use proper TypeScript types
+- ✅ Implement proper error handling
+- ✅ Follow existing code patterns
+- ✅ Use proper React patterns
+- ✅ Implement proper loading states
+- ✅ Handle edge cases gracefully
+- ✅ Write clean and readable code
+- ✅ Use proper naming conventions
+
+### Don'ts
+
+- ❌ Don't use `any` type unnecessarily
+- ❌ Don't ignore error handling
+- ❌ Don't break existing patterns
+- ❌ Don't use deprecated React patterns
+- ❌ Don't forget loading states
+- ❌ Don't assume data is always valid
+- ❌ Don't write unclear or complex code
+- ❌ Don't use inconsistent naming
+
+## Emergency & Critical Issues
+
+### When Things Go Wrong
+
+1. **Assess Severity**: Determine if it's a critical issue
+2. **Check Logs**: Look for error messages and stack traces
+3. **Verify Data**: Check if data is corrupted or missing
+4. **Test Functionality**: Verify what's broken and what works
+5. **Implement Fixes**: Apply fixes following proper patterns
+6. **Test Thoroughly**: Ensure fixes resolve the issue
+7. **Monitor**: Watch for any related issues
+
+### Critical System Areas
+
+- Authentication and user management
+- Appointment scheduling and management
+- Payment processing and billing
+- Data integrity and validation
+- User privacy and data protection
+
+## Final Notes
+
+This project serves healthcare professionals and patients, so reliability, security, and user experience are paramount. Always prioritize:
+
+1. **Data Accuracy**: Ensure medical and appointment data is correct
+2. **User Experience**: Make the system easy to use for healthcare professionals
+3. **Security**: Protect sensitive patient and medical information
+4. **Performance**: Ensure the system is fast and responsive
+5. **Reliability**: Minimize downtime and errors
+
+When in doubt, err on the side of caution and follow existing patterns. Consistency and reliability are more important than clever solutions in a healthcare application.

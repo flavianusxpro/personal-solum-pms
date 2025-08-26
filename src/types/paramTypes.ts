@@ -564,6 +564,13 @@ export interface IPayloadCreateUpdateClinic {
   default: boolean;
   status: number;
   frontend_url?: string;
+  clinic_schedules?: {
+    day: number;
+    start_hour: string;
+    end_hour: string;
+    is_open: boolean;
+  }[];
+  client_timezone?: string;
 }
 
 export interface IPayloadCreateEditPharmachy {

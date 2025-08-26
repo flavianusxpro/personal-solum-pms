@@ -16,9 +16,16 @@ export const settingSetupFormSchema = z.object({
   contact_details: z.string().optional(),
   map_location: z.string().optional(),
 
-  clinic_opening_hours: z.date().optional(),
-  clinic_closing_hours: z.date().optional(),
-  clinic_opening_status: z.boolean().optional(),
+  clinic_schedules: z
+    .array(
+      z.object({
+        day: z.number().min(0).max(6),
+        start_hour: z.date(),
+        end_hour: z.date(),
+        is_open: z.boolean(),
+      })
+    )
+    .min(1, 'At least one schedule is required'),
 
   meta_title: z.string().optional(),
   meta_description: z.string().optional(),

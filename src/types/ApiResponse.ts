@@ -1063,4 +1063,14 @@ interface IGetClinicByIdResponseData {
   frontend_url: null;
   created_at: string;
   updated_at: string;
+  clinic_schedules: {
+    id: number;
+    clinicId: number;
+    day: string;
+    start_hour: string;
+    end_hour: string;
+    is_open: boolean;
+    created_at: string;
+    updated_at: string;
+  }[];
 }
