@@ -272,7 +272,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
         costId: item.id,
         treatmentId: item.treatmentId,
         amount: item.amount,
-        amount_moderated: item.amount_moderated,
+        amount_moderated: item.amount,
       }));
       replaceCosts(costs);
     }
