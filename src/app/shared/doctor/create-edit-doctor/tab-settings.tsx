@@ -510,15 +510,9 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
             ))}
             {!isView && (
               <Button
-                onClick={
-                  () => {
-                    treatmentCostModal();
-                  }
-                  // appendCosts({
-                  //   treatmentId: undefined,
-                  //   amount: '0',
-                  // })
-                }
+                onClick={() => {
+                  treatmentCostModal();
+                }}
                 variant="flat"
                 className="w-1/4"
               >
@@ -532,7 +526,7 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
               variant="flat"
               className="w-1/4"
             >
-              List Treatment Cost From Master
+              List Treatment Cost From Doctor
             </Button>
           </FormGroup>
 
