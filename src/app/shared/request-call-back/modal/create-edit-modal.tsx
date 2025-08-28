@@ -134,6 +134,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
                   <AvatarUpload
                     {...register('url_logo')}
                     name="url_logo"
+                    path_name="logo"
                     setValue={setValue}
                     getValues={getValues}
                     disabled={isView}

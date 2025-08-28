@@ -170,6 +170,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
                     setValue={setValue}
                     getValues={getValues}
                     disabled={isView}
+                    path_name="logo"
                     error={errors?.url_logo?.message as string}
                   />
                 </FormGroup>

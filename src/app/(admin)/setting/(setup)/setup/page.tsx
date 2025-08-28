@@ -254,6 +254,7 @@ export default function Setup() {
                       setValue={setValue}
                       getValues={getValues}
                       error={errors?.logo?.message as string}
+                      path_name="logo"
                     />
                   </div>
                 </FormGroup>
@@ -323,6 +324,7 @@ export default function Setup() {
                       setValue={setValue}
                       getValues={getValues}
                       error={errors?.favicon?.message as string}
+                      path_name="favicon"
                     />
                   </div>
                 </FormGroup>
