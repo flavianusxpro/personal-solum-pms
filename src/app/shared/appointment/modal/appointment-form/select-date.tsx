@@ -9,7 +9,7 @@ import {
   useForm,
   UseFormSetValue,
 } from 'react-hook-form';
-import { FieldError, Flex, Input, Loader, Text, Title } from 'rizzui';
+import { FieldError, Flex, Input, Loader, Text } from 'rizzui';
 import Calendar from 'react-calendar';
 import {
   formDataAtom,
@@ -23,9 +23,8 @@ import {
   useGetDoctorAvailabilityByClinic,
   useGetDoctorByClinic,
 } from '@/hooks/useClinic';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
-import { IParamGetDoctorByClinic } from '@/types/paramTypes';
 import { IGetDoctorByClinicResponse } from '@/types/ApiResponse';
 import cn from '@/core/utils/class-names';
 import { PiBell, PiCalendar } from 'react-icons/pi';
@@ -58,25 +57,16 @@ export default function DateTime() {
     },
   });
 
-  const {
-    data: dataDoctor,
-    isLoading: isLoadingDoctor,
-    refetch: refetchDoctor,
-  } = useGetDoctorByClinic({
-    id: formData?.clinicId?.toString() as string,
-    page: 1,
-    perPage: 10,
-    treatment_type: formData.treatment,
-    problem_type: formData.patient_problem,
-    date: formData.date,
-  });
-
-  // Force refetch when date changes to ensure fresh data
-  useEffect(() => {
-    if (formData.date) {
-      refetchDoctor();
+  const { data: dataDoctor, isLoading: isLoadingDoctor } = useGetDoctorByClinic(
+    {
+      id: formData?.clinicId?.toString() as string,
+      page: 1,
+      perPage: 10,
+      treatment_type: formData.treatment,
+      problem_type: formData.patient_problem,
+      date: formData.date,
     }
-  }, [formData.date, refetchDoctor]);
+  );
 
   const doctor = useMemo(() => {
     return dataDoctor?.find(
@@ -98,7 +88,7 @@ export default function DateTime() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex justify-center" key={formData.date}>
+      <div className="flex justify-center">
         <div className="space-y-5 px-5 pb-6 pt-5 md:px-7 md:pb-9 md:pt-7">
           <Text className="text-base font-semibold">
             Select Appointment Date:
