@@ -704,6 +704,14 @@ export interface IGetTreatmentsFromMasterResponse extends ApiResponse {
     treatmentId: number;
     updated_at: string;
     name: string;
+    treatment: {
+      id: number;
+      name: string;
+      clinicId: number;
+      description: string;
+      created_at: string;
+      updated_at: string;
+    };
   }[];
 }
 
