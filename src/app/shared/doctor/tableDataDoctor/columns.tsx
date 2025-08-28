@@ -112,7 +112,7 @@ export const getColumns = ({
     width: 170,
     render: (_: any, row: any) => (
       <p className="flex items-center gap-2 font-medium text-gray-700">
-        {`${row.first_name} ${row.last_name}`}
+        {`Dr. ${row.first_name} ${row.last_name}`}
       </p>
     ),
   },

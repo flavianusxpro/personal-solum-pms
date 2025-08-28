@@ -68,7 +68,7 @@ export default function CreateEditDoctor({
 
   const pageHeader = {
     title: id
-      ? `${dataDoctor?.first_name ?? '-'} ${dataDoctor?.last_name ?? '-'}`
+      ? `Dr. ${dataDoctor?.first_name ?? '-'} ${dataDoctor?.last_name ?? '-'}`
       : 'Create Doctor',
     breadcrumb: [
       {
