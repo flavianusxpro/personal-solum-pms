@@ -23,7 +23,7 @@ import {
   useGetDoctorAvailabilityByClinic,
   useGetDoctorByClinic,
 } from '@/hooks/useClinic';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
 import { IParamGetDoctorByClinic } from '@/types/paramTypes';
 import { IGetDoctorByClinicResponse } from '@/types/ApiResponse';
@@ -58,16 +58,25 @@ export default function DateTime() {
     },
   });
 
-  const { data: dataDoctor, isLoading: isLoadingDoctor } = useGetDoctorByClinic(
-    {
-      id: formData?.clinicId?.toString() as string,
-      page: 1,
-      perPage: 10,
-      treatment_type: formData.treatment,
-      problem_type: formData.patient_problem,
-      date: formData.date,
+  const {
+    data: dataDoctor,
+    isLoading: isLoadingDoctor,
+    refetch: refetchDoctor,
+  } = useGetDoctorByClinic({
+    id: formData?.clinicId?.toString() as string,
+    page: 1,
+    perPage: 10,
+    treatment_type: formData.treatment,
+    problem_type: formData.patient_problem,
+    date: formData.date,
+  });
+
+  // Force refetch when date changes to ensure fresh data
+  useEffect(() => {
+    if (formData.date) {
+      refetchDoctor();
     }
-  );
+  }, [formData.date, refetchDoctor]);
 
   const doctor = useMemo(() => {
     return dataDoctor?.find(
@@ -89,7 +98,7 @@ export default function DateTime() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex justify-center">
+      <div className="flex justify-center" key={formData.date}>
         <div className="space-y-5 px-5 pb-6 pt-5 md:px-7 md:pb-9 md:pt-7">
           <Text className="text-base font-semibold">
             Select Appointment Date:
@@ -172,7 +181,10 @@ export default function DateTime() {
               if (!doctor.id) return null;
 
               return (
-                <div key={index} className="mb-5">
+                <div
+                  key={`${doctor.id}-${formData.date}-${index}`}
+                  className="mb-5"
+                >
                   {/* Doctor Header */}
                   <div className="flex items-center justify-between space-x-4 p-6">
                     <div className="flex items-center space-x-4">

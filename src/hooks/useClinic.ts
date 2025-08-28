@@ -35,9 +35,19 @@ export function useGetClinicByIdForPatient(id: string) {
 
 export function useGetDoctorByClinic(params: IParamGetDoctorByClinic) {
   return useQuery({
-    queryKey: ['clinic-by-clinic-for-patient' + JSON.stringify(params)],
+    queryKey: [
+      'clinic-by-clinic-for-patient',
+      params.id,
+      params.date,
+      params.treatment_type,
+      params.problem_type,
+    ],
     queryFn: async () => getDoctorByClinic(params),
     enabled: !!params.id && !!params.date,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    staleTime: 0, // Data selalu dianggap stale, force refetch
+    gcTime: 5 * 60 * 1000, // Cache hanya 5 menit
   });
 }
 
@@ -63,8 +73,20 @@ export function useGetDoctorAvailabilityByClinic(
   payload: IParamsGetDoctorAvailability
 ) {
   return useQuery({
-    queryKey: ['doctor-availability-by-clinic' + payload.doctorId],
+    queryKey: [
+      'doctor-availability-by-clinic',
+      payload.clinicId,
+      payload.doctorId,
+      payload.appointment_date,
+      payload.appointment_type,
+    ],
     queryFn: async () => postGetDoctorAvailabilityByClinic(payload),
+    enabled:
+      !!payload.clinicId && !!payload.doctorId && !!payload.appointment_date,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    staleTime: 0, // Data selalu dianggap stale, force refetch
+    gcTime: 5 * 60 * 1000, // Cache hanya 5 menit
   });
 }
 
