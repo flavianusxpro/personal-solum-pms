@@ -19,7 +19,6 @@ import { useGetClinicById, usePutUpdateClinic } from '@/hooks/useClinic';
 import { IPayloadCreateUpdateClinic } from '@/types/paramTypes';
 import { useProfile } from '@/hooks/useProfile';
 import { daysOptions } from '@/config/constants';
-import CSelect from '@/app/shared/ui/select';
 import dayjs from 'dayjs';
 import { IGetClinicByIdResponse } from '@/types/ApiResponse';
 
@@ -173,50 +172,6 @@ export default function Setup() {
 
     // Fallback to default
     return new Date();
-  };
-
-  // Helper function to get available days for selection
-  const getAvailableDays = (currentSchedules: any[], excludeIndex?: number) => {
-    const usedDays = new Set(
-      currentSchedules
-        .map((s, i) =>
-          excludeIndex !== undefined && i !== excludeIndex ? s.day : null
-        )
-        .filter(Boolean)
-    );
-    const availableDays = daysOptions.filter((day) => !usedDays.has(day.value));
-
-    return availableDays;
-  };
-
-  // Helper function to validate and fix duplicate days
-  const validateAndFixSchedules = (schedules: any[]) => {
-    const dayCounts = new Map<number, number>();
-    const fixedSchedules = [...schedules];
-
-    // Count occurrences of each day
-    fixedSchedules.forEach((schedule: any, index: number) => {
-      if (dayCounts.has(schedule.day)) {
-        dayCounts.set(schedule.day, (dayCounts.get(schedule.day) || 0) + 1);
-      } else {
-        dayCounts.set(schedule.day, 1);
-      }
-    });
-
-    // Fix duplicates by finding next available day
-    fixedSchedules.forEach((schedule: any, index: number) => {
-      if (dayCounts.get(schedule.day) && dayCounts.get(schedule.day)! > 1) {
-        const availableDays = getAvailableDays(fixedSchedules, index);
-        if (availableDays.length > 0) {
-          schedule.day = availableDays[0].value;
-          dayCounts.set(schedule.day, 1);
-          const currentCount = dayCounts.get(schedule.day) || 0;
-          dayCounts.set(schedule.day, Math.max(0, currentCount - 1));
-        }
-      }
-    });
-
-    return fixedSchedules;
   };
 
   // Helper function to parse clinic schedules from API response
@@ -467,34 +422,7 @@ export default function Setup() {
                           </div>
 
                           {schedule.is_open && (
-                            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                              <div>
-                                <Text className="mb-2 text-sm font-medium">
-                                  Day
-                                </Text>
-                                <Controller
-                                  control={control}
-                                  name={`clinic_schedules.${index}.day`}
-                                  render={({ field: dayField }) => {
-                                    const currentSchedules =
-                                      watch('clinic_schedules') || [];
-                                    const availableDays = getAvailableDays(
-                                      currentSchedules,
-                                      index
-                                    );
-
-                                    return (
-                                      <CSelect
-                                        options={availableDays}
-                                        placeholder="Select Day"
-                                        className="w-full"
-                                        {...dayField}
-                                      />
-                                    );
-                                  }}
-                                />
-                              </div>
-
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                               <div>
                                 <Text className="mb-2 text-sm font-medium">
                                   Opening Time
@@ -538,64 +466,8 @@ export default function Setup() {
                               </div>
                             </div>
                           )}
-
-                          {schedules.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newSchedules = schedules.filter(
-                                  (_, i) => i !== index
-                                );
-                                setValue('clinic_schedules', newSchedules);
-                              }}
-                              className="mt-4 text-sm font-medium text-red-600 hover:text-red-800"
-                            >
-                              Remove Day
-                            </button>
-                          )}
                         </div>
                       ));
-                  })()}
-
-                  {(() => {
-                    const currentSchedules = watch('clinic_schedules') || [];
-                    const usedDays = new Set(
-                      currentSchedules.map((s) => s.day)
-                    );
-                    // Check if all 7 days (0-6) are used
-                    const allDaysUsed = usedDays.size >= 7;
-                    const availableDays = getAvailableDays(currentSchedules);
-
-                    return (
-                      <button
-                        type="button"
-                        disabled={allDaysUsed}
-                        onClick={() => {
-                          // Only allow adding if there are available days
-                          if (availableDays.length > 0) {
-                            const nextAvailableDay = availableDays[0]?.value;
-                            setValue('clinic_schedules', [
-                              ...currentSchedules,
-                              {
-                                day: nextAvailableDay,
-                                start_hour: new Date('1970-01-01T09:00:00'), // 09:00
-                                end_hour: new Date('1970-01-01T17:00:00'), // 17:00
-                                is_open: true,
-                              },
-                            ]);
-                          }
-                        }}
-                        className={`w-full rounded-lg border-2 border-dashed px-4 py-3 transition-colors ${
-                          allDaysUsed
-                            ? 'cursor-not-allowed border-gray-200 bg-gray-50 text-gray-400'
-                            : 'border-gray-300 text-gray-600 hover:border-gray-400 hover:text-gray-800'
-                        }`}
-                      >
-                        {allDaysUsed
-                          ? 'All 7 days have been added'
-                          : `+ Add Another Day (${availableDays.length} days available)`}
-                      </button>
-                    );
                   })()}
                 </div>
               </div>
