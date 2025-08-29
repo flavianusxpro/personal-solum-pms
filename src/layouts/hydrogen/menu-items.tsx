@@ -175,7 +175,7 @@ export const adminMenuItems = [
     name: 'Request Call Back',
     href: routes.requestCallBack,
     icon: <PiDoorOpen />,
-    permissionReadName: ['request-call-back'],
+    permissionReadName: ['requestcallback'],
   },
   {
     name: 'Settings',
