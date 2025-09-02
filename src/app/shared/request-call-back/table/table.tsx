@@ -20,6 +20,7 @@ export default function RequestCallBackTable({}: {}) {
   } = useGetRequestCallback({
     page: 1,
     perPage: pageSize,
+    sort: 'DESC',
   });
 
   const { mutate } = useDeleteClinic();
