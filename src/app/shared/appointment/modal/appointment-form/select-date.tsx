@@ -9,7 +9,7 @@ import {
   useForm,
   UseFormSetValue,
 } from 'react-hook-form';
-import { FieldError, Flex, Input, Loader, Text, Title } from 'rizzui';
+import { FieldError, Flex, Input, Loader, Text } from 'rizzui';
 import Calendar from 'react-calendar';
 import {
   formDataAtom,
@@ -25,7 +25,6 @@ import {
 } from '@/hooks/useClinic';
 import { useMemo, useState } from 'react';
 import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
-import { IParamGetDoctorByClinic } from '@/types/paramTypes';
 import { IGetDoctorByClinicResponse } from '@/types/ApiResponse';
 import cn from '@/core/utils/class-names';
 import { PiBell, PiCalendar } from 'react-icons/pi';
@@ -172,7 +171,10 @@ export default function DateTime() {
               if (!doctor.id) return null;
 
               return (
-                <div key={index} className="mb-5">
+                <div
+                  key={`${doctor.id}-${formData.date}-${index}`}
+                  className="mb-5"
+                >
                   {/* Doctor Header */}
                   <div className="flex items-center justify-between space-x-4 p-6">
                     <div className="flex items-center space-x-4">

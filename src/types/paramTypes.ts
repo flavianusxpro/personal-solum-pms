@@ -327,10 +327,9 @@ export interface IPayloadPostAppoinment {
   doctorId: number;
   date: string;
   note?: string;
-  // appointment_type: string;
   patient_type: string;
   patient_problem: string;
-  payment_id?: string;
+  payment_method?: string;
   meeting_preference: string;
   additional_information: Additionalinformation;
 }
@@ -564,6 +563,14 @@ export interface IPayloadCreateUpdateClinic {
   url_logo?: string;
   default: boolean;
   status: number;
+  frontend_url?: string;
+  clinic_schedules?: {
+    day: number;
+    start_hour: string;
+    end_hour: string;
+    is_open: boolean;
+  }[];
+  client_timezone?: string;
 }
 
 export interface IPayloadCreateEditPharmachy {

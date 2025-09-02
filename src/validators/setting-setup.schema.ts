@@ -7,24 +7,25 @@ export const settingSetupFormSchema = z.object({
   logo: z.string().optional(),
   favicon: z.string().optional(),
   clinic_name: z.string().min(1, { message: messages.clinicNameRequired }),
-  clinic_address: z.array(
-    z.object({
-      address: z.string().min(1, { message: messages.clinicAddressRequired }),
-    })
-  ),
-  phone_numbers: z.array(
-    z.object({
-      phone_number: z
-        .string()
-        .min(1, { message: messages.phoneNumberIsRequired }),
-    })
-  ),
+  clinic_address: z
+    .string()
+    .min(1, { message: messages.clinicAddressRequired }),
+  phone_numbers: z.string().min(1, { message: messages.phoneNumberIsRequired }),
+  clinic_email: z.string().email({ message: messages.emailIsRequired }),
+  frontend_url: z.string().optional(),
   contact_details: z.string().optional(),
   map_location: z.string().optional(),
 
-  clinic_opening_hours: z.date().optional(),
-  clinic_closing_hours: z.date().optional(),
-  clinic_opening_status: z.boolean().optional(),
+  clinic_schedules: z
+    .array(
+      z.object({
+        day: z.number().min(0).max(6),
+        start_hour: z.date(),
+        end_hour: z.date(),
+        is_open: z.boolean(),
+      })
+    )
+    .min(1, 'At least one schedule is required'),
 
   meta_title: z.string().optional(),
   meta_description: z.string().optional(),

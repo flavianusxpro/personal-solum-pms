@@ -381,6 +381,7 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                     getValues={getValues}
                     disabled={isView}
                     error={errors?.avatar?.message as string}
+                    path_name="patient"
                   />
                 </div>
               </FormGroup>

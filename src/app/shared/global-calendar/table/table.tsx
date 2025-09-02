@@ -9,7 +9,7 @@ import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 import TableHeader from '../../ui/table-header';
 import { Flex, Input, Loader } from 'rizzui';
 import { PiArrowLeft, PiArrowRight } from 'react-icons/pi';
-import dayjs from 'dayjs';
+import dayjs from '@/config/dayjs';
 import ActionButton from '../../ui/action-tooltip-button';
 import { useProfile } from '@/hooks/useProfile';
 
@@ -93,8 +93,47 @@ export default function GlobalCalendarTable({}: {}) {
       data.forEach((item) => {
         const doctorName =
           `${item.doctor?.first_name || ''} ${item.doctor?.last_name || ''}`.trim();
-        const appointmentTime = new Date(item.date);
-        const timeStr = appointmentTime.toTimeString().slice(0, 5); // Format: HH:MM
+
+        // Extract time directly from the date string to avoid timezone conversion
+        let timeStr: string;
+
+        // Parse time directly from the ISO string format: "2025-09-10T09:00:00.000Z"
+        const timeMatch = item.date.match(/T(\d{2}):(\d{2}):(\d{2})/);
+        if (timeMatch) {
+          const hour = timeMatch[1];
+          const minute = timeMatch[2];
+          timeStr = `${hour}:${minute}`;
+        } else {
+          // Fallback to local_date if direct extraction fails
+          if (item.local_date) {
+            const localTimeMatch = item.local_date.match(
+              /(\d{1,2}):(\d{2})\s*(AM|PM)/
+            );
+            if (localTimeMatch) {
+              let hour = parseInt(localTimeMatch[1]);
+              const minute = localTimeMatch[2];
+              const period = localTimeMatch[3];
+
+              // Convert 12-hour format to 24-hour format
+              if (period === 'PM' && hour !== 12) {
+                hour += 12;
+              } else if (period === 'AM' && hour === 12) {
+                hour = 0;
+              }
+
+              timeStr = `${hour.toString().padStart(2, '0')}:${minute}`;
+            } else {
+              // Fallback to parsing the date string directly
+              const localDate = new Date(item.local_date);
+              timeStr = localDate.toTimeString().slice(0, 5);
+            }
+          } else {
+            // Last resort: use UTC time
+            const appointmentTime = dayjs.utc(item.date);
+            timeStr = appointmentTime.format('HH:mm');
+          }
+        }
+
         const slot = result.find((r) => r.time === timeStr);
 
         if (slot && item.patient) {

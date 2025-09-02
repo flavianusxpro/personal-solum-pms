@@ -75,7 +75,7 @@ export default function DoctorCostMaster() {
               {dataTreatments?.data?.map((treatment, index) => (
                 <tr key={treatment.id || index} className="hover:bg-gray-50">
                   <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
-                    {treatment.name}
+                    {treatment.treatment.name}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                     {treatment.amount || '0.00'}

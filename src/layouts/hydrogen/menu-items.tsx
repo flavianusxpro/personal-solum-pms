@@ -152,7 +152,7 @@ export const adminMenuItems = [
     permissionReadName: ['marketing'],
     dropdownItems: [
       {
-        name: 'Coupon (coming soon)',
+        name: 'Coupon',
         href: routes.marketing.coupon,
         icon: <PiBoundingBox />,
         permissionReadName: [],
@@ -172,10 +172,10 @@ export const adminMenuItems = [
     ],
   },
   {
-    name: 'Request Call Back (cooming soon)',
+    name: 'Request Call Back',
     href: routes.requestCallBack,
     icon: <PiDoorOpen />,
-    permissionReadName: ['management'],
+    permissionReadName: ['requestcallback'],
   },
   {
     name: 'Settings',

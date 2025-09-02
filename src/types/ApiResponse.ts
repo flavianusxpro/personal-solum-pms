@@ -403,20 +403,21 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
     status: number;
     local_date: string;
     type: string;
-    meeting_link: null;
-    meeting_id: null;
-    meeting_passcode: null;
+    meeting_link: string | null;
+    meeting_id: string | null;
+    meeting_passcode: string | null;
     patient_type: string;
-    patient_problem: string;
+    patient_problem: string | null;
     note: string | null;
-    sessionId: null;
+    sessionId: string | null;
     paymentId: number;
+    is_reschedule: boolean;
     created_at: string;
     updated_at: string;
     payment: IPayment | null;
     patient: IPatient | null;
     doctor: IDoctor;
-    is_reschedule: boolean;
+    clinic: any;
   }[];
 }
 
@@ -703,6 +704,14 @@ export interface IGetTreatmentsFromMasterResponse extends ApiResponse {
     treatmentId: number;
     updated_at: string;
     name: string;
+    treatment: {
+      id: number;
+      name: string;
+      clinicId: number;
+      description: string;
+      created_at: string;
+      updated_at: string;
+    };
   }[];
 }
 
@@ -1041,4 +1050,35 @@ export interface IPostConnectionStatusResponse extends ApiResponse {
   data: {
     sessionId: string;
   };
+}
+
+export interface IGetClinicByIdResponse extends ApiResponse {
+  data: IGetClinicByIdResponseData;
+}
+
+interface IGetClinicByIdResponseData {
+  id: number;
+  name: string;
+  email: string;
+  mobile_number: string;
+  address: string;
+  logo: string;
+  default: boolean;
+  status: number;
+  description: null;
+  clinic_identity: string;
+  secret_key: string;
+  frontend_url: null;
+  created_at: string;
+  updated_at: string;
+  clinic_schedules: {
+    id: number;
+    clinicId: number;
+    day: string;
+    start_hour: string;
+    end_hour: string;
+    is_open: boolean;
+    created_at: string;
+    updated_at: string;
+  }[];
 }
