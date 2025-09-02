@@ -3,7 +3,7 @@
 import { Controller, SubmitHandler } from 'react-hook-form';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { ActionIcon, Flex, Grid, Input, Loader, Title } from 'rizzui';
+import { ActionIcon, Flex, Grid, Input, Loader, Textarea, Title } from 'rizzui';
 import { useModal } from '../../modal-views/use-modal';
 import { PiX } from 'react-icons/pi';
 import { IGetRequestCallbackResponse } from '@/types/ApiResponse';
@@ -142,14 +142,6 @@ export default function CreateEditModal({ data, isView }: IProps) {
                 error={errors.mobile_number?.message}
                 disabled={isView}
               />
-              <Input
-                label="Reason"
-                {...register('reason')}
-                placeholder="Address"
-                className="w-full"
-                error={errors.reason?.message}
-                disabled={isView}
-              />
 
               <Controller
                 control={control}
@@ -177,10 +169,27 @@ export default function CreateEditModal({ data, isView }: IProps) {
                   <Input
                     {...field}
                     type="date"
-                    label="Preferred Time"
+                    label="Preferred Date"
                     disabled={isView}
                   />
                 )}
+              />
+
+              <Controller
+                control={control}
+                name="patient_time"
+                render={({ field }) => (
+                  <Input {...field} label="Preferred Time" disabled={isView} />
+                )}
+              />
+
+              <Textarea
+                label="Reason"
+                {...register('reason')}
+                placeholder="Address"
+                className="col-span-full"
+                error={errors.reason?.message}
+                disabled={isView}
               />
             </Grid>
 
