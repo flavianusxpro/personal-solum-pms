@@ -6,27 +6,22 @@ import { Form } from '@core/ui/form';
 import { ActionIcon, Flex, Grid, Input, Loader, Title } from 'rizzui';
 import { useModal } from '../../modal-views/use-modal';
 import { PiX } from 'react-icons/pi';
-import dynamic from 'next/dynamic';
-import { IGetAllClinicForPatientResponse } from '@/types/ApiResponse';
+import { IGetRequestCallbackResponse } from '@/types/ApiResponse';
 
 import {
   useGetAllClinics,
   usePostCreateClinic,
   usePutUpdateClinic,
 } from '@/hooks/useClinic';
-import {
-  CreateBranchForm,
-  createBranchSchema,
-} from '@/validators/create-branch.schema';
 import CSelect from '../../ui/select';
-import AvatarUpload from '@/core/ui/file-upload/avatar-upload';
-import { IPayloadCreateUpdateClinic } from '@/types/paramTypes';
-import toast from 'react-hot-toast';
-import FormGroup from '../../ui/form-group';
 import cn from '@/core/utils/class-names';
+import {
+  CreateRequestCallbackForm,
+  createRequestCallbackSchema,
+} from '@/validators/create-request-callback.schema';
 
 interface IProps {
-  data?: IGetAllClinicForPatientResponse['data'][number];
+  data?: IGetRequestCallbackResponse['data'][number];
   isView?: boolean;
 }
 
@@ -45,65 +40,56 @@ export default function CreateEditModal({ data, isView }: IProps) {
   const { mutate: mutateUpdate, isPending: isPendingUpdate } =
     usePutUpdateClinic();
 
-  const onSubmit: SubmitHandler<CreateBranchForm> = (formValues) => {
-    const payload: IPayloadCreateUpdateClinic = {
-      id: data?.id.toString(),
-      name: formValues.name,
-      email: formValues.email,
-      mobile_number: formValues.mobile_number,
-      address: formValues.address,
-      url_logo: formValues.url_logo,
-      status: formValues.status || 0,
-      default: formValues.default === 1 ? true : false,
-    };
-
-    if (data?.id) {
-      mutateUpdate(payload, {
-        onSuccess: () => {
-          refetch();
-          closeModal();
-          toast.success('Branch updated successfully');
-        },
-        onError: (error: any) => {
-          toast.error(
-            'Failed to update branch: ',
-            error?.response?.data?.message
-          );
-        },
-      });
-      return;
-    }
-    mutateCreate(payload, {
-      onSuccess: () => {
-        refetch();
-        closeModal();
-        toast.success('Branch template created successfully');
-      },
-      onError: (error: any) => {
-        toast.error(
-          'Failed to create branch: ',
-          error?.response?.data?.message
-        );
-      },
-    });
+  const onSubmit: SubmitHandler<CreateRequestCallbackForm> = (formValues) => {
+    // const payload: IPayloadCreateUpdateClinic = {
+    // };
+    // if (data?.id) {
+    //   mutateUpdate(payload, {
+    //     onSuccess: () => {
+    //       refetch();
+    //       closeModal();
+    //       toast.success('Branch updated successfully');
+    //     },
+    //     onError: (error: any) => {
+    //       toast.error(
+    //         'Failed to update branch: ',
+    //         error?.response?.data?.message
+    //       );
+    //     },
+    //   });
+    //   return;
+    // }
+    // mutateCreate(payload, {
+    //   onSuccess: () => {
+    //     refetch();
+    //     closeModal();
+    //     toast.success('Branch template created successfully');
+    //   },
+    //   onError: (error: any) => {
+    //     toast.error(
+    //       'Failed to create branch: ',
+    //       error?.response?.data?.message
+    //     );
+    //   },
+    // });
   };
 
   return (
-    <Form<CreateBranchForm>
-      validationSchema={createBranchSchema}
+    <Form<CreateRequestCallbackForm>
+      validationSchema={createRequestCallbackSchema}
       // resetValues={reset}
       onSubmit={onSubmit}
       className="@container"
       useFormProps={{
         mode: 'onChange',
         defaultValues: {
-          name: data?.name || '',
-          email: data?.email || '',
-          mobile_number: data?.mobile_number || '',
-          address: data?.address || '',
-          url_logo: data?.logo || '',
-          status: data?.status || 2,
-          default: data?.default ? 1 : 2,
+          name: data?.patient_Name || '',
+          email: data?.patient_email || '',
+          mobile_number: data?.patient_phone || '',
+          status: data?.status,
+          patient_preferred_time: data?.patient_preferred_time.split('T')[0],
+          patient_time: data?.patient_time,
+          reason: data?.patient_reason,
         },
       }}
     >
@@ -121,7 +107,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
           >
             <Flex justify="between" align="center" gap="4">
               <Title className="text-lg">
-                {isView ? 'View' : data ? 'Update' : 'Create'} Branch
+                {isView ? 'View' : data ? 'Update' : 'Create'} Request Callback
               </Title>
               <ActionIcon variant="text" onClick={closeModal} className="">
                 <PiX className="h-6 w-6" />
@@ -129,23 +115,10 @@ export default function CreateEditModal({ data, isView }: IProps) {
             </Flex>
 
             <Grid columns="2">
-              <Flex justify="center" align="center" className="col-span-2">
-                <FormGroup title="Logo" isLabel className="text-center">
-                  <AvatarUpload
-                    {...register('url_logo')}
-                    name="url_logo"
-                    path_name="logo"
-                    setValue={setValue}
-                    getValues={getValues}
-                    disabled={isView}
-                    error={errors?.url_logo?.message as string}
-                  />
-                </FormGroup>
-              </Flex>
               <Input
-                label="Clinic Name"
+                label="Patient Name"
                 {...register('name')}
-                placeholder="Clinic Name"
+                placeholder="Patient Name"
                 className="w-full"
                 error={errors.name?.message}
                 disabled={isView}
@@ -170,11 +143,11 @@ export default function CreateEditModal({ data, isView }: IProps) {
                 disabled={isView}
               />
               <Input
-                label="Address"
-                {...register('address')}
+                label="Reason"
+                {...register('reason')}
                 placeholder="Address"
                 className="w-full"
-                error={errors.address?.message}
+                error={errors.reason?.message}
                 disabled={isView}
               />
 
@@ -187,8 +160,9 @@ export default function CreateEditModal({ data, isView }: IProps) {
                     label="Status"
                     placeholder="Select Status"
                     options={[
-                      { value: 1, label: 'Active' },
-                      { value: 2, label: 'Not Verified' },
+                      { value: 'already_called', label: 'Already Called' },
+                      { value: 'waiting_for_call', label: 'Waiting for Call' },
+                      { value: 'no_answer', label: 'No Answer' },
                     ]}
                     error={errors.status?.message}
                     disabled={isView}
@@ -198,17 +172,12 @@ export default function CreateEditModal({ data, isView }: IProps) {
 
               <Controller
                 control={control}
-                name="default"
+                name="patient_preferred_time"
                 render={({ field }) => (
-                  <CSelect
+                  <Input
                     {...field}
-                    label="Branch Type"
-                    placeholder="Select Branch Type"
-                    options={[
-                      { value: 1, label: 'Head Office' },
-                      { value: 2, label: 'Branch' },
-                    ]}
-                    error={errors.default?.message}
+                    type="date"
+                    label="Preferred Time"
                     disabled={isView}
                   />
                 )}

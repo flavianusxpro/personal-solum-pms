@@ -1,17 +1,15 @@
 'use client';
 
-import DeletePopover from '@/app/shared/ui/delete-popover';
 import { HeaderCell } from '@/app/shared/ui/table';
-import { IGetAllClinicForPatientResponse } from '@/types/ApiResponse';
+import { IGetRequestCallbackResponse } from '@/types/ApiResponse';
 import EyeIcon from '@core/components/icons/eye';
-import PencilIcon from '@core/components/icons/pencil';
 import DateCell from '@core/ui/date-cell';
 import { ActionIcon, Badge, Checkbox, Text, Tooltip } from 'rizzui';
 import CreateEditModal from '../modal/create-edit-modal';
 import AvatarCard from '@/core/ui/avatar-card';
 
 type Columns = {
-  data: IGetAllClinicForPatientResponse['data'];
+  data: IGetRequestCallbackResponse['data'];
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
@@ -21,7 +19,7 @@ type Columns = {
   openModal: (props: any) => void;
 };
 
-type Row = IGetAllClinicForPatientResponse['data'][number];
+type Row = IGetRequestCallbackResponse['data'][number];
 
 export const getColumns = ({
   data,
@@ -71,17 +69,17 @@ export const getColumns = ({
     width: 200,
     render: (_: string, row: Row) => (
       <AvatarCard
-        name={row.name}
-        src={row.logo}
-        description={row.email}
-        number={row.mobile_number}
+        name={row.patient_Name}
+        src={row.patient_Name}
+        description={row.patient_email}
+        number={row.patient_phone}
       />
     ),
   },
   {
     title: <HeaderCell title="DATE" />,
-    dataIndex: 'created_at',
-    key: 'created_at',
+    dataIndex: 'patient_preferred_time',
+    key: 'patient_preferred_time',
     width: 100,
     render: (value: Date) => <DateCell clock date={value} />,
   },
@@ -90,14 +88,14 @@ export const getColumns = ({
     dataIndex: 'status',
     key: 'status',
     width: 100,
-    render: (value: number) => getStatusBadge(value),
+    render: (value: string) => getStatusBadge(value),
   },
   {
     title: <HeaderCell title="Reason" />,
-    dataIndex: 'created_at',
-    key: 'created_at',
+    dataIndex: 'patient_reason',
+    key: 'patient_reason',
     width: 100,
-    render: (value: Date) => <DateCell clock date={value} />,
+    render: (value: string) => value,
   },
 
   {
@@ -132,20 +130,24 @@ export const getColumns = ({
   },
 ];
 
-function getStatusBadge(status: number) {
+function getStatusBadge(status: string) {
   switch (status) {
-    case 1:
+    case 'already_called':
       return (
         <div className="flex items-center">
           <Badge color="success" renderAsDot />
-          <Text className="ms-2 font-medium text-green-dark">Done</Text>
+          <Text className="ms-2 font-medium text-green-dark">
+            Already Called
+          </Text>
         </div>
       );
-    case 2:
+    case 'waiting_for_call':
       return (
         <div className="flex items-center">
           <Badge color="warning" renderAsDot />
-          <Text className="ms-2 font-medium text-yellow-600">Waiting</Text>
+          <Text className="ms-2 font-medium text-yellow-600">
+            Waiting for Call
+          </Text>
         </div>
       );
     default:
