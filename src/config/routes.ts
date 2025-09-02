@@ -39,7 +39,7 @@ export const routes = {
     details: (id: string) => `/invoice/${id}`,
     edit: (id: string) => `/invoice/${id}/edit`,
   },
-  requestCallBack: '/request-call-back',
+  requestCallBack: '/requestcallback',
   setting: {
     setup: '/setting/setup',
     communication: '/setting/communication',
