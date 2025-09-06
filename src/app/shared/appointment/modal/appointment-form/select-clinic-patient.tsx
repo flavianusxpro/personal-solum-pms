@@ -116,6 +116,8 @@ export default function SelectClinic() {
       patient_id: data.patient_id,
       treatment: data.treatment,
       note: data.note ?? '',
+      // Auto-select doctor from last appointment if available
+      doctorId: lastAppointment?.doctor?.id || prev.doctorId,
     }));
     gotoNextStep();
   };
@@ -129,6 +131,8 @@ export default function SelectClinic() {
         ...prev,
         clinicId: lastClinic.id,
         treatment: lastAppointment?.patient_type || '',
+        // Auto-select doctor from last appointment
+        doctorId: lastAppointment?.doctor?.id || undefined,
       }));
     }
   }, [
@@ -138,6 +142,7 @@ export default function SelectClinic() {
     setFormData,
     setValue,
     lastAppointment?.patient_type,
+    lastAppointment?.doctor?.id,
   ]);
 
   return (
@@ -232,6 +237,14 @@ export default function SelectClinic() {
                 <p className="rizzui-text-p text-sm font-normal text-gray-500">
                   {dayjs(lastAppointment?.date).format('DD/MM/YYYY HH:mm')}
                 </p>
+                {lastAppointment?.doctor && (
+                  <>
+                    <span className="h-1 w-1 rounded-full bg-gray-600"></span>
+                    <p className="rizzui-text-p text-sm font-normal text-gray-500">
+                      Dr. {lastAppointment.doctor.first_name} {lastAppointment.doctor.last_name}
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           </div>

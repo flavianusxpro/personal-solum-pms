@@ -1,17 +1,25 @@
 'use client';
 
-import DeletePopover from '@/app/shared/ui/delete-popover';
 import { HeaderCell } from '@/app/shared/ui/table';
-import { IGetAllClinicForPatientResponse } from '@/types/ApiResponse';
+import { IGetRequestCallbackResponse } from '@/types/ApiResponse';
 import EyeIcon from '@core/components/icons/eye';
-import PencilIcon from '@core/components/icons/pencil';
 import DateCell from '@core/ui/date-cell';
-import { ActionIcon, Badge, Checkbox, Text, Tooltip } from 'rizzui';
+import { ActionIcon, Badge, Checkbox, Flex, Text, Tooltip } from 'rizzui';
 import CreateEditModal from '../modal/create-edit-modal';
 import AvatarCard from '@/core/ui/avatar-card';
+import CSelect from '@/app/shared/ui/select';
+import { useState } from 'react';
+import { useUpdateRequestCallback } from '@/hooks/useRequestCallback';
+import toast from 'react-hot-toast';
+
+const requestCallbackStatusOptions = [
+  { label: 'Waiting for Call', value: 'waiting_for_call' },
+  { label: 'Already Called', value: 'already_called' },
+  { label: 'No Answer', value: 'no_answer' },
+];
 
 type Columns = {
-  data: IGetAllClinicForPatientResponse['data'];
+  data: IGetRequestCallbackResponse['data'];
   sortConfig?: any;
   handleSelectAll: any;
   checkedItems: string[];
@@ -21,7 +29,7 @@ type Columns = {
   openModal: (props: any) => void;
 };
 
-type Row = IGetAllClinicForPatientResponse['data'][number];
+type Row = IGetRequestCallbackResponse['data'][number];
 
 export const getColumns = ({
   data,
@@ -71,17 +79,17 @@ export const getColumns = ({
     width: 200,
     render: (_: string, row: Row) => (
       <AvatarCard
-        name={row.name}
-        src={row.logo}
-        description={row.email}
-        number={row.mobile_number}
+        name={row.patient_Name}
+        src={row.patient_Name}
+        description={row.patient_email}
+        number={row.patient_phone}
       />
     ),
   },
   {
     title: <HeaderCell title="DATE" />,
-    dataIndex: 'created_at',
-    key: 'created_at',
+    dataIndex: 'patient_preferred_time',
+    key: 'patient_preferred_time',
     width: 100,
     render: (value: Date) => <DateCell clock date={value} />,
   },
@@ -89,15 +97,21 @@ export const getColumns = ({
     title: <HeaderCell title="Status" />,
     dataIndex: 'status',
     key: 'status',
-    width: 100,
-    render: (value: number) => getStatusBadge(value),
+    width: 260,
+    render: (value: string, row: Row) => (
+      <StatusSelect id={row.id} selectItem={value} />
+    ),
   },
   {
     title: <HeaderCell title="Reason" />,
-    dataIndex: 'created_at',
-    key: 'created_at',
+    dataIndex: 'patient_reason',
+    key: 'patient_reason',
     width: 100,
-    render: (value: Date) => <DateCell clock date={value} />,
+    render: (value: string) => (
+      <div className="max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap">
+        {value}
+      </div>
+    ),
   },
 
   {
@@ -132,28 +146,74 @@ export const getColumns = ({
   },
 ];
 
-function getStatusBadge(status: number) {
+function getStatusBadge(status: string) {
   switch (status) {
-    case 1:
+    case 'already_called':
       return (
-        <div className="flex items-center">
+        <Flex gap="1" align="center">
           <Badge color="success" renderAsDot />
-          <Text className="ms-2 font-medium text-green-dark">Done</Text>
-        </div>
+          <Text className="font-medium text-green-dark">Already Called</Text>
+        </Flex>
       );
-    case 2:
+    case 'waiting_for_call':
       return (
-        <div className="flex items-center">
+        <Flex gap="1" align="center">
           <Badge color="warning" renderAsDot />
-          <Text className="ms-2 font-medium text-yellow-600">Waiting</Text>
-        </div>
+          <Text className="font-medium text-yellow-600">Waiting for Call</Text>
+        </Flex>
+      );
+    case 'no_answer':
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="danger" renderAsDot />
+          <Text className="font-medium text-red-dark">No Answer</Text>
+        </Flex>
       );
     default:
       return (
-        <div className="flex items-center">
+        <Flex gap="1" align="center">
           <Badge renderAsDot className="bg-gray-400" />
-          <Text className="ms-2 font-medium text-gray-600">{status}</Text>
-        </div>
+          <Text className="font-medium text-gray-600">{status}</Text>
+        </Flex>
       );
   }
+}
+
+function StatusSelect({ selectItem, id }: { selectItem: string; id: number }) {
+  const selectItemValue = requestCallbackStatusOptions.find(
+    (option) => option.value === selectItem
+  )?.value;
+  const [value, setValue] = useState(selectItemValue);
+
+  const { mutate, isPending } = useUpdateRequestCallback();
+
+  const handleChange = (value: string) => {
+    setValue(value);
+    mutate(
+      { id, status: value },
+      {
+        onSuccess: () => {
+          toast.success('Status updated successfully');
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || 'Error updating status'
+          );
+        },
+      }
+    );
+  };
+
+  return (
+    <CSelect
+      className={'min-w-[140px]'}
+      dropdownClassName="h-auto"
+      placeholder="Select Status"
+      options={requestCallbackStatusOptions}
+      value={value}
+      onChange={handleChange}
+      isLoading={isPending}
+      displayValue={(option: { value: string }) => getStatusBadge(option.value)}
+    />
+  );
 }

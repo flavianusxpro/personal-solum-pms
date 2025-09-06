@@ -1082,3 +1082,22 @@ interface IGetClinicByIdResponseData {
     updated_at: string;
   }[];
 }
+
+export interface IGetRequestCallbackResponse extends ApiResponseWithPagination {
+  data: IRequestCallback[];
+}
+
+export interface IRequestCallback {
+  id: number;
+  name: string;
+  clinicId: number;
+  patient_Name: string;
+  patient_email: string;
+  patient_phone: string;
+  patient_preferred_time: string;
+  patient_time: string;
+  patient_reason: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}

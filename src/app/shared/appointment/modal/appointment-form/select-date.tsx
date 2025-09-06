@@ -23,7 +23,7 @@ import {
   useGetDoctorAvailabilityByClinic,
   useGetDoctorByClinic,
 } from '@/hooks/useClinic';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
 import { IGetDoctorByClinicResponse } from '@/types/ApiResponse';
 import cn from '@/core/utils/class-names';
@@ -74,6 +74,13 @@ export default function DateTime() {
     );
   }, [dataDoctor, formData.doctorId]);
 
+  // Auto-expand doctor's times if they were pre-selected from last appointment
+  useEffect(() => {
+    if (formData.doctorId && dataDoctor?.length) {
+      setCurrentOpen(Number(formData.doctorId));
+    }
+  }, [formData.doctorId, dataDoctor]);
+
   const disabledDate: dayjs.Dayjs[] = useMemo(() => {
     if (!dataCalendarSchedule?.data) return [];
     const disabledDates = dataCalendarSchedule?.data.map((item) =>
@@ -81,6 +88,31 @@ export default function DateTime() {
     );
     return disabledDates;
   }, [dataCalendarSchedule]);
+
+  // Auto-select first available date if no date is set and patient has a pre-selected doctor
+  useEffect(() => {
+    if (!formData.date && formData.doctorId && disabledDate.length > 0) {
+      // Find first available date from today
+      let checkDate = dayjs();
+      let found = false;
+      const maxDaysToCheck = 30; // Check up to 30 days ahead
+      
+      for (let i = 0; i < maxDaysToCheck && !found; i++) {
+        const dateToCheck = checkDate.add(i, 'day');
+        const isAvailable = disabledDate.some((availableDate) =>
+          availableDate.isSame(dateToCheck, 'day')
+        );
+        
+        if (isAvailable) {
+          setFormData((prev) => ({
+            ...prev,
+            date: dateToCheck.format('YYYY-MM-DD'),
+          }));
+          found = true;
+        }
+      }
+    }
+  }, [formData.date, formData.doctorId, disabledDate, setFormData]);
 
   const onSubmit: SubmitHandler<FormSchemaType> = (data) => {
     gotoNextStep();
@@ -241,6 +273,7 @@ function DoctorTime({
   localTimezone: string;
 }) {
   const [formData, setFormData] = useAtom(formDataAtom);
+  const [hasAutoSelected, setHasAutoSelected] = useState(false);
 
   const appointmentType = useMemo(() => {
     if (formData?.appointment_type?.includes('FOLLOWUP')) {
@@ -276,6 +309,28 @@ function DoctorTime({
       [] as { availTime: string; valueTime: string }[]
     );
   }, [dataAvailability?.data]);
+
+  // Auto-select first available time slot if this is the pre-selected doctor
+  useEffect(() => {
+    if (
+      !hasAutoSelected &&
+      formData.doctorId === doctor.id &&
+      timeList.length > 0 &&
+      !formData.doctorTime
+    ) {
+      const firstSlot = timeList[0];
+      setValue('doctorTime', firstSlot.valueTime);
+      setValue('doctorId', doctor.id as number);
+      setValue('fee', doctor.cost.amount || '');
+      setFormData((prev) => ({
+        ...prev,
+        doctorTime: firstSlot.valueTime,
+        doctorId: doctor.id as number,
+        fee: doctor.cost.amount || '',
+      }));
+      setHasAutoSelected(true);
+    }
+  }, [timeList, formData.doctorId, doctor.id, hasAutoSelected, setValue, setFormData, doctor.cost.amount, formData.doctorTime]);
 
   if (isLoading) {
     return <Loader />;

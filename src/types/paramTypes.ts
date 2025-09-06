@@ -672,3 +672,6 @@ export interface IPayloadCreateEditApiConnection {
   name: string;
   hostname: string;
 }
+
+export interface IParamsGetRequestCallback
+  extends IParamGetDataWithPagination {}

@@ -7,6 +7,7 @@ import React, { useCallback, useState } from 'react';
 import { getColumns } from './columns';
 import { useModal } from '../../modal-views/use-modal';
 import { useDeleteClinic, useGetAllClinics } from '@/hooks/useClinic';
+import { useGetRequestCallback } from '@/hooks/useRequestCallback';
 
 export default function RequestCallBackTable({}: {}) {
   const { openModal } = useModal();
@@ -14,13 +15,12 @@ export default function RequestCallBackTable({}: {}) {
 
   const {
     data,
-    isLoading: isLoadingGetRoles,
+    isLoading: isLoadingGetRequestCallback,
     refetch,
-  } = useGetAllClinics({
+  } = useGetRequestCallback({
     page: 1,
     perPage: pageSize,
     sort: 'DESC',
-    role: 'admin',
   });
 
   const { mutate } = useDeleteClinic();
@@ -54,18 +54,18 @@ export default function RequestCallBackTable({}: {}) {
 
   const onDeleteItem = useCallback(
     (id: string) => {
-      mutate(id, {
-        onSuccess: () => {
-          handleDelete(id);
-          refetch();
-        },
-        onError: (error: any) => {
-          console.error(
-            'Failed to delete role: ',
-            error?.response?.data?.message
-          );
-        },
-      });
+      // mutate(id, {
+      //   onSuccess: () => {
+      //     handleDelete(id);
+      //     refetch();
+      //   },
+      //   onError: (error: any) => {
+      //     console.error(
+      //       'Failed to delete role: ',
+      //       error?.response?.data?.message
+      //     );
+      //   },
+      // });
     },
     [handleDelete, mutate, refetch]
   );
@@ -100,7 +100,7 @@ export default function RequestCallBackTable({}: {}) {
   return (
     <div>
       <ControlledTable
-        isLoading={isLoading || isLoadingGetRoles}
+        isLoading={isLoading || isLoadingGetRequestCallback}
         showLoadingText={true}
         data={tableData ?? []}
         // @ts-ignore
