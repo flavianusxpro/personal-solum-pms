@@ -220,7 +220,7 @@ export default function SelectClinic() {
           )}
         />
 
-        <div className="space-y-5 h-[220px]">
+        <div className="space-y-5 h-[50px]">
           <Text fontWeight="medium" className="text-gray-1000">
             Last Appointment
           </Text>

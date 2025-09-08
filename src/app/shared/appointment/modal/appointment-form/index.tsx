@@ -173,21 +173,21 @@ export default function CreateUpdateAppointmentForm({
   }, [pathname, searchParams]);
 
   return (
-    <div className="relative flex justify-center md:items-center h-[800px] overflow-y-auto scrollbar-thin min-w-[1000px] scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
-      <div className="w-full h-full">
-        <div className="flex items-center justify-between border-b border-gray-200 p-5 md:p-7">
-          <Title as="h2" className="font-lexend text-lg font-semibold">
-            {isEdit && 'Update '} Book an appointment
-          </Title>
-          <ActionIcon
-            size="sm"
-            variant="text"
-            onClick={() => closeModal()}
-            className="p-0 text-gray-500 hover:!text-gray-900"
-          >
-            <PiXBold className="h-5 w-5" />
-          </ActionIcon>
-        </div>
+    <div className="relative flex flex-col rounded-lg shadow-xl h-[90vmin] w-[1000px] max-h-[800px] overflow-hidden">
+      <div className="flex items-center justify-between border-b border-gray-200 p-5 md:p-7 flex-shrink-0">
+        <Title as="h2" className="font-lexend text-lg font-semibold">
+          {isEdit && 'Update '} Book an appointment
+        </Title>
+        <ActionIcon
+          size="sm"
+          variant="text"
+          onClick={() => closeModal()}
+          className="p-0 text-gray-500 hover:!text-gray-900"
+        >
+          <PiXBold className="h-5 w-5" />
+        </ActionIcon>
+      </div>
+      <div className="flex-1 pb-20 overflow-y-auto">
         <Component />
       </div>
     </div>
