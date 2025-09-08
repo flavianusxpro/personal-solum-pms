@@ -11,25 +11,12 @@ const SelectClinic = dynamic(
     ssr: false,
   }
 );
-// const SelectDoctorTime = dynamic(
-//   () => import('@/app/shared/appointment/modal/appointment-form/doctor-time'),
-//   {
-//     ssr: false,
-//   }
-// );
 const SelectDate = dynamic(
   () => import('@/app/shared/appointment/modal/appointment-form/select-date'),
   {
     ssr: false,
   }
 );
-// const SelectService = dynamic(
-//   () =>
-//     import('@/app/shared/appointment/modal/appointment-form/select-services'),
-//   {
-//     ssr: false,
-//   }
-// );
 const Payment = dynamic(
   () =>
     import('@/app/shared/appointment/modal/appointment-form/select-payment'),
@@ -126,8 +113,6 @@ export function useStepperAppointment() {
 const MAP_STEP_TO_COMPONENT = {
   [Step.SelectClinic]: SelectClinic,
   [Step.SelectDate]: SelectDate,
-  // [Step.SelectDoctorTime]: SelectDoctorTime,
-  // [Step.SelectService]: SelectService,
   [Step.Payment]: Payment,
 };
 
@@ -188,8 +173,8 @@ export default function CreateUpdateAppointmentForm({
   }, [pathname, searchParams]);
 
   return (
-    <div className="relative flex justify-center md:items-center">
-      <div className="w-full">
+    <div className="relative flex justify-center md:items-center h-[800px] overflow-y-auto scrollbar-thin min-w-[1000px] scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
+      <div className="w-full h-full">
         <div className="flex items-center justify-between border-b border-gray-200 p-5 md:p-7">
           <Title as="h2" className="font-lexend text-lg font-semibold">
             {isEdit && 'Update '} Book an appointment

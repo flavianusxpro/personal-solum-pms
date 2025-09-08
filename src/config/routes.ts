@@ -40,6 +40,7 @@ export const routes = {
     edit: (id: string) => `/invoice/${id}/edit`,
   },
   requestCallBack: '/requestcallback',
+  report: '/report',
   setting: {
     setup: '/setting/setup',
     communication: '/setting/communication',

@@ -138,6 +138,23 @@ interface BreakTime {
   end_date: string;
 }
 
+interface IClinic {
+  id: number;
+  name: string;
+  email: string;
+  mobile_number: number;
+  address: string;
+  logo: string
+  default: boolean,
+  status: number;
+  description: null,
+  clinic_identity: string;
+  secret_key: string;
+  frontend_url: string;
+  created_at: string,
+  updated_at: string
+}
+
 export interface IGetProfileResponse extends ApiResponse {
   data: {
     id: number;
@@ -162,6 +179,7 @@ export interface IGetAllPatientsResponse extends ApiResponseWithPagination {
     patient_id: string;
     first_name: string;
     last_name: string;
+    clinics: IClinic[];
     email: string;
     mobile_number: string;
     status: number;
@@ -393,6 +411,14 @@ interface Clinic {
   updated_at: string;
 }
 
+// interface IClinic {
+//   address: string;
+//   clinic_identity: string;
+//   created_at: string;
+//   default: boolean;
+//   description: 
+// }
+
 export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
   data: {
     id: number;
@@ -519,19 +545,19 @@ export interface IGetAppointmentSummaryResponse extends ApiResponse {
   };
 }
 
-interface IClinic {
-  id: number;
-  name: string;
-  email: string;
-  mobile_number: string;
-  address: string;
-  logo: string;
-  default: boolean;
-  status: number;
-  description: null;
-  created_at: string;
-  updated_at: string;
-}
+// interface IClinic {
+//   id: number;
+//   name: string;
+//   email: string;
+//   mobile_number: string;
+//   address: string;
+//   logo: string;
+//   default: boolean;
+//   status: number;
+//   description: null;
+//   created_at: string;
+//   updated_at: string;
+// }
 export interface IDoctor {
   id: number;
   first_name: string;
