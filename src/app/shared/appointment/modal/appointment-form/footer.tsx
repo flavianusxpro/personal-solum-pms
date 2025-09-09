@@ -99,7 +99,7 @@ export default function Footer({ className, showSaveButton }: FooterProps) {
       </div>
 
       <div className="flex gap-3">
-        {step > 0 && step <= 1 && (
+        {step > 0 && step <= 2 && (
           <Button
             onClick={gotoPrevStep}
             variant="outline"
@@ -125,7 +125,7 @@ export default function Footer({ className, showSaveButton }: FooterProps) {
             Next
           </Button>
         )}
-        {step === 2 && showSaveButton && (
+        {step === 1 && showSaveButton && (
           <Button
             className="!w-auto"
             type="button"

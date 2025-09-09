@@ -14,8 +14,6 @@ import { PiHospital } from 'react-icons/pi';
 import { Text, Textarea } from 'rizzui';
 import dayjs from 'dayjs';
 import { useGetTreatments } from '@/hooks/useDoctor';
-import { useModal } from '@/app/shared/modal-views/use-modal';
-
 const FormSchema = appointmentBookSchema['selectPatientAndClinic'];
 
 type FormSchemaType = z.infer<typeof FormSchema>;
@@ -220,7 +218,7 @@ export default function SelectClinic() {
           )}
         />
 
-        <div className="space-y-5 h-[50px]">
+        <div className="space-y-5 h-[220px]">
           <Text fontWeight="medium" className="text-gray-1000">
             Last Appointment
           </Text>
