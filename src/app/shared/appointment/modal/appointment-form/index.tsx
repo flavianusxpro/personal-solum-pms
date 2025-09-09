@@ -149,9 +149,9 @@ export default function CreateUpdateAppointmentForm({
       const parsedPatientProblem: string[] =
         typeof data?.patient_problem === 'string'
           ? (data.patient_problem as string)
-              .slice(1, -1)
-              .split('","')
-              .map((s) => s.replace(/^"|"$/g, ''))
+            .slice(1, -1)
+            .split('","')
+            .map((s) => s.replace(/^"|"$/g, ''))
           : Array.isArray(data?.patient_problem)
             ? data.patient_problem
             : [];
@@ -181,8 +181,8 @@ export default function CreateUpdateAppointmentForm({
   }, [pathname, searchParams]);
 
   return (
-    <div className="relative flex flex-col rounded-lg shadow-xl h-[90vmin] w-[1000px] max-h-[800px] overflow-hidden">
-      <div className="flex items-center justify-between border-b border-gray-200 p-5 md:p-7 flex-shrink-0">
+    <div className="relative flex flex-col h-[700px]">
+      <div className="flex justify-between w-full border-b p-5 border-gray-300">
         <Title as="h2" className="font-lexend text-lg font-semibold">
           {isEdit && 'Update '} Book an appointment
         </Title>
@@ -195,7 +195,8 @@ export default function CreateUpdateAppointmentForm({
           <PiXBold className="h-5 w-5" />
         </ActionIcon>
       </div>
-      <div className="flex-1 pb-20 overflow-y-auto">
+
+      <div className="flex-1">
         <Component />
       </div>
     </div>

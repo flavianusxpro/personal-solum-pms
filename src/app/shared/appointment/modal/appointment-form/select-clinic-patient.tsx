@@ -164,8 +164,8 @@ export default function SelectClinic() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="space-y-5 px-5 pb-6 pt-5 md:px-7 md:pb-9 md:pt-7">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className='flex flex-col gap-10 h-[530px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 p-5'>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3 ">
           <Controller
             control={control}
             name="patient_id"
@@ -174,7 +174,7 @@ export default function SelectClinic() {
                 className="col-span-2"
                 {...field}
                 onChange={(value) => {
-                   const selectedPatient = patientsOptions.find((p) => p.value === value);
+                  const selectedPatient = patientsOptions.find((p) => p.value === value);
                   field.onChange(value);
                   setFormData((prev) => ({
                     ...prev,
@@ -232,7 +232,7 @@ export default function SelectClinic() {
           )}
         />
 
-        <div className="space-y-5 h-[220px]">
+        <div>
           <Text fontWeight="medium" className="text-gray-1000">
             Last Appointment
           </Text>

@@ -81,7 +81,7 @@ export default function Footer({ className, showSaveButton }: FooterProps) {
   return (
     <footer
       className={cn(
-        'flex w-full items-center justify-between border-t border-gray-300 px-5 py-5 md:px-7 absolute bottom-0 left-0 right-0',
+        'flex w-full items-center justify-between border-t border-gray-300 p-5 absolute bottom-0 left-0 right-0',
         className
       )}
     >

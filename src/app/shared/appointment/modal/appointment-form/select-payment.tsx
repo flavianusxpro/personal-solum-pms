@@ -116,7 +116,7 @@ export default function AppointmentPayment() {
 
     return {
       date: targetTime.format("DD MMMM YYYY"),
-      time: targetTime.format("hh:mm A"), 
+      time: targetTime.format("hh:mm A"),
     };
   };
 
@@ -124,9 +124,10 @@ export default function AppointmentPayment() {
   return (
     <>
       {step == STEP.ESTIMATE_COST && (
-        <div className="h-full">
-          <div className="flex h-full">
-            <div className="flex flex-1 flex-col bg-[#3666AA08] p-5 gap-[30px] overflow-y-auto">
+        <div>
+          <div className="flex gap-10 h-[530px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 justify-between">
+            {/* bg-[#3666AA08] */}
+            <div className="flex h-full flex-1 flex-col p-5 gap-[30px]">
               <div className="flex flex-1 flex-col gap-[8px]">
                 <h1 className="text-[25px] font-semibold">Patient Summary</h1>
                 <div className='flex flex-col gap-[1px]'>
@@ -235,8 +236,8 @@ export default function AppointmentPayment() {
                 </div>
               </div>
             </div>
-            
-            <div className="flex flex-1 flex-col gap-8 overflow-y-auto bg-white p-5">
+
+            <div className="flex flex-1 h-full flex-col gap-8 bg-white p-5">
               <div className="flex flex-col">
                 <h1 className="text-[14px] font-medium">SUMMARY</h1>
                 <div className="flex flex-col pt-4">
@@ -317,8 +318,9 @@ export default function AppointmentPayment() {
                 </div>
               </div>
             </div>
-            <Footer showSaveButton={showSaveButton} />
           </div>
+
+          <Footer showSaveButton={showSaveButton} />
         </div>
       )}
 
