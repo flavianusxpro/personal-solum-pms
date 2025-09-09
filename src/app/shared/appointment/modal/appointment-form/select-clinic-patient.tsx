@@ -7,7 +7,6 @@ import { appointmentBookSchema } from '@/validators/admin-appointment.schema';
 import CSelect from '@/core/ui/select';
 import { useGetAllPatients } from '@/hooks/usePatient';
 import { useEffect, useMemo } from 'react';
-import { useGetAllClinics } from '@/hooks/useClinic';
 import { z } from 'zod';
 import { useGetAppointments } from '@/hooks/useAppointment';
 import { useProfile } from '@/hooks/useProfile';
@@ -15,7 +14,6 @@ import { PiHospital } from 'react-icons/pi';
 import { Text, Textarea } from 'rizzui';
 import dayjs from 'dayjs';
 import { useGetTreatments } from '@/hooks/useDoctor';
-
 const FormSchema = appointmentBookSchema['selectPatientAndClinic'];
 
 type FormSchemaType = z.infer<typeof FormSchema>;
@@ -25,13 +23,6 @@ export default function SelectClinic() {
   const [formData, setFormData] = useAtom(formDataAtom);
 
   const { data: dataProfile } = useProfile(true);
-
-  const { data: dataClinics, isLoading: isLoadingClinics } = useGetAllClinics({
-    page: 1,
-    perPage: 10,
-    role: 'admin',
-    clinicId: dataProfile?.clinics[0].id,
-  });
   const { data: dataPatients, isLoading: isLoadingPatients } =
     useGetAllPatients({
       page: 1,
@@ -42,7 +33,7 @@ export default function SelectClinic() {
   const { data: dataAppointment, refetch } = useGetAppointments({
     patientId: formData?.patient_id,
     page: 1,
-    perPage: 1,
+    perPage: 100,
     clinicId: dataProfile?.clinics[0].id,
   });
 
@@ -57,19 +48,14 @@ export default function SelectClinic() {
     return dataAppointment?.data[0];
   }, [dataAppointment, formData.patient_id]);
 
-  const clinicsOptions = useMemo(() => {
-    if (!dataClinics) return [];
-    return dataClinics.data.map((clinic) => ({
-      label: clinic.name,
-      value: clinic.id,
-    }));
-  }, [dataClinics]);
-
   const patientsOptions = useMemo(() => {
     if (!dataPatients) return [];
     return dataPatients.data.map((patient) => ({
-      label: `${patient.first_name} ${patient.last_name}`,
+      label: `${patient.first_name} ${patient.last_name} - ${patient.email} - ${patient?.clinics?.[0]?.name}`,
       value: patient.id,
+      name: `${patient.first_name} ${patient.last_name}`,
+      address: patient?.address_line_1,
+      mobile_number: patient?.mobile_number
     }));
   }, [dataPatients]);
 
@@ -98,16 +84,30 @@ export default function SelectClinic() {
   });
 
   const lastClinic = useMemo(() => {
-    if (!lastAppointment) return null;
-    const clinic = dataClinics?.data.find(
-      (clinic) => clinic.id === lastAppointment.clinicId
+    if (!formData.patient_id) return null;
+
+    const selectedPatient = dataPatients?.data.find(
+      (patient) => patient.id === formData.patient_id
     );
 
-    if (clinic) {
-      setValue('clinicId', clinic.id);
+    const patientLastClinic = selectedPatient?.clinics?.[0];
+
+    if (patientLastClinic) {
+      setValue('clinicId', patientLastClinic.id);
+      return patientLastClinic;
     }
-    return clinic;
-  }, [lastAppointment, dataClinics?.data, setValue]);
+
+    return null;
+  }, [formData.patient_id, dataPatients?.data, setValue]);
+
+  // Extract date and time from last appointment
+  const lastAppointmentDate = lastAppointment?.date
+    ? dayjs(lastAppointment.date).format('YYYY-MM-DD')
+    : undefined;
+
+  const lastAppointmentTime = lastAppointment?.date
+    ? dayjs(lastAppointment.date).format('HH:mm')
+    : undefined;
 
   const onSubmit: SubmitHandler<FormSchemaType> = (data) => {
     setFormData((prev) => ({
@@ -116,24 +116,46 @@ export default function SelectClinic() {
       patient_id: data.patient_id,
       treatment: data.treatment,
       note: data.note ?? '',
+      doctorId: lastAppointment?.doctorId,
+      date: lastAppointmentDate || '',
+      doctorTime: lastAppointmentTime || '',
+      doctor_name: `${lastAppointment?.doctor.first_name} ${lastAppointment?.doctor.last_name}`
     }));
     gotoNextStep();
   };
 
   useEffect(() => {
-    if (lastClinic && formData.patient_id) {
+    if (formData.patient_id) {
       refetch();
-      setValue('clinicId', lastClinic.id);
-      setValue('treatment', lastAppointment?.patient_type || '');
-      setFormData((prev) => ({
-        ...prev,
-        clinicId: lastClinic.id,
-        treatment: lastAppointment?.patient_type || '',
-      }));
+
+      // Get the selected patient's data
+      const selectedPatient = dataPatients?.data.find(
+        (patient) => patient.id === formData.patient_id
+      );
+
+      // Get the last clinic from patient's clinics array
+      const patientLastClinic = selectedPatient?.clinics?.[0];
+
+      if (patientLastClinic) {
+        setValue('clinicId', patientLastClinic.id);
+        setFormData((prev) => ({
+          ...prev,
+          clinicId: patientLastClinic.id,
+        }));
+      }
+
+      // Set treatment from last appointment if available
+      if (lastAppointment?.patient_type) {
+        setValue('treatment', lastAppointment.patient_type);
+        setFormData((prev) => ({
+          ...prev,
+          treatment: lastAppointment.patient_type,
+        }));
+      }
     }
   }, [
-    lastClinic,
     formData.patient_id,
+    dataPatients?.data,
     refetch,
     setFormData,
     setValue,
@@ -149,12 +171,17 @@ export default function SelectClinic() {
             name="patient_id"
             render={({ field }) => (
               <CSelect
+                className="col-span-2"
                 {...field}
                 onChange={(value) => {
+                   const selectedPatient = patientsOptions.find((p) => p.value === value);
                   field.onChange(value);
                   setFormData((prev) => ({
                     ...prev,
                     patient_id: value as number,
+                    patient_name: `${selectedPatient?.name}`,
+                    patient_address: `${selectedPatient?.address}`,
+                    patient_mobile_number: `${selectedPatient?.mobile_number}`
                   }));
                 }}
                 searchable
@@ -163,21 +190,6 @@ export default function SelectClinic() {
                 placeholder="Select Patient"
                 error={errors.patient_id?.message}
                 options={patientsOptions}
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="clinicId"
-            render={({ field }) => (
-              <CSelect
-                {...field}
-                isLoading={isLoadingClinics}
-                searchable
-                label="Select Clinic"
-                placeholder="Select Clinic"
-                error={errors.clinicId?.message}
-                options={clinicsOptions}
               />
             )}
           />
@@ -192,6 +204,12 @@ export default function SelectClinic() {
                 placeholder="Select Appointment Type"
                 label="Appointment Type"
                 options={treatmentOptions}
+                onChange={(value) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    treatment: `${value}`
+                  }));
+                }}
                 error={errors?.treatment?.message as string}
               />
             )}
@@ -214,30 +232,35 @@ export default function SelectClinic() {
           )}
         />
 
-        <div className="space-y-5">
+        <div className="space-y-5 h-[220px]">
           <Text fontWeight="medium" className="text-gray-1000">
             Last Appointment
           </Text>
-          <div className="flex items-center gap-6">
-            <PiHospital className="h-8 w-8" />
-            <div>
-              <h3 className="rizzui-title-h3 mb-2 text-base font-medium text-gray-900 dark:text-gray-700">
-                Clinic : {lastClinic?.name}
-              </h3>
-              <div className="flex items-center gap-2">
-                <p className="rizzui-text-p text-sm font-normal text-gray-500">
-                  {lastClinic?.address}
-                </p>
-                <span className="h-1 w-1 rounded-full bg-gray-600"></span>
-                <p className="rizzui-text-p text-sm font-normal text-gray-500">
-                  {dayjs(lastAppointment?.date).format('DD/MM/YYYY HH:mm')}
-                </p>
+          {lastClinic ? (
+            dataAppointment?.data.map((item) => (
+              <div key={item.id} className="flex items-center gap-6">
+                <PiHospital className="h-8 w-8" />
+                <div>
+                  <h3 className="rizzui-title-h3 mb-2 text-base font-medium text-gray-900 dark:text-gray-700">
+                    {`Dr. ${item.doctor.first_name} ${item.doctor.last_name}`} : {item?.clinic.name}
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <p className="rizzui-text-p text-sm font-normal text-gray-500">
+                      {dayjs(item?.date).format('dddd')}
+                    </p>
+                    <span className="h-1 w-1 rounded-full bg-gray-600"></span>
+                    <p className="rizzui-text-p text-sm font-normal text-gray-500">
+                      {dayjs(item?.date).format('DD/MM/YYYY HH:mm')}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            ))
+          ) : (
+            <p>Please select patient first</p>
+          )}
         </div>
       </div>
-
       <Footer />
     </form>
   );

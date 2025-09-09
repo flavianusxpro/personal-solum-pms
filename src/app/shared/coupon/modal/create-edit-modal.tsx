@@ -143,9 +143,9 @@ export default function CreateEditModal({ data, isView }: IProps) {
   const parsedRestrictPatient: string[] =
     typeof data?.restrict_patient === 'string'
       ? (data.restrict_patient as string)
-          .slice(1, -1)
-          .split('","')
-          .map((s) => s.replace(/^"|"$/g, ''))
+          .split(',')
+          .map((s) => s.trim().replace(/[\[\]"]/g, ''))
+          .filter(Boolean)
       : Array.isArray(data?.restrict_patient)
         ? data.restrict_patient.map((item) => String(item))
         : [];
@@ -164,7 +164,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
           name: data?.name,
           code: data?.code,
           discount_type: data?.discount_type,
-          discount_amount: data?.discount_amount,
+          discount_amount: data?.discount_amount?.toString(),
           expiry_date: data?.expiry_date,
           use_limit: data?.limit.toString(),
           patient_limit_use: data?.patient_limit_use.toString(),
@@ -181,7 +181,6 @@ export default function CreateEditModal({ data, isView }: IProps) {
         getValues,
         formState: { errors },
       }) => {
-        console.log('🚀 ~ CreateEditModal ~ errors:', errors);
         return (
           <div
             className={cn('flex flex-col gap-6 px-6 pt-6', isView && 'pb-6')}

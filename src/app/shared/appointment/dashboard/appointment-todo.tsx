@@ -64,7 +64,7 @@ export default function AppointmentTodo({ className }: { className?: string }) {
                     </strong>{' '}
                     <span>appointed to</span>{' '}
                     <span className="inline-block rounded-2xl bg-[#2B7F75] px-2.5 font-medium text-white">
-                      {item.doctor}
+                      Dr. {item.doctor}
                     </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-1.5 pt-1.5">

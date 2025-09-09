@@ -76,7 +76,7 @@ export default function CreatePatienModal() {
       validationSchema={patientDetailsFormSchema}
       // resetValues={reset}
       onSubmit={onSubmit}
-      className="max-h-[90vh] overflow-y-auto rounded-xl bg-white @container"
+      className="max-h-[60vh] overflow-y-auto rounded-xl bg-white @container"
       useFormProps={{
         mode: 'onChange',
       }}
@@ -92,174 +92,217 @@ export default function CreatePatienModal() {
                   title="Personal Info"
                   className="grid-cols-12 gap-4"
                 />
-                <FormGroup title="Title" isLabel>
-                  <Controller
-                    name="title"
-                    control={control}
-                    render={({ field }) => (
-                      <CSelect
-                        {...field}
-                        label=""
-                        placeholder="Select Title"
-                        options={[
-                          { label: 'Mr', value: 'Mr' },
-                          { label: 'Mrs', value: 'Mrs' },
-                          { label: 'Ms', value: 'Ms' },
-                        ]}
-                        error={errors.title?.message as string}
-                      />
-                    )}
-                  />
-                </FormGroup>
-                <FormGroup title="First Name" isLabel>
-                  <Input
-                    placeholder="First Name"
-                    {...register('first_name')}
-                    error={errors.first_name?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-                <FormGroup title="Last Name" isLabel>
-                  <Input
-                    placeholder="Last Name"
-                    {...register('last_name')}
-                    error={errors.last_name?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-                <FormGroup title="Gender" isLabel>
-                  <Controller
-                    name="gender"
-                    control={control}
-                    render={({ field }) => (
-                      <CSelect
-                        {...field}
-                        label=""
-                        placeholder="Select Gender"
-                        options={genderOption}
-                        error={errors?.gender?.message}
-                      />
-                    )}
-                  />
-                </FormGroup>
-                <FormGroup title="Birth of Date" isLabel>
-                  <Input
-                    placeholder="Birth of Dae"
-                    type="date"
-                    {...register('date_of_birth')}
-                    error={errors.date_of_birth?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-                <FormGroup title="Phone Number" isLabel>
-                  <Controller
-                    name="mobile_number"
-                    control={control}
-                    render={({ field }) => (
-                      <PhoneNumber
-                        {...field}
-                        country="au"
-                        preferredCountries={['au']}
-                        placeholder="Phone Number"
-                        error={errors.mobile_number?.message}
-                      />
-                    )}
-                  />
-                </FormGroup>
 
-                <FormGroup title="Email" isLabel>
-                  <Input
-                    placeholder="Email"
-                    {...register('email')}
-                    error={errors.email?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
+                <div
+                  className='flex flex-row gap-2'
+                >
+                  <FormGroup title="Title" isLabel className='flex-1'>
+                    <Controller
+                      name="title"
+                      control={control}
+                      render={({ field }) => (
+                        <CSelect
+                          {...field}
+                          label=""
+                          placeholder="Select Title"
+                          options={[
+                            { label: 'Mr', value: 'Mr' },
+                            { label: 'Mrs', value: 'Mrs' },
+                            { label: 'Ms', value: 'Ms' },
+                          ]}
+                          error={errors.title?.message as string}
+                        />
+                      )}
+                    />
+                  </FormGroup>
+                  <FormGroup title="Gender" isLabel className='flex-1'>
+                    <Controller
+                      name="gender"
+                      control={control}
+                      render={({ field }) => (
+                        <CSelect
+                          {...field}
+                          label=""
+                          placeholder="Select Gender"
+                          options={genderOption}
+                          error={errors?.gender?.message}
+                        />
+                      )}
+                    />
+                  </FormGroup>
+                </div>
 
-                <FormGroup title="Medicare Card" isLabel>
+                <div
+                  className='flex flex-row gap-2'
+                >
+                  <FormGroup title="First Name" isLabel className='flex-1'>
+                    <Input
+                      placeholder="First Name"
+                      {...register('first_name')}
+                      error={errors.first_name?.message}
+                      className="flex-grow"
+                    />
+                  </FormGroup>
+                  <FormGroup title="Last Name" isLabel className='flex-1'>
+                    <Input
+                      placeholder="Last Name"
+                      {...register('last_name')}
+                      error={errors.last_name?.message}
+                      className="flex-grow"
+                    />
+                  </FormGroup>
+                </div>
+
+                <div
+                  className='flex flex-row gap-2'
+                >
+                  <FormGroup title="Birth of Date" isLabel className='flex-1'>
+                    <Input
+                      placeholder="Birth of Dae"
+                      type="date"
+                      {...register('date_of_birth')}
+                      error={errors.date_of_birth?.message}
+                      className="flex-grow"
+                    />
+                  </FormGroup>
+                  <FormGroup title="Phone Number" isLabel className='flex-1'>
+                    <Controller
+                      name="mobile_number"
+                      control={control}
+                      render={({ field }) => (
+                        <PhoneNumber
+                          {...field}
+                          country="au"
+                          preferredCountries={['au']}
+                          placeholder="Phone Number"
+                          error={errors.mobile_number?.message}
+                        />
+                      )}
+                    />
+                  </FormGroup>
+                </div>
+
+                <div
+                  className='flex flex-row gap-2'
+                >
+                  <FormGroup title="Email" isLabel className='flex-1'>
+                    <Input
+                      placeholder="Email"
+                      {...register('email')}
+                      error={errors.email?.message}
+                      className="flex-grow"
+                    />
+                  </FormGroup>
+
+                  <FormGroup title="Medicare Card" isLabel className='flex-1'>
+                    <Input
+                      placeholder="Medicare Card"
+                      {...register('medicare_card')}
+                      error={errors.medicare_card?.message}
+                      className="flex-grow"
+                    />
+                  </FormGroup>
+                </div>
+
+                <div
+                  className='flex flex-row gap-2'
+                >
                   <Input
-                    placeholder="Medicare Card"
-                    {...register('medicare_card')}
-                    error={errors.medicare_card?.message}
-                    className="flex-grow"
+                    type="number"
+                    label="Position of Card"
+                    placeholder="Position of Card"
+                    {...register('position_of_card')}
+                    error={errors.position_of_card?.message}
+                    className="flex-grow flex-1"
                   />
-                </FormGroup>
-                <Input
-                  type="number"
-                  label="Position of Card"
-                  placeholder="Position of Card"
-                  {...register('position_of_card')}
-                  error={errors.position_of_card?.message}
-                  className="flex-grow"
-                />
-                <DatePicker
-                  inputProps={{
-                    label: 'Medicare Expiry Date',
-                  }}
-                  selected={watch('medicare_expiry')}
-                  onChange={(date) => {
-                    if (!date) return;
-                    setValue('medicare_expiry', date);
-                  }}
-                  showDateSelect={false}
-                  showMonthYearPicker
-                  minDate={new Date()}
-                  dateFormat="MM/YY"
-                  error={errors.medicare_expiry?.message}
-                  placeholderText="MM/YY"
-                />
+
+                  <DatePicker
+                    inputProps={{
+                      label: 'Medicare Expiry Date',
+                    }}
+                    selected={watch('medicare_expiry')}
+                    onChange={(date) => {
+                      if (!date) return;
+                      setValue('medicare_expiry', date);
+                    }}
+                    showDateSelect={false}
+                    showMonthYearPicker
+                    minDate={new Date()}
+                    dateFormat="MM/YY"
+                    error={errors.medicare_expiry?.message}
+                    placeholderText="MM/YY"
+                    className='flex-1'
+                  />
+                </div>
+
               </div>
 
               <div className="mb-10 flex flex-col gap-7">
                 <FormGroup title="Address" className="grid-cols-12" />
-                <FormGroup title="Country" isLabel>
-                  <Input
-                    placeholder="Country"
-                    {...register('country')}
-                    error={errors.country?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-                <FormGroup title="Unit Number" isLabel>
-                  <Input
-                    placeholder="Unit Number"
-                    {...register('unit_number')}
-                    error={errors.unit_number?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-                <FormGroup title="Address Line 1" isLabel>
-                  <Input
-                    placeholder="Address Line 1"
-                    {...register('address_line_1')}
-                    error={errors.address_line_1?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-                <FormGroup title="Address Line 2" isLabel>
-                  <Input
-                    placeholder="Address Line 2"
-                    {...register('address_line_2')}
-                    error={errors.address_line_2?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-                <FormGroup title="Street" isLabel>
-                  <Input
-                    placeholder="Street"
-                    {...register('street_name')}
-                    error={errors.street_name?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
-                <FormGroup title="Suburb" isLabel>
-                  <Input
-                    placeholder="Suburb"
-                    {...register('suburb')}
-                    error={errors.suburb?.message}
-                    className="flex-grow"
-                  />
-                </FormGroup>
+
+                <div
+                  className='flex flex-row gap-2'
+                >
+                  <FormGroup title="Country" isLabel className='flex-1'>
+                    <Input
+                      placeholder="Country"
+                      {...register('country')}
+                      error={errors.country?.message}
+                      className="flex-grow"
+                    />
+                  </FormGroup>
+                  <FormGroup title="Unit Number" isLabel className='flex-1'>
+                    <Input
+                      placeholder="Unit Number"
+                      {...register('unit_number')}
+                      error={errors.unit_number?.message}
+                      className="flex-grow"
+                    />
+                  </FormGroup>
+                </div>
+
+                <div
+                  className='flex flex-row gap-2'
+                >
+                  <FormGroup title="Address Line 1" isLabel className='flex-1'>
+                    <Input
+                      placeholder="Address Line 1"
+                      {...register('address_line_1')}
+                      error={errors.address_line_1?.message}
+                      className="flex-grow"
+                    />
+                  </FormGroup>
+                  <FormGroup title="Address Line 2" isLabel className='flex-1'>
+                    <Input
+                      placeholder="Address Line 2"
+                      {...register('address_line_2')}
+                      error={errors.address_line_2?.message}
+                      className="flex-grow"
+                    />
+                  </FormGroup>
+                </div>
+
+                <div
+                  className='flex flex-row gap-2'
+                >
+                  <FormGroup title="Street" isLabel className='flex-1'>
+                    <Input
+                      placeholder="Street"
+                      {...register('street_name')}
+                      error={errors.street_name?.message}
+                      className="flex-grow"
+                    />
+                  </FormGroup>
+                  <FormGroup title="Suburb" isLabel className='flex-1'>
+                    <Input
+                      placeholder="Suburb"
+                      {...register('suburb')}
+                      error={errors.suburb?.message}
+                      className="flex-grow"
+                    />
+                  </FormGroup>
+                </div>
+
                 <Flex
                   justify="between"
                   className="mt-0.5"

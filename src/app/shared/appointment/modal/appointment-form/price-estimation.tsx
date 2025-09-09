@@ -35,8 +35,6 @@ const PriceEstimationCost = ({
   const [step, setStep] = React.useState(STEP.ESTIMATE_COST);
   const [inputCouponCode, setInputCouponCode] = React.useState('');
 
-  const appointmentType = formData?.appointment_type;
-
   const { mutate: mutateCouponValidation, data: dataCoupon } =
     useCouponCodeValidation();
 
@@ -74,7 +72,7 @@ const PriceEstimationCost = ({
     });
   }
 
-  const successPayment = (paymentId: string) => {
+  const successPayment = (payment_method: string) => {
     const payload: IPayloadPostAppoinment = {
       clinicId: formData.clinicId as number,
       doctorId: formData.doctorId as number,
@@ -82,7 +80,7 @@ const PriceEstimationCost = ({
       note: formData.note,
       patient_problem: formData.patient_problem,
       patient_type: formData.treatment,
-      payment_id: paymentId,
+      payment_method: payment_method,
       meeting_preference: 'ZOOM',
       patientId: formData.patient_id as number,
       additional_information: { note: formData.note },

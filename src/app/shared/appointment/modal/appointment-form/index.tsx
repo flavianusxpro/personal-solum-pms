@@ -11,25 +11,12 @@ const SelectClinic = dynamic(
     ssr: false,
   }
 );
-// const SelectDoctorTime = dynamic(
-//   () => import('@/app/shared/appointment/modal/appointment-form/doctor-time'),
-//   {
-//     ssr: false,
-//   }
-// );
 const SelectDate = dynamic(
   () => import('@/app/shared/appointment/modal/appointment-form/select-date'),
   {
     ssr: false,
   }
 );
-// const SelectService = dynamic(
-//   () =>
-//     import('@/app/shared/appointment/modal/appointment-form/select-services'),
-//   {
-//     ssr: false,
-//   }
-// );
 const Payment = dynamic(
   () =>
     import('@/app/shared/appointment/modal/appointment-form/select-payment'),
@@ -51,6 +38,10 @@ type FormDataType = {
   clinicId?: number;
   patient_id?: number;
   doctorId?: number;
+  patient_name?: string;
+  patient_address?: string;
+  patient_mobile_number?: string;
+  doctor_name?: string;
   doctorTime: string;
   date: string;
   note: string;
@@ -69,6 +60,10 @@ export const initialFormData = {
   id: null,
   clinicId: undefined,
   patient_id: undefined,
+  patient_name: '',
+  patient_address: '',
+  patient_mobile_number: '',
+  doctor_name: '',
   doctorId: undefined,
   doctorTime: '',
   date: '',
@@ -126,8 +121,6 @@ export function useStepperAppointment() {
 const MAP_STEP_TO_COMPONENT = {
   [Step.SelectClinic]: SelectClinic,
   [Step.SelectDate]: SelectDate,
-  // [Step.SelectDoctorTime]: SelectDoctorTime,
-  // [Step.SelectService]: SelectService,
   [Step.Payment]: Payment,
 };
 
@@ -173,7 +166,7 @@ export default function CreateUpdateAppointmentForm({
         meeting_preference: '',
         note: data?.note || '',
         patient_id: data?.patientId,
-        patient_problem: data.patient_problem,
+        patient_problem: data.patient_problem || '',
         patient_type: data?.patient_type,
         followup_fee: '',
         initial_fee: '',
@@ -188,21 +181,21 @@ export default function CreateUpdateAppointmentForm({
   }, [pathname, searchParams]);
 
   return (
-    <div className="relative flex justify-center md:items-center">
-      <div className="w-full">
-        <div className="flex items-center justify-between border-b border-gray-200 p-5 md:p-7">
-          <Title as="h2" className="font-lexend text-lg font-semibold">
-            {isEdit && 'Update '} Book an appointment
-          </Title>
-          <ActionIcon
-            size="sm"
-            variant="text"
-            onClick={() => closeModal()}
-            className="p-0 text-gray-500 hover:!text-gray-900"
-          >
-            <PiXBold className="h-5 w-5" />
-          </ActionIcon>
-        </div>
+    <div className="relative flex flex-col rounded-lg shadow-xl h-[90vmin] w-[1000px] max-h-[800px] overflow-hidden">
+      <div className="flex items-center justify-between border-b border-gray-200 p-5 md:p-7 flex-shrink-0">
+        <Title as="h2" className="font-lexend text-lg font-semibold">
+          {isEdit && 'Update '} Book an appointment
+        </Title>
+        <ActionIcon
+          size="sm"
+          variant="text"
+          onClick={() => closeModal()}
+          className="p-0 text-gray-500 hover:!text-gray-900"
+        >
+          <PiXBold className="h-5 w-5" />
+        </ActionIcon>
+      </div>
+      <div className="flex-1 pb-20 overflow-y-auto">
         <Component />
       </div>
     </div>

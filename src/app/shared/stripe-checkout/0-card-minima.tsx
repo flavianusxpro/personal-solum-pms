@@ -26,10 +26,7 @@ function CheckoutForm({
   onSuccess: (paymentId: string) => void;
 }) {
   const [error, setError] = useState<StripeError | null>(null);
-
-  const { mutate: mutateOneTimePayment, isPending: isPendingOneTimePayment } =
-    useOneTimePayment();
-
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     if (error?.message) {
       toast.error(error?.message);
@@ -37,6 +34,7 @@ function CheckoutForm({
   }, [error]);
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
+    setIsLoading(true);
     // Block native form submission.
     event.preventDefault();
 
@@ -62,21 +60,9 @@ function CheckoutForm({
       setError(errorFromStripe);
     } else {
       setError(null);
-      console.log('[PaymentMethod]', paymentMethod);
-      mutateOneTimePayment(
-        { amount: 10000, payment_method: paymentMethod.id },
-        {
-          onSuccess: (response) => {
-            toast.success('Payment successful');
-            onSuccess(response.data.id);
-          },
-          onError: (error: any) => {
-            console.log('🚀 ~ handleSubmit ~ error:', error);
-            toast.error('Payment failed: ' + error.response.data.message);
-          },
-        }
-      );
+      onSuccess(paymentMethod.id);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -101,11 +87,7 @@ function CheckoutForm({
       />
       {error && <div style={{ color: 'red' }}>{error?.message}</div>}
       <div className="mt-4 w-full text-center">
-        <Button
-          isLoading={isPendingOneTimePayment}
-          type="submit"
-          disabled={!stripe}
-        >
+        <Button isLoading={isLoading} type="submit" disabled={!stripe}>
           Pay Now
         </Button>
       </div>

@@ -367,6 +367,7 @@ export default function DetailUser() {
                     setValue={setValue}
                     getValues={getValues}
                     error={errors?.avatar?.message as string}
+                    path_name="avatar"
                   />
                 </div>
               </FormGroup>

@@ -16,7 +16,6 @@ import {
   useGetDoctorAvailabilityByClinic,
   useGetDoctorByClinic,
 } from '@/hooks/useClinic';
-import Image from 'next/image';
 import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
 import { IGetDoctorByClinicResponse } from '@/types/ApiResponse';
 import { appointmentBookSchema } from '@/validators/admin-appointment.schema';
@@ -102,22 +101,11 @@ export default function AppointmentPatientDoctor() {
 
             return (
               <div key={index} className="mb-5">
-                {/* Doctor Header */}
                 <div className="flex items-center justify-between space-x-4 p-6">
                   <div className="flex items-center space-x-4">
-                    {/* {doctor.url_photo ? (
-                      <Image
-                        src={doctor.url_photo}
-                        alt={doctor.first_name}
-                        className="h-12 w-12 rounded-full"
-                        height={48}
-                        width={48}
-                      />
-                    ) : ( */}
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-300">
                       🏥
                     </div>
-                    {/* )} */}
                     <h3 className="cursor-pointer text-base font-bold hover:underline">
                       Dr. {doctor.first_name} {doctor.last_name}
                     </h3>
@@ -145,8 +133,6 @@ export default function AppointmentPatientDoctor() {
                     </div>
                   </div>
                 </div>
-
-                {/* Doctor Times */}
 
                 <DoctorTime
                   setValue={setValue}
@@ -217,9 +203,8 @@ function DoctorTime({
       {timeList.length > 0 ? (
         <div className="relative">
           <div
-            className={`mt-4 grid transition-all delay-200 duration-1000 ease-in-out ${
-              currentOpen === doctor.id ? 'max-h-[500px]' : 'max-h-20'
-            } grid-cols-5 gap-2 overflow-hidden`}
+            className={`mt-4 grid transition-all delay-200 duration-1000 ease-in-out ${currentOpen === doctor.id ? 'max-h-[500px]' : 'max-h-20'
+              } grid-cols-5 gap-2 overflow-hidden`}
           >
             {timeList.map((time, idx) => (
               <button

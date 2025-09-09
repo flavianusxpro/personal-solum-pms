@@ -3,6 +3,7 @@ import {
   IGetAllClinicForPatientResponse,
   IGetCalendarScheduleByClinicIdResponse,
   IGetClinicByIdForPatientResponse,
+  IGetClinicByIdResponse,
 } from '@/types/ApiResponse';
 import {
   IParamGetAllClinic,
@@ -27,7 +28,11 @@ export async function postCreateClinic(payload: IPayloadCreateUpdateClinic) {
 }
 
 export async function putUpdateClinic(payload: IPayloadCreateUpdateClinic) {
-  return await put('/admin/clinic/' + payload.id, payload);
+  return await put('/admin/clinic/' + payload.id, payload, {
+    headers: {
+      client_timezone: payload.client_timezone,
+    },
+  });
 }
 
 export async function deleteClinic(id: string) {
@@ -41,4 +46,12 @@ export async function getCalendarScheduleByClinicId(clinicId: number) {
       params: { clinicId },
     }
   );
+}
+
+export async function getClinicById(clinicId?: number) {
+  return await get<IGetClinicByIdResponse>(`/admin/clinic/detail/${clinicId}`, {
+    headers: {
+      client_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
+  });
 }

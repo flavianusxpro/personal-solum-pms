@@ -11,7 +11,6 @@ import { ActionIcon, Button, Flex, Text, Title } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import toast from 'react-hot-toast';
-import { CalendarEvent } from '@/types';
 import { useGetListSchedule, usePostCreateSchedule } from '@/hooks/useSchedule';
 import dayjs from 'dayjs';
 import CSelect from '../ui/select';
@@ -20,15 +19,8 @@ import ActionTooltipButton from '../ui/action-tooltip-button';
 import { weekIntervalOption } from '@/config/constants';
 
 import { IPayloadPostCreateSchedule } from '@/types/paramTypes';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { DoctorScheduleFormType } from '@/validators/create-doctor-schedule.schema';
-
-interface CreateEventProps {
-  startDate?: Date;
-  endDate?: Date;
-  event?: CalendarEvent;
-  doctorId?: string;
-}
 
 interface CreateScheduleProps {
   isEdit?: boolean;

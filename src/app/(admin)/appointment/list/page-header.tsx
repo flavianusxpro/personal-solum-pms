@@ -32,7 +32,7 @@ export default function AppointmentListPageHeader({ className }: HeaderProps) {
     closeModal(),
       openModal({
         view: <CreateUpdateAppointmentForm />,
-        customSize: '900px',
+        customSize: '1000px',
       });
   }
   return (

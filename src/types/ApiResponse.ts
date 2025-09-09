@@ -138,6 +138,23 @@ interface BreakTime {
   end_date: string;
 }
 
+interface IClinic {
+  id: number;
+  name: string;
+  email: string;
+  mobile_number: number;
+  address: string;
+  logo: string
+  default: boolean,
+  status: number;
+  description: null,
+  clinic_identity: string;
+  secret_key: string;
+  frontend_url: string;
+  created_at: string,
+  updated_at: string
+}
+
 export interface IGetProfileResponse extends ApiResponse {
   data: {
     id: number;
@@ -162,10 +179,11 @@ export interface IGetAllPatientsResponse extends ApiResponseWithPagination {
     patient_id: string;
     first_name: string;
     last_name: string;
+    clinics: IClinic[];
     email: string;
     mobile_number: string;
     status: number;
-    address: string;
+    address_line_1: string | null;
     date_of_birth: string;
     gender: string;
     medicare_card_number: string;
@@ -393,6 +411,14 @@ interface Clinic {
   updated_at: string;
 }
 
+// interface IClinic {
+//   address: string;
+//   clinic_identity: string;
+//   created_at: string;
+//   default: boolean;
+//   description: 
+// }
+
 export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
   data: {
     id: number;
@@ -403,20 +429,21 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
     status: number;
     local_date: string;
     type: string;
-    meeting_link: null;
-    meeting_id: null;
-    meeting_passcode: null;
+    meeting_link: string | null;
+    meeting_id: string | null;
+    meeting_passcode: string | null;
     patient_type: string;
-    patient_problem: string;
+    patient_problem: string | null;
     note: string | null;
-    sessionId: null;
+    sessionId: string | null;
     paymentId: number;
+    is_reschedule: boolean;
     created_at: string;
     updated_at: string;
     payment: IPayment | null;
     patient: IPatient | null;
     doctor: IDoctor;
-    is_reschedule: boolean;
+    clinic: any;
   }[];
 }
 
@@ -518,19 +545,19 @@ export interface IGetAppointmentSummaryResponse extends ApiResponse {
   };
 }
 
-interface IClinic {
-  id: number;
-  name: string;
-  email: string;
-  mobile_number: string;
-  address: string;
-  logo: string;
-  default: boolean;
-  status: number;
-  description: null;
-  created_at: string;
-  updated_at: string;
-}
+// interface IClinic {
+//   id: number;
+//   name: string;
+//   email: string;
+//   mobile_number: string;
+//   address: string;
+//   logo: string;
+//   default: boolean;
+//   status: number;
+//   description: null;
+//   created_at: string;
+//   updated_at: string;
+// }
 export interface IDoctor {
   id: number;
   first_name: string;
@@ -703,6 +730,14 @@ export interface IGetTreatmentsFromMasterResponse extends ApiResponse {
     treatmentId: number;
     updated_at: string;
     name: string;
+    treatment: {
+      id: number;
+      name: string;
+      clinicId: number;
+      description: string;
+      created_at: string;
+      updated_at: string;
+    };
   }[];
 }
 
@@ -1041,4 +1076,54 @@ export interface IPostConnectionStatusResponse extends ApiResponse {
   data: {
     sessionId: string;
   };
+}
+
+export interface IGetClinicByIdResponse extends ApiResponse {
+  data: IGetClinicByIdResponseData;
+}
+
+interface IGetClinicByIdResponseData {
+  id: number;
+  name: string;
+  email: string;
+  mobile_number: string;
+  address: string;
+  logo: string;
+  default: boolean;
+  status: number;
+  description: null;
+  clinic_identity: string;
+  secret_key: string;
+  frontend_url: null;
+  created_at: string;
+  updated_at: string;
+  clinic_schedules: {
+    id: number;
+    clinicId: number;
+    day: string;
+    start_hour: string;
+    end_hour: string;
+    is_open: boolean;
+    created_at: string;
+    updated_at: string;
+  }[];
+}
+
+export interface IGetRequestCallbackResponse extends ApiResponseWithPagination {
+  data: IRequestCallback[];
+}
+
+export interface IRequestCallback {
+  id: number;
+  name: string;
+  clinicId: number;
+  patient_Name: string;
+  patient_email: string;
+  patient_phone: string;
+  patient_preferred_time: string;
+  patient_time: string;
+  patient_reason: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
 }

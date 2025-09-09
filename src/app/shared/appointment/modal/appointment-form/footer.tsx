@@ -81,7 +81,7 @@ export default function Footer({ className, showSaveButton }: FooterProps) {
   return (
     <footer
       className={cn(
-        'flex w-full items-center justify-between border-t border-gray-300 px-5 py-5 md:px-7',
+        'flex w-full items-center justify-between border-t border-gray-300 px-5 py-5 md:px-7 absolute bottom-0 left-0 right-0',
         className
       )}
     >
@@ -99,7 +99,7 @@ export default function Footer({ className, showSaveButton }: FooterProps) {
       </div>
 
       <div className="flex gap-3">
-        {step > 0 && step <= 1 && (
+        {step > 0 && step <= 2 && (
           <Button
             onClick={gotoPrevStep}
             variant="outline"
@@ -125,7 +125,7 @@ export default function Footer({ className, showSaveButton }: FooterProps) {
             Next
           </Button>
         )}
-        {step === 2 && showSaveButton && (
+        {step === 1 && showSaveButton && (
           <Button
             className="!w-auto"
             type="button"

@@ -152,7 +152,7 @@ export const GetColumns = ({
         <AvatarCard
           number={row.doctor.mobile_number}
           src={row.doctor.photo ?? ''}
-          name={`${row.doctor.first_name} ${row.doctor.last_name}`}
+          name={`Dr. ${row.doctor.first_name} ${row.doctor.last_name}`}
           description={row.doctor.email}
         />
       ),
@@ -236,7 +236,7 @@ function RenderAction({
   const { openModal, closeModal } = useModal();
 
   const isShowCancel = [1, 2, 3].includes(row.status);
-  const isShowReschedule = [3].includes(row.status);
+  const isShowReschedule = [2, 3].includes(row.status);
   const isHasNote = !!row.note;
 
   function handleCreateModal() {
@@ -413,6 +413,13 @@ export function getPaymentStatusBadge(status: number | string | undefined) {
           <Badge renderAsDot className="bg-gray-400" />
           <Text className="font-medium text-gray-600">Not Paid</Text>
         </div>
+      );
+    case 4:
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="warning" renderAsDot />
+          <Text className="font-medium text-red-dark">Unpaid</Text>
+        </Flex>
       );
     default:
       return (

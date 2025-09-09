@@ -66,6 +66,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'saas-clinic.s3.ap-southeast-2.amazonaws.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'solum-clinic.s3.ap-southeast-2.amazonaws.com',
+      },
     ],
   },
   reactStrictMode: false,
