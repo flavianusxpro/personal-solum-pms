@@ -53,6 +53,9 @@ export default function SelectClinic() {
     return dataPatients.data.map((patient) => ({
       label: `${patient.first_name} ${patient.last_name} - ${patient.email} - ${patient?.clinics?.[0]?.name}`,
       value: patient.id,
+      name: `${patient.first_name} ${patient.last_name}`,
+      address: patient?.address_line_1,
+      mobile_number: patient?.mobile_number
     }));
   }, [dataPatients]);
 
@@ -116,6 +119,7 @@ export default function SelectClinic() {
       doctorId: lastAppointment?.doctorId,
       date: lastAppointmentDate || '',
       doctorTime: lastAppointmentTime || '',
+      doctor_name: `${lastAppointment?.doctor.first_name} ${lastAppointment?.doctor.last_name}`
     }));
     gotoNextStep();
   };
@@ -170,10 +174,14 @@ export default function SelectClinic() {
                 className="col-span-2"
                 {...field}
                 onChange={(value) => {
+                   const selectedPatient = patientsOptions.find((p) => p.value === value);
                   field.onChange(value);
                   setFormData((prev) => ({
                     ...prev,
                     patient_id: value as number,
+                    patient_name: `${selectedPatient?.name}`,
+                    patient_address: `${selectedPatient?.address}`,
+                    patient_mobile_number: `${selectedPatient?.mobile_number}`
                   }));
                 }}
                 searchable
@@ -196,6 +204,12 @@ export default function SelectClinic() {
                 placeholder="Select Appointment Type"
                 label="Appointment Type"
                 options={treatmentOptions}
+                onChange={(value) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    treatment: `${value}`
+                  }));
+                }}
                 error={errors?.treatment?.message as string}
               />
             )}
@@ -225,24 +239,24 @@ export default function SelectClinic() {
           {lastClinic ? (
             dataAppointment?.data.map((item) => (
               <div key={item.id} className="flex items-center gap-6">
-              <PiHospital className="h-8 w-8" />
-              <div>
-                <h3 className="rizzui-title-h3 mb-2 text-base font-medium text-gray-900 dark:text-gray-700">
-                  {`Dr. ${item.doctor.first_name} ${item.doctor.last_name}`} : {item?.clinic.name}
-                </h3>
-                <div className="flex items-center gap-2">
-                  <p className="rizzui-text-p text-sm font-normal text-gray-500">
-                    {dayjs(item?.date).format('dddd')}
-                  </p>
-                  <span className="h-1 w-1 rounded-full bg-gray-600"></span>
-                  <p className="rizzui-text-p text-sm font-normal text-gray-500">
-                    {dayjs(item?.date).format('DD/MM/YYYY HH:mm')}
-                  </p>
+                <PiHospital className="h-8 w-8" />
+                <div>
+                  <h3 className="rizzui-title-h3 mb-2 text-base font-medium text-gray-900 dark:text-gray-700">
+                    {`Dr. ${item.doctor.first_name} ${item.doctor.last_name}`} : {item?.clinic.name}
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <p className="rizzui-text-p text-sm font-normal text-gray-500">
+                      {dayjs(item?.date).format('dddd')}
+                    </p>
+                    <span className="h-1 w-1 rounded-full bg-gray-600"></span>
+                    <p className="rizzui-text-p text-sm font-normal text-gray-500">
+                      {dayjs(item?.date).format('DD/MM/YYYY HH:mm')}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
             ))
-           ) : (
+          ) : (
             <p>Please select patient first</p>
           )}
         </div>

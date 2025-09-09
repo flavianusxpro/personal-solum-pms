@@ -38,6 +38,10 @@ type FormDataType = {
   clinicId?: number;
   patient_id?: number;
   doctorId?: number;
+  patient_name?: string;
+  patient_address?: string;
+  patient_mobile_number?: string;
+  doctor_name?: string;
   doctorTime: string;
   date: string;
   note: string;
@@ -56,6 +60,10 @@ export const initialFormData = {
   id: null,
   clinicId: undefined,
   patient_id: undefined,
+  patient_name: '',
+  patient_address: '',
+  patient_mobile_number: '',
+  doctor_name: '',
   doctorId: undefined,
   doctorTime: '',
   date: '',

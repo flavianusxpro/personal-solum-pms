@@ -1,8 +1,6 @@
 'use client';
 
-import { BsCashCoin } from 'react-icons/bs';
 import { AiOutlineFileDone } from 'react-icons/ai';
-import { VscCreditCard } from 'react-icons/vsc';
 import { CgCreditCard, CgLink } from 'react-icons/cg';
 import Footer from './footer';
 import React, { useMemo, useState } from 'react';
@@ -15,11 +13,20 @@ import { useCouponCodeValidation } from '@/hooks/useCoupon';
 import { formDataAtom } from '.';
 import toast from 'react-hot-toast';
 import { IPayloadPostAppoinment } from '@/types/paramTypes';
-import dayjs from 'dayjs';
 import { usePostCreateAppointment } from '@/hooks/useAppointment';
 import CardMinimal0 from '@/app/shared/stripe-checkout/0-card-minima';
 import CheckCircleIcon from '@/core/components/icons/check-circle';
 import { useModal } from '@/app/shared/modal-views/use-modal';
+import { LiaCcAmex, LiaApplePay, LiaWalletSolid, LiaCcApplePay } from "react-icons/lia";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import "dayjs/locale/id";
+import { FaApplePay, FaGooglePay, FaMoneyBill, FaPaypal } from 'react-icons/fa6';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale("id");
 
 const STEP = {
   ESTIMATE_COST: 'estimate-cost',
@@ -34,7 +41,7 @@ export default function AppointmentPayment() {
   const [formData] = useAtom(formDataAtom);
   const [inputCouponCode, setInputCouponCode] = React.useState('');
   const [step, setStep] = React.useState(STEP.ESTIMATE_COST);
-   const { closeModal } = useModal();
+  const { closeModal } = useModal();
 
   const { mutate: mutateCouponValidation, data: dataCoupon } =
     useCouponCodeValidation();
@@ -97,48 +104,138 @@ export default function AppointmentPayment() {
       },
     });
   };
- 
+
+  const convertTime = (
+    date: string,
+    time: string,
+    fromTz: string,
+    toTz: string
+  ): { date: string; time: string } => {
+    const sourceTime = dayjs.tz(`${date} ${time}`, "YYYY-MM-DD HH:mm", fromTz);
+    const targetTime = sourceTime.tz(toTz);
+
+    return {
+      date: targetTime.format("DD MMMM YYYY"),
+      time: targetTime.format("hh:mm A"), 
+    };
+  };
+
+
   return (
     <>
       {step == STEP.ESTIMATE_COST && (
         <div className="h-full">
           <div className="flex h-full">
-            <div className="flex flex-1 flex-col bg-[#3666AA08] p-5">
+            <div className="flex flex-1 flex-col bg-[#3666AA08] p-5 gap-[30px] overflow-y-auto">
               <div className="flex flex-1 flex-col gap-[8px]">
                 <h1 className="text-[25px] font-semibold">Patient Summary</h1>
-                <h3 className='text-[14px] font-bold'>
-                  
-                </h3>
-              </div>
-
-              <div className="flex flex-1 justify-between">
-                <div className="flex flex-1 flex-col gap-3">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
-                    <AiOutlineFileDone />
-                  </span>
-
-                  <h1 className="text-[12px] font-semibold">
-                    PAYMENT REQUIRED
-                  </h1>
-                  <p>
-                    We require a payment method before your appointment can be
-                    confirmed.
+                <div className='flex flex-col gap-[1px]'>
+                  <h3 className='text-[14px] font-bold'>
+                    {formData.patient_name}
+                  </h3>
+                  <p className='text-[14px]'>
+                    {formData.patient_address}
+                  </p>
+                  <p className='text-[14px]'>
+                    {formData.patient_mobile_number} (Indonesia)
+                  </p>
+                  <p className="text-[14px]">
+                    {convertTime(formData.date, formData.doctorTime, "Australia/Sydney", "Asia/Jakarta").date} -{" "}
+                    <strong>{convertTime(formData.date, formData.doctorTime, "Australia/Sydney", "Asia/Jakarta").time}</strong> Jakarta Time
                   </p>
                 </div>
-                <div className="flex flex-1 flex-col gap-3">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
-                    <VscCreditCard />
-                  </span>
+              </div>
 
-                  <h1 className="text-[12px] font-semibold">
-                    NO EARLY CHARGES
-                  </h1>
-                  <p>
-                    Your card will not be charged until after your appointment.
+              <div className="flex flex-1 flex-col gap-[8px]">
+                <h1 className="text-[25px] font-semibold">Booking Summary</h1>
+                <div className='flex flex-col gap-[1px]'>
+                  <h3 className='text-[14px] font-bold'>
+                    Dr. {formData.doctor_name} - {formData.treatment}
+                  </h3>
+                  <p className="text-[14px]">
+                    {convertTime(formData.date, formData.doctorTime, "Australia/Sydney", "Australia/Sydney").date} -{" "}
+                    <strong>{convertTime(formData.date, formData.doctorTime, "Australia/Sydney", "Australia/Sydney").time}</strong> Sydney Time
                   </p>
+                  <p className='text-[14px]'>
+                    Booking Via <strong>Zoom</strong>
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-[15px]">
+                <div className="flex mt-10 mb-10 gap-[10px]">
+                  <div className='flex flex-1 flex-col gap-3'>
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
+                      <AiOutlineFileDone />
+                    </span>
+
+                    <h1 className="text-[12px] font-semibold">
+                      PAYMENT REQUIRED
+                    </h1>
+                    <p>
+                      We require a payment method before your appointment can be
+                      confirmed.
+                    </p>
+                  </div>
+
+                  <div className='flex flex-1 flex-col gap-3'>
+                    <div className='flex gap-3'>
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
+                        <LiaWalletSolid />
+                      </span>
+
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
+                        <LiaCcAmex />
+                      </span>
+
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
+                        <FaApplePay />
+                      </span>
+
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
+                        <FaGooglePay />
+                      </span>
+                    </div>
+
+                    <h1 className="text-[12px] font-semibold">
+                      SURCHARGE CREDIT CARD
+                    </h1>
+                    <p>
+                      A processing fee of 2.9% + $0.30 applies. Including American Express, Visa, Mastercard, Apple Pay, Google Pay
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-[10px]">
+                  <div className='flex flex-1 flex-col gap-3'>
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
+                      <FaPaypal />
+                    </span>
+
+                    <h1 className="text-[12px] font-semibold">
+                      Paypal Free
+                    </h1>
+                    <p>
+                      An additional fee applies when paying with PayPal.
+                    </p>
+                  </div>
+
+                  <div className='flex flex-1 flex-col gap-3'>
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
+                      <FaMoneyBill />
+                    </span>
+
+                    <h1 className="text-[12px] font-semibold">
+                      Pay Later Fee
+                    </h1>
+                    <p>
+                      An additional fee applies when choosing the Pay Later option.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
+            
             <div className="flex flex-1 flex-col gap-8 overflow-y-auto bg-white p-5">
               <div className="flex flex-col">
                 <h1 className="text-[14px] font-medium">SUMMARY</h1>
@@ -190,8 +287,8 @@ export default function AppointmentPayment() {
                     <Button
                       onClick={() => setSelectedMethod('card')}
                       className={`flex h-[69px] flex-1 flex-col items-center justify-center gap-[8px] rounded-[6px] px-[16px] py-[12px] text-center text-[14px] ${selectedMethod === 'card'
-                          ? 'bg-[#3666AA1A]/10 text-[#3666AA]'
-                          : 'bg-white text-[#A19F9F]'
+                        ? 'bg-[#3666AA1A]/10 text-[#3666AA]'
+                        : 'bg-white text-[#A19F9F]'
                         }`}
                       variant="outline"
                     >
@@ -201,8 +298,8 @@ export default function AppointmentPayment() {
                     <Button
                       onClick={() => setSelectedMethod('link')}
                       className={`flex h-[69px] flex-1 flex-col items-center justify-center gap-[8px] rounded-[6px] px-[16px] py-[12px] text-center text-[14px] ${selectedMethod === 'link'
-                          ? 'bg-[#3666AA1A]/10 text-[#3666AA]'
-                          : 'bg-white text-[#A19F9F]'
+                        ? 'bg-[#3666AA1A]/10 text-[#3666AA]'
+                        : 'bg-white text-[#A19F9F]'
                         }`}
                       variant="outline"
                     >
@@ -225,8 +322,8 @@ export default function AppointmentPayment() {
         </div>
       )}
 
-      <div className='h-full flex justify-center items-center'>
-        {step == STEP.CONFIRM && (
+      {step == STEP.CONFIRM && (
+        <div className='h-full flex justify-center items-center'>
           <div className="flex flex-col items-center justify-center gap-4 text-center">
             <CheckCircleIcon className="w-2h-28 h-28 text-green-600" />
             <div className="">
@@ -246,8 +343,8 @@ export default function AppointmentPayment() {
               </Button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 }
@@ -262,7 +359,7 @@ const Link = () => {
           className="flex-1"
         />
       </div>
-      <Button className="flex-[1] rounded-[6px] bg-[#3666AA] px-[16px] py-[12px] text-[14px] font-semibold text-white">
+      <Button className="flex-[1] rounded-[6px] mt-4 bg-[#3666AA] px-[16px] py-[12px] text-[14px] w-full font-semibold text-white">
         Submit
       </Button>
     </>
