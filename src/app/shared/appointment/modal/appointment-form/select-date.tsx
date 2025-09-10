@@ -98,7 +98,6 @@ export default function DateTime() {
 
   useEffect(() => {
     if (!formData.date && formData.doctorId && disabledDate.length > 0) {
-      // Find first available date from today
       let checkDate = dayjs();
       let found = false;
       const maxDaysToCheck = 30; // Check up to 30 days ahead
@@ -257,7 +256,6 @@ function DoctorTime({
 }) {
   const [formData, setFormData] = useAtom(formDataAtom);
   const [hasAutoSelected, setHasAutoSelected] = useState(false);
-
   const appointmentType = useMemo(() => {
     if (formData?.appointment_type?.includes('FOLLOWUP')) {
       return 'FOLLOWUP';
@@ -348,7 +346,12 @@ function DoctorTime({
                 <button
                   key={idx}
                   type="button"
-                  className="rounded-md bg-green-200/50 px-2 py-2 text-sm hover:bg-green-300 w-[80px]"
+                  className={cn(
+                    "rounded-md px-2 py-2 text-sm w-[80px] hover:bg-green-300",
+                    formData.doctorTime === sydneyValueTime
+                      ? "bg-green-300" 
+                      : "bg-green-200/50" 
+                  )}
                   onClick={() => {
                     setValue("doctorTime", sydneyValueTime);
                     setValue("doctorId", doctor.id as number);
@@ -366,6 +369,7 @@ function DoctorTime({
                 </button>
               );
             })}
+
 
             <div
               className={cn(

@@ -125,7 +125,7 @@ export default function AppointmentPayment() {
     <>
       {step == STEP.ESTIMATE_COST && (
         <div>
-          <div className="flex gap-10 h-[530px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 justify-between">
+          <div className="flex flex-col md:flex-row gap-10 h-[530px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 justify-between">
             {/* bg-[#3666AA08] */}
             <div className="flex h-full flex-1 flex-col p-5 gap-[30px]">
               <div className="flex flex-1 flex-col gap-[8px]">
@@ -167,7 +167,7 @@ export default function AppointmentPayment() {
                 <div className="flex mt-10 mb-10 gap-[10px]">
                   <div className='flex flex-1 flex-col gap-3'>
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
-                      <AiOutlineFileDone />
+                      <AiOutlineFileDone className="text-xl" />
                     </span>
 
                     <h1 className="text-[12px] font-semibold">
@@ -182,19 +182,19 @@ export default function AppointmentPayment() {
                   <div className='flex flex-1 flex-col gap-3'>
                     <div className='flex gap-3'>
                       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
-                        <LiaWalletSolid />
+                        <LiaWalletSolid className="text-xl" />
                       </span>
 
                       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
-                        <LiaCcAmex />
+                        <LiaCcAmex className="text-xl" />
                       </span>
 
                       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
-                        <FaApplePay />
+                        <FaApplePay className="text-xl" />
                       </span>
 
                       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
-                        <FaGooglePay />
+                        <FaGooglePay className="text-xl" />
                       </span>
                     </div>
 
@@ -210,7 +210,7 @@ export default function AppointmentPayment() {
                 <div className="flex gap-[10px]">
                   <div className='flex flex-1 flex-col gap-3'>
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
-                      <FaPaypal />
+                      <FaPaypal className="text-xl" />
                     </span>
 
                     <h1 className="text-[12px] font-semibold">
@@ -223,7 +223,7 @@ export default function AppointmentPayment() {
 
                   <div className='flex flex-1 flex-col gap-3'>
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
-                      <FaMoneyBill />
+                      <FaMoneyBill className="text-xl" />
                     </span>
 
                     <h1 className="text-[12px] font-semibold">
