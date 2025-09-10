@@ -125,47 +125,46 @@ export default function AppointmentPayment() {
     <>
       {step == STEP.ESTIMATE_COST && (
         <div>
-          <div className="flex flex-col md:flex-row gap-10 h-[530px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 justify-between">
-            {/* bg-[#3666AA08] */}
-            <div className="flex h-full flex-1 flex-col p-5 gap-[30px]">
-              <div className="flex flex-1 flex-col gap-[8px]">
-                <h1 className="text-[25px] font-semibold">Patient Summary</h1>
-                <div className='flex flex-col gap-[1px]'>
-                  <h3 className='text-[14px] font-bold'>
+          <div className="flex flex-col md:flex-row h-[549px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 justify-between">
+            <div className="flex h-full bg-[#3666AA08] flex-1 flex-col p-5">
+              <div className="flex flex-1 flex-col border-b boorder-[1px]">
+                <h1 className="text-[14px] font-bold">Patient Summary</h1>
+                <div className='flex flex-col'>
+                  <h3 className='text-[12px] font-bold'>
                     {formData.patient_name}
                   </h3>
-                  <p className='text-[14px]'>
-                    {formData.patient_address}
+                  <p className='text-[12px]'>
+                    {formData.patient_address ?? '-'}
                   </p>
-                  <p className='text-[14px]'>
-                    {formData.patient_mobile_number} (Indonesia)
+                  <p className='text-[12px]'>
+                    {formData.patient_mobile_number ?? '-'} (Indonesia)
                   </p>
-                  <p className="text-[14px]">
+                  <p className="text-[12px]">
                     {convertTime(formData.date, formData.doctorTime, "Australia/Sydney", "Asia/Jakarta").date} -{" "}
                     <strong>{convertTime(formData.date, formData.doctorTime, "Australia/Sydney", "Asia/Jakarta").time}</strong> Jakarta Time
                   </p>
                 </div>
               </div>
 
-              <div className="flex flex-1 flex-col gap-[8px]">
-                <h1 className="text-[25px] font-semibold">Booking Summary</h1>
-                <div className='flex flex-col gap-[1px]'>
-                  <h3 className='text-[14px] font-bold'>
+              <div className="flex flex-1 flex-col border-b boorder-[1px]">
+                <h1 className="text-[14px] font-semibold">Booking Summary</h1>
+                <div className='flex flex-col'>
+                  <h3 className='text-[12px] font-bold'>
                     Dr. {formData.doctor_name} - {formData.treatment}
                   </h3>
-                  <p className="text-[14px]">
+                  <p className="text-[12px]">
                     {convertTime(formData.date, formData.doctorTime, "Australia/Sydney", "Australia/Sydney").date} -{" "}
                     <strong>{convertTime(formData.date, formData.doctorTime, "Australia/Sydney", "Australia/Sydney").time}</strong> Sydney Time
                   </p>
-                  <p className='text-[14px]'>
+                  <p className='text-[12px]'>
                     Booking Via <strong>Zoom</strong>
                   </p>
                 </div>
               </div>
 
-              <div className="flex flex-col gap-[15px]">
-                <div className="flex mt-10 mb-10 gap-[10px]">
-                  <div className='flex flex-1 flex-col gap-3'>
+              <div className="flex flex-col">
+                <div className="flex mt-2 mb-2 gap-[10px]">
+                  <div className='flex flex-1 flex-col'>
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
                       <AiOutlineFileDone className="text-xl" />
                     </span>
@@ -173,13 +172,13 @@ export default function AppointmentPayment() {
                     <h1 className="text-[12px] font-semibold">
                       PAYMENT REQUIRED
                     </h1>
-                    <p>
+                    <p className='text-[12px]'>
                       We require a payment method before your appointment can be
                       confirmed.
                     </p>
                   </div>
 
-                  <div className='flex flex-1 flex-col gap-3'>
+                  <div className='flex flex-1 flex-col'>
                     <div className='flex gap-3'>
                       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
                         <LiaWalletSolid className="text-xl" />
@@ -201,14 +200,14 @@ export default function AppointmentPayment() {
                     <h1 className="text-[12px] font-semibold">
                       SURCHARGE CREDIT CARD
                     </h1>
-                    <p>
+                    <p className='text-[12px]'>
                       A processing fee of 2.9% + $0.30 applies. Including American Express, Visa, Mastercard, Apple Pay, Google Pay
                     </p>
                   </div>
                 </div>
 
                 <div className="flex gap-[10px]">
-                  <div className='flex flex-1 flex-col gap-3'>
+                  <div className='flex flex-1 flex-col'>
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
                       <FaPaypal className="text-xl" />
                     </span>
@@ -216,12 +215,12 @@ export default function AppointmentPayment() {
                     <h1 className="text-[12px] font-semibold">
                       Paypal Free
                     </h1>
-                    <p>
+                    <p className='text-[12px]'>
                       An additional fee applies when paying with PayPal.
                     </p>
                   </div>
 
-                  <div className='flex flex-1 flex-col gap-3'>
+                  <div className='flex flex-1 flex-col'>
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
                       <FaMoneyBill className="text-xl" />
                     </span>
@@ -229,7 +228,7 @@ export default function AppointmentPayment() {
                     <h1 className="text-[12px] font-semibold">
                       Pay Later Fee
                     </h1>
-                    <p>
+                    <p className='text-[12px]'>
                       An additional fee applies when choosing the Pay Later option.
                     </p>
                   </div>
@@ -237,16 +236,16 @@ export default function AppointmentPayment() {
               </div>
             </div>
 
-            <div className="flex flex-1 h-full flex-col gap-8 bg-white p-5">
+            <div className="flex flex-1 h-full flex-col bg-white p-5">
               <div className="flex flex-col">
                 <h1 className="text-[14px] font-medium">SUMMARY</h1>
-                <div className="flex flex-col pt-4">
+                <div className="flex flex-col">
                   {PAYMENT_SUMMARY.map((item, index) => (
                     <div key={index} className="flex justify-between">
-                      <h2 className="text-[14px] font-medium text-[#777777]">
+                      <h2 className="text-[12px] font-medium text-[#777777]">
                         {item.label}
                       </h2>
-                      <p className="text-[16px] font-medium">
+                      <p className="text-[14px] font-medium">
                         {item.label === 'Sub Total'
                           ? `${currencyData.active.symbol} ${Number(formData.fee)}`
                           : item.label === 'Merchant Fee'
@@ -272,16 +271,17 @@ export default function AppointmentPayment() {
                     Apply
                   </Button>
                 </div>
-                <div className="mb-4 mt-6 w-full border-[1px] border-t border-[#00000026]/15"></div>
-                <div className="flex justify-between">
-                  <h1 className="text-[16px] font-medium">Total Cost</h1>
-                  <p className="text-[16px] font-medium">
+                <div className="mt-2 w-full border-[1px] border-t border-[#00000026]/15"></div>
+                <div className="flex justify-between items-center">
+                  <h1 className="text-[14px] font-medium">Total Cost</h1>
+                  <p className="text-[14px] font-medium">
                     {currencyData.active.symbol}
                     {Number(totalValue)}
-                  </p>
+                  </p>  
                 </div>
               </div>
-              <div className="flex flex-col">
+
+              <div className="flex flex-col mt-4">
                 <h1 className="text-[14px] font-medium">PAYMENT</h1>
                 <div className="pt-4">
                   <div className="flex gap-2">

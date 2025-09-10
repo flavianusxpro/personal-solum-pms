@@ -100,7 +100,7 @@ export default function DateTime() {
     if (!formData.date && formData.doctorId && disabledDate.length > 0) {
       let checkDate = dayjs();
       let found = false;
-      const maxDaysToCheck = 30; // Check up to 30 days ahead
+      const maxDaysToCheck = 30; 
 
       for (let i = 0; i < maxDaysToCheck && !found; i++) {
         const dateToCheck = checkDate.add(i, 'day');
@@ -125,7 +125,7 @@ export default function DateTime() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className='flex flex-col gap-10 overflow-y-auto h-[530px] scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 p-5'>
+      <div className='flex flex-col gap-10 overflow-y-auto h-[549px] scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 p-5'>
         <Text className="text-base font-semibold">
           Select Appointment Date:
         </Text>

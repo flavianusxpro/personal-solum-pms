@@ -610,6 +610,7 @@ export interface IPayloadCreateUpdateCoupon {
   code: string;
   discount_type: string;
   discount_amount: number;
+  start_date: string;
   expiry_date: string;
   patient_limit_use: number;
   limit: number;

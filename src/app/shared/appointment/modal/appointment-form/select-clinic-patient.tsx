@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { appointmentBookSchema } from '@/validators/admin-appointment.schema';
 import CSelect from '@/core/ui/select';
 import { useGetAllPatients } from '@/hooks/usePatient';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { z } from 'zod';
 import { useGetAppointments } from '@/hooks/useAppointment';
 import { useProfile } from '@/hooks/useProfile';
@@ -21,7 +21,6 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 export default function SelectClinic() {
   const { gotoNextStep } = useStepperAppointment();
   const [formData, setFormData] = useAtom(formDataAtom);
-
   const { data: dataProfile } = useProfile(true);
   const { data: dataPatients, isLoading: isLoadingPatients } =
     useGetAllPatients({
@@ -59,14 +58,24 @@ export default function SelectClinic() {
     }));
   }, [dataPatients]);
 
-  const treatmentOptions = useMemo(
-    () =>
-      dataTreatments?.data.map((item) => ({
+  const treatmentOptions = useMemo(() => {
+  if (!dataTreatments?.data) return [];
+
+  if (dataAppointment?.data.length === 0) {
+    return dataTreatments.data
+      .filter((item) => item.id !== 2)
+      .map((item) => ({
         label: item.name,
         value: item.name,
-      })) ?? [],
-    [dataTreatments]
-  );
+      }));
+  }
+
+  return dataTreatments.data.map((item) => ({
+    label: item.name,
+    value: item.name,
+  }));
+}, [dataTreatments, dataAppointment]);
+
 
   const {
     control,
@@ -100,7 +109,6 @@ export default function SelectClinic() {
     return null;
   }, [formData.patient_id, dataPatients?.data, setValue]);
 
-  // Extract date and time from last appointment
   const lastAppointmentDate = lastAppointment?.date
     ? dayjs(lastAppointment.date).format('YYYY-MM-DD')
     : undefined;
@@ -127,12 +135,10 @@ export default function SelectClinic() {
     if (formData.patient_id) {
       refetch();
 
-      // Get the selected patient's data
       const selectedPatient = dataPatients?.data.find(
         (patient) => patient.id === formData.patient_id
       );
 
-      // Get the last clinic from patient's clinics array
       const patientLastClinic = selectedPatient?.clinics?.[0];
 
       if (patientLastClinic) {
@@ -143,11 +149,27 @@ export default function SelectClinic() {
         }));
       }
 
-      if (lastAppointment?.patient_type) {
-        setValue('treatment', lastAppointment.patient_type);
+      if (!dataAppointment) return;
+
+      const hasAppointments = dataAppointment.data.length >= 1;
+
+      if (hasAppointments) {
+        setValue('treatment', 'Follow Up Appointment');
         setFormData((prev) => ({
           ...prev,
-          treatment: lastAppointment.patient_type,
+          treatment: 'Follow Up Appointment',
+        }));
+      } else if (dataAppointment.data.length !== 0 && lastAppointment?.patient_type) {
+        setValue('treatment', lastAppointment?.patient_type);
+        setFormData((prev) => ({
+          ...prev,
+          treatment: lastAppointment?.patient_type,
+        }));
+      } else {
+        setValue('treatment', 'Initial Consult');
+        setFormData((prev) => ({
+          ...prev,
+          treatment: 'Initial Consult',
         }));
       }
     }
@@ -158,11 +180,12 @@ export default function SelectClinic() {
     setFormData,
     setValue,
     lastAppointment?.patient_type,
+    dataAppointment,
   ]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className='flex flex-col gap-10 h-[530px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 p-5'>
+      <div className='flex flex-col gap-10 h-[549px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 p-5'>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 ">
           <Controller
             control={control}
@@ -203,6 +226,7 @@ export default function SelectClinic() {
                 label="Appointment Type"
                 options={treatmentOptions}
                 onChange={(value) => {
+                  field.onChange(value);
                   setFormData((prev) => ({
                     ...prev,
                     treatment: `${value}`

@@ -28,6 +28,7 @@ import { useGetAllPatients } from '@/hooks/usePatient';
 import dynamic from 'next/dynamic';
 import { IPayloadCreateUpdateCoupon } from '@/types/paramTypes';
 import toast from 'react-hot-toast';
+import dayjs from 'dayjs';
 
 interface IProps {
   data?: IGetCouponsResponse['data'][number];
@@ -40,6 +41,9 @@ const MultiSelect = dynamic(
 );
 
 export default function CreateEditModal({ data, isView }: IProps) {
+  console.log('zzz data', data);
+  
+
   const { closeModal } = useModal();
 
   const { refetch } = useGetCoupons({
@@ -101,6 +105,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
       description: formValues.description as string,
       discount_amount: Number(formValues.discount_amount),
       discount_type: formValues.discount_type,
+      start_date: formValues.start_date,
       expiry_date: formValues.expiry_date,
       limit: Number(formValues.use_limit),
       patient_limit_use: Number(formValues.patient_limit_use),
@@ -165,7 +170,8 @@ export default function CreateEditModal({ data, isView }: IProps) {
           code: data?.code,
           discount_type: data?.discount_type,
           discount_amount: data?.discount_amount?.toString(),
-          expiry_date: data?.expiry_date,
+          start_date: dayjs(data?.start_date).format("YYYY-MM-DD"),
+          expiry_date:  dayjs(data?.expiry_date).format("YYYY-MM-DD"),
           use_limit: data?.limit.toString(),
           patient_limit_use: data?.patient_limit_use.toString(),
           description: data?.description,
@@ -332,6 +338,16 @@ export default function CreateEditModal({ data, isView }: IProps) {
                 placeholder="Coupon Value"
                 className="w-full"
                 error={errors.discount_amount?.message}
+                disabled={isView}
+              />
+
+              <Input
+                label="Start Date"
+                {...register('start_date')}
+                type="date"
+                placeholder="Start Date"
+                className="w-full"
+                error={errors.start_date?.message}
                 disabled={isView}
               />
 
