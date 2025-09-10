@@ -119,7 +119,6 @@ export default function SelectClinic() {
       doctorId: lastAppointment?.doctorId,
       date: lastAppointmentDate || '',
       doctorTime: lastAppointmentTime || '',
-      doctor_name: `${lastAppointment?.doctor.first_name} ${lastAppointment?.doctor.last_name}`
     }));
     gotoNextStep();
   };
@@ -144,7 +143,6 @@ export default function SelectClinic() {
         }));
       }
 
-      // Set treatment from last appointment if available
       if (lastAppointment?.patient_type) {
         setValue('treatment', lastAppointment.patient_type);
         setFormData((prev) => ({

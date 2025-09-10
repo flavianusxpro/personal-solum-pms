@@ -362,6 +362,7 @@ function DoctorTime({
                       doctorTime: sydneyValueTime,
                       doctorId: doctor.id as number,
                       fee: doctor.cost.amount || "",
+                      doctor_name: `${doctor.first_name ?? doctor.first_name} ${doctor.last_name ?? doctor.last_name}`
                     }));
                   }}
                 >
