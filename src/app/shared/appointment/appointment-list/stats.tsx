@@ -29,6 +29,7 @@ export type StatType = {
   percentage: string;
   iconWrapperFill?: string;
   className?: string;
+  yesterday?: boolean;
 };
 
 export type StatCardProps = {
@@ -37,7 +38,7 @@ export type StatCardProps = {
 };
 
 function StatCard({ className, transaction }: StatCardProps) {
-  const { icon, title, amount, increased, percentage, iconWrapperFill } =
+  const { icon, title, amount, increased, percentage, iconWrapperFill, yesterday } =
     transaction;
   const Icon = icon;
 
@@ -91,7 +92,7 @@ function StatCard({ className, transaction }: StatCardProps) {
           </span>
         </div>
         <span className="truncate leading-none text-gray-500">
-          {increased ? 'Increased' : 'Decreased'}&nbsp;last month
+          {increased ? 'Increased' : 'Decreased'}&nbsp; {yesterday ? 'yesterday' : 'last month' }
         </span>
       </div>
     </div>
@@ -135,22 +136,23 @@ export default function AppointmentListStats({
         amount: data?.upcoming_appointment.toString() || '0',
         icon: PiCalendarCheck,
         iconWrapperFill: '#F5A623',
-        percentage: '0',
+        percentage: data?.upcoming_appointment_increased_last_month.toString() || '0',
       },
       {
         title: 'Today Appointment',
         increased: true,
         amount: data?.today_appointment.toString() || '0',
         icon: PiCheckCircle,
-        percentage: '0',
+        percentage: data?.today_appointment_increased_yesterday.toString() || '0',
         iconWrapperFill: '#11843C',
+        yesterday: true
       },
       {
         title: 'Finished Appointment',
         increased: false,
         amount: data?.finished_appointment.toString() || '0',
         icon: PiClock,
-        percentage: '0',
+        percentage: data?.finished_appointment_increased_last_month.toString() || '0',
         iconWrapperFill: '#8A63D2',
       },
       {
@@ -158,7 +160,7 @@ export default function AppointmentListStats({
         increased: true,
         amount: data?.cancelled_appointment.toString() || '0',
         icon: PiPhoneSlash,
-        percentage: '0',
+        percentage: data?.cancelled_appointment_increased_last_month.toString() || '0',
         iconWrapperFill: '#C50000',
       },
     ],
@@ -167,6 +169,10 @@ export default function AppointmentListStats({
       data?.finished_appointment,
       data?.today_appointment,
       data?.upcoming_appointment,
+      data?.cancelled_appointment_increased_last_month,
+      data?.finished_appointment_increased_last_month,
+      data?.today_appointment_increased_yesterday,
+      data?.upcoming_appointment_increased_last_month,
     ]
   );
 

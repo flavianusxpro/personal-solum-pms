@@ -86,8 +86,8 @@ function CheckoutForm({
         }}
       />
       {error && <div style={{ color: 'red' }}>{error?.message}</div>}
-      <div className="mt-4 w-full text-center">
-        <Button isLoading={isLoading} type="submit" disabled={!stripe}>
+      <div className="mt-4 w-full">
+        <Button className='bg-[#3666AA] px-[16px] py-[12px] text-[14px] w-full font-semibold text-white' isLoading={isLoading} type="submit" disabled={!stripe}>
           Pay Now
         </Button>
       </div>

@@ -96,13 +96,11 @@ export default function DateTime() {
     return disabledDates;
   }, [dataCalendarSchedule]);
 
-  // Auto-select first available date if no date is set and patient has a pre-selected doctor
   useEffect(() => {
     if (!formData.date && formData.doctorId && disabledDate.length > 0) {
-      // Find first available date from today
       let checkDate = dayjs();
       let found = false;
-      const maxDaysToCheck = 30; // Check up to 30 days ahead
+      const maxDaysToCheck = 30; 
 
       for (let i = 0; i < maxDaysToCheck && !found; i++) {
         const dateToCheck = checkDate.add(i, 'day');
@@ -127,12 +125,13 @@ export default function DateTime() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col justify-center p-10">
+      <div className='flex flex-col gap-10 overflow-y-auto h-[549px] scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 p-5'>
         <Text className="text-base font-semibold">
           Select Appointment Date:
         </Text>
-        <div className='flex gap-2 justify-between'>
-          <div className="flex justify-center">
+
+        <div className='flex justify-between flex-col md:flex-row'>
+          <div className="flex-[1]">
             <Calendar
               onChange={(date) => {
                 if (date instanceof Date) {
@@ -161,90 +160,84 @@ export default function DateTime() {
                   return isDisabled ? 'bg-green-100' : '';
                 }
               }}
-              // className="self-center !border-0 !bg-transparent px-4 pb-4 pt-2.5 !font-inter !text-base md:px-5 md:pb-5"
-              className="self-center !border-0 !bg-transparent !font-inter !text-base pb-4 pt-2.5"
+              className="!border-0 !bg-transparent !font-inter !text-base !p-5 !w-full"
 
             />
             <FieldError error={errors.date?.message} className="!mt-2" />
           </div>
 
-          <div className="flex justify-end space-y-5 pb-6 pr-6 pt-5 md:pt-7">
-            <div className="mx-auto max-h-80 max-w-4xl divide-y divide-gray-200 overflow-auto">
-              {isLoadingDoctor && <Loader variant="spinner" size="xl" />}
-              {!isLoadingDoctor && dataDoctor?.length === 0 && (
-                <div className="flex flex-col items-center justify-center gap-4">
-                  <PiBell className="text-primary" size={48} />
-                  <Text className="text-2xl font-medium">
-                    No Doctor Available
-                  </Text>
-                </div>
-              )}
-              {!formData.date && (
-                <div className="flex flex-col items-center justify-center gap-4">
-                  <PiCalendar className="text-primary" size={48} />
-                  <Text className="text-2xl font-medium">Please Select Date</Text>
-                </div>
-              )}
+          <div className='flex-[1] overflow-y-auto'>
+            {isLoadingDoctor && <Loader variant="spinner" size="xl" />}
+            {!isLoadingDoctor && dataDoctor?.length === 0 && (
+              <div className="flex flex-col items-center justify-center gap-4">
+                <PiBell className="text-primary" size={48} />
+                <Text className="text-2xl font-medium">
+                  No Doctor Available
+                </Text>
+              </div>
+            )}
+            {!formData.date && (
+              <div className="flex flex-col items-center justify-center gap-4">
+                <PiCalendar className="text-primary" size={48} />
+                <Text className="text-2xl font-medium">Please Select Date</Text>
+              </div>
+            )}
 
-              {dataDoctor?.map((doctor, index: number) => {
-                if (!doctor.id) return null;
+            {dataDoctor?.map((doctor, index: number) => {
+              if (!doctor.id) return null;
 
-                return (
-                  <div
-                    key={`${doctor.id}-${formData.date}-${index}`}
-                    className="mb-5"
-                  >
-                    {/* Doctor Header */}
-                    <div className="flex items-center justify-between space-x-4 p-6">
-                      <div className="flex items-center space-x-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-300">
-                          🏥
-                        </div>
-                        {/* )} */}
-                        <h3 className="cursor-pointer text-base font-bold hover:underline">
-                          Dr. {doctor.first_name} {doctor.last_name}
-                        </h3>
+              return (
+                <div
+                  key={`${doctor.id}-${formData.date}-${index}`}
+                  className="flex flex-col gap-5"
+                >
+                  <div className="flex items-center justify-between space-x-4 p-6">
+                    <div className="flex items-center space-x-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-300">
+                        🏥
                       </div>
-                      <div
-                        className="cursor-pointer"
-                        onClick={() =>
-                          setCurrentOpen((prev) =>
-                            prev === doctor.id ? null : doctor.id
-                          )
-                        }
-                      >
-                        <div className="flex items-center gap-2">
-                          {currentOpen === doctor.id ? (
-                            <>
-                              <Text>Hide Appointment</Text>{' '}
-                              <BiChevronUp size={30} />
-                            </>
-                          ) : (
-                            <>
-                              <Text>See All Appointment</Text>
-                              <BiChevronDown size={30} />
-                            </>
-                          )}
-                        </div>
+                      {/* )} */}
+                      <h3 className="cursor-pointer text-base font-bold hover:underline">
+                        Dr. {doctor.first_name} {doctor.last_name}
+                      </h3>
+                    </div>
+                    <div
+                      className="cursor-pointer"
+                      onClick={() =>
+                        setCurrentOpen((prev) =>
+                          prev === doctor.id ? null : doctor.id
+                        )
+                      }
+                    >
+                      <div className="flex items-center gap-2">
+                        {currentOpen === doctor.id ? (
+                          <>
+                            <Text>Hide Appointment</Text>{' '}
+                            <BiChevronUp size={30} />
+                          </>
+                        ) : (
+                          <>
+                            <Text>See All Appointment</Text>
+                            <BiChevronDown size={30} />
+                          </>
+                        )}
                       </div>
                     </div>
-
-                    {/* Doctor Times */}
-                    <DoctorTime
-                      setValue={setValue}
-                      currentOpen={currentOpen}
-                      doctor={doctor}
-                      localTimezone={localTimezone}
-                    />
                   </div>
-                );
-              })}
-            </div>
+
+                  <DoctorTime
+                    setValue={setValue}
+                    currentOpen={currentOpen}
+                    doctor={doctor}
+                    localTimezone={localTimezone}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
-        {/* <div className="space-y-5 px-5 pb-6 pt-5 md:px-7 md:pb-9 md:pt-7">
-          </div> */}
       </div>
+
       <Footer showSaveButton={showSaveButton} />
     </form>
   );
@@ -263,7 +256,6 @@ function DoctorTime({
 }) {
   const [formData, setFormData] = useAtom(formDataAtom);
   const [hasAutoSelected, setHasAutoSelected] = useState(false);
-
   const appointmentType = useMemo(() => {
     if (formData?.appointment_type?.includes('FOLLOWUP')) {
       return 'FOLLOWUP';
@@ -299,7 +291,6 @@ function DoctorTime({
     );
   }, [dataAvailability?.data]);
 
-  // Auto-select first available time slot if this is the pre-selected doctor
   useEffect(() => {
     if (
       !hasAutoSelected &&
@@ -327,9 +318,9 @@ function DoctorTime({
 
   const toSydneyFromAvail = (avail: string) => {
     const today = dayjs().format("YYYY-MM-DD");
-    return dayjs(`${today} ${avail}`, "YYYY-MM-DD h:mm A") 
+    return dayjs(`${today} ${avail}`, "YYYY-MM-DD h:mm A")
       .tz("Australia/Sydney")
-      .format("h:mm A"); 
+      .format("h:mm A");
   };
 
   const toSydneyFromValue = (value: string) => {
@@ -355,7 +346,12 @@ function DoctorTime({
                 <button
                   key={idx}
                   type="button"
-                  className="rounded-md bg-green-200/50 px-2 py-2 text-sm hover:bg-green-300 w-[80px]"
+                  className={cn(
+                    "rounded-md px-2 py-2 text-sm w-[80px] hover:bg-green-300",
+                    formData.doctorTime === sydneyValueTime
+                      ? "bg-green-300" 
+                      : "bg-green-200/50" 
+                  )}
                   onClick={() => {
                     setValue("doctorTime", sydneyValueTime);
                     setValue("doctorId", doctor.id as number);
@@ -366,6 +362,7 @@ function DoctorTime({
                       doctorTime: sydneyValueTime,
                       doctorId: doctor.id as number,
                       fee: doctor.cost.amount || "",
+                      doctor_name: `${doctor.first_name ?? doctor.first_name} ${doctor.last_name ?? doctor.last_name}`
                     }));
                   }}
                 >
@@ -373,6 +370,7 @@ function DoctorTime({
                 </button>
               );
             })}
+
 
             <div
               className={cn(

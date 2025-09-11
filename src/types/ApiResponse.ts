@@ -539,9 +539,13 @@ interface Item {
 export interface IGetAppointmentSummaryResponse extends ApiResponse {
   data: {
     upcoming_appointment: number;
+    upcoming_appointment_increased_last_month: number;
     today_appointment: number;
+    today_appointment_increased_yesterday: number;
     finished_appointment: number;
+    finished_appointment_increased_last_month: number;
     cancelled_appointment: number;
+    cancelled_appointment_increased_last_month: number;
   };
 }
 
@@ -952,6 +956,7 @@ export interface IGetCouponsResponse extends ApiResponseWithPagination {
     description: string;
     discount_type: string;
     discount_amount: string;
+    start_date: string;
     expiry_date: string;
     patient_limit_use: number;
     limit: number;
