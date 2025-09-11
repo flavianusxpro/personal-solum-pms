@@ -18,8 +18,6 @@ import AppointmentDetails from './appointment-details';
 import AvatarCard from '@core/ui/avatar-card';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 import dayjs from '@/config/dayjs';
-import ActionTooltipButton from '@/app/shared/ui/action-tooltip-button';
-import PencilIcon from '@/core/components/icons/pencil';
 import CSelect from '@/app/shared/ui/select';
 import { useState } from 'react';
 import { useUpdateAppointment } from '@/hooks/useAppointment';
@@ -215,7 +213,7 @@ export const GetColumns = ({
         getPaymentStatusBadge(row?.payment?.status ?? 0),
     },
     {
-      title: <></>,
+      title: <HeaderCell title="Action" />,
       dataIndex: 'action',
       key: 'action',
       width: 120,
@@ -243,14 +241,6 @@ function RenderAction({
     closeModal(),
       openModal({
         view: <CreateUpdateAppointmentForm />,
-        customSize: '600px',
-      });
-  }
-
-  function handleEditModal(row: RowValue) {
-    closeModal(),
-      openModal({
-        view: <CreateUpdateAppointmentForm data={row} />,
         customSize: '600px',
       });
   }
@@ -342,15 +332,7 @@ function RenderAction({
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
-
-      <ActionTooltipButton
-        tooltipContent="Edit Appointment"
-        variant="outline"
-        onClick={() => handleEditModal(row)}
-      >
-        <PencilIcon className="h-4 w-4" />
-      </ActionTooltipButton>
-
+      
       <Tooltip
         size="sm"
         content={'View Appointment'}

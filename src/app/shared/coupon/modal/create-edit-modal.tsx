@@ -41,8 +41,6 @@ const MultiSelect = dynamic(
 );
 
 export default function CreateEditModal({ data, isView }: IProps) {
-  console.log('zzz data', data);
-  
 
   const { closeModal } = useModal();
 
@@ -148,9 +146,9 @@ export default function CreateEditModal({ data, isView }: IProps) {
   const parsedRestrictPatient: string[] =
     typeof data?.restrict_patient === 'string'
       ? (data.restrict_patient as string)
-          .split(',')
-          .map((s) => s.trim().replace(/[\[\]"]/g, ''))
-          .filter(Boolean)
+        .split(',')
+        .map((s) => s.trim().replace(/[\[\]"]/g, ''))
+        .filter(Boolean)
       : Array.isArray(data?.restrict_patient)
         ? data.restrict_patient.map((item) => String(item))
         : [];
@@ -171,7 +169,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
           discount_type: data?.discount_type,
           discount_amount: data?.discount_amount?.toString(),
           start_date: dayjs(data?.start_date).format("YYYY-MM-DD"),
-          expiry_date:  dayjs(data?.expiry_date).format("YYYY-MM-DD"),
+          expiry_date: dayjs(data?.expiry_date).format("YYYY-MM-DD"),
           use_limit: data?.limit.toString(),
           patient_limit_use: data?.patient_limit_use.toString(),
           description: data?.description,
@@ -306,11 +304,15 @@ export default function CreateEditModal({ data, isView }: IProps) {
               />
               <Input
                 label="Coupon Code"
-                {...register('code')}
                 placeholder="Coupon Code"
                 className="w-full"
                 error={errors.code?.message}
                 disabled={isView}
+                {...register("code", {
+                  onChange: (e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                  },
+                })}
               />
               <Controller
                 control={control}

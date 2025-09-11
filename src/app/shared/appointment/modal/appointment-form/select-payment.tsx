@@ -3,9 +3,9 @@
 import { AiOutlineFileDone } from 'react-icons/ai';
 import { CgCreditCard, CgLink } from 'react-icons/cg';
 import Footer from './footer';
-import React, { useMemo, useState } from 'react';
-import { Button, Input, NumberInput, Title } from 'rizzui';
-import { PAYMENT_SUMMARY } from './appointment-form';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Button, Input, Title } from 'rizzui';
+import { PAYMENT_SUMMARY } from './appointment.constants';
 import cn from '@/core/utils/class-names';
 import { useAtom } from 'jotai';
 import { currencyAtom } from '@/store/currency';
@@ -17,12 +17,14 @@ import { usePostCreateAppointment } from '@/hooks/useAppointment';
 import CardMinimal0 from '@/app/shared/stripe-checkout/0-card-minima';
 import CheckCircleIcon from '@/core/components/icons/check-circle';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import { LiaCcAmex, LiaApplePay, LiaWalletSolid, LiaCcApplePay } from "react-icons/lia";
+import { LiaCcAmex, LiaWalletSolid } from "react-icons/lia";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import "dayjs/locale/id";
 import { FaApplePay, FaGooglePay, FaMoneyBill, FaPaypal } from 'react-icons/fa6';
+import { useGetDoctorByClinic } from '@/hooks/useClinic';
+import useAppointment from './useAppointment';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -38,13 +40,31 @@ export default function AppointmentPayment() {
   const [currencyData] = useAtom(currencyAtom);
   const [showSaveButton, setShowSaveButton] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState<'card' | 'link'>('card');
-  const [formData] = useAtom(formDataAtom);
+  const [formData, setFormData] = useAtom(formDataAtom);
   const [inputCouponCode, setInputCouponCode] = React.useState('');
   const [step, setStep] = React.useState(STEP.ESTIMATE_COST);
   const { closeModal } = useModal();
+  const local_tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  const { mutate: mutateCouponValidation, data: dataCoupon } =
-    useCouponCodeValidation();
+  const {
+    convertTime,
+    getCountryFromPhone,
+    getTimezoneName
+  } = useAppointment()
+
+  const { mutate: mutateCouponValidation, data: dataCoupon } = useCouponCodeValidation();
+  const { mutate } = usePostCreateAppointment();
+  
+  const { data: dataDoctor } = useGetDoctorByClinic(
+    {
+      id: formData?.clinicId?.toString() as string,
+      page: 1,
+      perPage: 10,
+      treatment_type: formData.treatment,
+      problem_type: formData.patient_problem,
+      date: formData.date,
+    }
+  );
 
   const couponValue = useMemo(() => {
     if (dataCoupon?.data?.discount_type === 'percent') {
@@ -69,7 +89,11 @@ export default function AppointmentPayment() {
 
   function couponValidation(couponCode: string) {
     mutateCouponValidation(couponCode, {
-      onSuccess: () => {
+      onSuccess: (ress) => {
+        setFormData((prev) => ({
+          ...prev,
+          couponId: `${ress?.data.id}`
+        }));
         toast.success('Coupon code applied successfully');
       },
       onError: (error: any) => {
@@ -78,7 +102,20 @@ export default function AppointmentPayment() {
     });
   }
 
-  const { mutate } = usePostCreateAppointment();
+  const doctor = useMemo(() => {
+    return dataDoctor?.find(
+      (doctor) => doctor.id === Number(formData.doctorId)
+    );
+  }, [dataDoctor, formData.doctorId]);
+
+  useEffect(() => {
+    if (doctor) {
+      setFormData((prev) => ({
+        ...prev,
+        fee: doctor.cost.amount || '',
+      }));
+    }
+  }, [doctor, setFormData]);
 
   const successPayment = (payment_method: string) => {
     const payload: IPayloadPostAppoinment = {
@@ -92,6 +129,7 @@ export default function AppointmentPayment() {
       meeting_preference: 'ZOOM',
       patientId: formData.patient_id as number,
       additional_information: { note: formData.note },
+      ...(formData.couponId ? { couponId: formData.couponId } : {})
     };
 
     mutate(payload, {
@@ -104,22 +142,6 @@ export default function AppointmentPayment() {
       },
     });
   };
-
-  const convertTime = (
-    date: string,
-    time: string,
-    fromTz: string,
-    toTz: string
-  ): { date: string; time: string } => {
-    const sourceTime = dayjs.tz(`${date} ${time}`, "YYYY-MM-DD HH:mm", fromTz);
-    const targetTime = sourceTime.tz(toTz);
-
-    return {
-      date: targetTime.format("DD MMMM YYYY"),
-      time: targetTime.format("hh:mm A"),
-    };
-  };
-
 
   return (
     <>
@@ -136,12 +158,19 @@ export default function AppointmentPayment() {
                   <p className='text-[12px]'>
                     {formData.patient_address ?? '-'}
                   </p>
-                  <p className='text-[12px]'>
-                    {formData.patient_mobile_number ?? '-'} (Indonesia)
+                  <p className="text-[12px]">
+                    {formData.patient_mobile_number ?? "-"} (
+                    {formData.patient_mobile_number
+                      ? getCountryFromPhone(formData.patient_mobile_number)
+                      : "-"}
+                    )
                   </p>
                   <p className="text-[12px]">
-                    {convertTime(formData.date, formData.doctorTime, "Australia/Sydney", "Asia/Jakarta").date} -{" "}
-                    <strong>{convertTime(formData.date, formData.doctorTime, "Australia/Sydney", "Asia/Jakarta").time}</strong> Jakarta Time
+                    {convertTime(formData.date, formData.doctorTime, `${formData.doctor_tz}`, local_tz).date} -{" "}
+                    <strong>
+                      {convertTime(formData.date, formData.doctorTime, `${formData.doctor_tz}`, local_tz).time}
+                    </strong>{" "}
+                    {getTimezoneName(local_tz, formData.date, formData.doctorTime)}
                   </p>
                 </div>
               </div>
@@ -153,8 +182,11 @@ export default function AppointmentPayment() {
                     Dr. {formData.doctor_name} - {formData.treatment}
                   </h3>
                   <p className="text-[12px]">
-                    {convertTime(formData.date, formData.doctorTime, "Australia/Sydney", "Australia/Sydney").date} -{" "}
-                    <strong>{convertTime(formData.date, formData.doctorTime, "Australia/Sydney", "Australia/Sydney").time}</strong> Sydney Time
+                    {convertTime(formData.date, formData.doctorTime, `${formData.doctor_tz}`, `${formData.doctor_tz}`).date} -{" "}
+                    <strong>
+                      {convertTime(formData.date, formData.doctorTime, `${formData.doctor_tz}`, `${formData.doctor_tz}`).time}
+                    </strong>{" "}
+                    {getTimezoneName(`${formData.doctor_tz}`, formData.date, formData.doctorTime)}
                   </p>
                   <p className='text-[12px]'>
                     Booking Via <strong>Zoom</strong>
@@ -247,7 +279,7 @@ export default function AppointmentPayment() {
                       </h2>
                       <p className="text-[14px] font-medium">
                         {item.label === 'Sub Total'
-                          ? `${currencyData.active.symbol} ${Number(formData.fee)}`
+                          ? `${currencyData.active.symbol} ${formData.fee ? Number(formData.fee) : ''}`
                           : item.label === 'Merchant Fee'
                             ? `${currencyData.active.symbol}-`
                             : item.label === 'Coupon'
@@ -277,7 +309,7 @@ export default function AppointmentPayment() {
                   <p className="text-[14px] font-medium">
                     {currencyData.active.symbol}
                     {Number(totalValue)}
-                  </p>  
+                  </p>
                 </div>
               </div>
 

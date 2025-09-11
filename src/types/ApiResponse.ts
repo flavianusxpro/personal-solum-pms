@@ -81,6 +81,7 @@ export interface IGetDoctorByClinicResponse extends ApiResponse {
     language: string;
     description: null;
     cost: Cost;
+    timezone_doctor?: string
   }[];
 }
 
@@ -606,6 +607,7 @@ interface IPayment {
   updated_at: string;
 }
 export interface IPatient {
+  address_line_1?: string;
   id: number;
   patient_id: string;
   first_name: string;

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { PiTrashDuotone } from 'react-icons/pi';
 import DateFiled from '@/app/shared/ui/controlled-table/date-field';
 import { Button } from 'rizzui';
@@ -15,6 +15,7 @@ type FilterElementProps = {
   filters: { [key: string]: any };
   updateFilter: (columnId: string, filterValue: string | any[]) => void;
   handleReset: () => void;
+  setIsFilter: Dispatch<SetStateAction<boolean>>;
 };
 
 export const appointmentTypesOptions = Object.entries(appointmentTypes).map(
@@ -40,6 +41,7 @@ export default function FilterElement({
   filters,
   updateFilter,
   handleReset,
+  setIsFilter,
 }: FilterElementProps) {
   const isMediumScreen = useMedia('(max-width: 1860px)', false);
   return (
@@ -56,6 +58,7 @@ export default function FilterElement({
         isClearable
         onClear={() => {
           updateFilter('createdAt', [null, null]);
+          setIsFilter(true)
         }}
         selected={getDateRangeStateValues(filters?.['createdAt']?.[0])}
         startDate={getDateRangeStateValues(filters?.['createdAt']?.[0]) as Date}
@@ -77,8 +80,13 @@ export default function FilterElement({
         className="w-full @[35rem]:w-auto"
         options={statusOptions}
         value={filters['status']}
+        onClear={() => {
+          updateFilter('status', '');
+        }}
+        clearable
         onChange={(value: string) => {
           updateFilter('status', value);
+          setIsFilter(true)
         }}
         {...(isMediumScreen && {
           label: 'Appointment Status',
@@ -91,9 +99,14 @@ export default function FilterElement({
         dropdownClassName="!z-10 h-auto"
         className="w-full @[35rem]:w-auto"
         options={paymentStatusOptions}
+        onClear={() => {
+          updateFilter('payment_status', '');
+        }}
+        clearable
         value={filters['payment_status']}
         onChange={(value: string) => {
           updateFilter('payment_status', value);
+          setIsFilter(true)
         }}
         {...(isMediumScreen && {
           label: 'Payment Status',
@@ -116,13 +129,41 @@ export default function FilterElement({
             value: 'false',
           },
         ]}
+        onClear={() => {
+          updateFilter('by_reschedule', '');
+        }}
+        clearable
         value={filters['by_reschedule']}
         onChange={(value: string) => {
           updateFilter('by_reschedule', value);
+          setIsFilter(true)
         }}
         {...(isMediumScreen && {
           label: 'By Reschedule',
           labelClassName: 'font-medium text-gray-700',
+        })}
+      />
+
+      <CSelect
+        placeholder="Select Inactive Patient Month"
+        dropdownClassName="!z-10 h-auto"
+        className="w-full @[35rem]:w-auto"
+        options={Array.from({ length: 12 }, (_, index) => ({
+          label: `${index + 1} Month`,
+          value: (index + 1),
+        }))}
+        onClear={() => {
+          updateFilter('inactive_patients_months', '');
+        }}
+        clearable
+        value={filters["inactive_patients_months"]}
+        onChange={(value: string) => {
+          updateFilter("inactive_patients_months", value);
+          setIsFilter(true)
+        }}
+        {...(isMediumScreen && {
+          label: "Inactive Patient Month",
+          labelClassName: "font-medium text-gray-700",
         })}
       />
 
