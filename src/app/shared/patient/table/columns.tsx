@@ -7,17 +7,18 @@ import EyeIcon from '@core/components/icons/eye';
 import PencilIcon from '@core/components/icons/pencil';
 import AvatarCard from '@core/ui/avatar-card';
 import DateCell from '@core/ui/date-cell';
-import DeletePopover from '@/app/shared/ui/delete-popover';
 import { IGetAllPatientsResponse } from '@/types/ApiResponse';
 import { HeaderCell } from '@/app/shared/ui/table';
 import CSelect from '../../ui/select';
 import toast from 'react-hot-toast';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { useUpdatePatient } from '@/hooks/usePatient';
 import { PiFlag } from 'react-icons/pi';
 import { useModal } from '../../modal-views/use-modal';
 import RedFlagForm from '../modal/red-flag';
 import { HiOutlineDotsVertical } from "react-icons/hi"
+import DeleteModal from '../../ui/delete-modal';
+import TrashIcon from '@/core/components/icons/trash';
 
 const statusOptions = [
   { label: 'Active', value: 1 },
@@ -34,6 +35,10 @@ type Columns = {
   onDeleteItem: (id: number[]) => void;
   onHeaderCellClick: (value: string) => void;
   onChecked?: (id: string) => void;
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  idPatient: number | string;
+  setIdPatient: Dispatch<SetStateAction<number | string>>;
 };
 
 export const getColumns = ({
@@ -44,6 +49,10 @@ export const getColumns = ({
   onHeaderCellClick,
   handleSelectAll,
   onChecked,
+  isOpen,
+  setIsOpen,
+  idPatient,
+  setIdPatient
 }: Columns) => [
     {
       title: (
@@ -164,9 +173,16 @@ export const getColumns = ({
       key: 'action',
       width: 130,
       render: (_: any, row: Row) => (
-         <div className="flex items-center justify-center gap-3 pe-4">
-           <RenderAction row={row} onDeleteItem={onDeleteItem} />
-         </div>
+        <div className="flex items-center justify-center gap-3 pe-4">
+          <RenderAction
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            row={row}
+            onDeleteItem={onDeleteItem}
+            idPatient={idPatient}
+            setIdPatient={setIdPatient}
+          />
+        </div>
       ),
     },
   ];
@@ -174,9 +190,17 @@ export const getColumns = ({
 function RenderAction({
   row,
   onDeleteItem,
+  isOpen,
+  setIsOpen,
+  idPatient,
+  setIdPatient,
 }: {
   row: Row;
   onDeleteItem: (id: number[]) => void;
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  idPatient: number | string;
+  setIdPatient: Dispatch<SetStateAction<number | string>>;
 }) {
   const { openModal, closeModal } = useModal();
 
@@ -189,64 +213,77 @@ function RenderAction({
   }
 
   return (
-    <Dropdown placement='bottom-end'>
-      <Dropdown.Trigger>
-        <ActionIcon
-          variant="outline"
-          rounded="full"
-        >
-          <HiOutlineDotsVertical className="h-5 w-5" />
-        </ActionIcon>
-      </Dropdown.Trigger>
-      <Dropdown.Menu>
-        <div className="mb-2 flex items-center gap-2">
-          <Button
-            className="hover:border-gray-700 w-full hover:text-gray-700"
-            variant='outline'
-            onClick={handleRedFlagModal}
+    <>
+      <Dropdown placement='bottom-end'>
+        <Dropdown.Trigger>
+          <ActionIcon
+            variant="outline"
+            rounded="full"
           >
-            <PiFlag className="h-4 w-4 text-red-500" />
-            <span>Red Flag Patient</span>{" "}
-          </Button>
-        </div>
+            <HiOutlineDotsVertical className="h-5 w-5" />
+          </ActionIcon>
+        </Dropdown.Trigger>
+        <Dropdown.Menu>
+          <div className="mb-2 flex items-center gap-2">
+            <Button
+              className="hover:border-gray-700 w-full hover:text-gray-700"
+              variant='outline'
+              onClick={handleRedFlagModal}
+            >
+              <PiFlag className="h-4 w-4 text-red-500" />
+              <span>Red Flag Patient</span>{" "}
+            </Button>
+          </div>
 
-        <div className="mb-2 flex items-center gap-2">
-          <Button
-            className="hover:border-gray-700 w-full hover:text-gray-700"
-            variant='outline'
-            onClick={() => {
-              <Link href={routes.patient.edit(row?.patient_id?.toString())} />
-            }}
-          >
-            <PencilIcon className="h-4 w-4" />
-            <span>Edit Data Patient</span>
-          </Button>
-        </div>
+          <div className="mb-2 flex items-center gap-2">
+            <Button
+              className="hover:border-gray-700 w-full hover:text-gray-700"
+              variant='outline'
+              onClick={() => {
+                <Link href={routes.patient.edit(row?.patient_id?.toString())} />
+              }}
+            >
+              <PencilIcon className="h-4 w-4" />
+              <span>Edit Data Patient</span>
+            </Button>
+          </div>
 
-        <div className="mb-2 flex items-center gap-2">
-          <Button
-            className="hover:border-gray-700 w-full hover:text-gray-700"
-            variant='outline'
-            onClick={() => {
-              <Link href={routes.patient.edit(row?.patient_id?.toString())} />
-            }}
-          >
-            <EyeIcon className="h-4 w-4" />
-            <span>View Data Patient</span>
-          </Button>
-        </div>
+          <div className="mb-2 flex items-center gap-2">
+            <Button
+              className="hover:border-gray-700 w-full hover:text-gray-700"
+              variant='outline'
+              onClick={() => {
+                <Link href={routes.patient.edit(row?.patient_id?.toString())} />
+              }}
+            >
+              <EyeIcon className="h-4 w-4" />
+              <span>View Data Patient</span>
+            </Button>
+          </div>
 
-        <div className="flex items-center justify-center">
-          <DeletePopover
-             title={`Delete the patient`}
-            description={`Are you sure you want to delete this #${row.id} patient?`}
-            onDelete={() => onDeleteItem([row?.id])}
-            isCustom
-            buttonText='Delete Patient'
-          />
-        </div>
-      </Dropdown.Menu>
-    </Dropdown>
+          <div className="flex items-center justify-center">
+            <Button
+              className="hover:border-gray-700 w-full hover:text-gray-700"
+              variant='outline'
+              onClick={() => {
+                setIdPatient(row.id)
+                setIsOpen(true)
+              }}
+            >
+              <TrashIcon className="h-4 w-4" />
+              <span>Delete Patient</span>{" "}
+            </Button>
+          </div>
+        </Dropdown.Menu>
+      </Dropdown>
+      <DeleteModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        title={`Delete the patient`}
+        description={`Are you sure you want to delete this #${idPatient} patient?`}
+        onDelete={() => onDeleteItem([Number(idPatient)])}
+      />
+    </>
   );
 }
 

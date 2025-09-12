@@ -5,11 +5,13 @@ import { HeaderCell } from '@/app/shared/ui/table';
 import { IGetCouponsResponse } from '@/types/ApiResponse';
 import EyeIcon from '@core/components/icons/eye';
 import PencilIcon from '@core/components/icons/pencil';
-import { ActionIcon, Badge, Button, Checkbox, Dropdown, Text, Tooltip } from 'rizzui';
+import { ActionIcon, Badge, Button, Checkbox, Dropdown, Popover, Text, Title, Tooltip } from 'rizzui';
 import CreateEditModal from '../modal/create-edit-modal';
 import dayjs from 'dayjs';
-import { HiOutlineAdjustmentsVertical } from 'react-icons/hi2';
 import { HiOutlineDotsVertical } from 'react-icons/hi';
+import TrashIcon from '@/core/components/icons/trash';
+import DeleteModal from '../../ui/delete-modal';
+import { Dispatch, SetStateAction } from 'react';
 
 type Columns = {
   data: IGetCouponsResponse['data'];
@@ -21,6 +23,10 @@ type Columns = {
   onChecked?: (id: string) => void;
   openModal: (props: any) => void;
   symbol?: string;
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  idCoupon: number | string;
+  setIdCoupon: Dispatch<SetStateAction<number | string>>;
 };
 
 type Row = IGetCouponsResponse['data'][number];
@@ -35,6 +41,10 @@ export const getColumns = ({
   onChecked,
   openModal,
   symbol,
+  isOpen,
+  setIsOpen,
+  idCoupon,
+  setIdCoupon
 }: Columns) => [
     {
       title: (
@@ -139,14 +149,14 @@ export const getColumns = ({
                 <Button
                   className="hover:border-gray-700 w-full hover:text-gray-700"
                   variant='outline'
-                  onClick={() =>
+                  onClick={() => {
                     openModal({
                       view: <CreateEditModal data={row} />,
                     })
-                  }
+                  }}
                 >
                   <PencilIcon className="h-4 w-4" />
-                  <span>Edit Branch</span>{" "}
+                  <span>Edit Coupon</span>{" "}
                 </Button>
               </div>
 
@@ -161,21 +171,32 @@ export const getColumns = ({
                   }
                 >
                   <EyeIcon className="h-4 w-4" />
-                  <span>View Branch</span>{" "}
+                  <span>View Coupon</span>{" "}
                 </Button>
               </div>
 
               <div className="flex items-center justify-center">
-                <DeletePopover
-                  title={`Delete the branch`}
-                  description={`Are you sure you want to delete this #${row.id} branch?`}
-                  onDelete={() => onDeleteItem(row.id.toString())}
-                  isCustom
-                  buttonText='Delete Branch'
-                />
+                <Button
+                  className="hover:border-gray-700 w-full hover:text-gray-700"
+                  variant='outline'
+                  onClick={() => {
+                    setIdCoupon(row.id)
+                    setIsOpen(true)
+                  }}
+                >
+                  <TrashIcon className="h-4 w-4" />
+                  <span>Delete Coupon</span>{" "}
+                </Button>
               </div>
             </Dropdown.Menu>
           </Dropdown>
+          <DeleteModal
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            title='Delete the coupon'
+            description={`Are you sure you want to delete this #${row.id} coupon?`}
+            onDelete={() => onDeleteItem(String([idCoupon]))}
+          />
         </div>
       ),
     },

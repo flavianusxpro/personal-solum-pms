@@ -49,6 +49,8 @@ const filterState = {
 
 export default function PatientTable() {
   const [filterStateValue, setFilterStateValue] = useState(filterState);
+  const [isOpen, setIsOpen] = useState(false);
+  const [idPatient, setIdPatient] = useState<string | number>('');
   const [params, setParams] = useState({
     page: 1,
     perPage: 10,
@@ -88,6 +90,7 @@ export default function PatientTable() {
     (ids: number[]) => {
       mutateDeletePatient(ids, {
         onSuccess: () => {
+          setIsOpen(false)
           refetch();
           toast.success('Patient deleted successfully');
         },
@@ -150,6 +153,10 @@ export default function PatientTable() {
         onDeleteItem,
         onChecked: handleRowSelect,
         handleSelectAll,
+        isOpen,
+        setIsOpen,
+        idPatient,
+        setIdPatient
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -160,6 +167,7 @@ export default function PatientTable() {
       onDeleteItem,
       handleRowSelect,
       handleSelectAll,
+      isOpen
     ]
   );
 

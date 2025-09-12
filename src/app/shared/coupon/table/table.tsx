@@ -9,10 +9,13 @@ import { useModal } from '../../modal-views/use-modal';
 import { useDeleteCoupon, useGetCoupons } from '@/hooks/useCoupon';
 import { useAtom } from 'jotai';
 import { currencyAtom } from '@/store/currency';
+import toast from 'react-hot-toast';
 
-export default function CouponTable({}: {}) {
+export default function CouponTable({ }: {}) {
   const { openModal } = useModal();
   const [currency] = useAtom(currencyAtom);
+  const [isOpen, setIsOpen] = useState(false);
+  const [idCoupon, setIdCoupon] = useState<string | number>('');
   const [params, setParams] = useState({
     page: 1,
     perPage: 100,
@@ -60,13 +63,16 @@ export default function CouponTable({}: {}) {
     (id: string) => {
       mutate([Number(id)], {
         onSuccess: () => {
+          setIsOpen(false)
           handleDelete(id);
           refetch();
+          toast.success('Coupon deleted successfully');
         },
         onError: (error: any) => {
-          console.error(
-            'Failed to delete role: ',
-            error?.response?.data?.message
+          toast.error(
+            error?.response?.data?.message ||
+              error?.message ||
+              'Something went wrong'
           );
         },
       });
@@ -86,6 +92,10 @@ export default function CouponTable({}: {}) {
         handleSelectAll,
         openModal,
         symbol: currency?.active.symbol,
+        isOpen,
+        setIsOpen,
+        idCoupon,
+        setIdCoupon
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -96,6 +106,8 @@ export default function CouponTable({}: {}) {
       onDeleteItem,
       handleRowSelect,
       handleSelectAll,
+      isOpen,
+      idCoupon,
     ]
   );
 
