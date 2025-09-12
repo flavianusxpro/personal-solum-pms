@@ -201,7 +201,7 @@ export default function SelectClinic() {
                     ...prev,
                     patient_id: value as number,
                     patient_name: `${selectedPatient?.name}`,
-                    patient_address: `${selectedPatient?.address}`,
+                    patient_address: `${selectedPatient?.address ?? ''}`,
                     patient_mobile_number: `${selectedPatient?.mobile_number}`
                   }));
                 }}

@@ -159,13 +159,14 @@ export const getColumns = ({
       ),
     },
     {
-      // Need to avoid this issue -> <td> elements in a large <table> do not have table headers.
       title: <HeaderCell title="Actions" />,
       dataIndex: 'action',
       key: 'action',
       width: 130,
       render: (_: any, row: Row) => (
-        <RenderAction row={row} onDeleteItem={onDeleteItem} />
+         <div className="flex items-center justify-center gap-3 pe-4">
+           <RenderAction row={row} onDeleteItem={onDeleteItem} />
+         </div>
       ),
     },
   ];
@@ -198,83 +199,54 @@ function RenderAction({
         </ActionIcon>
       </Dropdown.Trigger>
       <Dropdown.Menu>
-        <Dropdown.Item
-          onClick={handleRedFlagModal}
-          className="flex items-center gap-2"
-        >
-          <PiFlag className="h-4 w-4 text-red-500" />
-          <span>Red Flag Patient</span>
-        </Dropdown.Item>
+        <div className="mb-2 flex items-center gap-2">
+          <Button
+            className="hover:border-gray-700 w-full hover:text-gray-700"
+            variant='outline'
+            onClick={handleRedFlagModal}
+          >
+            <PiFlag className="h-4 w-4 text-red-500" />
+            <span>Red Flag Patient</span>{" "}
+          </Button>
+        </div>
 
-        <Dropdown.Item className="p-0">
-          <Link
-            href={routes.patient.edit(row?.patient_id?.toString())}
-            className="flex items-center gap-2 px-2 py-1 w-full"
+        <div className="mb-2 flex items-center gap-2">
+          <Button
+            className="hover:border-gray-700 w-full hover:text-gray-700"
+            variant='outline'
+            onClick={() => {
+              <Link href={routes.patient.edit(row?.patient_id?.toString())} />
+            }}
           >
             <PencilIcon className="h-4 w-4" />
             <span>Edit Data Patient</span>
-          </Link>
-        </Dropdown.Item>
+          </Button>
+        </div>
 
-        <Dropdown.Item className="p-0">
-          <Link
-            href={routes.patient.edit(row?.patient_id?.toString())}
-            className="flex items-center gap-2 px-2 py-1 w-full"
+        <div className="mb-2 flex items-center gap-2">
+          <Button
+            className="hover:border-gray-700 w-full hover:text-gray-700"
+            variant='outline'
+            onClick={() => {
+              <Link href={routes.patient.edit(row?.patient_id?.toString())} />
+            }}
           >
             <EyeIcon className="h-4 w-4" />
             <span>View Data Patient</span>
-          </Link>
-        </Dropdown.Item>
+          </Button>
+        </div>
 
-        <Dropdown.Item className="p-0">
+        <div className="flex items-center justify-center">
           <DeletePopover
-            title={`Delete the Patient`}
-            description={`Are you sure you want to delete this #${row.id} Patient?`}
+             title={`Delete the patient`}
+            description={`Are you sure you want to delete this #${row.id} patient?`}
             onDelete={() => onDeleteItem([row?.id])}
+            isCustom
+            buttonText='Delete Patient'
           />
-          <span>
-            Delete the Patient
-          </span>
-        </Dropdown.Item>
+        </div>
       </Dropdown.Menu>
-
     </Dropdown>
-
-    // <div className="flex items-center justify-end gap-3 pe-4">
-    //   <ActionTooltipButton
-    //     onClick={handleRedFlagModal}
-    //     variant="outline"
-    //     tooltipContent="Red Flag Patient"
-    //   >
-    //     <PiFlag className="h-4 w-4 text-red-500" />
-    //   </ActionTooltipButton>
-
-    //   <ActionTooltipButton
-    //     tooltipContent="Edit Data Patient"
-    //     onClick={() => {}}
-    //     variant="outline"
-    //   >
-    //     <Link href={routes.patient.edit(row?.patient_id?.toString())}>
-    //       <PencilIcon className="h-4 w-4" />
-    //     </Link>
-    //   </ActionTooltipButton>
-
-    //   <ActionTooltipButton
-    //     tooltipContent="View Data Patient"
-    //     onClick={() => {}}
-    //     variant="outline"
-    //   >
-    //     <Link href={routes.patient.patientDetail(row?.patient_id?.toString())}>
-    //       <EyeIcon className="h-4 w-4" />
-    //     </Link>
-    //   </ActionTooltipButton>
-
-    //   <DeletePopover
-    //     title={`Delete the Patient`}
-    //     description={`Are you sure you want to delete this #${row.id} Patient?`}
-    //     onDelete={() => onDeleteItem([row?.id])}
-    //   />
-    // </div>
   );
 }
 

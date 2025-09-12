@@ -24,14 +24,13 @@ const Payment = dynamic(
     ssr: false,
   }
 );
-import { atomWithReset, atomWithStorage, useResetAtom } from 'jotai/utils';
+import { atomWithReset, useResetAtom } from 'jotai/utils';
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { ActionIcon, Title } from 'rizzui';
 import { PiXBold } from 'react-icons/pi';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
-import dayjs from 'dayjs';
 
 type FormDataType = {
   id?: number | null;
@@ -42,6 +41,7 @@ type FormDataType = {
   patient_address?: string;
   patient_mobile_number?: string;
   doctor_name?: string;
+  doctor_tz?: string;
   doctorTime: string;
   date: string;
   note: string;
@@ -54,6 +54,7 @@ type FormDataType = {
   initial_fee: string;
   script_renewal_fee: string;
   fee?: string;
+  couponId?: string;
 };
 
 export const initialFormData = {
@@ -64,6 +65,7 @@ export const initialFormData = {
   patient_address: '',
   patient_mobile_number: '',
   doctor_name: '',
+  doctor_tz: '',
   doctorId: undefined,
   doctorTime: '',
   date: '',
@@ -77,15 +79,14 @@ export const initialFormData = {
   script_renewal_fee: '',
   treatment: '',
   fee: '',
+  couponId: ''
 };
 
 export const formDataAtom = atom<FormDataType>(initialFormData);
 
 enum Step {
   SelectClinic,
-  // SelectService,
   SelectDate,
-  // SelectDoctorTime,
   Payment,
 }
 
@@ -140,43 +141,12 @@ export default function CreateUpdateAppointmentForm({
 
   const [step] = useAtom(stepperAtomAppointment);
   const [_, setFormData] = useAtom(formDataAtom);
-  const Component = MAP_STEP_TO_COMPONENT[step];
+  const Component = MAP_STEP_TO_COMPONENT[isEdit ? 2 : step];
   const resetLocation = useResetAtom(stepperAtomAppointment);
 
   useEffect(() => {
     resetLocation();
-    if (data) {
-      const parsedPatientProblem: string[] =
-        typeof data?.patient_problem === 'string'
-          ? (data.patient_problem as string)
-            .slice(1, -1)
-            .split('","')
-            .map((s) => s.replace(/^"|"$/g, ''))
-          : Array.isArray(data?.patient_problem)
-            ? data.patient_problem
-            : [];
-
-      setFormData({
-        id: data?.id,
-        appointment_type: data?.type,
-        clinicId: data?.clinicId,
-        date: data?.date,
-        doctorId: data?.doctor?.id,
-        doctorTime: dayjs(data?.date).format('HH:mm'),
-        meeting_preference: '',
-        note: data?.note || '',
-        patient_id: data?.patientId,
-        patient_problem: data.patient_problem || '',
-        patient_type: data?.patient_type,
-        followup_fee: '',
-        initial_fee: '',
-        script_renewal_fee: '',
-        treatment: '',
-        // fee: data?.fee || '',
-      });
-    } else {
-      setFormData(initialFormData);
-    }
+    setFormData(initialFormData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, searchParams]);
 
@@ -184,7 +154,7 @@ export default function CreateUpdateAppointmentForm({
     <div className="relative flex flex-col h-[700px]">
       <div className="flex justify-between w-full border-b p-5 border-gray-300">
         <Title as="h2" className="font-lexend text-lg font-semibold">
-          {isEdit && 'Update '} Book an appointment
+          Book an appointment
         </Title>
         <ActionIcon
           size="sm"

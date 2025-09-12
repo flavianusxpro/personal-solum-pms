@@ -182,6 +182,7 @@ export interface IParamsPatientFlags extends IParamGetDataWithPagination {
 export interface IParamGetAppointments extends IParamGetDataWithPagination {
   doctorId?: number;
   patientId?: number;
+  inactive_patients_months?: number;
   from?: string;
   to?: string;
   status?: number;
@@ -323,6 +324,7 @@ export interface IPayloadPostVerifyAccount {
 
 export interface IPayloadPostAppoinment {
   clinicId: number;
+  couponId?: string;
   patientId: number;
   doctorId: number;
   date: string;

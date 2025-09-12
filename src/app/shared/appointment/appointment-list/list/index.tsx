@@ -2,7 +2,6 @@
 
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Title } from 'rizzui';
 import { GetColumns } from '@/app/shared/appointment/appointment-list/list/columns';
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { useMedia } from '@core/hooks/use-media';
@@ -32,6 +31,7 @@ const filterState = {
   payment_status: null,
   status: null,
   by_reschedule: null,
+  inactive_patients_months: null,
 };
 
 export default function AppointmentListTable() {
@@ -39,6 +39,7 @@ export default function AppointmentListTable() {
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const [filterStateValue, setFilterStateValue] = useState(filterState);
+  const [isFilter, setIsFilter] = useState<boolean>(false)
   const [_, setCheckedItems] = useState<string[]>([]);
   const [params, setParams] = useState({
     page: 1,
@@ -52,7 +53,7 @@ export default function AppointmentListTable() {
     isLoading: isLoadingGetAppointments,
     refetch,
   } = useGetAppointments({
-    page: params.page,
+    page: isFilter ? 1 : params.page,
     perPage: params.perPage,
     q: JSON.stringify({
       patientName: params.search,
@@ -68,6 +69,7 @@ export default function AppointmentListTable() {
     by_reschedule: filterStateValue?.by_reschedule || undefined,
     clinicId: dataProfile?.clinics[0].id || 0,
     timezone_client: localTimezone,
+    inactive_patients_months: Number(filterStateValue?.inactive_patients_months)
   });
 
   const { mutate } = useDeleteAppointment();
@@ -196,10 +198,11 @@ export default function AppointmentListTable() {
           pageSize: params.perPage,
           setPageSize: (page) => setParams({ ...params, perPage: page }),
           total: dataAppointments?.count,
-          current: currentPage,
+          current: isFilter ? 1 : currentPage,
           onChange: (page: number) => {
             handlePaginate(page);
-            setParams({ ...params, page });
+            setParams({ ...params, page }); 
+            setIsFilter(false); 
           },
         }}
         filterOptions={{
@@ -224,6 +227,7 @@ export default function AppointmentListTable() {
             filters={filters}
             updateFilter={updateFilter}
             handleReset={handleReset}
+            setIsFilter={setIsFilter}
           />
         }
         tableFooter={
@@ -234,10 +238,6 @@ export default function AppointmentListTable() {
               onDeleteItem(ids.map((id) => parseInt(id)));
             }}
           >
-            {/* <Button size="sm" className="dark:bg-gray-300 dark:text-gray-800">
-              Download {selectedRowKeys.length}{' '}
-              {selectedRowKeys.length > 1 ? 'Appointments' : 'Appointment'}
-            </Button> */}
           </TableFooter>
         }
       />
