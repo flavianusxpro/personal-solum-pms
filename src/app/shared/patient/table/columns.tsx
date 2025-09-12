@@ -224,7 +224,7 @@ function RenderAction({
           </ActionIcon>
         </Dropdown.Trigger>
         <Dropdown.Menu>
-          <div className="mb-2 flex items-center gap-2">
+          <Dropdown.Item>
             <Button
               className="hover:border-gray-700 w-full hover:text-gray-700"
               variant='outline'
@@ -233,35 +233,33 @@ function RenderAction({
               <PiFlag className="h-4 w-4 text-red-500" />
               <span>Red Flag Patient</span>{" "}
             </Button>
-          </div>
+          </Dropdown.Item>
 
-          <div className="mb-2 flex items-center gap-2">
-            <Button
-              className="hover:border-gray-700 w-full hover:text-gray-700"
-              variant='outline'
-              onClick={() => {
-                <Link href={routes.patient.edit(row?.patient_id?.toString())} />
-              }}
-            >
-              <PencilIcon className="h-4 w-4" />
-              <span>Edit Data Patient</span>
-            </Button>
-          </div>
+          <Dropdown.Item>
+            <Link href={routes.patient.edit(row?.patient_id?.toString())} className='w-full'>
+              <Button
+                className="hover:border-gray-700 hover:text-gray-700 w-full"
+                variant="outline"
+              >
+                <PencilIcon className="h-4 w-4" />
+                <span>Edit Patient</span>
+              </Button>
+            </Link>
+          </Dropdown.Item>
 
-          <div className="mb-2 flex items-center gap-2">
-            <Button
-              className="hover:border-gray-700 w-full hover:text-gray-700"
-              variant='outline'
-              onClick={() => {
-                <Link href={routes.patient.edit(row?.patient_id?.toString())} />
-              }}
-            >
-              <EyeIcon className="h-4 w-4" />
-              <span>View Data Patient</span>
-            </Button>
-          </div>
+          <Dropdown.Item>
+            <Link href={routes.patient.patientDetail(row?.patient_id?.toString())} className='w-full'>
+              <Button
+                className="hover:border-gray-700 hover:text-gray-700 w-full"
+                variant="outline"
+              >
+                <EyeIcon className="h-4 w-4" />
+                <span>View Patient</span>
+              </Button>
+            </Link>
+          </Dropdown.Item>
 
-          <div className="flex items-center justify-center">
+          <Dropdown.Item>
             <Button
               className="hover:border-gray-700 w-full hover:text-gray-700"
               variant='outline'
@@ -273,7 +271,7 @@ function RenderAction({
               <TrashIcon className="h-4 w-4" />
               <span>Delete Patient</span>{" "}
             </Button>
-          </div>
+          </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
       <DeleteModal

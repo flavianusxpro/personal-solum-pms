@@ -42,6 +42,8 @@ export default function InvoiceTableList() {
   const [currencyData] = useAtom(currencyAtom);
   const { data: dataProfile } = useProfile(true);
   const [filterStateValue, setFilterStateValue] = useState(filterState);
+  const [isOpen, setIsOpen] = useState(false);
+  const [idInvoice, setIdInvoice] = useState<string | number>('');
   const [params, setParams] = useState({
     page: 1,
     pageSize: 10,
@@ -77,6 +79,7 @@ export default function InvoiceTableList() {
   const onDeleteItem = useCallback((ids: number[]) => {
     mutateDelete(ids, {
       onSuccess: () => {
+        setIsOpen(false)
         refetch();
         toast.success('Invoice deleted successfully');
       },
@@ -143,6 +146,10 @@ export default function InvoiceTableList() {
         onChecked: handleRowSelect,
         handleSelectAll,
         currencyData: currencyData.active,
+        idInvoice,
+        setIdInvoice,
+        isOpen,
+        setIsOpen
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -154,6 +161,7 @@ export default function InvoiceTableList() {
       onDeleteItem,
       handleRowSelect,
       handleSelectAll,
+      idInvoice
     ]
   );
 
