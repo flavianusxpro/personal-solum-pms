@@ -1,0 +1,25 @@
+name: Auto Deploy Next.js + PM2 (password auth)
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: 22
+        script: |
+          cd /var/apps/solum/solum-pms-fe
+          sudo git pull
+          sudo npm install
+          sudo npm run build
+          sudo pm2 restart 3
