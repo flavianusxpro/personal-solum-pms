@@ -215,7 +215,7 @@ export const GetColumns = ({
         getPaymentStatusBadge(row?.payment?.status ?? 0),
     },
     {
-      title: <HeaderCell title="Action" />,
+      title: <HeaderCell title="Actions" />,
       dataIndex: 'action',
       key: 'action',
       width: 120,
