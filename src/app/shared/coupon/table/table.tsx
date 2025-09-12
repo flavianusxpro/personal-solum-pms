@@ -15,7 +15,7 @@ export default function CouponTable({}: {}) {
   const [currency] = useAtom(currencyAtom);
   const [params, setParams] = useState({
     page: 1,
-    perPage: 10,
+    perPage: 100,
   });
 
   const {

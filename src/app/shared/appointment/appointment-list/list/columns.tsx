@@ -9,6 +9,7 @@ import {
   Badge,
   Flex,
   Dropdown,
+  Button,
 } from 'rizzui';
 import EyeIcon from '@core/components/icons/eye';
 import DeletePopover from '@/app/shared/ui/delete-popover';
@@ -34,6 +35,7 @@ import RescheduleAppointmentForm from '../../modal/reschedule';
 import RevertForm from '../../modal/revert-form';
 import ShowNote from '../../modal/show-notes';
 import timezonePlugin from 'dayjs/plugin/timezone';
+import { HiOutlineDotsVertical } from 'react-icons/hi';
 dayjs.extend(timezonePlugin);
 const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -289,79 +291,104 @@ function RenderAction({
     <div className="flex items-center justify-end gap-3 pe-3">
       <Dropdown placement="bottom-end">
         <Dropdown.Trigger>
-          <Tooltip size="sm" content={'Actions'} placement="top" color="invert">
-            <ActionIcon
-              as="span"
-              aria-label={'Actions'}
-              className="hover:!border-gray-900 hover:text-gray-700"
-              size="sm"
-              variant="outline"
-              rounded="md"
-            >
-              <HiOutlineAdjustmentsVertical className="h-4 w-4" />
-            </ActionIcon>
-          </Tooltip>
+          <ActionIcon
+            variant="outline"
+            rounded="full"
+          >
+            <HiOutlineDotsVertical className="h-5 w-5" />
+          </ActionIcon>
         </Dropdown.Trigger>
-        <Dropdown.Menu className="divide-y">
-          {isHasNote && (
-            <Dropdown.Item onClick={showNoteModal}>
-              <MdNotes className="mr-2 h-4 w-4" />
-              Show Note
-            </Dropdown.Item>
-          )}
-          <Dropdown.Item onClick={addNotesModal}>
-            <FaRegNoteSticky className="mr-2 h-4 w-4" />
-            Add Note
-          </Dropdown.Item>
-          {isShowReschedule && (
-            <Dropdown.Item onClick={() => rescheduleModal(row)}>
-              <GrSchedules className="mr-2 h-4 w-4" />
-              Reschedule
+        <Dropdown.Menu>
+          {isShowCancel && (
+            <Dropdown.Item>
+              <Button
+                className="hover:border-gray-700 w-full hover:text-gray-700"
+                variant='outline'
+                onClick={() => cancelModal(row)}
+              >
+                <MdOutlineFreeCancellation className="h-4 w-4" />
+                <span>Cancel</span>{" "}
+              </Button>
             </Dropdown.Item>
           )}
 
-          {isShowCancel && (
-            <Dropdown.Item onClick={() => cancelModal(row)}>
-              <MdOutlineFreeCancellation className="mr-2 h-4 w-4" />
-              Cancel
+          {isShowReschedule && (
+            <Dropdown.Item>
+              <Button
+                className="hover:border-gray-700 w-full hover:text-gray-700"
+                variant='outline'
+                onClick={() => rescheduleModal(row)}
+              >
+                <GrSchedules className="h-4 w-4" />
+                <span>Reschedule</span>{" "}
+              </Button>
             </Dropdown.Item>
           )}
-          <Dropdown.Item onClick={() => revertModal(row)}>
-            <RxCountdownTimer className="mr-2 h-4 w-4" />
-            Revert Back
+
+          <Dropdown.Item>
+            <Button
+              className="hover:border-gray-700 w-full hover:text-gray-700"
+              variant='outline'
+              onClick={() => revertModal(row)}
+            >
+              <RxCountdownTimer className="h-4 w-4" />
+              <span>Revert Back</span>{" "}
+            </Button>
+          </Dropdown.Item>
+
+          {isHasNote && (
+            <Dropdown.Item>
+              <Button
+                className="hover:border-gray-700 w-full hover:text-gray-700"
+                variant='outline'
+                onClick={showNoteModal}
+              >
+                <MdNotes className="h-4 w-4" />
+                <span>Show Note</span>{" "}
+              </Button>
+            </Dropdown.Item>
+          )}
+
+          <Dropdown.Item>
+            <Button
+              className="hover:border-gray-700 w-full hover:text-gray-700"
+              variant='outline'
+              onClick={addNotesModal}
+            >
+              <FaRegNoteSticky className="h-4 w-4" />
+              <span>Add Note</span>{" "}
+            </Button>
+          </Dropdown.Item>
+
+          <Dropdown.Item>
+            <Button
+              className="hover:border-gray-700 w-full hover:text-gray-700"
+              variant='outline'
+              onClick={() =>
+                openModal({
+                  view: (
+                    <AppointmentDetails data={row} onEdit={handleCreateModal} />
+                  ),
+                  customSize: '900px',
+                })
+              }
+            >
+              <EyeIcon className="h-4 w-4" />
+              <span>View Appointment</span>{" "}
+            </Button>
+          </Dropdown.Item>
+
+          <Dropdown.Item>
+            <DeletePopover
+              title={`Delete the appointment`}
+              description={`Are you sure you want to delete this #${row.id} appointment?`}
+              onDelete={() => onDeleteItem([row.id])}
+              isCustom
+              buttonText='Delete Appointment'
+            />
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
-      
-      <Tooltip
-        size="sm"
-        content={'View Appointment'}
-        placement="top"
-        color="invert"
-      >
-        <ActionIcon
-          as="span"
-          size="sm"
-          variant="outline"
-          aria-label={'View Appointment'}
-          className="hover:!border-gray-900 hover:text-gray-700"
-          onClick={() =>
-            openModal({
-              view: (
-                <AppointmentDetails data={row} onEdit={handleCreateModal} />
-              ),
-              customSize: '900px',
-            })
-          }
-        >
-          <EyeIcon className="h-4 w-4" />
-        </ActionIcon>
-      </Tooltip>
-      <DeletePopover
-        title={`Delete the appointment`}
-        description={`Are you sure you want to delete this #${row.id} appointment?`}
-        onDelete={() => onDeleteItem([row.id])}
-      />
     </div>
   );
 }

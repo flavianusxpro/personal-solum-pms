@@ -6,24 +6,40 @@ type DeletePopoverProps = {
   title: string;
   description: string;
   onDelete: () => void;
+  isCustom?: boolean;
+  buttonText?: string;
 };
 
 export default function DeletePopover({
   title,
   description,
   onDelete,
+  isCustom,
+  buttonText
 }: DeletePopoverProps) {
   return (
     <Popover placement="left">
       <Popover.Trigger>
-        <ActionIcon
-          size="sm"
-          variant="outline"
-          aria-label={'Delete Item'}
-          className="cursor-pointer hover:!border-gray-900 hover:text-gray-700"
-        >
-          <TrashIcon className="h-4 w-4" />
-        </ActionIcon>
+        {isCustom ? (
+          <Button
+            className="hover:border-gray-700 w-full hover:text-gray-700"
+            variant='outline'
+            aria-label='Delete Item'
+          >
+            <TrashIcon className="h-4 w-4" />
+            <span>{buttonText}</span>{" "}
+          </Button>
+        ) : (
+          <ActionIcon
+            size="sm"
+            variant="outline"
+            aria-label={'Delete Item'}
+            className="cursor-pointer hover:!border-gray-900 hover:text-gray-700"
+          >
+            <TrashIcon className="h-4 w-4" />
+          </ActionIcon>
+        )}
+
       </Popover.Trigger>
       <Popover.Content className="z-10">
         {({ setOpen }) => (
