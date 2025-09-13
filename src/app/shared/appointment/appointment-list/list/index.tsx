@@ -35,12 +35,14 @@ const filterState = {
 };
 
 export default function AppointmentListTable() {
-  const { isOpen } = useModal();
+  const { isOpen: open } = useModal();
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const [filterStateValue, setFilterStateValue] = useState(filterState);
   const [isFilter, setIsFilter] = useState<boolean>(false)
   const [_, setCheckedItems] = useState<string[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [idAppointment, setIdAppointment] = useState<string | number>('');
   const [params, setParams] = useState({
     page: 1,
     perPage: 10,
@@ -86,6 +88,7 @@ export default function AppointmentListTable() {
     (ids: number[]) => {
       mutate(ids, {
         onSuccess: () => {
+          setIsOpen(false)
           toast.success('Appointment deleted successfully');
           refetch();
         },
@@ -159,6 +162,10 @@ export default function AppointmentListTable() {
         onDeleteItem,
         onChecked: handleRowSelect,
         handleSelectAll,
+        idAppointment,
+        setIdAppointment,
+        isOpen,
+        setIsOpen
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -167,6 +174,8 @@ export default function AppointmentListTable() {
       sortConfig.direction,
       onDeleteItem,
       onChecked,
+      isOpen,
+      idAppointment
     ]
   );
 
@@ -175,7 +184,7 @@ export default function AppointmentListTable() {
 
   useEffect(() => {
     refetch();
-  }, [isOpen, refetch, filterStateValue, params]);
+  }, [open, refetch, filterStateValue, params]);
 
   return (
     <div

@@ -20,11 +20,10 @@ import AvatarCard from '@core/ui/avatar-card';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 import dayjs from '@/config/dayjs';
 import CSelect from '@/app/shared/ui/select';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { useUpdateAppointment } from '@/hooks/useAppointment';
 import toast from 'react-hot-toast';
 import CreateUpdateAppointmentForm from '../../modal/appointment-form';
-import { HiOutlineAdjustmentsVertical } from 'react-icons/hi2';
 import { FaRegNoteSticky } from 'react-icons/fa6';
 import { GrSchedules } from 'react-icons/gr';
 import { RxCountdownTimer } from 'react-icons/rx';
@@ -36,6 +35,8 @@ import RevertForm from '../../modal/revert-form';
 import ShowNote from '../../modal/show-notes';
 import timezonePlugin from 'dayjs/plugin/timezone';
 import { HiOutlineDotsVertical } from 'react-icons/hi';
+import DeleteModal from '@/app/shared/ui/delete-modal';
+import TrashIcon from '@/core/components/icons/trash';
 dayjs.extend(timezonePlugin);
 const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -59,6 +60,10 @@ type Columns = {
   onDeleteItem: (id: number[]) => void;
   onHeaderCellClick: (value: string) => void;
   onChecked?: (id: string) => void;
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  idAppointment: number | string;
+  setIdAppointment: Dispatch<SetStateAction<number | string>>;
 };
 
 export const GetColumns = ({
@@ -69,6 +74,10 @@ export const GetColumns = ({
   data,
   checkedItems,
   onChecked,
+  isOpen,
+  setIsOpen,
+  idAppointment,
+  setIdAppointment
 }: Columns) => {
   return [
     {
@@ -220,7 +229,14 @@ export const GetColumns = ({
       key: 'action',
       width: 120,
       render: (_: string, row: any) => (
-        <RenderAction row={row} onDeleteItem={onDeleteItem} />
+        <RenderAction
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          row={row}
+          onDeleteItem={onDeleteItem}
+          idAppointment={idAppointment}
+          setIdAppointment={setIdAppointment}
+        />
       ),
     },
   ];
@@ -229,9 +245,17 @@ export const GetColumns = ({
 function RenderAction({
   row,
   onDeleteItem,
+  isOpen,
+  setIsOpen,
+  idAppointment,
+  setIdAppointment,
 }: {
   row: RowValue;
   onDeleteItem: (id: number[]) => void;
+  isOpen: boolean;
+  setIsOpen: any;
+  idAppointment: number | string;
+  setIdAppointment: Dispatch<SetStateAction<number | string>>;
 }) {
   const { openModal, closeModal } = useModal();
 
@@ -379,16 +403,27 @@ function RenderAction({
           </Dropdown.Item>
 
           <Dropdown.Item>
-            <DeletePopover
-              title={`Delete the appointment`}
-              description={`Are you sure you want to delete this #${row.id} appointment?`}
-              onDelete={() => onDeleteItem([row.id])}
-              isCustom
-              buttonText='Delete Appointment'
-            />
+            <Button
+              className="hover:border-gray-700 w-full hover:text-gray-700"
+              variant='outline'
+              onClick={() => {
+                setIdAppointment(row.id)
+                setIsOpen(true)
+              }}
+            >
+              <TrashIcon className="h-4 w-4" />
+              <span>Delete Appointment</span>{" "}
+            </Button>
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
+      <DeleteModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        title={`Delete the appointment`}
+        description={`Are you sure you want to delete this #${idAppointment} appointment?`}
+        onDelete={() => onDeleteItem([Number(idAppointment)])}
+      />
     </div>
   );
 }
