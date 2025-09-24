@@ -88,6 +88,18 @@ export const adminMenuItems = [
     href: routes.patient.list,
     icon: <PiUserCirclePlus />,
     permissionReadName: ['patient'],
+    dropdownItems: [
+      {
+        name: 'Patients',
+        href: routes.patient.list,
+        permissionReadName: ['patient'],
+      },
+      {
+        name: 'Setting',
+        href: routes.patient.setting,
+        permissionReadName: ['patient'],
+      },
+    ],
   },
   {
     name: 'Doctors',

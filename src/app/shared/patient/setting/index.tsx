@@ -5,13 +5,19 @@ import { TabButton } from '../../ui/tab-button';
 import { startTransition, useState } from 'react';
 import SimpleBar from 'simplebar-react';
 import ConditionTable from './condition/table/table';
+import GeneralTable from './general/table/table';
 import ModalButton from '../../ui/modal/modal-button';
 import CreateEditSpecialistModal from './condition/modal/create-edit-modal';
+import CreateEditModal from './general/modal/create-edit-modal';
 
 export const navItems = [
+  // {
+  //   value: 'condition',
+  //   label: 'Patient Condition',
+  // },
   {
-    value: 'condition',
-    label: 'Patient Condition',
+    value: 'general',
+    label: 'General',
   },
 ];
 
@@ -41,7 +47,12 @@ export default function SettingPatient() {
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
         <ModalButton
-          view={<>{tab === 'condition' && <CreateEditSpecialistModal />}</>}
+          view={
+            <>
+              {tab === 'condition' && <CreateEditSpecialistModal />}
+              {tab === 'general' && <CreateEditModal />}
+            </>
+          }
         />
       </PageHeader>
       <div className="flex flex-col @container">
@@ -59,6 +70,7 @@ export default function SettingPatient() {
         </SimpleBar>
 
         {tab === 'condition' && <ConditionTable />}
+        {tab === 'general' && <GeneralTable />}
       </div>
     </>
   );

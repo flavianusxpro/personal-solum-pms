@@ -97,7 +97,7 @@ export const getColumns = ({
     title: <HeaderCell title="Status" />,
     dataIndex: 'status',
     key: 'status',
-    width: 260,
+    width: 150,
     render: (value: string, row: Row) => (
       <StatusSelect id={row.id} selectItem={value} />
     ),
