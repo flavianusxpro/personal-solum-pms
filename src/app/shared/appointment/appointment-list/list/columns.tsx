@@ -37,6 +37,7 @@ import timezonePlugin from 'dayjs/plugin/timezone';
 import { HiOutlineDotsVertical } from 'react-icons/hi';
 import DeleteModal from '@/app/shared/ui/delete-modal';
 import TrashIcon from '@/core/components/icons/trash';
+import ShowConfirm from '../../modal/confirm-modal';
 dayjs.extend(timezonePlugin);
 const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -77,7 +78,7 @@ export const GetColumns = ({
   isOpen,
   setIsOpen,
   idAppointment,
-  setIdAppointment
+  setIdAppointment,
 }: Columns) => {
   return [
     {
@@ -315,10 +316,7 @@ function RenderAction({
     <div className="flex items-center justify-end gap-3 pe-3">
       <Dropdown placement="bottom-end">
         <Dropdown.Trigger>
-          <ActionIcon
-            variant="outline"
-            rounded="full"
-          >
+          <ActionIcon variant="outline" rounded="full">
             <HiOutlineDotsVertical className="h-5 w-5" />
           </ActionIcon>
         </Dropdown.Trigger>
@@ -326,12 +324,12 @@ function RenderAction({
           {isShowCancel && (
             <Dropdown.Item>
               <Button
-                className="hover:border-gray-700 w-full hover:text-gray-700"
-                variant='outline'
+                className="flex w-full gap-3 hover:border-gray-700 hover:text-gray-700"
+                variant="outline"
                 onClick={() => cancelModal(row)}
               >
                 <MdOutlineFreeCancellation className="h-4 w-4" />
-                <span>Cancel</span>{" "}
+                <span>Cancel</span>{' '}
               </Button>
             </Dropdown.Item>
           )}
@@ -339,55 +337,55 @@ function RenderAction({
           {isShowReschedule && (
             <Dropdown.Item>
               <Button
-                className="hover:border-gray-700 w-full hover:text-gray-700"
-                variant='outline'
+                className="flex w-full gap-3 hover:border-gray-700 hover:text-gray-700"
+                variant="outline"
                 onClick={() => rescheduleModal(row)}
               >
                 <GrSchedules className="h-4 w-4" />
-                <span>Reschedule</span>{" "}
+                <span>Reschedule</span>{' '}
               </Button>
             </Dropdown.Item>
           )}
 
           <Dropdown.Item>
             <Button
-              className="hover:border-gray-700 w-full hover:text-gray-700"
-              variant='outline'
+              className="flex w-full gap-3 hover:border-gray-700 hover:text-gray-700"
+              variant="outline"
               onClick={() => revertModal(row)}
             >
               <RxCountdownTimer className="h-4 w-4" />
-              <span>Revert Back</span>{" "}
+              <span>Revert Back</span>{' '}
             </Button>
           </Dropdown.Item>
 
           {isHasNote && (
             <Dropdown.Item>
               <Button
-                className="hover:border-gray-700 w-full hover:text-gray-700"
-                variant='outline'
+                className="flex w-full gap-3 hover:border-gray-700 hover:text-gray-700"
+                variant="outline"
                 onClick={showNoteModal}
               >
                 <MdNotes className="h-4 w-4" />
-                <span>Show Note</span>{" "}
+                <span>Show Note</span>{' '}
               </Button>
             </Dropdown.Item>
           )}
 
           <Dropdown.Item>
             <Button
-              className="hover:border-gray-700 w-full hover:text-gray-700"
-              variant='outline'
+              className="flex w-full gap-3 hover:border-gray-700 hover:text-gray-700"
+              variant="outline"
               onClick={addNotesModal}
             >
               <FaRegNoteSticky className="h-4 w-4" />
-              <span>Add Note</span>{" "}
+              <span>Add Note</span>{' '}
             </Button>
           </Dropdown.Item>
 
           <Dropdown.Item>
             <Button
-              className="hover:border-gray-700 w-full hover:text-gray-700"
-              variant='outline'
+              className="flex w-full gap-3 hover:border-gray-700 hover:text-gray-700"
+              variant="outline"
               onClick={() =>
                 openModal({
                   view: (
@@ -398,21 +396,21 @@ function RenderAction({
               }
             >
               <EyeIcon className="h-4 w-4" />
-              <span>View Appointment</span>{" "}
+              <span>View Appointment</span>{' '}
             </Button>
           </Dropdown.Item>
 
           <Dropdown.Item>
             <Button
-              className="hover:border-gray-700 w-full hover:text-gray-700"
-              variant='outline'
+              className="flex w-full gap-3 hover:border-gray-700 hover:text-gray-700"
+              variant="outline"
               onClick={() => {
-                setIdAppointment(row.id)
-                setIsOpen(true)
+                setIdAppointment(row.id);
+                setIsOpen(true);
               }}
             >
               <TrashIcon className="h-4 w-4" />
-              <span>Delete Appointment</span>{" "}
+              <span>Delete Appointment</span>{' '}
             </Button>
           </Dropdown.Item>
         </Dropdown.Menu>
@@ -537,28 +535,53 @@ export function getAptStatusBadge(status: number | string) {
 }
 
 function StatusSelect({ selectItem, id }: { selectItem: number; id: number }) {
+  const { openModal, closeModal } = useModal();
+
+  const showConfirmModal = (
+    id: number,
+    onClick: (value: number) => void,
+    status: string
+  ) => {
+    closeModal(),
+      openModal({
+        view: <ShowConfirm onClick={onClick} status={status} id={id} />,
+        customSize: '600px',
+      });
+  };
   const selectItemValue = aptStatusOptions.find(
     (option) => option.value === selectItem
   )?.value;
   const [value, setValue] = useState(selectItemValue);
-
   const { mutate, isPending } = useUpdateAppointment();
 
-  const handleChange = (value: number) => {
+  const handleSubmitStatus = (value: number) => {
     setValue(value);
     mutate(
       { id, status: value },
       {
         onSuccess: () => {
           toast.success('Status updated successfully');
+          closeModal();
         },
         onError: (error: any) => {
           toast.error(
             error?.response?.data?.message || 'Error updating status'
           );
+          closeModal();
         },
       }
     );
+  };
+
+  const handleChange = (value: number) => {
+    // setValue(value);
+    if (value == 5) {
+      showConfirmModal(value, handleSubmitStatus, 'Cancelled');
+    } else if (value == 3) {
+      showConfirmModal(value, handleSubmitStatus, 'Check In');
+    } else {
+      handleSubmitStatus(value);
+    }
   };
 
   return (

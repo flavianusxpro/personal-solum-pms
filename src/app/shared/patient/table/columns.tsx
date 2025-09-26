@@ -13,7 +13,7 @@ import CSelect from '../../ui/select';
 import toast from 'react-hot-toast';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { useUpdatePatient } from '@/hooks/usePatient';
-import { PiFlag } from 'react-icons/pi';
+import { PiFlag, PiNote } from 'react-icons/pi';
 import { useModal } from '../../modal-views/use-modal';
 import RedFlagForm from '../modal/red-flag';
 import { HiOutlineDotsVertical } from 'react-icons/hi';
@@ -204,10 +204,10 @@ function RenderAction({
 }) {
   const { openModal, closeModal } = useModal();
 
-  function handleRedFlagModal() {
+  function handleRedFlagModal(modalType: string) {
     closeModal(),
       openModal({
-        view: <RedFlagForm patient_id={row.id} />,
+        view: <RedFlagForm patient_id={row.id} modalType={modalType} />,
         customSize: '600px',
       });
   }
@@ -225,11 +225,24 @@ function RenderAction({
             <Button
               className="w-full hover:border-gray-700 hover:text-gray-700"
               variant="outline"
-              onClick={handleRedFlagModal}
+              onClick={() => handleRedFlagModal('flag')}
             >
               <div className="flex gap-3">
                 <PiFlag className="h-4 w-4 text-red-500" />
-                <span>Notes & Flag</span>{' '}
+                <span>Add Flag</span>
+              </div>
+            </Button>
+          </Dropdown.Item>
+
+          <Dropdown.Item>
+            <Button
+              className="w-full hover:border-gray-700 hover:text-gray-700"
+              variant="outline"
+              onClick={() => handleRedFlagModal('notes')}
+            >
+              <div className="flex gap-3">
+                <PiNote className="h-4 w-4" />
+                <span>Add Notes</span>
               </div>
             </Button>
           </Dropdown.Item>

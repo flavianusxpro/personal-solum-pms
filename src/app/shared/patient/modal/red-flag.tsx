@@ -1,7 +1,7 @@
 import { Controller, SubmitHandler } from 'react-hook-form';
 import { useModal } from '../../modal-views/use-modal';
 import { Form } from '@/core/ui/form';
-import { ActionIcon, Flex, Input, Textarea, Title } from 'rizzui';
+import { ActionIcon, Flex, Input, Textarea, Title, Select } from 'rizzui';
 import { PiX } from 'react-icons/pi';
 import FormFooter from '@/core/components/form-footer';
 import {
@@ -10,20 +10,37 @@ import {
 } from '@/validators/add-red-flag-patient.schema';
 import { useCreatePatientFLag } from '@/hooks/usePatientFlag';
 import toast from 'react-hot-toast';
+import { useGetTypes } from '@/hooks/use-type';
+import { useMemo } from 'react';
 
-export default function RedFlagForm({ patient_id }: { patient_id: number }) {
+export default function RedFlagForm({
+  patient_id,
+  modalType,
+}: {
+  patient_id: number;
+  modalType?: string;
+}) {
   const { closeModal } = useModal();
   const { mutate } = useCreatePatientFLag();
+  const { data: dataTypes } = useGetTypes({ page: 1, perPage: 1000 });
+  const categoryOptions = useMemo(() => {
+    if (!dataTypes) return [];
+    return dataTypes?.data?.map((template) => ({
+      label: template.name,
+      value: template.name,
+    }));
+  }, [dataTypes]);
   const onSubmit: SubmitHandler<AddRedFlagPatientForm> = (data) => {
     mutate(
       {
         patient_id,
         description: data.description,
         category: data.category,
+        type: modalType == 'flag' ? 'flag' : 'notes',
       },
       {
         onSuccess: () => {
-          toast.success('Patient red flag created successfully');
+          toast.success(`Patient ${modalType} created successfully`);
           closeModal();
         },
         onError: (error: any) => {
@@ -47,17 +64,39 @@ export default function RedFlagForm({ patient_id }: { patient_id: number }) {
         return (
           <div className="flex flex-col gap-6 px-6 pt-6">
             <Flex justify="between" align="center" gap="4">
-              <Title className="text-lg">Add Flag</Title>
+              <Title className="text-lg">
+                Add {modalType == 'flag' ? 'Flag' : 'Notes'}
+              </Title>
               <ActionIcon variant="text" onClick={closeModal} className="">
                 <PiX className="h-6 w-6" />
               </ActionIcon>
             </Flex>
 
-            <Input
+            {/* <Input
               {...register('category')}
               label="Category"
               placeholder="Category"
               error={errors.category?.message}
+            /> */}
+            <Controller
+              control={control}
+              name="category"
+              render={({ field: { value, onChange } }) => (
+                <Select
+                  label="Category"
+                  dropdownClassName="!z-10 h-auto"
+                  inPortal={false}
+                  placeholder="Select Category"
+                  options={categoryOptions}
+                  onChange={onChange}
+                  value={value}
+                  getOptionValue={(option) => option.value}
+                  displayValue={(selected) =>
+                    categoryOptions?.find((cat) => cat.value === selected)
+                      ?.label ?? ''
+                  }
+                />
+              )}
             />
 
             <Controller
