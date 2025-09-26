@@ -53,7 +53,13 @@ import DoctorCost from '../modal/doctor-cost';
 import ActionTooltipButton from '../../ui/action-button';
 import DoctorCostMaster from '../modal/doctor-cost-master';
 
-export default function TabSettings({ isView = false }: { isView?: boolean }) {
+export default function TabSettings({
+  isView = false,
+  mode,
+}: {
+  isView?: boolean;
+  mode?: string;
+}) {
   const { openModal } = useModal();
   const id = useParams().id as string;
 
@@ -530,69 +536,72 @@ export default function TabSettings({ isView = false }: { isView?: boolean }) {
             </Button>
           </FormGroup>
 
-          <Divider className="" />
+          {mode !== 'edit' && (
+            <>
+              <Divider className="" />
+              <FormGroup title="Appointment Time Interval Setup">
+                <Grid columns="2">
+                  <Controller
+                    name="initial_appointment_time"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        label="Initial Appointment Duration"
+                        placeholder="Select Initial Appointment Duration"
+                        error={errors.initial_appointment_time?.message}
+                        disabled={true}
+                        options={[
+                          { label: '15 minutes', value: 15 },
+                          { label: '30 minutes', value: 30 },
+                          { label: '45 minutes', value: 45 },
+                          { label: '60 minutes', value: 60 },
+                        ]}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="follow_up_appointment_time"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        label="Follow Up Appointment Duration"
+                        placeholder="Select Follow Up Appointment Duration"
+                        error={errors.follow_up_appointment_time?.message}
+                        disabled={true}
+                        options={[
+                          { label: '15 minutes', value: 15 },
+                          { label: '30 minutes', value: 30 },
+                          { label: '45 minutes', value: 45 },
+                          { label: '60 minutes', value: 60 },
+                        ]}
+                      />
+                    )}
+                  />
+                </Grid>
+              </FormGroup>
 
-          <FormGroup title="Appointment Time Interval Setup">
-            <Grid columns="2">
-              <Controller
-                name="initial_appointment_time"
-                control={control}
-                render={({ field }) => (
-                  <CSelect
-                    {...field}
-                    label="Initial Appointment Duration"
-                    placeholder="Select Initial Appointment Duration"
-                    error={errors.initial_appointment_time?.message}
-                    disabled={true}
-                    options={[
-                      { label: '15 minutes', value: 15 },
-                      { label: '30 minutes', value: 30 },
-                      { label: '45 minutes', value: 45 },
-                      { label: '60 minutes', value: 60 },
-                    ]}
+              <FormGroup title="Timezone Setup">
+                <Grid columns="2">
+                  <Controller
+                    name="doctor_timezone"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        label="Doctor Timezone"
+                        placeholder="Select Doctor Timezone"
+                        error={errors.doctor_timezone?.message}
+                        disabled={true}
+                        options={timeZoneOptions}
+                      />
+                    )}
                   />
-                )}
-              />
-              <Controller
-                name="follow_up_appointment_time"
-                control={control}
-                render={({ field }) => (
-                  <CSelect
-                    {...field}
-                    label="Follow Up Appointment Duration"
-                    placeholder="Select Follow Up Appointment Duration"
-                    error={errors.follow_up_appointment_time?.message}
-                    disabled={true}
-                    options={[
-                      { label: '15 minutes', value: 15 },
-                      { label: '30 minutes', value: 30 },
-                      { label: '45 minutes', value: 45 },
-                      { label: '60 minutes', value: 60 },
-                    ]}
-                  />
-                )}
-              />
-            </Grid>
-          </FormGroup>
-
-          <FormGroup title="Timezone Setup">
-            <Grid columns="2">
-              <Controller
-                name="doctor_timezone"
-                control={control}
-                render={({ field }) => (
-                  <CSelect
-                    {...field}
-                    label="Doctor Timezone"
-                    placeholder="Select Doctor Timezone"
-                    error={errors.doctor_timezone?.message}
-                    disabled={true}
-                    options={timeZoneOptions}
-                  />
-                )}
-              />
-            </Grid>
-          </FormGroup>
+                </Grid>
+              </FormGroup>
+            </>
+          )}
         </div>
         {!isView && (
           <FormFooter
