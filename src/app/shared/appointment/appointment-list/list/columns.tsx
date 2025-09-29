@@ -575,10 +575,20 @@ function StatusSelect({ selectItem, id }: { selectItem: number; id: number }) {
 
   const handleChange = (value: number) => {
     // setValue(value);
-    if (value == 5) {
-      showConfirmModal(value, handleSubmitStatus, 'Cancelled');
+    if (value == 1) {
+      showConfirmModal(value, handleSubmitStatus, 'Draft');
+    } else if (value == 2) {
+      showConfirmModal(value, handleSubmitStatus, 'Scheduled');
     } else if (value == 3) {
       showConfirmModal(value, handleSubmitStatus, 'Check In');
+    } else if (value == 4) {
+      showConfirmModal(value, handleSubmitStatus, 'Finished');
+    } else if (value == 5) {
+      showConfirmModal(value, handleSubmitStatus, 'Cancelled');
+    } else if (value == 6) {
+      showConfirmModal(value, handleSubmitStatus, 'On Going');
+    } else if (value == 7) {
+      showConfirmModal(value, handleSubmitStatus, 'No Show');
     } else {
       handleSubmitStatus(value);
     }
