@@ -116,92 +116,92 @@ export const getColumns = ({
   isOpen,
   setIsOpen,
   idInvoice,
-  setIdInvoice
+  setIdInvoice,
 }: Columns) => [
-    {
-      title: (
-        <div className="ps-2">
-          <Checkbox
-            title={'Select All'}
-            onChange={handleSelectAll}
-            checked={checkedItems.length === data.length}
-            className="cursor-pointer"
-          />
-        </div>
-      ),
-      dataIndex: 'checked',
-      key: 'checked',
-      width: 30,
-      render: (_: any, row: any) => (
-        <div className="inline-flex ps-2">
-          <Checkbox
-            className="cursor-pointer"
-            checked={checkedItems.includes(row.id)}
-            {...(onChecked && { onChange: () => onChecked(row.id) })}
-          />
-        </div>
-      ),
-    },
-    {
-      title: <HeaderCell title="INVOICE ID" />,
-      dataIndex: 'id',
-      key: 'id',
-      width: 450,
-      render: (id: string) => <p className="w-max">#{id}</p>,
-    },
-    {
-      title: <HeaderCell title="PATIENT NAME" />,
-      dataIndex: 'patien',
-      key: 'patien',
-      render: (_: string, row: IRowType) => (
-        <TableAvatar
-          src={row?.patient?.photo || ''}
-          name={`${row?.patient?.first_name} ${row?.patient?.last_name}`}
-          description={row.patient?.email}
-          number={row.patient?.mobile_number}
+  {
+    title: (
+      <div className="ps-2">
+        <Checkbox
+          title={'Select All'}
+          onChange={handleSelectAll}
+          checked={checkedItems.length === data.length}
+          className="cursor-pointer"
         />
-      ),
-    },
-    {
-      title: <HeaderCell title="TOTAL" />,
-      dataIndex: 'total_amount',
-      key: 'total_amount',
-      width: 250,
-      render: (value: string) => `${currencyData.symbol}${Number(value)}`,
-    },
-    {
-      title: <HeaderCell title="PAYMENT STATUS" />,
-      dataIndex: 'status',
-      key: 'status',
-      width: 650,
-      render: (value: number) => getInvoicePaymentStatusBadge(value),
-    },
-    {
-      title: <HeaderCell title="CREATED BY" />,
-      dataIndex: 'created_at',
-      key: 'created_at',
-      width: 600,
-      render: (created_at: Date) => <DateCell clock date={created_at} />,
-    },
-    {
-      title: <HeaderCell title="Actions" />,
-      dataIndex: 'action',
-      key: 'action',
-      width: 140,
-      render: (_: string, row: any) => (
-        <div className='flex justify-start items-center'>
-          <RenderAction
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            row={row}
-            onDeleteItem={onDeleteItem}
-            idInvoice={idInvoice}
-            setIdInvoice={setIdInvoice}
-          />
-        </div>
-      ),
-    },
-  ];
+      </div>
+    ),
+    dataIndex: 'checked',
+    key: 'checked',
+    width: 30,
+    render: (_: any, row: any) => (
+      <div className="inline-flex ps-2">
+        <Checkbox
+          className="cursor-pointer"
+          checked={checkedItems.includes(row.id)}
+          {...(onChecked && { onChange: () => onChecked(row.id) })}
+        />
+      </div>
+    ),
+  },
+  {
+    title: <HeaderCell title="INVOICE ID" />,
+    dataIndex: 'id',
+    key: 'id',
+    width: 450,
+    render: (id: string) => <p className="w-max">#{id}</p>,
+  },
+  {
+    title: <HeaderCell title="PATIENT NAME" />,
+    dataIndex: 'patien',
+    key: 'patien',
+    render: (_: string, row: IRowType) => (
+      <TableAvatar
+        src={row?.patient?.photo || ''}
+        name={`${row?.patient?.first_name} ${row?.patient?.last_name}`}
+        description={row.patient?.email}
+        number={row.patient?.mobile_number}
+      />
+    ),
+  },
+  {
+    title: <HeaderCell title="TOTAL" />,
+    dataIndex: 'total_amount',
+    key: 'total_amount',
+    width: 250,
+    render: (value: string) => `${currencyData.symbol}${Number(value)}`,
+  },
+  {
+    title: <HeaderCell title="PAYMENT STATUS" />,
+    dataIndex: 'status',
+    key: 'status',
+    width: 650,
+    render: (value: number) => getInvoicePaymentStatusBadge(value),
+  },
+  {
+    title: <HeaderCell title="CREATED BY" />,
+    dataIndex: 'created_at',
+    key: 'created_at',
+    width: 600,
+    render: (created_at: Date) => <DateCell clock date={created_at} />,
+  },
+  {
+    title: <HeaderCell title="Actions" />,
+    dataIndex: 'action',
+    key: 'action',
+    width: 140,
+    render: (_: string, row: any) => (
+      <div className="flex items-center justify-start">
+        <RenderAction
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          row={row}
+          onDeleteItem={onDeleteItem}
+          idInvoice={idInvoice}
+          setIdInvoice={setIdInvoice}
+        />
+      </div>
+    ),
+  },
+];
 
 function RenderAction({
   row,
@@ -249,84 +249,99 @@ function RenderAction({
     <div className="flex items-center justify-end gap-3 pe-3">
       <Dropdown placement="bottom-end">
         <Dropdown.Trigger>
-          <ActionIcon
-            variant="outline"
-            rounded="full"
-          >
+          <ActionIcon variant="outline" rounded="full">
             <HiOutlineDotsVertical className="h-5 w-5" />
           </ActionIcon>
         </Dropdown.Trigger>
-        <Dropdown.Menu>
+        <Dropdown.Menu className="min-w-[220px]">
           <Dropdown.Item>
             <Button
-              className="hover:border-gray-700 w-full hover:text-gray-700"
-              variant='outline'
-              onClick={() => { }}
+              className="w-full hover:border-gray-700 hover:text-gray-700"
+              variant="outline"
+              onClick={() => {}}
             >
-              <PiCheckBold className="h-4 w-4 text-green-500" />
-              <span>Approve Invoice</span>{" "}
+              <div className="flex items-center gap-3">
+                <PiCheckBold className="h-4 w-4 text-green-500" />
+                <span>Approve Invoice</span>{' '}
+              </div>
             </Button>
           </Dropdown.Item>
 
           <Dropdown.Item>
             <Button
-              className="hover:border-gray-700 w-full hover:text-gray-700"
-              variant='outline'
+              className="w-full hover:border-gray-700 hover:text-gray-700"
+              variant="outline"
               onClick={sendToEmail}
             >
-              <FaRegNoteSticky className="h-4 w-4" />
-              <span>Resend</span>{" "}
+              <div className="flex items-center gap-3">
+                <FaRegNoteSticky className="h-4 w-4" />
+                <span>Resend</span>{' '}
+              </div>
             </Button>
           </Dropdown.Item>
 
           {statusAvailToRefund.includes(row.status) && (
             <Dropdown.Item>
               <Button
-                className="hover:border-gray-700 w-full hover:text-gray-700"
-                variant='outline'
+                className="w-full hover:border-gray-700 hover:text-gray-700"
+                variant="outline"
                 onClick={() => refundModal(row)}
               >
-                <GrSchedules className="h-4 w-4" />
-                <span>Refund</span>{" "}
+                <div className="flex items-center gap-3">
+                  <GrSchedules className="h-4 w-4" />
+                  <span>Refund</span>{' '}
+                </div>
               </Button>
             </Dropdown.Item>
           )}
 
           <Dropdown.Item>
-            <Link href={routes.invoice.edit(row.id.toString())} className='w-full'>
-            <Button
-              className="hover:border-gray-700 hover:text-gray-700 w-full"
-              variant="outline"
+            <Link
+              href={routes.invoice.edit(row.id.toString())}
+              className="w-full"
             >
-              <PencilIcon className="h-4 w-4" />
-              <span>Edit Invoice</span>
-            </Button>
-          </Link>
+              <Button
+                className="w-full hover:border-gray-700 hover:text-gray-700"
+                variant="outline"
+              >
+                <div className="flex items-center gap-3">
+                  <PencilIcon className="h-4 w-4" />
+                  <span>Edit Invoice</span>
+                </div>
+              </Button>
+            </Link>
           </Dropdown.Item>
 
           <Dropdown.Item>
-            <Link href={routes.invoice.details(row.id.toString())} className='w-full'>
-            <Button
-              className="hover:border-gray-700 hover:text-gray-700 w-full"
-              variant="outline"
+            <Link
+              href={routes.invoice.details(row.id.toString())}
+              className="w-full"
             >
-              <EyeIcon className="h-4 w-4" />
-              <span>View Invoice</span>
-            </Button>
-          </Link>
+              <Button
+                className="w-full hover:border-gray-700 hover:text-gray-700"
+                variant="outline"
+              >
+                <div className="flex items-center gap-3">
+                  <EyeIcon className="h-4 w-4" />
+                  <span>View Invoice</span>
+                </div>
+              </Button>
+            </Link>
           </Dropdown.Item>
 
           <Dropdown.Item>
             <Button
-              className="hover:border-gray-700 w-full hover:text-gray-700"
-              variant='outline'
+              className="w-full hover:border-gray-700 hover:text-gray-700"
+              variant="outline"
               onClick={() => {
-                setIdInvoice(row.id)
-                setIsOpen(true)
+                setIdInvoice(row.id);
+                setIsOpen(true);
               }}
             >
-              <TrashIcon className="h-4 w-4" />
-              <span>Delete Invoice</span>{" "}
+              <div className="flex items-center gap-3">
+                <TrashIcon className="h-4 w-4" />
+                <span>Delete Invoice</span>{' '}
+              </div>
             </Button>
           </Dropdown.Item>
         </Dropdown.Menu>

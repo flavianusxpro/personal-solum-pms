@@ -8,6 +8,7 @@ import PencilIcon from '@/core/components/icons/pencil';
 import DeletePopover from '@/app/shared/ui/delete-popover';
 import { IGetPatientFlagResponse } from '@/types/ApiResponse';
 import FlagForm from '../modal/add-flag';
+import { PiFlag, PiNote } from 'react-icons/pi';
 
 type Row = IGetPatientFlagResponse['data'][number];
 type Columns = {
@@ -65,7 +66,19 @@ export const getColumns = ({
     dataIndex: 'category',
     key: 'category',
     width: 420,
-    render: (value: string) => value,
+    render: (_: any, row: any) => {
+      const type = row?.type;
+      return (
+        <div className="item-center flex gap-3">
+          {type == 'flag' ? (
+            <PiFlag className="h-4 w-4" />
+          ) : (
+            <PiNote className="h-4 w-4" />
+          )}
+          <span>{row.category}</span>
+        </div>
+      );
+    },
   },
   {
     title: <HeaderCell title="Description" />,
@@ -113,7 +126,7 @@ export const getColumns = ({
         <ActionTooltipButton
           onClick={() => {
             openModal?.({
-              view: <FlagForm flagData={row} />,
+              view: <FlagForm flagData={row} modalType={row.type} />,
             });
           }}
           tooltipContent="Edit"

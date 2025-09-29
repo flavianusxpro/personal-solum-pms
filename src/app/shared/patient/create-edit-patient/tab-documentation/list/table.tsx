@@ -113,47 +113,46 @@ export default function ListTable({ className }: { className?: string }) {
   return (
     <div className={className}>
       <FormGroup title="Documentation" className="mb-5" />
-
-      <ControlledTable
-        isLoading={isLoading}
-        showLoadingText={true}
-        data={tableData ?? []}
-        // @ts-ignore
-        columns={visibleColumns}
-        scroll={{ x: 1300 }}
-        variant="modern"
-        tableLayout="auto"
-        rowKey={(record) => record.id}
-        paginatorOptions={{
-          pageSize: params.perPage,
-          setPageSize: (pageSize: number) =>
-            setParams((prev) => ({ ...prev, perPage: pageSize })),
-          total: totalItems,
-          current: params.page,
-          onChange: (page: number) => {
-            setParams((prev) => ({ ...prev, page }));
-            handlePaginate(page);
-          },
-        }}
-        tableHeader={
-          <TableHeader isCustomHeader checkedItems={[]}>
-            <ModalButton view={<DocumentationForm />} />
-          </TableHeader>
-        }
-        tableFooter={
-          <TableFooter
-            checkedItems={selectedRowKeys}
-            handleDelete={(ids: string[]) => {
-              onDeleteItem(ids);
-            }}
-          >
-            <Button size="sm" className="dark:bg-gray-300 dark:text-gray-800">
-              Download {selectedRowKeys.length}{' '}
-              {selectedRowKeys.length > 1 ? 'Files' : 'File'}
-            </Button>
-          </TableFooter>
-        }
-      />
+      <div className="flex flex-col gap-3">
+        <div className="flex justify-end">
+          <ModalButton view={<DocumentationForm />} />
+        </div>
+        <ControlledTable
+          isLoading={isLoading}
+          showLoadingText={true}
+          data={tableData ?? []}
+          // @ts-ignore
+          columns={visibleColumns}
+          scroll={{ x: 1300 }}
+          variant="modern"
+          tableLayout="auto"
+          rowKey={(record) => record.id}
+          paginatorOptions={{
+            pageSize: params.perPage,
+            setPageSize: (pageSize: number) =>
+              setParams((prev) => ({ ...prev, perPage: pageSize })),
+            total: totalItems,
+            current: params.page,
+            onChange: (page: number) => {
+              setParams((prev) => ({ ...prev, page }));
+              handlePaginate(page);
+            },
+          }}
+          tableFooter={
+            <TableFooter
+              checkedItems={selectedRowKeys}
+              handleDelete={(ids: string[]) => {
+                onDeleteItem(ids);
+              }}
+            >
+              <Button size="sm" className="dark:bg-gray-300 dark:text-gray-800">
+                Download {selectedRowKeys.length}{' '}
+                {selectedRowKeys.length > 1 ? 'Files' : 'File'}
+              </Button>
+            </TableFooter>
+          }
+        />
+      </div>
     </div>
   );
 }

@@ -132,4 +132,5 @@ export const messages = {
   conditionNameIsRequired: 'Condition name is required',
   connectionNameRequired: 'Connection name is required',
   hostnameIsRequired: 'Hostname is required',
+  categoryNameIsRequired: 'Condition name is required',
 };

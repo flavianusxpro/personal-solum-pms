@@ -9,10 +9,12 @@ import {
 } from '@/service/appointment';
 import { IParamGetAppointments } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 export function useGetAppointments(params: IParamGetAppointments) {
   return useQuery({
-    queryKey: ['getAppointments' + params + params.patientId],
+    // queryKey: ['getAppointments' + params + params.patientId],
+    queryKey: ['getAppointments', params.patientId, params],
     queryFn: async () => getAppointmentList(params),
   });
 }
@@ -31,8 +33,12 @@ export function usePostCreateAppointment() {
 }
 
 export function useUpdateAppointment() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: putUpdateAppointment,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['getAppointments'] });
+    },
   });
 }
 

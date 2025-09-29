@@ -164,6 +164,7 @@ export interface IParamGetAllEmailTemplates
   extends IParamGetDataWithPagination {}
 export interface IParamGetAllSmsTemplates extends IParamGetDataWithPagination {}
 export interface IParamGetSpecialists extends IParamGetDataWithPagination {}
+export interface IParamGetTypes extends IParamGetDataWithPagination {}
 export interface IParamGetTreatments extends IParamGetDataWithPagination {
   doctorId?: number;
 }
@@ -602,6 +603,7 @@ export interface IPayloadPasientFlag {
   patient_id: number;
   category: string;
   description: string;
+  type?: string;
 }
 
 export interface IPayloadCreateUpdateCoupon {
@@ -678,3 +680,10 @@ export interface IPayloadCreateEditApiConnection {
 
 export interface IParamsGetRequestCallback
   extends IParamGetDataWithPagination {}
+
+export interface IPayloadType {
+  id?: number;
+  name: string;
+  description: string;
+  is_active: boolean;
+}

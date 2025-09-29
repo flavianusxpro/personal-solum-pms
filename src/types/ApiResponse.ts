@@ -81,7 +81,7 @@ export interface IGetDoctorByClinicResponse extends ApiResponse {
     language: string;
     description: null;
     cost: Cost;
-    timezone_doctor?: string
+    timezone_doctor?: string;
   }[];
 }
 
@@ -145,15 +145,15 @@ interface IClinic {
   email: string;
   mobile_number: number;
   address: string;
-  logo: string
-  default: boolean,
+  logo: string;
+  default: boolean;
   status: number;
-  description: null,
+  description: null;
   clinic_identity: string;
   secret_key: string;
   frontend_url: string;
-  created_at: string,
-  updated_at: string
+  created_at: string;
+  updated_at: string;
 }
 
 export interface IGetProfileResponse extends ApiResponse {
@@ -417,7 +417,7 @@ interface Clinic {
 //   clinic_identity: string;
 //   created_at: string;
 //   default: boolean;
-//   description: 
+//   description:
 // }
 
 export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
@@ -943,6 +943,7 @@ export interface IGetPatientFlagResponse extends ApiResponseWithPagination {
     patientId: number;
     category: string;
     description: string;
+    type?: string;
     created_by: string;
     created_at: string;
     updated_at: string;
@@ -1133,4 +1134,17 @@ export interface IRequestCallback {
   status: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface IGetType extends ApiResponse {
+  data: {
+    id: number;
+    name: string;
+    description: string;
+    is_active: boolean;
+    type?: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+  count: 0;
 }
