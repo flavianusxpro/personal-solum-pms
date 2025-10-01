@@ -290,7 +290,7 @@ function RenderAction({
                 setIsOpen(true);
               }}
             >
-              <div className="flex gap-3">
+              <div className="flex items-center gap-3">
                 <TrashIcon className="h-4 w-4" />
                 <span>Delete Patient</span>{' '}
               </div>
