@@ -10,3 +10,11 @@ export default function Divider({ className }: IProps) {
     </div>
   );
 }
+
+export function DividerSidebar({ className }: IProps) {
+  return (
+    <div className={cn('flex items-center justify-center', className)}>
+      <div className="h-px w-full border-t"></div>
+    </div>
+  );
+}

@@ -47,6 +47,33 @@ const PiReport = dynamic(() =>
   import('react-icons/pi').then((mod) => mod.PiWarningOctagonLight)
 );
 
+const PiCurrencyDollar = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiCurrencyDollar)
+);
+
+const PiTicketLight = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiTicketLight)
+);
+
+const PiEnvelopeLight = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiEnvelopeLight)
+);
+
+const PiChatCircleLight = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiChatCircleLight)
+);
+
+const PiFileText = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiFileText)
+);
+
+const PiChat = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiChat)
+);
+
+const PiBuilding = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiBuilding)
+);
 // Note: do not add href in the label object, it is rendering as label
 export const adminMenuItems = [
   {
@@ -58,6 +85,12 @@ export const adminMenuItems = [
     href: routes.appointment.dashboard,
     icon: <PiHouse />,
     permissionReadName: ['dashboard'],
+  },
+  {
+    name: 'Request Call Back',
+    href: routes.requestCallBack,
+    icon: <PiDoorOpen />,
+    permissionReadName: ['requestcallback'],
   },
   {
     name: 'Calendar',
@@ -148,44 +181,36 @@ export const adminMenuItems = [
     ],
   },
   {
-    name: 'Management',
-    href: routes.management.dashboard,
+    name: 'Product & Service',
+    href: routes.management.product.list,
     icon: <PiBoundingBox />,
-    permissionReadName: ['management'],
-    dropdownItems: [
-      {
-        name: 'Product & Service',
-        href: routes.management.product.list,
-        icon: <PiBoundingBox />,
-        permissionReadName: [],
-      },
-    ],
+    permissionReadName: [],
   },
   {
     name: 'Marketing',
-    href: routes.marketing,
-    icon: <PiBriefcase />,
     permissionReadName: ['marketing'],
-    dropdownItems: [
-      {
-        name: 'Coupon',
-        href: routes.marketing.coupon,
-        icon: <PiBoundingBox />,
-        permissionReadName: [],
-      },
-      {
-        name: 'Email Marketing (coming soon)',
-        href: routes.marketing.emailMarketing,
-        icon: <PiBoundingBox />,
-        permissionReadName: [],
-      },
-      {
-        name: 'Sms Marketing (coming soon)',
-        href: routes.marketing.smsMarketing,
-        icon: <PiBoundingBox />,
-        permissionReadName: [],
-      },
-    ],
+  },
+  {
+    name: 'Coupon',
+    href: routes.marketing.coupon,
+    icon: <PiTicketLight />,
+    permissionReadName: [],
+  },
+  {
+    name: 'Email Marketing (coming soon)',
+    href: routes.marketing.emailMarketing,
+    icon: <PiEnvelopeLight />,
+    permissionReadName: [],
+  },
+  {
+    name: 'Sms Marketing (coming soon)',
+    href: routes.marketing.smsMarketing,
+    icon: <PiChatCircleLight />,
+    permissionReadName: [],
+  },
+  {
+    name: 'Reports Overview',
+    permissionReadName: ['report'],
   },
   {
     name: 'Report',
@@ -194,48 +219,38 @@ export const adminMenuItems = [
     permissionReadName: ['report'],
   },
   {
-    name: 'Request Call Back',
-    href: routes.requestCallBack,
-    icon: <PiDoorOpen />,
-    permissionReadName: ['requestcallback'],
+    name: 'Setting',
+    permissionReadName: ['setting'],
   },
   {
-    name: 'Settings',
+    name: 'Setup',
     href: routes.setting.setup,
     icon: <PiGear />,
-    permissionReadName: ['setting'],
-    dropdownItems: [
-      {
-        name: 'Setup',
-        href: routes.setting.setup,
-        icon: <PiUser />,
-        permissionReadName: [],
-      },
-      {
-        name: 'Email Template',
-        href: routes.setting.emailTemplate,
-        icon: <PiUser />,
-        permissionReadName: [],
-      },
-      {
-        name: 'SMS Template',
-        href: routes.setting.smsTemplate,
-        icon: <PiUser />,
-        permissionReadName: [],
-      },
-      {
-        name: 'Branch',
-        href: routes.setting.branch,
-        icon: <PiUser />,
-        permissionReadName: [],
-      },
-      {
-        name: 'Currency',
-        href: routes.setting.currency,
-        icon: <PiUser />,
-        permissionReadName: [],
-      },
-    ],
+    permissionReadName: [],
+  },
+  {
+    name: 'Email Template',
+    href: routes.setting.emailTemplate,
+    icon: <PiFileText />,
+    permissionReadName: [],
+  },
+  {
+    name: 'SMS Template',
+    href: routes.setting.smsTemplate,
+    icon: <PiChat />,
+    permissionReadName: [],
+  },
+  {
+    name: 'Branch',
+    href: routes.setting.branch,
+    icon: <PiBuilding />,
+    permissionReadName: [],
+  },
+  {
+    name: 'Currency',
+    href: routes.setting.currency,
+    icon: <PiCurrencyDollar />,
+    permissionReadName: [],
   },
   {
     name: 'Connection',
