@@ -1,6 +1,7 @@
 import { routes } from '@/config/routes';
 import dynamic from 'next/dynamic';
 import { PiPlugsConnected } from 'react-icons/pi';
+import { LuFileChartColumn } from 'react-icons/lu';
 
 // Dynamic imports untuk ikon yang digunakan
 const PiHouse = dynamic(() =>
@@ -74,6 +75,20 @@ const PiChat = dynamic(() =>
 const PiBuilding = dynamic(() =>
   import('react-icons/pi').then((mod) => mod.PiBuilding)
 );
+
+const PiChartLine = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiChartLine)
+);
+const PiCreditCard = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiCreditCard)
+);
+const PiShieldCheck = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiShieldCheck)
+);
+const PiUsers = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiUsers)
+);
+
 // Note: do not add href in the label object, it is rendering as label
 export const adminMenuItems = [
   {
@@ -197,26 +212,172 @@ export const adminMenuItems = [
     permissionReadName: [],
   },
   {
-    name: 'Email Marketing (coming soon)',
+    name: 'Email Broadcast (coming soon)',
     href: routes.marketing.emailMarketing,
     icon: <PiEnvelopeLight />,
     permissionReadName: [],
   },
   {
-    name: 'Sms Marketing (coming soon)',
+    name: 'Sms Broadcast (coming soon)',
     href: routes.marketing.smsMarketing,
     icon: <PiChatCircleLight />,
     permissionReadName: [],
   },
   {
-    name: 'Reports Overview',
+    name: 'Reports & Analytics',
     permissionReadName: ['report'],
   },
+  // {
+  //   name: 'Report',
+  //   href: routes.report,
+  //   icon: <PiReport />,
+  //   permissionReadName: ['report'],
+  // },
   {
-    name: 'Report',
+    name: 'Business Insight',
     href: routes.report,
-    icon: <PiReport />,
-    permissionReadName: ['report'],
+    icon: <PiBriefcase />,
+    permissionReadName: [],
+    dropdownItems: [
+      {
+        name: 'Revenue & Growth',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Churn & Retention',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Billing & Transactions',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+    ],
+  },
+  {
+    name: 'Clinic Performance Analytics',
+    href: routes.report,
+    icon: <PiChartLine />,
+    permissionReadName: [],
+    dropdownItems: [
+      {
+        name: 'Clinic Summary Dashboard',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Doctor & Staff Productivity',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Appointment & Capacity Report',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Service Performance',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+    ],
+  },
+  {
+    name: 'Patient & Engagement Reports',
+    href: routes.report,
+    icon: <PiUsers />,
+    permissionReadName: [],
+    dropdownItems: [
+      {
+        name: 'Patient Growth',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Engagement & Retention',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Feedback & Satisfaction (NPS/CSAT)',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Communication Insights',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Referral & Source Tracking',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+    ],
+  },
+  {
+    name: 'Financial & Billing Reports',
+    href: routes.report,
+    icon: <PiCreditCard />,
+    permissionReadName: [],
+    dropdownItems: [
+      {
+        name: 'Revenue Summary',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Accounts Receivable (AR) Aging',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Payment Methods Analysis',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Refund & Adjustment Logs',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Financial Forecast ',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+    ],
+  },
+  {
+    name: 'Compliance, Operations & System Health',
+    href: routes.report,
+    icon: <PiShieldCheck />,
+    permissionReadName: [],
+  },
+  {
+    name: 'Custom Reports (optional)',
+    href: routes.report,
+    icon: <LuFileChartColumn />,
+    permissionReadName: [],
   },
   {
     name: 'Setting',

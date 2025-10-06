@@ -26,7 +26,7 @@ import { useModal } from '../../modal-views/use-modal';
 import { FaRegNoteSticky } from 'react-icons/fa6';
 import { GrSchedules } from 'react-icons/gr';
 import RefundForm from '../modal/refund-form';
-import { PiCheckBold } from 'react-icons/pi';
+import { PiCheckBold, PiWalletLight } from 'react-icons/pi';
 import { Currency } from '@/store/currency';
 import toast from 'react-hot-toast';
 import { HiOutlineDotsVertical } from 'react-icons/hi';
@@ -174,7 +174,9 @@ export const getColumns = ({
     dataIndex: 'status',
     key: 'status',
     width: 650,
-    render: (value: number) => getInvoicePaymentStatusBadge(value),
+    render: (_: any, row: any) => {
+      return <StatusSelectUpdate id={row.id} selectItem={row.status} />;
+    },
   },
   {
     title: <HeaderCell title="CREATED BY" />,
@@ -182,6 +184,13 @@ export const getColumns = ({
     key: 'created_at',
     width: 600,
     render: (created_at: Date) => <DateCell clock date={created_at} />,
+  },
+  {
+    title: <HeaderCell title="UPDATED BY" />,
+    dataIndex: 'updated_at',
+    key: 'updated_at',
+    width: 600,
+    render: (updated_at: Date) => <DateCell clock date={updated_at} />,
   },
   {
     title: <HeaderCell title="Actions" />,
@@ -254,7 +263,7 @@ function RenderAction({
           </ActionIcon>
         </Dropdown.Trigger>
         <Dropdown.Menu className="min-w-[220px]">
-          <Dropdown.Item>
+          {/* <Dropdown.Item>
             <Button
               className="w-full hover:border-gray-700 hover:text-gray-700"
               variant="outline"
@@ -265,7 +274,25 @@ function RenderAction({
                 <span>Approve Invoice</span>{' '}
               </div>
             </Button>
-          </Dropdown.Item>
+          </Dropdown.Item> */}
+          {row.status == 1 && (
+            <Dropdown.Item>
+              <Link
+                href={routes.invoice.edit(row.id.toString())}
+                className="w-full"
+              >
+                <Button
+                  className="w-full hover:border-gray-700 hover:text-gray-700"
+                  variant="outline"
+                >
+                  <div className="flex items-center gap-3">
+                    <PencilIcon className="h-4 w-4" />
+                    <span>Edit Invoice</span>
+                  </div>
+                </Button>
+              </Link>
+            </Dropdown.Item>
+          )}
 
           <Dropdown.Item>
             <Button
@@ -275,9 +302,23 @@ function RenderAction({
             >
               <div className="flex items-center gap-3">
                 <FaRegNoteSticky className="h-4 w-4" />
-                <span>Resend</span>{' '}
+                <span>Send</span>{' '}
               </div>
             </Button>
+          </Dropdown.Item>
+
+          <Dropdown.Item>
+            <Link href="#" className="w-full">
+              <Button
+                className="w-full hover:border-gray-700 hover:text-gray-700"
+                variant="outline"
+              >
+                <div className="flex items-center gap-3">
+                  <PiWalletLight className="h-4 w-4" />
+                  <span>Pay Now</span>
+                </div>
+              </Button>
+            </Link>
           </Dropdown.Item>
 
           {statusAvailToRefund.includes(row.status) && (
@@ -297,23 +338,6 @@ function RenderAction({
 
           <Dropdown.Item>
             <Link
-              href={routes.invoice.edit(row.id.toString())}
-              className="w-full"
-            >
-              <Button
-                className="w-full hover:border-gray-700 hover:text-gray-700"
-                variant="outline"
-              >
-                <div className="flex items-center gap-3">
-                  <PencilIcon className="h-4 w-4" />
-                  <span>Edit Invoice</span>
-                </div>
-              </Button>
-            </Link>
-          </Dropdown.Item>
-
-          <Dropdown.Item>
-            <Link
               href={routes.invoice.details(row.id.toString())}
               className="w-full"
             >
@@ -328,22 +352,23 @@ function RenderAction({
               </Button>
             </Link>
           </Dropdown.Item>
-
-          <Dropdown.Item>
-            <Button
-              className="w-full hover:border-gray-700 hover:text-gray-700"
-              variant="outline"
-              onClick={() => {
-                setIdInvoice(row.id);
-                setIsOpen(true);
-              }}
-            >
-              <div className="flex items-center gap-3">
-                <TrashIcon className="h-4 w-4" />
-                <span>Delete Invoice</span>{' '}
-              </div>
-            </Button>
-          </Dropdown.Item>
+          {row.status == 1 && (
+            <Dropdown.Item>
+              <Button
+                className="w-full hover:border-gray-700 hover:text-gray-700"
+                variant="outline"
+                onClick={() => {
+                  setIdInvoice(row.id);
+                  setIsOpen(true);
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <TrashIcon className="h-4 w-4" />
+                  <span>Delete Invoice</span>{' '}
+                </div>
+              </Button>
+            </Dropdown.Item>
+          )}
         </Dropdown.Menu>
       </Dropdown>
       <DeleteModal
@@ -385,6 +410,94 @@ function getPaymentMethodBadge(status: number | string) {
         </div>
       );
   }
+}
+
+function StatusSelectUpdate({
+  selectItem,
+  id,
+}: {
+  selectItem: number;
+  id: number;
+}) {
+  const { openModal, closeModal } = useModal();
+
+  // const showConfirmModal = (
+  //   id: number,
+  //   onClick: (value: number) => void,
+  //   status: string
+  // ) => {
+  //   closeModal(),
+  //     openModal({
+  //       view: <ShowConfirm onClick={onClick} status={status} id={id} />,
+  //       customSize: '600px',
+  //     });
+  // };
+  const aptStatusOptions = [
+    { label: 'Draft', value: 1 },
+    { label: 'Awaiting Approval', value: 2 },
+    { label: 'Approved', value: 3 },
+    { label: 'Cancelled', value: 4 },
+  ];
+  const selectItemValue = aptStatusOptions.find(
+    (option) => option.value === selectItem
+  )?.value;
+  const [value, setValue] = useState(selectItemValue);
+  const { mutate, isPending } = usePutUpdateInvoice();
+
+  const handleSubmitStatus = (value: number) => {
+    setValue(value);
+    // mutate(
+    //   { id, status: value },
+    //   {
+    //     onSuccess: () => {
+    //       toast.success('Status updated successfully');
+    //       closeModal();
+    //     },
+    //     onError: (error: any) => {
+    //       toast.error(
+    //         error?.response?.data?.message || 'Error updating status'
+    //       );
+    //       closeModal();
+    //     },
+    //   }
+    // );
+  };
+
+  const handleChange = (value: number) => {
+    // if (value == 1) {
+    //   showConfirmModal(value, handleSubmitStatus, 'Draft');
+    // } else if (value == 2) {
+    //   showConfirmModal(value, handleSubmitStatus, 'Scheduled');
+    // } else if (value == 3) {
+    //   showConfirmModal(value, handleSubmitStatus, 'Check In');
+    // } else if (value == 4) {
+    //   showConfirmModal(value, handleSubmitStatus, 'Finished');
+    // } else if (value == 5) {
+    //   showConfirmModal(value, handleSubmitStatus, 'Cancelled');
+    // } else if (value == 6) {
+    //   showConfirmModal(value, handleSubmitStatus, 'On Going');
+    // } else if (value == 7) {
+    //   showConfirmModal(value, handleSubmitStatus, 'No Show');
+    // } else {
+    //   handleSubmitStatus(value);
+    // }
+    handleSubmitStatus(value);
+  };
+
+  return (
+    <CSelect
+      className={'min-w-[140px]'}
+      dropdownClassName="h-auto"
+      placeholder="Select Status"
+      options={aptStatusOptions}
+      value={value}
+      onChange={handleChange}
+      isLoading={isPending}
+      displayValue={(option: { value: number }) =>
+        getInvoicePaymentStatusBadge(option.value)
+      }
+    />
+  );
 }
 
 export function StatusSelect() {
