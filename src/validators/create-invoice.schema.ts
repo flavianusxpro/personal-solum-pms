@@ -12,16 +12,19 @@ export const invoiceFormSchema = z.object({
   due_date: z.date({ required_error: messages.dueDateIsRequired }).nullable(),
   invoice_number: z.string().optional(),
   reference: z.string().optional(),
+  address: z.string().optional(),
   branding_theme: z.string().optional(),
   note: z.string().optional().nullable(),
+  internal_note: z.string().optional().nullable(),
   fee: z.number().optional(),
   total_amount: z.number().min(0, { message: messages.nonNegative }),
   items: z
     .array(
       z.object({
-        item: z
-          .string({ required_error: messages.itemIsRequired })
-          .refine((val) => val !== null, { message: messages.itemIsRequired }),
+        // item: z
+        //   .string({ required_error: messages.itemIsRequired })
+        //   .refine((val) => val !== null, { message: messages.itemIsRequired }),
+        item: z.string().optional(),
         description: z.string().optional(),
         amount: z.number().min(0, { message: messages.nonNegative }).nullable(),
         qty: z

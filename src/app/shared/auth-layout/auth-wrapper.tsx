@@ -102,7 +102,7 @@ export default function AuthWrapper({
 
 function AuthHeader() {
   return (
-    <header className="flex items-center justify-between p-4 lg:px-16 lg:py-6 2xl:px-24">
+    <header className="flex items-center justify-center p-4 lg:px-16 lg:py-16 2xl:px-24">
       <Link href={'/'}>
         <h2 className="text-[36px] font-bold text-black">
           {process.env.NEXT_PUBLIC_CLINIC_NAME}
@@ -135,12 +135,29 @@ const footerMenu = [
 
 function AuthFooter() {
   return (
-    <footer className="flex flex-col-reverse items-center justify-between px-4 py-5 lg:flex-row lg:px-16 lg:py-6 2xl:px-24 2xl:py-10">
-      <div className="w-max text-center text-[12px] leading-relaxed text-gray-500 lg:text-start">
+    // <footer className="flex flex-col-reverse items-center justify-between px-4 py-5 lg:flex-row lg:px-16 lg:py-6 2xl:px-24 2xl:py-10">
+    //   <div className="w-max text-center text-[12px] leading-relaxed text-gray-500 lg:text-start">
+    //     © Copyright 2025 by {process.env.NEXT_PUBLIC_CLINIC_NAME} Pty Ltd, all
+    //     rights reserved. Develop by Xpro Group Pty Ltd.
+    //   </div>
+    //   <div className="-mx-2.5 flex items-center justify-end pb-3 font-medium text-gray-700 lg:w-1/2 lg:pb-0">
+    //     {footerMenu.map((item) => (
+    //       <Link
+    //         key={item.name}
+    //         href={item.href}
+    //         className="px-2.5 py-1.5 transition-colors hover:text-primary"
+    //       >
+    //         {item.name}
+    //       </Link>
+    //     ))}
+    //   </div>
+    // </footer>
+    <footer className="flex flex-col-reverse px-4 py-5 lg:flex-col-reverse lg:justify-center lg:px-16 lg:py-6 2xl:px-24 2xl:py-10">
+      <div className="text-center text-[12px] leading-relaxed text-gray-500 lg:text-center">
         © Copyright 2025 by {process.env.NEXT_PUBLIC_CLINIC_NAME} Pty Ltd, all
         rights reserved. Develop by Xpro Group Pty Ltd.
       </div>
-      <div className="-mx-2.5 flex items-center justify-end pb-3 font-medium text-gray-700 lg:w-1/2 lg:pb-0">
+      <div className="flex items-center justify-center pb-3 font-medium text-gray-700 lg:pb-6">
         {footerMenu.map((item) => (
           <Link
             key={item.name}

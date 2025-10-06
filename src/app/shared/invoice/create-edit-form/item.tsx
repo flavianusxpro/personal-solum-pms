@@ -45,7 +45,7 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
 }) => {
   const [currencyData] = useAtom(currencyAtom);
 
-  const selectedItem = watch(`items.${index}.item`)?.split(' - ')[0];
+  const selectedItem = watch(`items.${index}.item` as any)?.split(' - ')[0];
   const findedItem = dataItems?.find((item) => item.code === selectedItem);
   const itemPrice = findedItem?.price ?? 0;
   const taxIdItem = watch(`items.${index}.taxId`);
@@ -101,7 +101,7 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
     <div className="flex w-full items-start gap-3 @lg:gap-4 @2xl:gap-5">
       <Controller
         control={control}
-        name={`items.${index}.item`}
+        name={`items.${index}.item` as any}
         render={({ field }) => (
           <CSelect
             {...field}
@@ -109,7 +109,7 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
             dropdownClassName="!z-10 h-auto"
             options={itemsOptions}
             label="Item"
-            error={errors?.items?.[index]?.item?.message && 'Item is required'}
+            // error={errors?.items?.[index]?.item?.message && 'Item is required'}
           />
         )}
       />
