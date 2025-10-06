@@ -6,6 +6,7 @@ import cn from '@core/utils/class-names';
 import { PiCaretDownBold } from 'react-icons/pi';
 import StatusBadge from '@core/components/get-status-badge';
 import useAcl from '@/core/hooks/use-acl';
+import { DividerSidebar } from '@/app/shared/ui/divider';
 
 export function SidebarMenu() {
   const pathname = usePathname();
@@ -134,15 +135,18 @@ export function SidebarMenu() {
                 )}
               </>
             ) : (
-              <Title
-                as="h6"
-                className={cn(
-                  'mb-2 truncate px-6 text-xs font-normal uppercase tracking-widest text-gray-500 2xl:px-8',
-                  index !== 0 && 'mt-6 3xl:mt-7'
-                )}
-              >
-                {item.name}
-              </Title>
+              <div className="flex flex-col gap-1">
+                <Title
+                  as="h6"
+                  className={cn(
+                    'mb-2 truncate text-xs font-semibold uppercase tracking-widest text-gray-500 2xl:px-8',
+                    index !== 0 && 'mt-6 3xl:mt-7'
+                  )}
+                >
+                  {item.name}
+                </Title>
+                <DividerSidebar className="px-6" />
+              </div>
             )}
           </Fragment>
         );
