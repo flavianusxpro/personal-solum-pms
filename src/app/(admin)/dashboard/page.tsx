@@ -1,4 +1,4 @@
-import AppointmentDashboard from '@/app/shared/appointment/dashboard';
+import AppointmentDashboard from '@/app/shared/dashboard';
 import { metaObject } from '@/config/site.config';
 
 export const metadata = {

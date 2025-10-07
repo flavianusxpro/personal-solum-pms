@@ -380,7 +380,7 @@ export const adminMenuItems = [
     permissionReadName: [],
   },
   {
-    name: 'Setting',
+    name: 'Settings',
     permissionReadName: ['setting'],
   },
   {
@@ -390,16 +390,24 @@ export const adminMenuItems = [
     permissionReadName: [],
   },
   {
-    name: 'Email Template',
+    name: 'Template',
     href: routes.setting.emailTemplate,
     icon: <PiFileText />,
     permissionReadName: [],
-  },
-  {
-    name: 'SMS Template',
-    href: routes.setting.smsTemplate,
-    icon: <PiChat />,
-    permissionReadName: [],
+    dropdownItems: [
+      {
+        name: 'Email Template',
+        href: routes.setting.emailTemplate,
+        icon: <PiFileText />,
+        permissionReadName: [],
+      },
+      {
+        name: 'SMS Template',
+        href: routes.setting.smsTemplate,
+        icon: <PiChat />,
+        permissionReadName: [],
+      },
+    ],
   },
   {
     name: 'Branch',

@@ -32,6 +32,7 @@ import toast from 'react-hot-toast';
 import { HiOutlineDotsVertical } from 'react-icons/hi';
 import TrashIcon from '@/core/components/icons/trash';
 import DeleteModal from '../../ui/delete-modal';
+import SendConfirm from '../modal/send-confirm';
 
 type IRowType = IGetInvoiceListResponse['data'][number];
 
@@ -254,6 +255,28 @@ function RenderAction({
       });
   }
 
+  function sendConfirmModal(
+    row: IRowType,
+    onSubmit: (id: number, via: string) => void
+  ) {
+    closeModal(),
+      openModal({
+        view: <SendConfirm id={row.id} onSubmit={onSubmit} />,
+        customSize: '600px',
+      });
+  }
+
+  const onSubmit = (id: number, via: any) => {
+    if (via === 'email') {
+      sendToEmail();
+    } else if (via === 'sms') {
+      console.log('SMS sending not implemented yet');
+    } else if (via === 'email-sms') {
+      sendToEmail();
+      console.log('Email sent, SMS feature coming soon');
+    }
+  };
+
   return (
     <div className="flex items-center justify-end gap-3 pe-3">
       <Dropdown placement="bottom-end">
@@ -298,7 +321,8 @@ function RenderAction({
             <Button
               className="w-full hover:border-gray-700 hover:text-gray-700"
               variant="outline"
-              onClick={sendToEmail}
+              // onClick={sendToEmail}
+              onClick={() => sendConfirmModal(row, onSubmit)}
             >
               <div className="flex items-center gap-3">
                 <FaRegNoteSticky className="h-4 w-4" />
