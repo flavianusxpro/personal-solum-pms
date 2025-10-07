@@ -56,7 +56,7 @@ export function AddInvoiceItems({
   useEffect(() => {
     if (items?.length) {
       items.forEach((item, index) => {
-        const itemId = watch(`items.${index}.item`);
+        const itemId = watch(`items.${index}.item` as any);
         const itemData = dataItems?.data.find(
           (item) => item.code === itemId?.split(' - ')[0]
         );
