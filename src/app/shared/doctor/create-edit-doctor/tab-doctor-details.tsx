@@ -215,7 +215,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
                   )}
                 />
               </FormGroup>
-              <FormGroup title="Birth of Date" isLabel>
+              <FormGroup title="Date of Birth" isLabel>
                 <Input
                   placeholder="Birth of Dae"
                   type="date"

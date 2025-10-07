@@ -14,6 +14,10 @@ import dayjs from 'dayjs';
 import { currencyAtom } from '@/store/currency';
 import { useAtom } from 'jotai';
 import { useProfile } from '@/hooks/useProfile';
+import cn from '@core/utils/class-names';
+import { useMedia } from '@core/hooks/use-media';
+import { useSetAtom } from 'jotai';
+import { summaryInvoiceAtom } from '@/store/invoice';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/invoice/invoice-list/filter-element'),
@@ -68,6 +72,13 @@ export default function InvoiceTableList() {
     clinicId: dataProfile?.clinics?.[0]?.id,
   });
 
+  const setSummaryInvoiceAtom = useSetAtom(summaryInvoiceAtom);
+  useEffect(() => {
+    if (dataInvoices) {
+      setSummaryInvoiceAtom(dataInvoices.summary);
+    }
+  }, [dataInvoices]);
+
   const { mutate: mutateDelete } = useDeleteInvoice();
 
   const onHeaderCellClick = (value: string) => ({
@@ -79,7 +90,7 @@ export default function InvoiceTableList() {
   const onDeleteItem = useCallback((ids: number[]) => {
     mutateDelete(ids, {
       onSuccess: () => {
-        setIsOpen(false)
+        setIsOpen(false);
         refetch();
         toast.success('Invoice deleted successfully');
       },
@@ -149,7 +160,7 @@ export default function InvoiceTableList() {
         idInvoice,
         setIdInvoice,
         isOpen,
-        setIsOpen
+        setIsOpen,
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -161,7 +172,7 @@ export default function InvoiceTableList() {
       onDeleteItem,
       handleRowSelect,
       handleSelectAll,
-      idInvoice
+      idInvoice,
     ]
   );
 
@@ -175,67 +186,80 @@ export default function InvoiceTableList() {
     }
   }, [params.page, params.pageSize, params.search, refetch]);
 
+  const isMediumScreen = useMedia('(max-width: 1860px)', false);
+
   return (
     <>
-      <ControlledTable
-        variant="modern"
-        data={tableData ?? []}
-        isLoading={isLoading || isLoadingGetInvoices}
-        showLoadingText={true}
-        // @ts-ignore
-        columns={visibleColumns}
-        paginatorOptions={{
-          pageSize: params.pageSize,
-          setPageSize: (pageSize: number) =>
-            setParams((p) => ({ ...p, pageSize })),
-          total: dataInvoices?.count,
-          current: params.page,
-          onChange: (page: number) => setParams((p) => ({ ...p, page })),
-        }}
-        filterOptions={{
-          searchTerm,
-          onSearchClear: () => {
-            handlerSearch('');
-            handleSearch('');
-          },
-          onSearchChange: (event) => {
-            handlerSearch(event.target.value);
-            handleSearch(event.target.value);
-          },
-          hasSearched: isFiltered,
-          columns,
-          checkedColumns,
-          setCheckedColumns,
-        }}
-        filterElement={
-          <FilterElement
-            isFiltered={isFiltered}
-            filters={filters}
-            updateFilter={updateFilter}
-            handleReset={handleReset}
-          />
-        }
-        tableHeader={
-          <TableHeader checkedItems={selectedRowKeys}>
-            <StatusSelect />
-          </TableHeader>
-        }
-        tableFooter={
-          <TableFooter
-            checkedItems={selectedRowKeys}
-            handleDelete={(ids: string[]) => {
-              setSelectedRowKeys([]);
-              onDeleteItem(ids.map((id) => parseInt(id)));
-            }}
-          >
-            {/* <Button size="sm" className="dark:bg-gray-300 dark:text-gray-800">
+      <div
+        className={cn(
+          '[&_.table-filter>div:first-child]:grow [&_.table-filter>div:first-child]:justify-between',
+          !isMediumScreen &&
+            '[&_.table-filter>div:first-child]:flex-row-reverse'
+        )}
+      >
+        <ControlledTable
+          variant="modern"
+          data={tableData ?? []}
+          isLoading={isLoading || isLoadingGetInvoices}
+          showLoadingText={true}
+          scroll={{
+            x: 1560,
+          }}
+          // @ts-ignore
+          columns={visibleColumns}
+          paginatorOptions={{
+            pageSize: params.pageSize,
+            setPageSize: (pageSize: number) =>
+              setParams((p) => ({ ...p, pageSize })),
+            total: dataInvoices?.count,
+            current: params.page,
+            onChange: (page: number) => setParams((p) => ({ ...p, page })),
+          }}
+          filterOptions={{
+            searchTerm,
+            onSearchClear: () => {
+              handlerSearch('');
+              handleSearch('');
+            },
+            onSearchChange: (event) => {
+              handlerSearch(event.target.value);
+              handleSearch(event.target.value);
+            },
+            hasSearched: isFiltered,
+            columns,
+            checkedColumns,
+            setCheckedColumns,
+          }}
+          filterElement={
+            <FilterElement
+              isFiltered={isFiltered}
+              filters={filters}
+              updateFilter={updateFilter}
+              handleReset={handleReset}
+            />
+          }
+          tableHeader={
+            <TableHeader checkedItems={selectedRowKeys}>
+              <StatusSelect />
+            </TableHeader>
+          }
+          tableFooter={
+            <TableFooter
+              checkedItems={selectedRowKeys}
+              handleDelete={(ids: string[]) => {
+                setSelectedRowKeys([]);
+                onDeleteItem(ids.map((id) => parseInt(id)));
+              }}
+            >
+              {/* <Button size="sm" className="dark:bg-gray-300 dark:text-gray-800">
               Re-send {selectedRowKeys.length}{' '}
               {selectedRowKeys.length > 1 ? 'Invoices' : 'Invoice'}{' '}
             </Button> */}
-          </TableFooter>
-        }
-        className="rounded-md border border-muted text-sm shadow-sm [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:h-60 [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:justify-center [&_.rc-table-row:last-child_td.rc-table-cell]:border-b-0 [&_thead.rc-table-thead]:border-t-0"
-      />
+            </TableFooter>
+          }
+          className="rounded-md border border-muted text-sm shadow-sm [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:h-60 [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:justify-center [&_.rc-table-row:last-child_td.rc-table-cell]:border-b-0 [&_thead.rc-table-thead]:border-t-0"
+        />
+      </div>
     </>
   );
 }

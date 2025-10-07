@@ -283,6 +283,7 @@ export default function TabSettings({
       replaceCosts(costs);
     }
   }, [dataDoctor, dataDoctorCost, replaceCosts, setValue]);
+  console.log(!isView);
 
   return (
     <div>
@@ -470,14 +471,14 @@ export default function TabSettings({
 
           <FormGroup title="Cost Setup">
             <Flex justify="between" align="center" gap="4">
-              <Text className="font-semibold">Treatment</Text>
-              <Text className="font-semibold">Amount Moderated</Text>
-              <Text className="font-semibold">Action</Text>
+              <Text className="w-1/2 font-semibold">Treatment</Text>
+              <Text className="w-1/2 font-semibold">Amount Moderated</Text>
+              <Text className="text-left font-semibold">Action</Text>
             </Flex>
             {fieldsCosts?.map((item, index) => (
               <Flex justify="between" align="center" key={item.id} gap="4">
                 <Text className="w-1/2">{findTreatment(item.treatmentId)}</Text>
-                <Text className="w-1/2">{item.amount_moderated}</Text>
+                <Text className="w-2/2">{item.amount_moderated}</Text>
                 {!isView && (
                   <Flex justify="end" className="w-1/2">
                     <ActionTooltipButton
@@ -532,11 +533,11 @@ export default function TabSettings({
               variant="flat"
               className="w-1/4"
             >
-              List Treatment Cost From Doctor
+              Price List
             </Button>
           </FormGroup>
 
-          {mode !== 'edit' && (
+          {/* {mode !== 'edit' && (
             <>
               <Divider className="" />
               <FormGroup title="Appointment Time Interval Setup">
@@ -601,7 +602,7 @@ export default function TabSettings({
                 </Grid>
               </FormGroup>
             </>
-          )}
+          )} */}
         </div>
         {!isView && (
           <FormFooter

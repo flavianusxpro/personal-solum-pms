@@ -7,6 +7,7 @@ import { invoiceData } from '@/data/invoice-data';
 import ExportButton from '@/app/shared/ui/export-button';
 import { metaObject } from '@/config/site.config';
 import InvoiceTableList from '@/app/shared/invoice/invoice-list/table';
+import InvoiceListStats from '@/app/shared/invoice/invoice-list/stats';
 
 export const metadata = {
   ...metaObject('Invoices'),
@@ -44,7 +45,10 @@ export default function InvoiceListPage() {
         </div>
       </PageHeader>
 
-      <InvoiceTableList />
+      <div className="flex flex-col gap-10 @container">
+        <InvoiceListStats />
+        <InvoiceTableList />
+      </div>
     </>
   );
 }

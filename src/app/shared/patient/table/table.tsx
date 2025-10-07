@@ -90,7 +90,7 @@ export default function PatientTable() {
     (ids: number[]) => {
       mutateDeletePatient(ids, {
         onSuccess: () => {
-          setIsOpen(false)
+          setIsOpen(false);
           refetch();
           toast.success('Patient deleted successfully');
         },
@@ -156,7 +156,7 @@ export default function PatientTable() {
         isOpen,
         setIsOpen,
         idPatient,
-        setIdPatient
+        setIdPatient,
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -167,7 +167,7 @@ export default function PatientTable() {
       onDeleteItem,
       handleRowSelect,
       handleSelectAll,
-      isOpen
+      isOpen,
     ]
   );
 
@@ -187,12 +187,12 @@ export default function PatientTable() {
         showLoadingText={true}
         // @ts-ignore
         columns={visibleColumns}
-        expandable={{
-          expandIcon: CustomExpandIcon,
-          expandedRowRender: (record: any) => (
-            <ExpandedOrderRow data={record} />
-          ),
-        }}
+        // expandable={{
+        //   expandIcon: CustomExpandIcon,
+        //   expandedRowRender: (record: any) => (
+        //     <ExpandedOrderRow data={record} />
+        //   ),
+        // }}
         paginatorOptions={{
           pageSize: params.perPage,
           setPageSize: (pageSize: number) =>

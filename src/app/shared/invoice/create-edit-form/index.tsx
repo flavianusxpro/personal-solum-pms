@@ -82,17 +82,28 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
     const totalItemAmount = (data.items || []).reduce(
       (acc: number, item: any) => {
         const itemTotal = Number(item.amount) * Number(item.qty);
-        const itemTotalWithTax =
-          itemTotal +
-          (Number(item.tax_fee) ? (itemTotal * Number(item.tax_fee)) / 100 : 0);
-        return acc + itemTotalWithTax;
+        // const itemTotalWithTax =
+        //   itemTotal +
+        //   (Number(item.tax_fee) ? (itemTotal * Number(item.tax_fee)) / 100 : 0);
+        return acc + itemTotal;
       },
       0
     );
+
+    const totalTax = (data.items || []).reduce((acc: number, item: any) => {
+      const itemTotal = Number(item.amount) * Number(item.qty);
+      const itemTax = Number(item.tax_fee)
+        ? (itemTotal * Number(item.tax_fee)) / 100
+        : 0;
+      return acc + itemTax;
+    }, 0);
+
+    // const totalAmount =
+    //   (totalItemAmount || 0) +
+    //   ((totalItemAmount * Number(data.taxFee)) / 100 || 0) +
+    //   (Number(data.otherFee) || 0);
     const totalAmount =
-      (totalItemAmount || 0) +
-      ((totalItemAmount * Number(data.taxFee)) / 100 || 0) +
-      (Number(data.otherFee) || 0);
+      (totalItemAmount || 0) + (totalTax || 0) + (Number(data.otherFee) || 0);
 
     if (id) {
       mutateUpdate(
@@ -144,7 +155,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
           total_amount: Number(item.amount) * Number(item.qty),
         })),
         amount: totalItemAmount,
-        tax_fee: Number(data.taxFee || 0),
+        tax_fee: totalTax,
         total_amount: totalAmount,
         note: data.note || '',
         patientId: Number(data.patientId),
@@ -205,7 +216,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
       className="flex flex-grow flex-col @container [&_label]:font-medium"
     >
       {({ register, setValue, control, watch, formState: { errors } }) => {
-        const { items, taxFee, otherFee, patientId } = watch();
+        const { items, taxFee, otherFee, patientId, total_amount } = watch();
 
         useEffect(() => {
           if (!patientId) {
@@ -236,6 +247,13 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
         const totalItemAmount = items
           ? (items || []).reduce((acc: number, item: any) => {
               const perItemTotal = Number(item.amount) * Number(item.qty);
+              return acc + perItemTotal;
+            }, 0)
+          : 0;
+
+        const totalAmount = items
+          ? (items || []).reduce((acc: number, item: any) => {
+              const perItemTotal = Number(item.amount) * Number(item.qty);
               const itemTotal =
                 perItemTotal +
                 (Number(item.tax_fee)
@@ -245,10 +263,10 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
             }, 0)
           : 0;
 
-        const totalAmount =
-          (totalItemAmount || 0) +
-          ((totalItemAmount * Number(taxFee)) / 100 || 0) +
-          (Number(otherFee) || 0);
+        // const totalAmount =
+        //   (totalItemAmount || 0) +
+        //   ((totalItemAmount * Number(taxFee)) / 100 || 0) +
+        //   (Number(otherFee) || 0);
 
         return (
           <>

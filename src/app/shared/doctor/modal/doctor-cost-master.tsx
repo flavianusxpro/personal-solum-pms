@@ -42,20 +42,20 @@ export default function DoctorCostMaster() {
   const { data: dataTreatments } = useGetTreatmentsFromMaster(doctorId);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <Flex
-        className="rounded-t-lg bg-white px-6 py-4"
+        className="rounded-t-lg bg-white"
         justify="between"
         align="center"
-        gap="4"
+        gap="2"
       >
-        <Title className="text-lg">Treatment Cost From Master</Title>
+        <Title className="text-lg">Price List</Title>
         <ActionIcon variant="text" onClick={closeModal} className="">
           <PiX className="h-6 w-6" />
         </ActionIcon>
       </Flex>
       {/* Simple Table */}
-      <div className="p-4">
+      <div>
         <div className="overflow-hidden rounded-lg border border-gray-200">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">

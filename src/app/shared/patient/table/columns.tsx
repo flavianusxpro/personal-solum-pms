@@ -22,7 +22,7 @@ import TrashIcon from '@/core/components/icons/trash';
 
 const statusOptions = [
   { label: 'Active', value: 1 },
-  { label: 'Inactive', value: 2 },
+  { label: 'Inactive', value: 0 },
 ];
 
 type Row = IGetAllPatientsResponse['data'][number];
@@ -124,7 +124,7 @@ export const getColumns = ({
     dataIndex: 'date_of_birth',
     key: 'date_of_birth',
     width: 200,
-    render: (value: Date) => <DateCell date={value} />,
+    render: (value: Date) => <DateCell date={value} dateFormat="DD/MM/YYYY" />,
   },
   {
     title: (
@@ -140,7 +140,14 @@ export const getColumns = ({
     dataIndex: 'created_at',
     key: 'created_at',
     width: 200,
-    render: (value: Date) => <DateCell clock={true} date={value} />,
+    render: (value: Date) => (
+      <DateCell
+        clock={true}
+        date={value}
+        dateFormat="DD/MM/YYYY"
+        className="flex flex-col-reverse"
+      />
+    ),
   },
   {
     title: (
@@ -156,7 +163,14 @@ export const getColumns = ({
     dataIndex: 'updated_at',
     key: 'updated_at',
     width: 200,
-    render: (value: Date) => <DateCell clock={true} date={value} />,
+    render: (value: Date) => (
+      <DateCell
+        clock={true}
+        date={value}
+        dateFormat="DD/MM/YYYY"
+        className="flex flex-col-reverse"
+      />
+    ),
   },
   {
     title: <HeaderCell title="Status" />,
@@ -164,7 +178,14 @@ export const getColumns = ({
     key: 'status',
     width: 110,
     render: (value: number, row: Row) => (
-      <StatusSelect selectItem={value || 1} id={row?.patient_id} />
+      <div className="flex flex-col gap-2">
+        <StatusSelect selectItem={value} id={row?.patient_id} />
+        <Text
+          className={`font-semibold ${row.verification_status == true ? 'text-green-700' : 'text-red-700'}`}
+        >
+          {row.verification_status == true ? 'Verified' : 'Unverified'}
+        </Text>
+      </div>
     ),
   },
   {
@@ -318,7 +339,7 @@ function getStatusBadge(status: number) {
           <Text className="ms-2 font-medium text-green-dark">Active</Text>
         </div>
       );
-    case 2:
+    case 0:
       return (
         <div className="flex items-center">
           <Badge color="danger" renderAsDot />

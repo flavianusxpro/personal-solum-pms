@@ -125,7 +125,24 @@ export const getColumns = ({
     dataIndex: 'created_at',
     key: 'created_at',
     width: 200,
-    render: (value: Date) => <DateCell date={value} />,
+    render: (value: Date) => (
+      <div>
+        <DateCell date={value} />
+        <span></span>
+      </div>
+    ),
+  },
+  {
+    title: <HeaderCell title="UPDATED" />,
+    dataIndex: 'updated_at',
+    key: 'updated_at',
+    width: 200,
+    render: (value: Date) => (
+      <div>
+        <DateCell date={value} />
+        <span></span>
+      </div>
+    ),
   },
   {
     // Need to avoid this issue -> <td> elements in a large <table> do not have table headers.

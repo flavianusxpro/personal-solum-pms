@@ -17,7 +17,7 @@ export const navItems = [
   // },
   {
     value: 'general',
-    label: 'General',
+    label: 'Flag',
   },
 ];
 
@@ -31,14 +31,14 @@ export default function SettingPatient() {
   }
 
   const pageHeader = {
-    title: 'Patient Settings',
+    title: 'Settings',
     breadcrumb: [
       {
         href: routes.patient.list,
         name: 'Patient List',
       },
       {
-        name: 'Patient Settings',
+        name: 'Settings',
       },
     ],
   };

@@ -1,6 +1,6 @@
 import { routes } from '@/config/routes';
 import dynamic from 'next/dynamic';
-import { PiPlugsConnected } from 'react-icons/pi';
+import { PiMegaphone, PiPlugsConnected } from 'react-icons/pi';
 import { LuFileChartColumn } from 'react-icons/lu';
 
 // Dynamic imports untuk ikon yang digunakan
@@ -161,12 +161,12 @@ export const adminMenuItems = [
         icon: <PiUser />,
         permissionReadName: ['doctor'],
       },
-      {
-        name: 'Setting',
-        href: routes.doctor.setting,
-        icon: <PiUser />,
-        permissionReadName: ['doctor'],
-      },
+      // {
+      //   name: 'Setting',
+      //   href: routes.doctor.setting,
+      //   icon: <PiUser />,
+      //   permissionReadName: ['doctor'],
+      // },
     ],
   },
   {
@@ -221,6 +221,12 @@ export const adminMenuItems = [
     name: 'Sms Broadcast (coming soon)',
     href: routes.marketing.smsMarketing,
     icon: <PiChatCircleLight />,
+    permissionReadName: [],
+  },
+  {
+    name: 'Subscribe Promotion',
+    href: '#',
+    icon: <PiMegaphone />,
     permissionReadName: [],
   },
   {

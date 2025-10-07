@@ -23,6 +23,12 @@ interface ApiResponseWithPagination {
   page: number;
   perPage: number;
   data: any;
+  summary?: {
+    total_draft: number;
+    total_approve: number;
+    total_awaiting_approval: number;
+    total_cancelled: number;
+  };
 }
 interface ApiUsersResponseWithPagination {
   success: boolean;
@@ -197,6 +203,7 @@ export interface IGetAllPatientsResponse extends ApiResponseWithPagination {
     emergency_email: null;
     emergency_relationship: null;
     verification_token: null | string;
+    verification_status?: boolean;
     timezone: string;
     created_at: string;
     updated_at: string;
@@ -510,6 +517,7 @@ export interface IGetInvoiceByIdResponse extends ApiResponse {
     due_date: string;
     status: number;
     note: string;
+    internal_note?: string;
     amount: string;
     tax_fee: string;
     other_fee: string;

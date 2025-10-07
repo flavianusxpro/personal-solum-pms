@@ -11,7 +11,7 @@ export const patientDetailsFormSchema = z.object({
     message: messages.genderIsRequired,
   }),
   email: validateEmail,
-  mobile_number: z.string().optional(),
+  mobile_number: z.string({ required_error: messages.phoneNumberIsRequired }),
   status: z.number().optional(),
   address: z.string().optional(),
   date_of_birth: z.string().min(1, {

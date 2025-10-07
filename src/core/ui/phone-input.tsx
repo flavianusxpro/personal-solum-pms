@@ -16,7 +16,7 @@ const labelClasses = {
 const inputClasses = {
   base: 'block peer !w-full focus:outline-none transition duration-200 disabled:!bg-gray-100 disabled:!text-gray-500 disabled:placeholder:!text-gray-500 disabled:!cursor-not-allowed disabled:!border-muted',
   error:
-    '!border-red not-read-only:hover:enabled:!border-red not-read-only:focus:enabled:!border-red not-read-only:focus:!ring-red',
+    '!border-[1.6px] !border-red not-read-only:hover:enabled:!border-red not-read-only:focus:enabled:!border-red not-read-only:focus:!ring-red focus:!border-red hover:!border-red focus-visible:!border-red focus:!ring-red',
   size: {
     sm: 'py-1 !text-xs !h-8 !leading-[32px]',
     md: 'py-2 !text-sm !h-10 !leading-[40px]',
@@ -157,6 +157,10 @@ export const PhoneNumber = ({
           error && inputClasses.error,
           inputClassName
         )}
+        // inputStyle={{
+        //   borderColor: error ? 'rgba(238,0,0,1)' : undefined,
+        //   boxShadow: error ? '0 0 0 0.5px rgba(238,0,0,1)' : undefined,
+        // }}
         buttonClass={cn(
           buttonClasses.base,
           buttonClasses.size[size],
