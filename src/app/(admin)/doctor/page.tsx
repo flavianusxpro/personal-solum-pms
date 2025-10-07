@@ -49,7 +49,7 @@ export default function DoctorPage() {
               Pick Doctor
             </Button>
           </Button>
-          {process.env.NEXT_PUBLIC_CLINIC_TYPE === 'MAIN' && (
+          {/* {process.env.NEXT_PUBLIC_CLINIC_TYPE === 'MAIN' && (
             <Button
               onClick={() => {
                 openModal({
@@ -64,7 +64,7 @@ export default function DoctorPage() {
                 Add Doctor
               </Button>
             </Button>
-          )}
+          )} */}
         </div>
       </PageHeader>
 

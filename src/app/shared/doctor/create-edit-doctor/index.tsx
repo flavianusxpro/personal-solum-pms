@@ -17,8 +17,12 @@ import TabAssign from './tab-assign';
 
 const settingNavs = [
   {
+    value: 'calendar',
+    label: 'Calendar',
+  },
+  {
     value: 'settings',
-    label: 'Settings',
+    label: 'Price & Configuration',
   },
 ];
 
@@ -39,10 +43,10 @@ export const navItems = [
     value: 'billing',
     label: 'Billing Report',
   },
-  {
-    value: 'compliance',
-    label: 'Compliance',
-  },
+  // {
+  //   value: 'compliance',
+  //   label: 'Compliance',
+  // },
   {
     value: 'calendar',
     label: 'Calendar',
@@ -53,7 +57,7 @@ export const navItems = [
   // },
   {
     value: 'settings',
-    label: 'Settings',
+    label: 'Price & Configuration',
   },
 ];
 
@@ -112,14 +116,17 @@ export default function CreateEditDoctor({
         </SimpleBar>
 
         {mode == 'edit' ? (
-          tab === 'settings' && <TabSettings isView={isView} mode={mode} />
+          <>
+            {tab === 'settings' && <TabSettings isView={isView} mode={mode} />}
+            {tab === 'calendar' && <TabCalendar isView={true} />}
+          </>
         ) : (
           <>
             {tab === 'doctor' && <DoctorDetails isView={true} />}
             {tab === 'password' && <TabPassword isView={isView} />}
             {tab === 'emergency' && <TabEmergencyContact isView={true} />}
             {tab === 'billing' && <TabBillingAppointments isView={isView} />}
-            {tab === 'compliance' && <TabCompliance isView={true} />}
+            {/* {tab === 'compliance' && <TabCompliance isView={true} />} */}
             {tab === 'calendar' && <TabCalendar isView={true} />}
             {tab === 'assign' && <TabAssign isView={isView} />}
             {tab === 'settings' && <TabSettings isView={isView} />}
