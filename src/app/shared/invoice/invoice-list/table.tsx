@@ -16,6 +16,8 @@ import { useAtom } from 'jotai';
 import { useProfile } from '@/hooks/useProfile';
 import cn from '@core/utils/class-names';
 import { useMedia } from '@core/hooks/use-media';
+import { useSetAtom } from 'jotai';
+import { summaryInvoiceAtom } from '@/store/invoice';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/invoice/invoice-list/filter-element'),
@@ -69,6 +71,13 @@ export default function InvoiceTableList() {
     q: JSON.stringify({ patientName: params.search }),
     clinicId: dataProfile?.clinics?.[0]?.id,
   });
+
+  const setSummaryInvoiceAtom = useSetAtom(summaryInvoiceAtom);
+  useEffect(() => {
+    if (dataInvoices) {
+      setSummaryInvoiceAtom(dataInvoices.summary);
+    }
+  }, [dataInvoices]);
 
   const { mutate: mutateDelete } = useDeleteInvoice();
 

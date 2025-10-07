@@ -3,26 +3,24 @@
 import { Button, Loader } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { useScrollableSlider } from '@core/hooks/use-scrollable-slider';
-import { IconType } from 'react-icons/lib';
 import {
-  PiCalendarCheck,
   PiCaretLeftBold,
   PiCaretRightBold,
-  PiCheckCircle,
-  PiClock,
-  PiPhoneSlash,
   PiArrowDownRight,
   PiArrowUpRight,
 } from 'react-icons/pi';
 import { useMemo } from 'react';
-import { useGetSummaryAppointments } from '@/hooks/useAppointment';
 import {
   CarbonRuleCancelled,
   CarbonRuleDraft,
   TimeWhiteIcon,
   OrderApproveOutline,
+  WalletWhiteIcon,
 } from '@public/index';
 import Image from 'next/image';
+import { useGetInvoices } from '@/hooks/useInvoice';
+import { summaryInvoiceAtom } from '@/store/invoice';
+import { useAtomValue } from 'jotai';
 
 type InvoiceStatsType = {
   className?: string;
@@ -139,57 +137,61 @@ export default function InvoiceListStats({ className }: InvoiceStatsType) {
     scrollToTheLeft,
   } = useScrollableSlider();
 
-  const { data, isLoading } = useGetSummaryAppointments();
+  const { isLoading } = useGetInvoices({
+    page: 1,
+    perPage: 1000,
+  });
+  const summaryInvoice = useAtomValue(summaryInvoiceAtom);
 
   const statData: StatType[] = useMemo(
     () => [
       {
-        title: 'Draft Invoice',
+        title: 'Draft',
         increased: true,
-        amount: data?.upcoming_appointment.toString() || '0',
+        amount: summaryInvoice?.total_draft?.toString() || '0',
         icon: CarbonRuleDraft,
         iconWrapperFill: '#1A55EE',
-        percentage:
-          data?.upcoming_appointment_increased_last_month.toString() || '0',
+        percentage: summaryInvoice?.total_draft?.toString() || '0',
       },
       {
         title: 'Awaiting Approval',
         increased: true,
-        amount: data?.today_appointment.toString() || '0',
+        amount: summaryInvoice?.total_awaiting_approval?.toString() || '0',
         icon: TimeWhiteIcon,
-        percentage:
-          data?.today_appointment_increased_yesterday.toString() || '0',
+        percentage: summaryInvoice?.total_awaiting_approval?.toString() || '0',
         iconWrapperFill: '#ED3C59',
         yesterday: true,
       },
       {
-        title: 'Approve Invoice',
+        title: 'Approve',
         increased: false,
-        amount: data?.finished_appointment.toString() || '0',
+        amount: summaryInvoice?.total_approve?.toString() || '0',
         icon: OrderApproveOutline,
-        percentage:
-          data?.finished_appointment_increased_last_month.toString() || '0',
+        percentage: summaryInvoice?.total_approve?.toString() || '0',
         iconWrapperFill: '#08CB94',
       },
       {
-        title: 'Cancelled Invoice',
+        title: 'Waiting Payment',
         increased: true,
-        amount: data?.cancelled_appointment.toString() || '0',
+        amount: summaryInvoice?.total_cancelled?.toString() || '0',
+        icon: WalletWhiteIcon,
+        percentage: summaryInvoice?.total_cancelled?.toString() || '0',
+        iconWrapperFill: '#F5A623',
+      },
+      {
+        title: 'Cancelled',
+        increased: true,
+        amount: summaryInvoice?.total_cancelled?.toString() || '0',
         icon: CarbonRuleCancelled,
-        percentage:
-          data?.cancelled_appointment_increased_last_month.toString() || '0',
+        percentage: summaryInvoice?.total_cancelled?.toString() || '0',
         iconWrapperFill: '#7824B3',
       },
     ],
     [
-      data?.cancelled_appointment,
-      data?.finished_appointment,
-      data?.today_appointment,
-      data?.upcoming_appointment,
-      data?.cancelled_appointment_increased_last_month,
-      data?.finished_appointment_increased_last_month,
-      data?.today_appointment_increased_yesterday,
-      data?.upcoming_appointment_increased_last_month,
+      summaryInvoice?.total_draft,
+      summaryInvoice?.total_awaiting_approval,
+      summaryInvoice?.total_approve,
+      summaryInvoice?.total_cancelled,
     ]
   );
 

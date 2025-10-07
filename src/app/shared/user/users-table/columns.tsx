@@ -83,7 +83,7 @@ export const getColumns = ({
     onHeaderCell: () => onHeaderCellClick('role'),
     dataIndex: 'role',
     key: 'role',
-    width: 250,
+    width: 200,
     render: (role: User['role']) => role.name,
   },
   {
@@ -100,7 +100,37 @@ export const getColumns = ({
     dataIndex: 'created_at',
     key: 'created_at',
     width: 200,
-    render: (value: Date) => <DateCell date={value} clock />,
+    render: (value: Date) => (
+      <DateCell
+        date={value}
+        clock
+        dateFormat="DD/MM/YYYY"
+        className="flex flex-col-reverse"
+      />
+    ),
+  },
+  {
+    title: (
+      <HeaderCell
+        title="Updated"
+        sortable
+        ascending={
+          sortConfig?.direction === 'asc' && sortConfig?.key === 'updated_at'
+        }
+      />
+    ),
+    onHeaderCell: () => onHeaderCellClick('updated_at'),
+    dataIndex: 'updated_at',
+    key: 'updated_at',
+    width: 200,
+    render: (value: Date) => (
+      <DateCell
+        date={value}
+        clock
+        dateFormat="DD/MM/YYYY"
+        className="flex flex-col-reverse"
+      />
+    ),
   },
   // {
   //   title: <HeaderCell title="Permissions" />,
@@ -126,7 +156,7 @@ export const getColumns = ({
     title: <HeaderCell title="Status" />,
     dataIndex: 'status',
     key: 'status',
-    width: 130,
+    width: 200,
     render: (status: number) => <StatusSelect selectItem={status} />,
   },
   {
@@ -149,14 +179,16 @@ export const getColumns = ({
           </Link>
         </Tooltip>
         <Tooltip size="sm" content={'View User'} placement="top" color="invert">
-          <ActionIcon
-            as="span"
-            size="sm"
-            variant="outline"
-            className="hover:!border-gray-900 hover:text-gray-700"
-          >
-            <EyeIcon className="h-4 w-4" />
-          </ActionIcon>
+          <Link href={routes.user.userDetail(user.id.toString())}>
+            <ActionIcon
+              as="span"
+              size="sm"
+              variant="outline"
+              className="hover:!border-gray-900 hover:text-gray-700"
+            >
+              <EyeIcon className="h-4 w-4" />
+            </ActionIcon>
+          </Link>
         </Tooltip>
         <DeletePopover
           title={`Delete this user`}

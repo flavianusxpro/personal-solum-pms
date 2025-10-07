@@ -292,7 +292,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
             <Text className="flex items-center justify-between border-b border-muted py-3.5 lg:py-5">
               Tax Fee:
               <Text as="span" className="font-semibold">
-                {Number(dataInvoice?.tax_fee)}%
+                {Number(dataInvoice?.tax_fee)}
               </Text>
             </Text>
             <Text className="flex items-center justify-between border-b border-muted py-3.5 lg:py-5">

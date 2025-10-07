@@ -23,6 +23,12 @@ interface ApiResponseWithPagination {
   page: number;
   perPage: number;
   data: any;
+  summary?: {
+    total_draft: number;
+    total_approve: number;
+    total_awaiting_approval: number;
+    total_cancelled: number;
+  };
 }
 interface ApiUsersResponseWithPagination {
   success: boolean;

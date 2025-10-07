@@ -4,32 +4,21 @@ import PageHeader from '../../ui/page-header';
 import { TabButton } from '../../ui/tab-button';
 import { startTransition, useEffect, useState } from 'react';
 import SimpleBar from 'simplebar-react';
-import UserDetails from './tab-user-details';
-import TabPassword from './tab-password';
-import TabActivity from './tab-activity';
+import TabActivity from '../edit-user/tab-activity';
 import { useParams } from 'next/navigation';
 import { useGetUserById } from '@/hooks/useUser';
 import useQueryParams from '@/core/hooks/use-query-params';
 
 export const navItems = [
   {
-    value: 'user',
-    label: 'Personal Details',
-  },
-  {
-    value: 'password',
-    label: 'Password',
-  },
-  {
     value: 'activity',
     label: 'Activity',
   },
 ];
 
-export default function EditUser({ isView = false }: { isView?: boolean }) {
+export default function DetailUser({ isView = false }: { isView?: boolean }) {
   const id = useParams().id as string;
   const query = useQueryParams().getParams();
-  const isTabPassword = query.tab === 'password';
   const isTabActivity = query.tab === 'activity';
 
   const [tab, setTab] = useState(navItems[0].value);
@@ -43,27 +32,21 @@ export default function EditUser({ isView = false }: { isView?: boolean }) {
   }
 
   const pageHeader = {
-    title: id ? `${dataUser?.name ?? '-'}` : 'Create User',
+    title: 'Detail User',
     breadcrumb: [
       {
         href: routes.user.dashboard,
         name: 'Users',
       },
       {
-        name: 'Account Settings',
+        name: 'Detail',
       },
     ],
   };
 
   useEffect(() => {
-    if (isTabPassword) {
-      setTab('password');
-    } else if (isTabActivity) {
-      setTab('activity');
-    } else {
-      setTab('user');
-    }
-  }, [isTabPassword, isTabActivity]);
+    setTab('activity');
+  }, [isTabActivity]);
 
   return (
     <>
@@ -82,9 +65,6 @@ export default function EditUser({ isView = false }: { isView?: boolean }) {
             ))}
           </nav>
         </SimpleBar>
-
-        {tab === 'user' && <UserDetails isView={isView} />}
-        {tab === 'password' && <TabPassword isView={isView} />}
         {tab === 'activity' && <TabActivity isView={isView} />}
       </div>
     </>

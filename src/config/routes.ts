@@ -10,7 +10,7 @@ export const routes = {
     dashboard: '/user',
     create: '/user/create',
     edit: (id: string) => `/user/edit/${id}`,
-    userDetail: (id: string) => `/user/${id}`,
+    userDetail: (id: string) => `/user/detail/${id}`,
   },
   patient: {
     list: '/patient',
