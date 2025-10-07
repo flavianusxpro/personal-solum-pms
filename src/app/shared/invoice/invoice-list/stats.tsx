@@ -144,7 +144,7 @@ export default function InvoiceListStats({ className }: InvoiceStatsType) {
   const statData: StatType[] = useMemo(
     () => [
       {
-        title: 'Draft Appointment',
+        title: 'Draft Invoice',
         increased: true,
         amount: data?.upcoming_appointment.toString() || '0',
         icon: CarbonRuleDraft,
