@@ -196,7 +196,7 @@ export default function CreatDoctorModal() {
                     )}
                   />
                 </FormGroup>
-                <FormGroup title="Birth of Date" isLabel>
+                <FormGroup title="Date of Birth" isLabel>
                   <Input
                     placeholder="Birth of Dae"
                     type="date"

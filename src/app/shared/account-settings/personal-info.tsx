@@ -81,7 +81,7 @@ export default function PersonalInfoView() {
                   />
                 </FormGroup>
                 <FormGroup
-                  title="Birth of Date"
+                  title="Date of Birth"
                   className="pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
                 >
                   <Input

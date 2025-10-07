@@ -197,6 +197,7 @@ export interface IGetAllPatientsResponse extends ApiResponseWithPagination {
     emergency_email: null;
     emergency_relationship: null;
     verification_token: null | string;
+    verification_status?: boolean;
     timezone: string;
     created_at: string;
     updated_at: string;

@@ -42,9 +42,9 @@ export default function ExpandedOrderRow({
               options={genderOption}
             />
           </FormGroup>
-          <FormGroup title="Birth of Date">
+          <FormGroup title="Date of Birth">
             <Input
-              placeholder="Birth of Date"
+              placeholder="Date of Birth"
               type="date"
               value={data?.date_of_birth}
               disabled
