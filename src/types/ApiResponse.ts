@@ -510,6 +510,7 @@ export interface IGetInvoiceByIdResponse extends ApiResponse {
     due_date: string;
     status: number;
     note: string;
+    internal_note?: string;
     amount: string;
     tax_fee: string;
     other_fee: string;
