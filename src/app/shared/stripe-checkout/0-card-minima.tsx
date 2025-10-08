@@ -187,4 +187,9 @@ const CardMinimal0 = forwardRef<
   </Elements>
 ));
 
+CheckoutForm.displayName = 'CheckoutForm';
+InjectedCheckoutForm.displayName = 'InjectedCheckoutForm';
+ForwardedCheckoutForm.displayName = 'ForwardedCheckoutForm';
+ForwardedInjectedCheckoutForm.displayName = 'ForwardedInjectedCheckoutForm';
+CardMinimal0.displayName = 'CardMinimal0';
 export default CardMinimal0;
