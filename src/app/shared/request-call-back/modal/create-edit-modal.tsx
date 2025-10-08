@@ -107,7 +107,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
           >
             <Flex justify="between" align="center" gap="4">
               <Title className="text-lg">
-                {isView ? 'View' : data ? 'Update' : 'Create'} Request Callback
+                {isView ? 'View' : data ? 'Update' : 'Create'} Callback Queue
               </Title>
               <ActionIcon variant="text" onClick={closeModal} className="">
                 <PiX className="h-6 w-6" />

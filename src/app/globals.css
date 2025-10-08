@@ -283,12 +283,12 @@
       0px 2px 6px rgba(0, 0, 0, 0.05);
   }
 
-  .section-container{
+  .section-container {
     @apply flex flex-col gap-7;
   }
 
   .detail-form-container {
-    @apply mb-10 grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2
+    @apply mb-10 grid grid-cols-1 gap-7 @2xl:gap-9 @3xl:gap-11 md:grid-cols-2;
   }
 }
 
@@ -1250,11 +1250,10 @@ div[style='z-index: 1000001;'],
   @apply border-0;
 }
 
-
-.rbc-event, 
+.rbc-event,
 .rbc-day-slot .rbc-background-event {
-  @apply rounded-md px-2 text-sm font-medium h-fit !important;
-} 
+  @apply h-fit rounded-md px-2 text-sm font-medium !important;
+}
 
 .rbc-time-view .rbc-row {
   @apply h-4;
@@ -1420,7 +1419,7 @@ div[style='z-index: 1000001;'],
 .react-calendar__navigation button:enabled:focus {
   @apply !bg-transparent;
 }
-.react-calendar__tile--active{
+.react-calendar__tile--active {
   @apply !bg-[#2B7F75] text-gray-0;
 }
 
@@ -1464,7 +1463,7 @@ div[style='z-index: 1000001;'],
 .job-schedule-calendar button.react-calendar__tile--active,
 .job-schedule-calendar button.react-calendar__tile--hasActive,
 .job-schedule-calendar button.react-calendar__tile--now {
-  @apply !bg-transparent !text-gray-600  hover:!bg-[#e6e6e6] dark:hover:!bg-gray-100;
+  @apply !bg-transparent !text-gray-600 hover:!bg-[#e6e6e6] dark:hover:!bg-gray-100;
 }
 .job-schedule-calendar button.react-calendar__month-view__days__day {
   @apply relative;
@@ -1529,4 +1528,9 @@ div[style='z-index: 1000001;'],
 
 [dir='rtl'] :is(.rizzui-checkbox-icon, .rizzui-switch-on-icon) {
   @apply -scale-x-100;
+}
+
+.rbc-month-row .rbc-row-content {
+  overflow-y: auto;
+  max-height: 200px;
 }

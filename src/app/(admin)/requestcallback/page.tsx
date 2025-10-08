@@ -4,15 +4,15 @@ import { metaObject } from '@/config/site.config';
 import RequestCallBackTable from '@/app/shared/request-call-back/table/table';
 
 export const metadata = {
-  ...metaObject('Request Call Back'),
+  ...metaObject('Callback Queue'),
 };
 
 const pageHeader = {
-  title: 'Request Call Back',
+  title: 'Callback Queue',
   breadcrumb: [
     {
       href: routes.requestCallBack,
-      name: 'Request Call Back',
+      name: 'Callback Queue',
     },
     {
       name: 'List',

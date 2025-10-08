@@ -1,6 +1,6 @@
 import { routes } from '@/config/routes';
 import dynamic from 'next/dynamic';
-import { PiMegaphone, PiPlugsConnected } from 'react-icons/pi';
+import { PiMegaphone, PiPlugsConnected, PiTrendUp } from 'react-icons/pi';
 import { LuFileChartColumn } from 'react-icons/lu';
 
 // Dynamic imports untuk ikon yang digunakan
@@ -102,7 +102,7 @@ export const adminMenuItems = [
     permissionReadName: ['dashboard'],
   },
   {
-    name: 'Request Call Back',
+    name: 'Callback Queue',
     href: routes.requestCallBack,
     icon: <PiDoorOpen />,
     permissionReadName: ['requestcallback'],
@@ -240,7 +240,7 @@ export const adminMenuItems = [
   //   permissionReadName: ['report'],
   // },
   {
-    name: 'Business Insight',
+    name: 'Business Subscription Insight',
     href: routes.report,
     icon: <PiBriefcase />,
     permissionReadName: [],
@@ -266,13 +266,13 @@ export const adminMenuItems = [
     ],
   },
   {
-    name: 'Clinic Performance Analytics',
+    name: 'Clinic Performance',
     href: routes.report,
     icon: <PiChartLine />,
     permissionReadName: [],
     dropdownItems: [
       {
-        name: 'Clinic Summary Dashboard',
+        name: 'Clinic Overview',
         href: routes.report,
         icon: <PiUser />,
         permissionReadName: [],
@@ -284,13 +284,13 @@ export const adminMenuItems = [
         permissionReadName: [],
       },
       {
-        name: 'Appointment & Capacity Report',
+        name: 'Appointment & Capacity',
         href: routes.report,
         icon: <PiUser />,
         permissionReadName: [],
       },
       {
-        name: 'Service Performance',
+        name: 'Service Insight',
         href: routes.report,
         icon: <PiUser />,
         permissionReadName: [],
@@ -298,7 +298,7 @@ export const adminMenuItems = [
     ],
   },
   {
-    name: 'Patient & Engagement Reports',
+    name: 'Patient & Engagement',
     href: routes.report,
     icon: <PiUsers />,
     permissionReadName: [],
@@ -310,25 +310,25 @@ export const adminMenuItems = [
         permissionReadName: [],
       },
       {
-        name: 'Engagement & Retention',
+        name: 'Engagement Trends',
         href: routes.report,
         icon: <PiUser />,
         permissionReadName: [],
       },
       {
-        name: 'Feedback & Satisfaction (NPS/CSAT)',
+        name: 'Satisfaction Scores',
         href: routes.report,
         icon: <PiUser />,
         permissionReadName: [],
       },
       {
-        name: 'Communication Insights',
+        name: 'Communication Analytics',
         href: routes.report,
         icon: <PiUser />,
         permissionReadName: [],
       },
       {
-        name: 'Referral & Source Tracking',
+        name: 'Referral Sources',
         href: routes.report,
         icon: <PiUser />,
         permissionReadName: [],
@@ -336,37 +336,37 @@ export const adminMenuItems = [
     ],
   },
   {
-    name: 'Financial & Billing Reports',
+    name: 'Financial Reports',
     href: routes.report,
     icon: <PiCreditCard />,
     permissionReadName: [],
     dropdownItems: [
       {
-        name: 'Revenue Summary',
+        name: 'Revenue Breakdown',
         href: routes.report,
         icon: <PiUser />,
         permissionReadName: [],
       },
       {
-        name: 'Accounts Receivable (AR) Aging',
+        name: 'Accounts Receivable',
         href: routes.report,
         icon: <PiUser />,
         permissionReadName: [],
       },
       {
-        name: 'Payment Methods Analysis',
+        name: 'Payment Analysis',
         href: routes.report,
         icon: <PiUser />,
         permissionReadName: [],
       },
       {
-        name: 'Refund & Adjustment Logs',
+        name: 'Refund & Adjustments',
         href: routes.report,
         icon: <PiUser />,
         permissionReadName: [],
       },
       {
-        name: 'Financial Forecast ',
+        name: 'Financial Forecasting ',
         href: routes.report,
         icon: <PiUser />,
         permissionReadName: [],
@@ -374,10 +374,48 @@ export const adminMenuItems = [
     ],
   },
   {
-    name: 'Compliance, Operations & System Health',
+    name: 'Marketing & Traffic Analytics',
     href: routes.report,
-    icon: <PiShieldCheck />,
+    icon: <PiTrendUp />,
     permissionReadName: [],
+    dropdownItems: [
+      {
+        name: 'Traffic Overview',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Acquisition Channels',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Campaign Performance',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'SEO & Keyword Insights',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Conversion Funnel',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Ad Spend & ROI',
+        href: routes.report,
+        icon: <PiUser />,
+        permissionReadName: [],
+      },
+    ],
   },
   {
     name: 'Custom Reports (optional)',
