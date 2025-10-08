@@ -27,15 +27,14 @@ import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
 import { IGetDoctorByClinicResponse } from '@/types/ApiResponse';
 import cn from '@/core/utils/class-names';
 import { PiBell, PiCalendar } from 'react-icons/pi';
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-import customParseFormat from "dayjs/plugin/customParseFormat";
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(customParseFormat);
-
 
 const FormSchema = appointmentBookSchema['appointmentDate'];
 
@@ -100,7 +99,7 @@ export default function DateTime() {
     if (!formData.date && formData.doctorId && disabledDate.length > 0) {
       let checkDate = dayjs();
       let found = false;
-      const maxDaysToCheck = 30; 
+      const maxDaysToCheck = 30;
 
       for (let i = 0; i < maxDaysToCheck && !found; i++) {
         const dateToCheck = checkDate.add(i, 'day');
@@ -125,12 +124,12 @@ export default function DateTime() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className='flex flex-col gap-10 overflow-y-auto h-[549px] scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 p-5'>
+      <div className="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 flex h-[549px] flex-col gap-10 overflow-y-auto p-5">
         <Text className="text-base font-semibold">
           Select Appointment Date:
         </Text>
 
-        <div className='flex justify-between flex-col md:flex-row'>
+        <div className="flex flex-col justify-between md:flex-row">
           <div className="flex-[1]">
             <Calendar
               onChange={(date) => {
@@ -160,13 +159,12 @@ export default function DateTime() {
                   return isDisabled ? 'bg-green-100' : '';
                 }
               }}
-              className="!border-0 !bg-transparent !font-inter !text-base !p-5 !w-full"
-
+              className="!w-full !border-0 !bg-transparent !p-5 !font-inter !text-base"
             />
             <FieldError error={errors.date?.message} className="!mt-2" />
           </div>
 
-          <div className='flex-[1] overflow-y-auto'>
+          <div className="flex-[1] overflow-y-auto">
             {isLoadingDoctor && <Loader variant="spinner" size="xl" />}
             {!isLoadingDoctor && dataDoctor?.length === 0 && (
               <div className="flex flex-col items-center justify-center gap-4">
@@ -310,24 +308,33 @@ function DoctorTime({
       }));
       setHasAutoSelected(true);
     }
-  }, [timeList, formData.doctorId, doctor.id, hasAutoSelected, setValue, setFormData, doctor.cost.amount, formData.doctorTime]);
+  }, [
+    timeList,
+    formData.doctorId,
+    doctor.id,
+    hasAutoSelected,
+    setValue,
+    setFormData,
+    doctor.cost.amount,
+    formData.doctorTime,
+  ]);
 
   if (isLoading) {
     return <Loader />;
   }
 
   const toSydneyFromAvail = (avail: string) => {
-    const today = dayjs().format("YYYY-MM-DD");
-    return dayjs(`${today} ${avail}`, "YYYY-MM-DD h:mm A")
-      .tz("Australia/Sydney")
-      .format("h:mm A");
+    const today = dayjs().format('YYYY-MM-DD');
+    return dayjs(`${today} ${avail}`, 'YYYY-MM-DD h:mm A')
+      .tz('Australia/Sydney')
+      .format('h:mm A');
   };
 
   const toSydneyFromValue = (value: string) => {
-    const today = dayjs().format("YYYY-MM-DD");
-    return dayjs(`${today} ${value}`, "YYYY-MM-DD HH:mm")
-      .tz("Australia/Sydney")
-      .format("HH:mm");
+    const today = dayjs().format('YYYY-MM-DD');
+    return dayjs(`${today} ${value}`, 'YYYY-MM-DD HH:mm')
+      .tz('Australia/Sydney')
+      .format('HH:mm');
   };
 
   return (
@@ -335,8 +342,9 @@ function DoctorTime({
       {timeList.length > 0 ? (
         <div className="relative">
           <div
-            className={`mt-4 grid transition-all delay-200 duration-1000 ease-in-out ${currentOpen === doctor.id ? 'max-h-[500px]' : 'max-h-20'
-              } grid-cols-5 gap-2 overflow-hidden`}
+            className={`mt-4 grid transition-all delay-200 duration-1000 ease-in-out ${
+              currentOpen === doctor.id ? 'max-h-[500px]' : 'max-h-20'
+            } grid-cols-5 gap-2 overflow-hidden`}
           >
             {timeList.map(({ availTime, valueTime }, idx) => {
               const sydneyAvailTime = toSydneyFromAvail(availTime);
@@ -347,23 +355,23 @@ function DoctorTime({
                   key={idx}
                   type="button"
                   className={cn(
-                    "rounded-md px-2 py-2 text-sm w-[80px] hover:bg-green-300",
+                    'w-[80px] rounded-md px-2 py-2 text-sm hover:bg-green-300',
                     formData.doctorTime === sydneyValueTime
-                      ? "bg-green-300" 
-                      : "bg-green-200/50" 
+                      ? 'bg-green-300'
+                      : 'bg-green-200/50'
                   )}
                   onClick={() => {
-                    setValue("doctorTime", sydneyValueTime);
-                    setValue("doctorId", doctor.id as number);
-                    setValue("fee", doctor.cost.amount || "");
+                    setValue('doctorTime', sydneyValueTime);
+                    setValue('doctorId', doctor.id as number);
+                    setValue('fee', doctor.cost.amount || '');
 
                     setFormData((prev) => ({
                       ...prev,
                       doctorTime: sydneyValueTime,
                       doctorId: doctor.id as number,
-                      fee: doctor.cost.amount || "",
+                      fee: doctor.cost.amount || '',
                       doctor_name: `${doctor.first_name ?? doctor.first_name} ${doctor.last_name ?? doctor.last_name}`,
-                      doctor_tz: doctor?.timezone_doctor
+                      doctor_tz: doctor?.timezone_doctor,
                     }));
                   }}
                 >
@@ -371,7 +379,6 @@ function DoctorTime({
                 </button>
               );
             })}
-
 
             <div
               className={cn(

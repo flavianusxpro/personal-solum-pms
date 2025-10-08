@@ -3,8 +3,8 @@
 import { AiOutlineFileDone } from 'react-icons/ai';
 import { CgCreditCard, CgLink } from 'react-icons/cg';
 import Footer from './footer';
-import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Input, Title } from 'rizzui';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
+import { Button, Input, Title, RadioGroup, AdvancedRadio } from 'rizzui';
 import { PAYMENT_SUMMARY } from './appointment.constants';
 import cn from '@/core/utils/class-names';
 import { useAtom } from 'jotai';
@@ -14,21 +14,29 @@ import { formDataAtom } from '.';
 import toast from 'react-hot-toast';
 import { IPayloadPostAppoinment } from '@/types/paramTypes';
 import { usePostCreateAppointment } from '@/hooks/useAppointment';
-import CardMinimal0 from '@/app/shared/stripe-checkout/0-card-minima';
+import CardMinimal0, {
+  CardMinimal0Ref,
+} from '@/app/shared/stripe-checkout/0-card-minima';
 import CheckCircleIcon from '@/core/components/icons/check-circle';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import { LiaCcAmex, LiaWalletSolid } from "react-icons/lia";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-import "dayjs/locale/id";
-import { FaApplePay, FaGooglePay, FaMoneyBill, FaPaypal } from 'react-icons/fa6';
+import { LiaCcAmex, LiaWalletSolid } from 'react-icons/lia';
+import { PiMoneyWavy, PiCheckCircleFill } from 'react-icons/pi';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import 'dayjs/locale/id';
+import {
+  FaApplePay,
+  FaGooglePay,
+  FaMoneyBill,
+  FaPaypal,
+} from 'react-icons/fa6';
 import { useGetDoctorByClinic } from '@/hooks/useClinic';
 import useAppointment from './useAppointment';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
-dayjs.locale("id");
+dayjs.locale('id');
 
 const STEP = {
   ESTIMATE_COST: 'estimate-cost',
@@ -39,32 +47,31 @@ const STEP = {
 export default function AppointmentPayment() {
   const [currencyData] = useAtom(currencyAtom);
   const [showSaveButton, setShowSaveButton] = useState(true);
-  const [selectedMethod, setSelectedMethod] = useState<'card' | 'link'>('card');
+  const [selectedMethod, setSelectedMethod] = useState<
+    'visa-master-card' | 'counter' | 'link'
+  >('visa-master-card');
   const [formData, setFormData] = useAtom(formDataAtom);
   const [inputCouponCode, setInputCouponCode] = React.useState('');
   const [step, setStep] = React.useState(STEP.ESTIMATE_COST);
   const { closeModal } = useModal();
   const local_tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const cardRef = useRef<CardMinimal0Ref>(null);
 
-  const {
-    convertTime,
-    getCountryFromPhone,
-    getTimezoneName
-  } = useAppointment()
+  const { convertTime, getCountryFromPhone, getTimezoneName } =
+    useAppointment();
 
-  const { mutate: mutateCouponValidation, data: dataCoupon } = useCouponCodeValidation();
+  const { mutate: mutateCouponValidation, data: dataCoupon } =
+    useCouponCodeValidation();
   const { mutate } = usePostCreateAppointment();
-  
-  const { data: dataDoctor } = useGetDoctorByClinic(
-    {
-      id: formData?.clinicId?.toString() as string,
-      page: 1,
-      perPage: 10,
-      treatment_type: formData.treatment,
-      problem_type: formData.patient_problem,
-      date: formData.date,
-    }
-  );
+
+  const { data: dataDoctor } = useGetDoctorByClinic({
+    id: formData?.clinicId?.toString() as string,
+    page: 1,
+    perPage: 10,
+    treatment_type: formData.treatment,
+    problem_type: formData.patient_problem,
+    date: formData.date,
+  });
 
   const couponValue = useMemo(() => {
     if (dataCoupon?.data?.discount_type === 'percent') {
@@ -92,7 +99,7 @@ export default function AppointmentPayment() {
       onSuccess: (ress) => {
         setFormData((prev) => ({
           ...prev,
-          couponId: `${ress?.data.id}`
+          couponId: `${ress?.data.id}`,
         }));
         toast.success('Coupon code applied successfully');
       },
@@ -129,7 +136,7 @@ export default function AppointmentPayment() {
       meeting_preference: 'ZOOM',
       patientId: formData.patient_id as number,
       additional_information: { note: formData.note },
-      ...(formData.couponId ? { couponId: formData.couponId } : {})
+      ...(formData.couponId ? { couponId: formData.couponId } : {}),
     };
 
     mutate(payload, {
@@ -147,56 +154,94 @@ export default function AppointmentPayment() {
     <>
       {step == STEP.ESTIMATE_COST && (
         <div>
-          <div className="flex flex-col md:flex-row h-[549px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 justify-between">
-            <div className="flex h-full bg-[#3666AA08] flex-1 flex-col p-5">
-              <div className="flex flex-1 flex-col border-b boorder-[1px]">
-                <h1 className="text-[14px] font-bold">Patient Summary</h1>
-                <div className='flex flex-col'>
-                  <h3 className='text-[12px] font-bold'>
+          <div className="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 flex h-[549px] flex-col justify-between overflow-y-auto md:flex-row">
+            <div className="flex h-full flex-1 flex-col gap-6 bg-[#3666AA08] p-5">
+              <div className="boorder-[1px] flex flex-1 flex-col">
+                <h1 className="text-lg font-bold">Patient Summary</h1>
+                <div className="flex flex-col">
+                  <h3 className="text-[12px] font-bold">
                     {formData.patient_name}
                   </h3>
-                  <p className='text-[12px]'>
+                  <p className="text-[12px]">
                     {formData.patient_address ?? '-'}
                   </p>
                   <p className="text-[12px]">
-                    {formData.patient_mobile_number ?? "-"} (
+                    {formData.patient_mobile_number ?? '-'} (
                     {formData.patient_mobile_number
                       ? getCountryFromPhone(formData.patient_mobile_number)
-                      : "-"}
+                      : '-'}
                     )
                   </p>
                   <p className="text-[12px]">
-                    {convertTime(formData.date, formData.doctorTime, `${formData.doctor_tz}`, local_tz).date} -{" "}
+                    {
+                      convertTime(
+                        formData.date,
+                        formData.doctorTime,
+                        `${formData.doctor_tz}`,
+                        local_tz
+                      ).date
+                    }{' '}
+                    -{' '}
                     <strong>
-                      {convertTime(formData.date, formData.doctorTime, `${formData.doctor_tz}`, local_tz).time}
-                    </strong>{" "}
-                    {getTimezoneName(local_tz, formData.date, formData.doctorTime)}
+                      {
+                        convertTime(
+                          formData.date,
+                          formData.doctorTime,
+                          `${formData.doctor_tz}`,
+                          local_tz
+                        ).time
+                      }
+                    </strong>{' '}
+                    {getTimezoneName(
+                      local_tz,
+                      formData.date,
+                      formData.doctorTime
+                    )}
                   </p>
                 </div>
               </div>
 
-              <div className="flex flex-1 flex-col border-b boorder-[1px]">
-                <h1 className="text-[14px] font-semibold">Booking Summary</h1>
-                <div className='flex flex-col'>
-                  <h3 className='text-[12px] font-bold'>
+              <div className="boorder-[1px] flex flex-1 flex-col">
+                <h1 className="text-lg font-semibold">Booking Summary</h1>
+                <div className="flex flex-col">
+                  <h3 className="text-[12px] font-bold">
                     Dr. {formData.doctor_name} - {formData.treatment}
                   </h3>
                   <p className="text-[12px]">
-                    {convertTime(formData.date, formData.doctorTime, `${formData.doctor_tz}`, `${formData.doctor_tz}`).date} -{" "}
+                    {
+                      convertTime(
+                        formData.date,
+                        formData.doctorTime,
+                        `${formData.doctor_tz}`,
+                        `${formData.doctor_tz}`
+                      ).date
+                    }{' '}
+                    -{' '}
                     <strong>
-                      {convertTime(formData.date, formData.doctorTime, `${formData.doctor_tz}`, `${formData.doctor_tz}`).time}
-                    </strong>{" "}
-                    {getTimezoneName(`${formData.doctor_tz}`, formData.date, formData.doctorTime)}
+                      {
+                        convertTime(
+                          formData.date,
+                          formData.doctorTime,
+                          `${formData.doctor_tz}`,
+                          `${formData.doctor_tz}`
+                        ).time
+                      }
+                    </strong>{' '}
+                    {getTimezoneName(
+                      `${formData.doctor_tz}`,
+                      formData.date,
+                      formData.doctorTime
+                    )}
                   </p>
-                  <p className='text-[12px]'>
+                  <p className="text-[12px]">
                     Booking Via <strong>Zoom</strong>
                   </p>
                 </div>
               </div>
 
               <div className="flex flex-col">
-                <div className="flex mt-2 mb-2 gap-[10px]">
-                  <div className='flex flex-1 flex-col'>
+                <div className="mb-2 mt-2 flex gap-[10px]">
+                  <div className="flex flex-1 flex-col">
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
                       <AiOutlineFileDone className="text-xl" />
                     </span>
@@ -204,14 +249,14 @@ export default function AppointmentPayment() {
                     <h1 className="text-[12px] font-semibold">
                       PAYMENT REQUIRED
                     </h1>
-                    <p className='text-[12px]'>
+                    <p className="text-[12px]">
                       We require a payment method before your appointment can be
                       confirmed.
                     </p>
                   </div>
 
-                  <div className='flex flex-1 flex-col'>
-                    <div className='flex gap-3'>
+                  <div className="flex flex-1 flex-col">
+                    <div className="flex gap-3">
                       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
                         <LiaWalletSolid className="text-xl" />
                       </span>
@@ -232,108 +277,76 @@ export default function AppointmentPayment() {
                     <h1 className="text-[12px] font-semibold">
                       SURCHARGE CREDIT CARD
                     </h1>
-                    <p className='text-[12px]'>
-                      A processing fee of 2.9% + $0.30 applies. Including American Express, Visa, Mastercard, Apple Pay, Google Pay
+                    <p className="text-[12px]">
+                      A processing fee of 2.9% + $0.30 applies. Including
+                      American Express, Visa, Mastercard, Apple Pay, Google Pay
                     </p>
                   </div>
                 </div>
 
                 <div className="flex gap-[10px]">
-                  <div className='flex flex-1 flex-col'>
+                  <div className="flex flex-1 flex-col">
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
                       <FaPaypal className="text-xl" />
                     </span>
 
-                    <h1 className="text-[12px] font-semibold">
-                      Paypal Free
-                    </h1>
-                    <p className='text-[12px]'>
+                    <h1 className="text-[12px] font-semibold">Paypal Free</h1>
+                    <p className="text-[12px]">
                       An additional fee applies when paying with PayPal.
                     </p>
                   </div>
 
-                  <div className='flex flex-1 flex-col'>
+                  <div className="flex flex-1 flex-col">
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3666AA1A]">
                       <FaMoneyBill className="text-xl" />
                     </span>
 
-                    <h1 className="text-[12px] font-semibold">
-                      Pay Later Fee
-                    </h1>
-                    <p className='text-[12px]'>
-                      An additional fee applies when choosing the Pay Later option.
+                    <h1 className="text-[12px] font-semibold">Pay Later Fee</h1>
+                    <p className="text-[12px]">
+                      An additional fee applies when choosing the Pay Later
+                      option.
                     </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-1 h-full flex-col bg-white p-5">
-              <div className="flex flex-col">
-                <h1 className="text-[14px] font-medium">SUMMARY</h1>
-                <div className="flex flex-col">
-                  {PAYMENT_SUMMARY.map((item, index) => (
-                    <div key={index} className="flex justify-between">
-                      <h2 className="text-[12px] font-medium text-[#777777]">
-                        {item.label}
-                      </h2>
-                      <p className="text-[14px] font-medium">
-                        {item.label === 'Sub Total'
-                          ? `${currencyData.active.symbol} ${formData.fee ? Number(formData.fee) : ''}`
-                          : item.label === 'Merchant Fee'
-                            ? `${currencyData.active.symbol}-`
-                            : item.label === 'Coupon'
-                              ? `${couponValue ?? '-'}`
-                              : null}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Enter Cupon Code"
-                    className="flex-1"
-                    onChange={(e) => setInputCouponCode(e.target.value)}
-                    value={inputCouponCode}
-                  />
-                  <Button
-                    className="rounded-[6px] bg-[#3666AA] px-[16px] py-[12px] text-[14px] font-semibold text-white"
-                    onClick={() => couponValidation(inputCouponCode)}
-                  >
-                    Apply
-                  </Button>
-                </div>
-                <div className="mt-2 w-full border-[1px] border-t border-[#00000026]/15"></div>
-                <div className="flex justify-between items-center">
-                  <h1 className="text-[14px] font-medium">Total Cost</h1>
-                  <p className="text-[14px] font-medium">
-                    {currencyData.active.symbol}
-                    {Number(totalValue)}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex flex-col mt-4">
+            <div className="flex h-full flex-1 flex-col gap-10 bg-white p-6">
+              <div className="mt-4 flex flex-col">
                 <h1 className="text-[14px] font-medium">PAYMENT</h1>
                 <div className="pt-4">
                   <div className="flex gap-2">
                     <Button
-                      onClick={() => setSelectedMethod('card')}
-                      className={`flex h-[69px] flex-1 flex-col items-center justify-center gap-[8px] rounded-[6px] px-[16px] py-[12px] text-center text-[14px] ${selectedMethod === 'card'
-                        ? 'bg-[#3666AA1A]/10 text-[#3666AA]'
-                        : 'bg-white text-[#A19F9F]'
-                        }`}
+                      onClick={() => setSelectedMethod('visa-master-card')}
+                      className={`flex h-[69px] flex-col items-center justify-center gap-[8px] rounded-[6px] px-[16px] py-[12px] text-center text-[14px] ${
+                        selectedMethod === 'visa-master-card'
+                          ? 'bg-[#3666AA1A]/10 text-[#3666AA]'
+                          : 'bg-white text-[#A19F9F]'
+                      }`}
                       variant="outline"
                     >
                       <CgCreditCard />
-                      <span>Card Number</span>
+                      <span>Visa / Master Card</span>
+                    </Button>
+                    <Button
+                      onClick={() => setSelectedMethod('counter')}
+                      className={`flex h-[69px] flex-1 flex-col items-center justify-center gap-[8px] rounded-[6px] px-[16px] py-[12px] text-center text-[14px] ${
+                        selectedMethod === 'counter'
+                          ? 'bg-[#3666AA1A]/10 text-[#3666AA]'
+                          : 'bg-white text-[#A19F9F]'
+                      }`}
+                      variant="outline"
+                    >
+                      <PiMoneyWavy />
+                      <span>Counter</span>
                     </Button>
                     <Button
                       onClick={() => setSelectedMethod('link')}
-                      className={`flex h-[69px] flex-1 flex-col items-center justify-center gap-[8px] rounded-[6px] px-[16px] py-[12px] text-center text-[14px] ${selectedMethod === 'link'
-                        ? 'bg-[#3666AA1A]/10 text-[#3666AA]'
-                        : 'bg-white text-[#A19F9F]'
-                        }`}
+                      className={`flex h-[69px] flex-1 flex-col items-center justify-center gap-[8px] rounded-[6px] px-[16px] py-[12px] text-center text-[14px] ${
+                        selectedMethod === 'link'
+                          ? 'bg-[#3666AA1A]/10 text-[#3666AA]'
+                          : 'bg-white text-[#A19F9F]'
+                      }`}
                       variant="outline"
                     >
                       <CgLink />
@@ -342,11 +355,72 @@ export default function AppointmentPayment() {
                   </div>
 
                   <div className={cn('pt-4')}>
-                    {selectedMethod === 'card' && (
-                      <CardMinimal0 onSuccess={successPayment} />
+                    {selectedMethod === 'visa-master-card' && (
+                      <CardMinimal0 onSuccess={successPayment} ref={cardRef} />
                     )}
                     {selectedMethod === 'link' && <Link />}
                   </div>
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <h1 className="text-[14px] font-medium">SUMMARY</h1>
+                <div className="flex flex-col">
+                  {PAYMENT_SUMMARY.map((item, index) => {
+                    let value: string | null = null;
+                    if (item.label == 'Sub Total' && formData.fee) {
+                      value = `${currencyData.active.symbol} ${formData.fee ? Number(formData.fee) : ''}`;
+                    } else if (
+                      item.label == 'Merchant Fee' &&
+                      formData.script_renewal_fee
+                    ) {
+                      value = `${currencyData.active.symbol}-`;
+                    } else if (item.label == 'Coupon') {
+                      `${couponValue ?? '-'}`;
+                    }
+
+                    if (!value) return null;
+                    return (
+                      <div key={index} className="flex justify-between">
+                        <h2 className="text-[12px] font-medium text-[#777777]">
+                          {item.label}
+                        </h2>
+                        <p className="text-[14px] font-medium">{value}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+                {couponValue !== '-' && (
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter Cupon Code"
+                      className="flex-1"
+                      onChange={(e) => setInputCouponCode(e.target.value)}
+                      value={inputCouponCode}
+                    />
+                    <Button
+                      className="rounded-[6px] bg-[#3666AA] px-[16px] py-[12px] text-[14px] font-semibold text-white"
+                      onClick={() => couponValidation(inputCouponCode)}
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                )}
+
+                <div className="mt-2 w-full border-[1px] border-t border-[#00000026]/15"></div>
+                <div className="flex items-center justify-between">
+                  <h1 className="text-[14px] font-medium">Total Cost</h1>
+                  <p className="text-[14px] font-medium">
+                    {currencyData.active.symbol}
+                    {Number(totalValue)}
+                  </p>
+                </div>
+                <div className="mt-4">
+                  <Button
+                    onClick={() => cardRef.current?.handleSubmit()}
+                    className="w-full bg-[#3666AA] px-4 py-3 font-semibold text-white"
+                  >
+                    Pay Now
+                  </Button>
                 </div>
               </div>
             </div>
@@ -357,7 +431,7 @@ export default function AppointmentPayment() {
       )}
 
       {step == STEP.CONFIRM && (
-        <div className='h-full flex justify-center items-center'>
+        <div className="flex h-full items-center justify-center">
           <div className="flex flex-col items-center justify-center gap-4 text-center">
             <CheckCircleIcon className="w-2h-28 h-28 text-green-600" />
             <div className="">
@@ -384,18 +458,44 @@ export default function AppointmentPayment() {
 }
 
 const Link = () => {
+  const [viaClicked, setViaClicked] = useState('');
+
+  const sendVia = [
+    { label: 'Email Only', value: 'email' },
+    { label: 'SMS Only', value: 'sms' },
+    { label: 'Email & SMS', value: 'email-sms' },
+  ];
   return (
     <>
-      <div className="flex">
+      {/* <div className="flex">
         <Input
           label="Email/Phone Number"
           placeholder="Email/Phone Number"
           className="flex-1"
         />
       </div>
-      <Button className="flex-[1] rounded-[6px] mt-4 bg-[#3666AA] px-[16px] py-[12px] text-[14px] w-full font-semibold text-white">
+      <Button className="mt-4 w-full flex-[1] rounded-[6px] bg-[#3666AA] px-[16px] py-[12px] text-[14px] font-semibold text-white">
         Submit
-      </Button>
+      </Button> */}
+      <RadioGroup
+        value={viaClicked}
+        setValue={setViaClicked}
+        className="col-span-full grid grid-cols-3 gap-4 @2xl:grid-cols-3 @4xl:gap-6"
+      >
+        {sendVia.map((via: any, index: number) => {
+          return (
+            <AdvancedRadio
+              key={index}
+              value={via.value}
+              contentClassName="px-4 py-6 flex items-center justify-between"
+              inputClassName="[&~span]:border-0 [&~span]:ring-1 [&~span]:ring-gray-200 [&~span:hover]:ring-primary [&:checked~span:hover]:ring-primary [&:checked~span]:border-1 [&:checked~.rizzui-advanced-checkbox]:ring-2 [&~span>.icon]:opacity-0 [&:checked~span>.icon]:opacity-100"
+            >
+              <span>{via.label}</span>
+              <PiCheckCircleFill className="icon h-5 min-w-[1.25rem] text-primary" />
+            </AdvancedRadio>
+          );
+        })}
+      </RadioGroup>
     </>
   );
 };

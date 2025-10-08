@@ -212,13 +212,13 @@ export const adminMenuItems = [
     permissionReadName: [],
   },
   {
-    name: 'Email Broadcast (coming soon)',
+    name: 'Email Broadcast',
     href: routes.marketing.emailMarketing,
     icon: <PiEnvelopeLight />,
     permissionReadName: [],
   },
   {
-    name: 'Sms Broadcast (coming soon)',
+    name: 'Sms Broadcast',
     href: routes.marketing.smsMarketing,
     icon: <PiChatCircleLight />,
     permissionReadName: [],
@@ -240,7 +240,7 @@ export const adminMenuItems = [
   //   permissionReadName: ['report'],
   // },
   {
-    name: 'Business Subscription Insight',
+    name: 'Business Insight',
     href: routes.report,
     icon: <PiBriefcase />,
     permissionReadName: [],
@@ -374,7 +374,7 @@ export const adminMenuItems = [
     ],
   },
   {
-    name: 'Marketing & Traffic Analytics',
+    name: 'Marketing Insights',
     href: routes.report,
     icon: <PiTrendUp />,
     permissionReadName: [],
