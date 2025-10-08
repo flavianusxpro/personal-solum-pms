@@ -473,14 +473,16 @@ export default function TabSettings({
             <Flex justify="between" align="center" gap="4">
               <Text className="w-1/2 font-semibold">Treatment</Text>
               <Text className="w-1/2 font-semibold">Amount Moderated</Text>
-              <Text className="text-left font-semibold">Action</Text>
+              {!isView && (
+                <Text className="w-1/4 text-right font-semibold">Action</Text>
+              )}
             </Flex>
             {fieldsCosts?.map((item, index) => (
               <Flex justify="between" align="center" key={item.id} gap="4">
                 <Text className="w-1/2">{findTreatment(item.treatmentId)}</Text>
-                <Text className="w-2/2">{item.amount_moderated}</Text>
+                <Text className="w-1/2">{item.amount_moderated}</Text>
                 {!isView && (
-                  <Flex justify="end" className="w-1/2">
+                  <Flex justify="end" className="w-1/4 gap-2">
                     <ActionTooltipButton
                       tooltipContent="edit treatment cost"
                       variant="outline"
@@ -504,7 +506,6 @@ export default function TabSettings({
                     </ActionTooltipButton>
                   </Flex>
                 )}
-
                 {/* <ActionIcon
                   variant="flat"
                   className="mt-6"
@@ -537,9 +538,8 @@ export default function TabSettings({
             </Button>
           </FormGroup>
 
-          {/* {mode !== 'edit' && (
+          {mode !== 'edit' && (
             <>
-              <Divider className="" />
               <FormGroup title="Appointment Time Interval Setup">
                 <Grid columns="2">
                   <Controller
@@ -601,8 +601,9 @@ export default function TabSettings({
                   />
                 </Grid>
               </FormGroup>
+              <Divider className="" />
             </>
-          )} */}
+          )}
         </div>
         {!isView && (
           <FormFooter
