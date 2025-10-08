@@ -1,8 +1,41 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { PiXBold } from 'react-icons/pi';
-import { ActionIcon, Title } from 'rizzui';
+import { ActionIcon, Title, Flex, Badge, Text } from 'rizzui';
 import { formatDate } from '@core/utils/format-date';
 import { getAptStatusBadge } from '../../appointment/appointment-list/list/columns';
+
+export function getPaymentStatusBadge(status: number | string) {
+  switch (status) {
+    case 3:
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="danger" renderAsDot />
+          <Text className="font-medium text-red-500">Cancelled</Text>
+        </Flex>
+      );
+    case 2:
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="success" renderAsDot />
+          <Text className="font-medium text-green-600">Paid</Text>
+        </Flex>
+      );
+    case 1:
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="warning" renderAsDot />
+          <Text className="font-medium text-yellow-600">Pending</Text>
+        </Flex>
+      );
+    default:
+      return (
+        <div className="flex items-center">
+          <Badge renderAsDot className="bg-gray-400" />
+          <Text className="font-medium text-blue-600">{status}</Text>
+        </div>
+      );
+  }
+}
 
 function ModalAppointmentDetails({ data }: { data: any }) {
   const { closeModal } = useModal();
@@ -59,7 +92,7 @@ function ModalAppointmentDetails({ data }: { data: any }) {
           <li className="flex gap-2">
             <span>Payment Status:</span>
             <span className="font-medium text-gray-1000">
-              {getAptStatusBadge(details.payment?.status as number)}
+              {getPaymentStatusBadge(details.payment?.status as number)}
             </span>
           </li>
           <li className="flex gap-2">

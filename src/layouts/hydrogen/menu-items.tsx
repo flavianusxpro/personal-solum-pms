@@ -102,23 +102,32 @@ export const adminMenuItems = [
     permissionReadName: ['dashboard'],
   },
   {
-    name: 'Callback Queue',
-    href: routes.requestCallBack,
-    icon: <PiDoorOpen />,
-    permissionReadName: ['requestcallback'],
-  },
-  {
     name: 'Calendar',
     href: routes.globalCalendar,
     icon: <PiCalendar />,
     permissionReadName: ['calendar'],
   },
   {
-    name: 'Invoice',
+    name: 'Sales',
     href: routes.invoice.home,
     icon: <PiCurrencyDollarDuotone />,
     permissionReadName: ['invoice'],
+    dropdownItems: [
+      {
+        name: 'Invoice',
+        href: routes.invoice.home,
+        icon: <PiCurrencyDollarDuotone />,
+        permissionReadName: ['invoice'],
+      },
+      {
+        name: 'Credit Notes',
+        href: routes.sales.creditNotes,
+        icon: <PiCurrencyDollarDuotone />,
+        permissionReadName: ['invoice'],
+      },
+    ],
   },
+
   {
     name: 'Appointment',
     href: routes.appointment.appointmentList,
@@ -146,6 +155,38 @@ export const adminMenuItems = [
         name: 'Setting',
         href: routes.patient.setting,
         permissionReadName: ['patient'],
+      },
+    ],
+  },
+  {
+    name: 'Communications',
+    href: routes.requestCallBack,
+    icon: <PiDoorOpen />,
+    permissionReadName: [],
+    dropdownItems: [
+      {
+        name: 'Callback Queue',
+        href: routes.requestCallBack,
+        icon: <PiDoorOpen />,
+        permissionReadName: ['requestcallback'],
+      },
+      {
+        name: 'SMS',
+        href: routes.communications.sms,
+        icon: <PiDoorOpen />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Email',
+        href: routes.communications.email,
+
+        icon: <PiDoorOpen />,
+        permissionReadName: [],
+      },
+      {
+        name: 'Social Media',
+        href: routes.communications.socialMedia,
+        permissionReadName: [],
       },
     ],
   },

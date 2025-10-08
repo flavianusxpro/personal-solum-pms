@@ -386,13 +386,19 @@ export default function GlobalCalendarTable({}: {}) {
                 value={selectedDoctor}
                 placeholder="Select doctor"
                 onChange={(e: any) => setSelectedDoctor(e.value)}
-                options={optionDoctors}
+                options={[
+                  {
+                    label: 'All Doctor',
+                    value: 0,
+                  },
+                  ...optionDoctors,
+                ]}
                 prefix={<PiUser size={16} />}
                 displayValue={(value: number) => {
-                  const item = optionDoctors.find(
-                    (item) => item.value == value
-                  );
-                  return item ? item.label : '';
+                  const item = optionDoctors.find((item) => {
+                    return item.value == value;
+                  });
+                  return item ? item.label : 'All Doctors';
                 }}
               />
             </Flex>

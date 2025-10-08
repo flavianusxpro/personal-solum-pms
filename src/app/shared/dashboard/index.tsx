@@ -1,3 +1,4 @@
+'use client';
 import AppointmentStats from '@/app/shared/dashboard/appointment-stats';
 import UpcomingAppointmentTable from '@/app/shared/appointment/dashboard/upcoming-appointment-table';
 import AppointmentDiseases from '@/app/shared/dashboard/appointment-diseases';
@@ -7,8 +8,25 @@ import Patients from '@/app/shared/dashboard/patients';
 import PatientAppointment from '@/app/shared/dashboard/patient-appointment';
 import ScheduleList from '@/app/shared/dashboard/schedule-list';
 import AppointmentTodo from '@/app/shared/dashboard/appointment-todo';
+import { useGetDashboardAdminSummary } from '@/hooks/useDashboard';
+import { useSetAtom } from 'jotai';
+import { dashboardAdminSummaryAtom } from '@/store/dashboard';
+import { useEffect } from 'react';
 
 export default function AppointmentDashboard() {
+  const setDashboardSummaryData = useSetAtom(dashboardAdminSummaryAtom);
+  const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  const { data } = useGetDashboardAdminSummary({
+    timezone: localTimezone || '',
+  });
+
+  useEffect(() => {
+    if (data) {
+      setDashboardSummaryData(data);
+    }
+  }, [data]);
+
   return (
     <div className="grid grid-cols-12 gap-6 @container @[59rem]:gap-7 3xl:gap-8">
       <AppointmentStats className="col-span-full" />

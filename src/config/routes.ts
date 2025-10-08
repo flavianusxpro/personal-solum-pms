@@ -40,7 +40,15 @@ export const routes = {
     details: (id: string) => `/invoice/${id}`,
     edit: (id: string) => `/invoice/${id}/edit`,
   },
+  sales: {
+    creditNotes: '/credit-notes',
+  },
   requestCallBack: '/requestcallback',
+  communications: {
+    sms: '/sms-communication',
+    email: '/email-communication',
+    socialMedia: 'social-media-communication',
+  },
   report: '/report',
   reportAnalytics: {
     businessInsight: '/business-insight',

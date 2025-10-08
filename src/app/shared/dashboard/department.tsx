@@ -14,6 +14,8 @@ import {
   YAxis,
 } from 'recharts';
 import { Title } from 'rizzui';
+import { useAtomValue } from 'jotai';
+import { dashboardAdminSummaryAtom } from '@/store/dashboard';
 
 const data = [
   {
@@ -59,14 +61,34 @@ const viewOptions = [
   },
 ];
 
+const colorFill = (treatment_type: string) => {
+  let color: string = '';
+  if (treatment_type == 'Initial Consult') {
+    color = '#FFD66B';
+  } else if (treatment_type == 'Follow Up Appointment') {
+    color = '#2B7F75';
+  }
+  return color;
+};
+
 export default function Department({ className }: { className?: string }) {
+  const dashboardChartData = useAtomValue(dashboardAdminSummaryAtom);
+  const summaryChartData = dashboardChartData?.appointment_chart_by_treatment;
+  const data = summaryChartData?.map((item: any) => {
+    return {
+      name: item.treatment_type,
+      total: item.total,
+      fill: colorFill(item.treatment_type),
+    };
+  });
+
   function handleChange(viewType: string) {
     console.log('viewType', viewType);
   }
 
   return (
     <WidgetCard
-      title="Appointment by Department"
+      title="Appointment by Treatment"
       titleClassName="text-gray-700 font-normal sm:text-sm font-inter"
       headerClassName="items-center"
       className={cn('@container', className)}
@@ -88,7 +110,7 @@ export default function Department({ className }: { className?: string }) {
         </span>
       </div>
       <div className="custom-scrollbar overflow-x-auto scroll-smooth">
-        <div className="h-[20rem] w-full pt-1">
+        <div className="h-[10rem] w-full pt-1">
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart
               layout="vertical"

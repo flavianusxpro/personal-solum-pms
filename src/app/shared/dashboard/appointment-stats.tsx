@@ -14,41 +14,12 @@ import {
   PiArrowDownRight,
   PiArrowUpRight,
 } from 'react-icons/pi';
+import { useAtomValue } from 'jotai';
+import { dashboardAdminSummaryAtom } from '@/store/dashboard';
 
 type AppointmentStatsType = {
   className?: string;
 };
-
-const statData: StatType[] = [
-  {
-    title: 'Total Appointment',
-    amount: '26,085',
-    increased: true,
-    percentage: '32.40',
-    icon: PiCalendarCheck,
-  },
-  {
-    title: 'Scheduled Patients',
-    amount: '15,786',
-    increased: true,
-    percentage: '32.40',
-    icon: PiCheckCircle,
-  },
-  {
-    title: 'Waiting List',
-    amount: '8,503',
-    increased: false,
-    percentage: '32.40',
-    icon: PiClock,
-  },
-  {
-    title: 'Cancelled',
-    amount: '2,430',
-    increased: true,
-    percentage: '32.40',
-    icon: PiPhoneSlash,
-  },
-];
 
 export type StatType = {
   icon: IconType;
@@ -112,6 +83,38 @@ export default function AppointmentStats({ className }: AppointmentStatsType) {
 }
 
 export function StatGrid() {
+  const dashboardSummaryData = useAtomValue(dashboardAdminSummaryAtom);
+  const summaryCardData = dashboardSummaryData?.summary_cards;
+  const statData: StatType[] = [
+    {
+      title: 'Total Appointment',
+      amount: summaryCardData?.total_appointment,
+      increased: true,
+      percentage: '0',
+      icon: PiCalendarCheck,
+    },
+    {
+      title: 'Scheduled Patients',
+      amount: summaryCardData?.scheduled_appointment,
+      increased: true,
+      percentage: '0',
+      icon: PiCheckCircle,
+    },
+    {
+      title: 'Waiting List',
+      amount: summaryCardData?.upcoming_appointment,
+      increased: false,
+      percentage: '0',
+      icon: PiClock,
+    },
+    {
+      title: 'Cancelled',
+      amount: summaryCardData?.cancelled_appointment,
+      increased: true,
+      percentage: '0',
+      icon: PiPhoneSlash,
+    },
+  ];
   return (
     <>
       {statData.map((stat: StatType, index: number) => {
