@@ -9,23 +9,37 @@ import { Badge, Text, Button } from 'rizzui';
 import { getDateRangeStateValues } from '@core/utils/get-formatted-date';
 import { useMedia } from '@core/hooks/use-media';
 
-const statusOptions = [
+export const requestStatusOptions = [
+  {
+    value: 'new',
+    label: 'New',
+  },
+  {
+    value: 'scheduled',
+    label: 'Scheduled',
+  },
+  {
+    value: 'in_progress',
+    label: 'In Progress',
+  },
   {
     value: 'completed',
     label: 'Completed',
   },
   {
-    value: 'pending',
-    label: 'Pending',
+    value: 'no_answer',
+    label: 'No Answer',
   },
   {
     value: 'cancelled',
     label: 'Cancelled',
   },
   {
-    value: 'refunded',
-    label: 'Refunded',
+    value: 'closed',
+    label: 'Closed',
   },
+  { label: 'Waiting for Call', value: 'waiting_for_call' },
+  { label: 'Already Called', value: 'already_called' },
 ];
 
 type FilterElementProps = {
@@ -49,7 +63,7 @@ export default function FilterElement({
         onChange={(data) => updateFilter('price', data)}
         label={'Price'}
       /> */}
-      <DateFiled
+      {/* <DateFiled
         selectsRange
         className="w-full"
         selected={getDateRangeStateValues(filters['createdAt'][0])}
@@ -82,9 +96,9 @@ export default function FilterElement({
             labelClassName: 'font-medium text-gray-700',
           },
         })}
-      />
-      {/* <StatusField
-        options={statusOptions}
+      /> */}
+      <StatusField
+        options={requestStatusOptions}
         value={filters['status']}
         onChange={(value: string) => {
           updateFilter('status', value);
@@ -99,7 +113,7 @@ export default function FilterElement({
           labelClassName: 'font-medium text-gray-700',
         })}
         dropdownClassName="h-auto"
-      /> */}
+      />
       {isFiltered ? (
         <Button
           size="sm"
