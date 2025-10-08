@@ -16,6 +16,7 @@ import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import { Calendar, dayjsLocalizer } from 'react-big-calendar';
 import cn from '@/core/utils/class-names';
 import ModalAppointmentDetails from '../modal/ModalAppointmentDetail';
+import { useGetAllDoctors } from '@/hooks/useDoctor';
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -47,10 +48,12 @@ const EventCard = ({ event }: any) => {
 
   return (
     <div
-      className={`rounded-md border-none px-3 py-1 shadow-sm ${colorClasses[color]}`}
+      className={`rounded-md border-none px-3 py-1 shadow-sm ${colorClasses[color]} w-full min-w-0 whitespace-normal break-words`}
     >
-      <div className="text-xs font-semibold">Dr. {event.doctor}</div>
-      <div className="text-xs text-gray-500">
+      <div className="whitespace-normal break-words text-xs font-semibold leading-snug">
+        Dr. {event.doctor}
+      </div>
+      <div className="whitespace-normal break-words text-xs leading-snug text-gray-500">
         {event.patient} – {event.time}
       </div>
     </div>
@@ -60,18 +63,22 @@ const EventCard = ({ event }: any) => {
 export default function GlobalCalendarTable({}: {}) {
   const { openModal } = useModal();
   const [pageSize] = useState(100);
-  const [selectedDate, setSelectedDate] = useState(
-    dayjs().format('YYYY-MM-DD')
+  const [viewType, setViewType] = useState<'daily' | 'weekly' | 'monthly'>(
+    'monthly'
   );
+  const [selectedDate, setSelectedDate] = useState(
+    viewType === 'monthly'
+      ? dayjs().format('YYYY-MM')
+      : dayjs().format('YYYY-MM-DD')
+  );
+
   const startOfMonth = dayjs(selectedDate).startOf('month').format('D MMMM');
   const endOfMonth = dayjs(selectedDate).endOf('month').format('D MMMM');
   const monthLabel = dayjs(selectedDate).format('MMMM YYYY');
   const shortMonth = dayjs(selectedDate).format('MMM').toUpperCase();
   const year = dayjs(selectedDate).format('YYYY');
-  const [viewType, setViewType] = useState<'daily' | 'weekly' | 'monthly'>(
-    'monthly'
-  );
-  const [selectedDoctor, setSelectedDoctor] = useState<string>('');
+
+  const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const { colorPresetName } = useColorPresetName();
 
   const { data: dataProfile } = useProfile(true);
@@ -98,23 +105,50 @@ export default function GlobalCalendarTable({}: {}) {
           ? dayjs(selectedDate).endOf('week').format('YYYY-MM-DD')
           : selectedDate,
     clinicId: dataProfile?.clinics[0]?.id || 0,
+    doctorId: selectedDoctor ? Number(selectedDoctor) : undefined,
   });
+
+  const { data: doctorDatas } = useGetAllDoctors({
+    page: 1,
+    perPage: 1000,
+    clinicId: dataProfile?.clinics[0]?.id,
+  });
+
+  const optionDoctors = React.useMemo(() => {
+    if (!doctorDatas?.data) return [];
+    return doctorDatas?.data?.map((doctor) => {
+      return {
+        label: `${doctor.first_name} ${doctor.last_name}`,
+        value: doctor.id,
+      };
+    });
+  }, [doctorDatas]);
 
   function previousDate() {
     setSelectedDate((prevDate) => {
       const prevDateObj = dayjs(prevDate);
-      return prevDateObj.isValid()
-        ? prevDateObj.subtract(1, 'day').format('YYYY-MM-DD')
-        : dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+      if (!prevDateObj.isValid())
+        return viewType === 'monthly'
+          ? dayjs().subtract(1, 'month').format('YYYY-MM')
+          : dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+
+      return viewType === 'monthly'
+        ? prevDateObj.subtract(1, 'month').format('YYYY-MM')
+        : prevDateObj.subtract(1, 'day').format('YYYY-MM-DD');
     });
   }
 
   function nextDate() {
     setSelectedDate((prevDate) => {
       const prevDateObj = dayjs(prevDate);
-      return prevDateObj.isValid()
-        ? prevDateObj.add(1, 'day').format('YYYY-MM-DD')
-        : dayjs().add(1, 'day').format('YYYY-MM-DD');
+      if (!prevDateObj.isValid())
+        return viewType === 'monthly'
+          ? dayjs().add(1, 'month').format('YYYY-MM')
+          : dayjs().add(1, 'day').format('YYYY-MM-DD');
+
+      return viewType === 'monthly'
+        ? prevDateObj.add(1, 'month').format('YYYY-MM')
+        : prevDateObj.add(1, 'day').format('YYYY-MM-DD');
     });
   }
 
@@ -242,9 +276,9 @@ export default function GlobalCalendarTable({}: {}) {
   const events =
     data &&
     data.data?.map((item) => ({
-      title: `Dr. ${item.doctor?.first_name}`,
-      doctor: item.doctor?.first_name,
-      patient: item.patient?.first_name,
+      title: `Dr. ${item.doctor?.first_name} ${item.doctor?.last_name}`,
+      doctor: `${item.doctor?.first_name} ${item.doctor?.last_name}`,
+      patient: `${item.patient?.first_name} ${item.patient?.last_name}`,
       time: new Date(item.date).toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit',
@@ -264,6 +298,14 @@ export default function GlobalCalendarTable({}: {}) {
   useEffect(() => {
     refetch();
   }, [selectedDate, refetch]);
+
+  useEffect(() => {
+    setSelectedDate((prev) =>
+      viewType === 'monthly'
+        ? dayjs(prev).format('YYYY-MM')
+        : dayjs(prev).format('YYYY-MM-DD')
+    );
+  }, [viewType]);
 
   return (
     <div>
@@ -299,12 +341,22 @@ export default function GlobalCalendarTable({}: {}) {
                 >
                   <PiArrowLeft className="text-muted-foreground" size={20} />
                 </ActionButton>
-                <Input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(event) => setSelectedDate(event.target.value)}
-                  className="!h-15"
-                />
+                {viewType === 'monthly' ? (
+                  <Input
+                    type="month"
+                    value={selectedDate}
+                    onChange={(event) => setSelectedDate(event.target.value)}
+                    className="!h-15"
+                  />
+                ) : (
+                  <Input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(event) => setSelectedDate(event.target.value)}
+                    className="!h-15"
+                  />
+                )}
+
                 <ActionButton
                   onClick={nextDate}
                   variant="outline"
@@ -334,8 +386,14 @@ export default function GlobalCalendarTable({}: {}) {
                 value={selectedDoctor}
                 placeholder="Select doctor"
                 onChange={(e: any) => setSelectedDoctor(e.value)}
-                options={[{ label: 'All Doctors', value: '' }]}
+                options={optionDoctors}
                 prefix={<PiUser size={16} />}
+                displayValue={(value: number) => {
+                  const item = optionDoctors.find(
+                    (item) => item.value == value
+                  );
+                  return item ? item.label : '';
+                }}
               />
             </Flex>
           </TableHeader>
