@@ -11,6 +11,7 @@ import CSelect from '@/app/shared/ui/select';
 import { useState } from 'react';
 import { useUpdateRequestCallback } from '@/hooks/useRequestCallback';
 import toast from 'react-hot-toast';
+import { requestStatusOptions } from './filter-element';
 
 const requestCallbackStatusOptions = [
   { label: 'Waiting for Call', value: 'waiting_for_call' },
@@ -162,11 +163,55 @@ function getStatusBadge(status: string) {
           <Text className="font-medium text-yellow-600">Waiting for Call</Text>
         </Flex>
       );
+
+    case 'new':
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="primary" renderAsDot />
+          <Text className="font-medium text-green-dark">New</Text>
+        </Flex>
+      );
+    case 'scheduled':
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="warning" renderAsDot />
+          <Text className="font-medium text-yellow-600">Schedule</Text>
+        </Flex>
+      );
+    case 'in-progress':
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="danger" renderAsDot />
+          <Text className="font-medium text-red-dark">In Progress</Text>
+        </Flex>
+      );
+    case 'completed':
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="success" renderAsDot />
+          <Text className="font-medium text-red-dark">Completed</Text>
+        </Flex>
+      );
     case 'no_answer':
       return (
         <Flex gap="1" align="center">
           <Badge color="danger" renderAsDot />
           <Text className="font-medium text-red-dark">No Answer</Text>
+        </Flex>
+      );
+
+    case 'cancelled':
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="danger" renderAsDot />
+          <Text className="font-medium text-red-dark">Cancelled</Text>
+        </Flex>
+      );
+    case 'closed':
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="info" renderAsDot />
+          <Text className="font-medium text-green-dark">Closed</Text>
         </Flex>
       );
     default:
@@ -209,11 +254,13 @@ function StatusSelect({ selectItem, id }: { selectItem: string; id: number }) {
       className={'min-w-[140px]'}
       dropdownClassName="h-auto"
       placeholder="Select Status"
-      options={requestCallbackStatusOptions}
+      options={requestStatusOptions}
       value={value}
       onChange={handleChange}
       isLoading={isPending}
-      displayValue={(option: { value: string }) => getStatusBadge(option.value)}
+      displayValue={(option: { value: string }) =>
+        getStatusBadge(option?.value)
+      }
     />
   );
 }

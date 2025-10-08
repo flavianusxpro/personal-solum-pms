@@ -8,10 +8,16 @@ import { getColumns } from './columns';
 import { useModal } from '../../modal-views/use-modal';
 import { useDeleteClinic, useGetAllClinics } from '@/hooks/useClinic';
 import { useGetRequestCallback } from '@/hooks/useRequestCallback';
+import FilterElement from './filter-element';
 
+const filterState = {
+  // createdAt: [null, null],
+  status: null,
+};
 export default function RequestCallBackTable({}: {}) {
   const { openModal } = useModal();
   const [pageSize, setPageSize] = useState(10);
+  const [filterStateValue, setFilterStateValue] = useState(filterState);
 
   const {
     data,
@@ -49,7 +55,7 @@ export default function RequestCallBackTable({}: {}) {
     handleRowSelect,
     handleSelectAll,
     handleDelete,
-    // handleReset,
+    handleReset,
   } = useTable(data?.data ?? [], pageSize);
 
   const onDeleteItem = useCallback(
@@ -97,6 +103,16 @@ export default function RequestCallBackTable({}: {}) {
   const { visibleColumns, checkedColumns, setCheckedColumns } =
     useColumn(columns);
 
+  const updateFilter = useCallback(
+    (columnId: string, filterValue: string | number | any[] | null) => {
+      setFilterStateValue((prevState) => ({
+        ...prevState,
+        [columnId]: filterValue,
+      }));
+    },
+    []
+  );
+
   return (
     <div>
       <ControlledTable
@@ -127,6 +143,14 @@ export default function RequestCallBackTable({}: {}) {
           setCheckedColumns,
           enableDrawerFilter: true,
         }}
+        filterElement={
+          <FilterElement
+            isFiltered={isFiltered}
+            filters={filters}
+            updateFilter={updateFilter}
+            handleReset={handleReset}
+          />
+        }
         className={
           'rounded-md border border-muted text-sm shadow-sm [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:h-60 [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:justify-center [&_.rc-table-row:last-child_td.rc-table-cell]:border-b-0 [&_thead.rc-table-thead]:border-t-0'
         }
