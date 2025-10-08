@@ -10,13 +10,10 @@ export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col bg-[#F8FAFC]">
       <div className="sticky top-0 z-40 flex justify-center py-5 backdrop-blur-lg lg:backdrop-blur-none xl:py-10">
-        <Link href="/">
-          <Image
-            src={siteConfig.logo}
-            alt={siteConfig.title}
-            className="dark:invert"
-            priority
-          />
+        <Link href={'/'}>
+          <h2 className="text-[36px] font-bold text-black">
+            {process.env.NEXT_PUBLIC_CLINIC_NAME}
+          </h2>
         </Link>
       </div>
 
@@ -31,13 +28,11 @@ export default function NotFound() {
             as="h1"
             className="text-[22px] font-bold leading-normal text-gray-1000 lg:text-3xl"
           >
-            Sorry, the page not found
+            Coming Soon!
           </Title>
           <p className="mt-3 text-sm leading-loose text-gray-500 lg:mt-6 lg:text-base lg:leading-loose">
-            We have been spending long hours in order to launch our new website.
-            Join our
-            <br className="hidden sm:inline-block" />
-            mailing list or follow us on Facebook for get latest update.
+            We’re preparing something new for you. This feature will be
+            available soon — stay tuned for updates.
           </p>
           <Link href={'/'}>
             <Button

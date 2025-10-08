@@ -30,8 +30,9 @@ export const routes = {
   },
   marketing: {
     coupon: '/marketing/coupon',
-    emailMarketing: '/marketing/email-marketing',
-    smsMarketing: '/marketing/sms-marketing',
+    emailMarketing: '/marketing/email-broadcast',
+    smsMarketing: '/marketing/sms-broadcast',
+    subscribePromotion: '/marketing/subscribe-promotion',
   },
   invoice: {
     home: '/invoice',
@@ -41,6 +42,42 @@ export const routes = {
   },
   requestCallBack: '/requestcallback',
   report: '/report',
+  reportAnalytics: {
+    businessInsight: '/business-insight',
+    revenueGrowth: '/revenue-growth',
+    churnRetention: '/churn-retention',
+    billingTransaction: '/billing-transaction',
+
+    clinicPerformance: '/clinic-performance',
+    clinicOverview: '/clinic-overview',
+    doctorStaffProductivity: '/doctor-staff-productivity',
+    appointmentCapacity: '/appointment-capacity',
+    serviceInsight: '/service-insight',
+
+    patientEngagement: '/patient-engagement',
+    patientGrowth: '/patient-growth',
+    engagementTrends: '/engagement-trends',
+    satisfactionScores: '/ satisfaction-scores',
+    communicationAnalytics: '/communication-analytics',
+    referralSources: '/referral-sources',
+
+    financialReports: '/financial-reports',
+    revenueBreakdown: '/revenue-breakdown',
+    accountsReceivable: '/accounts-receivable',
+    paymentAnalysis: '/payment-analysis',
+    refundAdjustments: '/refund-adjustments',
+    financialForecasting: '/financial-forecasting',
+
+    marketingInsights: '/marketing-nsights',
+    trafficOverview: '/traffic-overview',
+    acquisitionChannels: '/acquisition-channels',
+    campaignPerformance: '/campaign-performance',
+    seoKeywordInsight: '/seoKeyword-insight',
+    conversionFunnel: '/conversion-funnel',
+    adSpendROI: '/ad-spend-roi',
+
+    customReports: '/custom-reports',
+  },
   setting: {
     setup: '/setting/setup',
     communication: '/setting/communication',
