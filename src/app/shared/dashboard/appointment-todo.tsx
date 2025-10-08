@@ -6,39 +6,43 @@ import DateCell from '@core/ui/date-cell';
 import cn from '@core/utils/class-names';
 import { PiCalendarBlank, PiCheckBold } from 'react-icons/pi';
 import { AdvancedCheckbox, Button } from 'rizzui';
+import { useAtomValue } from 'jotai';
+import { dashboardAdminSummaryAtom } from '@/store/dashboard';
+import { IParamGetAppointments } from '@/types/paramTypes';
+import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 
-const data = [
-  {
-    id: 1,
-    patient: 'Martha Freese',
-    doctor: 'Dr. Cameron Will',
-    date: '2022-11-10T06:22:01.621Z',
-  },
-  {
-    id: 2,
-    patient: 'Gina Vanleuven',
-    doctor: 'Dr. Inez Delima',
-    date: '2022-11-10T06:22:01.621Z',
-  },
-  {
-    id: 3,
-    patient: 'Pearl Torres',
-    doctor: 'Dr. Quinn Ellison',
-    date: '2022-11-10T06:22:01.621Z',
-  },
-  {
-    id: 4,
-    patient: 'Alice Hinson',
-    doctor: 'Dr. Cameron Will',
-    date: '2022-11-10T06:22:01.621Z',
-  },
-  {
-    id: 5,
-    patient: 'Torres Pearl',
-    doctor: 'Dr. Quinn Ellison',
-    date: '2022-11-10T06:22:01.621Z',
-  },
-];
+// const data = [
+//   {
+//     id: 1,
+//     patient: 'Martha Freese',
+//     doctor: 'Dr. Cameron Will',
+//     date: '2022-11-10T06:22:01.621Z',
+//   },
+//   {
+//     id: 2,
+//     patient: 'Gina Vanleuven',
+//     doctor: 'Dr. Inez Delima',
+//     date: '2022-11-10T06:22:01.621Z',
+//   },
+//   {
+//     id: 3,
+//     patient: 'Pearl Torres',
+//     doctor: 'Dr. Quinn Ellison',
+//     date: '2022-11-10T06:22:01.621Z',
+//   },
+//   {
+//     id: 4,
+//     patient: 'Alice Hinson',
+//     doctor: 'Dr. Cameron Will',
+//     date: '2022-11-10T06:22:01.621Z',
+//   },
+//   {
+//     id: 5,
+//     patient: 'Torres Pearl',
+//     doctor: 'Dr. Quinn Ellison',
+//     date: '2022-11-10T06:22:01.621Z',
+//   },
+// ];
 
 const viewOptions = [
   {
@@ -60,6 +64,17 @@ const viewOptions = [
 ];
 
 export default function AppointmentTodo({ className }: { className?: string }) {
+  const dashboardSummaryData = useAtomValue(dashboardAdminSummaryAtom);
+  const summaryCardData = dashboardSummaryData?.today_appointments;
+  const data = summaryCardData?.map((item: any) => {
+    return {
+      id: item.id,
+      patient: `${item.patient?.first_name} ${item.patient?.last_name}`,
+      doctor: `${item.doctor?.first_name} ${item.doctor?.last_name}`,
+      date: item.date,
+    };
+  });
+
   function handleChange(viewType: string) {
     console.log('viewType', viewType);
   }
@@ -85,7 +100,7 @@ export default function AppointmentTodo({ className }: { className?: string }) {
       <div className="relative mt-7 h-[22rem]">
         <div className="custom-scrollbar relative -mx-3 -my-2 h-full w-[calc(100%+24px)] overflow-y-auto pb-24">
           <div className="relative before:absolute before:start-9 before:top-3 before:z-0 before:h-[calc(100%-24px)] before:w-1 before:translate-x-0.5 before:bg-gray-200">
-            {data.map((item) => (
+            {data?.map((item: any) => (
               <AdvancedCheckbox
                 name="currency"
                 value="pound"

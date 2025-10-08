@@ -19,6 +19,8 @@ import cn from '@core/utils/class-names';
 import { formatNumber } from '@core/utils/format-number';
 import { useTheme } from 'next-themes';
 import { Title } from 'rizzui';
+import { useAtomValue } from 'jotai';
+import { dashboardAdminSummaryAtom } from '@/store/dashboard';
 
 const data = [
   {
@@ -88,6 +90,16 @@ export default function TotalAppointment({
   className?: string;
 }) {
   const { theme } = useTheme();
+  const dashboardChartData = useAtomValue(dashboardAdminSummaryAtom);
+  const summaryChartData = dashboardChartData?.appointment_chart_daily;
+  const data = summaryChartData?.map((item: any) => {
+    return {
+      label: item.day,
+      booking: Number(item.total),
+      // visitors: Number(item.total),
+      // fill: colorFill(item.treatment_type),
+    };
+  });
 
   function handleChange(viewType: string) {
     console.log('viewType', viewType);
@@ -223,7 +235,8 @@ function CustomizedLabel(props: any) {
         textAnchor="middle"
         dominantBaseline="middle"
       >
-        {formatNumber(value)}
+        {/* {formatNumber(value)} */}
+        {value}
       </text>
     </g>
   );

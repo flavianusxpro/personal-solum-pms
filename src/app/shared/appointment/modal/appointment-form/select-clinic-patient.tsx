@@ -54,28 +54,27 @@ export default function SelectClinic() {
       value: patient.id,
       name: `${patient.first_name} ${patient.last_name}`,
       address: patient?.address_line_1,
-      mobile_number: patient?.mobile_number
+      mobile_number: patient?.mobile_number,
     }));
   }, [dataPatients]);
 
   const treatmentOptions = useMemo(() => {
-  if (!dataTreatments?.data) return [];
+    if (!dataTreatments?.data) return [];
 
-  if (dataAppointment?.data.length === 0) {
-    return dataTreatments.data
-      .filter((item) => item.id !== 2)
-      .map((item) => ({
-        label: item.name,
-        value: item.name,
-      }));
-  }
+    if (dataAppointment?.data.length === 0) {
+      return dataTreatments.data
+        .filter((item) => item.id !== 2)
+        .map((item) => ({
+          label: item.name,
+          value: item.name,
+        }));
+    }
 
-  return dataTreatments.data.map((item) => ({
-    label: item.name,
-    value: item.name,
-  }));
-}, [dataTreatments, dataAppointment]);
-
+    return dataTreatments.data.map((item) => ({
+      label: item.name,
+      value: item.name,
+    }));
+  }, [dataTreatments, dataAppointment]);
 
   const {
     control,
@@ -159,7 +158,10 @@ export default function SelectClinic() {
           ...prev,
           treatment: 'Follow Up Appointment',
         }));
-      } else if (dataAppointment.data.length !== 0 && lastAppointment?.patient_type) {
+      } else if (
+        dataAppointment.data.length !== 0 &&
+        lastAppointment?.patient_type
+      ) {
         setValue('treatment', lastAppointment?.patient_type);
         setFormData((prev) => ({
           ...prev,
@@ -185,8 +187,8 @@ export default function SelectClinic() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className='flex flex-col gap-10 h-[549px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 p-5'>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3 ">
+      <div className="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 flex h-[549px] flex-col gap-10 overflow-y-auto p-5">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <Controller
             control={control}
             name="patient_id"
@@ -195,14 +197,16 @@ export default function SelectClinic() {
                 className="col-span-2"
                 {...field}
                 onChange={(value) => {
-                  const selectedPatient = patientsOptions.find((p) => p.value === value);
+                  const selectedPatient = patientsOptions.find(
+                    (p) => p.value === value
+                  );
                   field.onChange(value);
                   setFormData((prev) => ({
                     ...prev,
                     patient_id: value as number,
                     patient_name: `${selectedPatient?.name}`,
                     patient_address: `${selectedPatient?.address ?? ''}`,
-                    patient_mobile_number: `${selectedPatient?.mobile_number}`
+                    patient_mobile_number: `${selectedPatient?.mobile_number}`,
                   }));
                 }}
                 searchable
@@ -229,7 +233,7 @@ export default function SelectClinic() {
                   field.onChange(value);
                   setFormData((prev) => ({
                     ...prev,
-                    treatment: `${value}`
+                    treatment: `${value}`,
                   }));
                 }}
                 error={errors?.treatment?.message as string}
@@ -254,34 +258,38 @@ export default function SelectClinic() {
           )}
         />
 
-        <div>
-          <Text fontWeight="medium" className="text-gray-1000">
-            Last Appointment
-          </Text>
-          {lastClinic ? (
-            dataAppointment?.data.map((item) => (
-              <div key={item.id} className="flex items-center gap-6">
-                <PiHospital className="h-8 w-8" />
-                <div>
-                  <h3 className="rizzui-title-h3 mb-2 text-base font-medium text-gray-900 dark:text-gray-700">
-                    {`Dr. ${item.doctor.first_name} ${item.doctor.last_name}`} : {item?.clinic.name}
-                  </h3>
-                  <div className="flex items-center gap-2">
-                    <p className="rizzui-text-p text-sm font-normal text-gray-500">
-                      {dayjs(item?.date).format('dddd')}
-                    </p>
-                    <span className="h-1 w-1 rounded-full bg-gray-600"></span>
-                    <p className="rizzui-text-p text-sm font-normal text-gray-500">
-                      {dayjs(item?.date).format('DD/MM/YYYY HH:mm')}
-                    </p>
+        {
+          lastClinic && (
+            <div className="flex flex-col gap-4">
+              <Text fontWeight="medium" className="text-gray-1000">
+                Last Appointment
+              </Text>
+              {dataAppointment?.data.map((item) => (
+                <div key={item.id} className="flex items-center gap-6">
+                  <PiHospital className="h-8 w-8" />
+                  <div>
+                    <h3 className="rizzui-title-h3 text-base font-medium text-gray-900 dark:text-gray-700">
+                      {`Dr. ${item.doctor.first_name} ${item.doctor.last_name}`}{' '}
+                      : {item?.clinic.name}
+                    </h3>
+                    <div className="flex items-center gap-2">
+                      <p className="rizzui-text-p text-sm font-normal text-gray-500">
+                        {dayjs(item?.date).format('dddd')}
+                      </p>
+                      <span className="h-1 w-1 rounded-full bg-gray-600"></span>
+                      <p className="rizzui-text-p text-sm font-normal text-gray-500">
+                        {dayjs(item?.date).format('DD/MM/YYYY HH:mm')}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            <p>Please select patient first</p>
-          )}
-        </div>
+              ))}
+            </div>
+          )
+          // : (
+          //   <p>Please select patient first</p>
+          // )
+        }
       </div>
       <Footer />
     </form>

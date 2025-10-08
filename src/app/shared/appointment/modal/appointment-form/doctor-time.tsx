@@ -203,8 +203,9 @@ function DoctorTime({
       {timeList.length > 0 ? (
         <div className="relative">
           <div
-            className={`mt-4 grid transition-all delay-200 duration-1000 ease-in-out ${currentOpen === doctor.id ? 'max-h-[500px]' : 'max-h-20'
-              } grid-cols-5 gap-2 overflow-hidden`}
+            className={`mt-4 grid transition-all delay-200 duration-1000 ease-in-out ${
+              currentOpen === doctor.id ? 'max-h-[500px]' : 'max-h-20'
+            } grid-cols-5 gap-2 overflow-hidden`}
           >
             {timeList.map((time, idx) => (
               <button

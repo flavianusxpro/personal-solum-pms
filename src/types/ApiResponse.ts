@@ -916,6 +916,27 @@ export interface IGetDashboardSummaryResponse extends ApiResponse {
   };
 }
 
+export interface IGetDashboardAdminSummaryResponse extends ApiResponse {
+  data: {
+    summary_cards: {
+      total_appointment: number;
+      scheduled_appointment: number;
+      upcoming_appointment: number;
+      cancelled_appointment: number;
+    };
+    appointment_chart_daily: {
+      day: string;
+      total: number;
+    }[];
+    appointment_chart_by_treatment: {
+      treatment_type: string;
+      total: number;
+    }[];
+    monthly_schedule: Record<string, any>;
+    today_appointments: Record<string, any>[];
+  };
+}
+
 export interface IGetPharmachyListResponse extends ApiResponseWithPagination {
   data: {
     id: number;

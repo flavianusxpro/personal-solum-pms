@@ -30,16 +30,17 @@ export default function Footer({ className, showSaveButton }: FooterProps) {
   const { mutate: mutateUpdate, isPending } = useUpdateAppointment();
 
   const isEdit = formData.id;
+  const isDisabled = !formData.doctorTime && !formData.date;
 
   return (
     <footer
       className={cn(
-        'flex w-full items-center justify-between border-t border-gray-300 p-5 absolute bottom-0 left-0 right-0',
+        'absolute bottom-0 left-0 right-0 flex w-full items-center justify-between border-t border-gray-300 p-5',
         className
       )}
     >
       <div className="flex shrink-0 gap-1.5">
-        {Array.from([0, 1, 2, 3, 4], (x) => (
+        {Array.from([0, 1, 2], (x) => (
           <Button
             key={`step-${x}`}
             variant="text"
@@ -64,11 +65,12 @@ export default function Footer({ className, showSaveButton }: FooterProps) {
         )}
         {step === 1 && (
           <Button
-            className="!w-auto"
-            type='submit'
+            className={`!w-auto ${isDisabled && 'bg-gray-400 text-white hover:bg-gray-400'}`}
+            type="submit"
             onClick={undefined}
             isLoading={isPending}
             rounded="lg"
+            disabled={isDisabled}
           >
             {isEdit ? 'Save Update' : 'Payment'}
           </Button>

@@ -5,6 +5,8 @@ import cn from '@core/utils/class-names';
 import { PiPlusLight } from 'react-icons/pi';
 import Calendar from 'react-calendar';
 import { useState } from 'react';
+import { useAtomValue } from 'jotai';
+import { dashboardAdminSummaryAtom } from '@/store/dashboard';
 
 function calculatePercentage(total: number, value: number) {
   const percentage = (value / total) * 100;
@@ -18,18 +20,18 @@ const data = [
     total: 580,
     color: '#2B7F75',
   },
-  {
-    title: 'Meeting',
-    value: 523,
-    total: 923,
-    color: '#176B87',
-  },
-  {
-    title: 'Surgery',
-    value: 180,
-    total: 456,
-    color: '#FFD66B',
-  },
+  // {
+  //   title: 'Meeting',
+  //   value: 523,
+  //   total: 923,
+  //   color: '#176B87',
+  // },
+  // {
+  //   title: 'Surgery',
+  //   value: 180,
+  //   total: 456,
+  //   color: '#FFD66B',
+  // },
 ];
 
 type ValuePiece = Date | null;
@@ -37,6 +39,8 @@ type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 export default function ScheduleList({ className }: { className?: string }) {
+  const dashboardChartData = useAtomValue(dashboardAdminSummaryAtom);
+  const summaryChartData = dashboardChartData?.monthly_schedule;
   const [value, onChange] = useState<Value>(new Date());
   return (
     <div
@@ -58,11 +62,37 @@ export default function ScheduleList({ className }: { className?: string }) {
           prev2Label={false}
           next2Label={false}
           className="!w-full !border-0 !bg-transparent !font-inter !text-base"
+          tileClassName={({ date, view }) => {
+            if (view === 'month') {
+              const formatted = date.toLocaleDateString('en-CA');
+              const hasAppointment =
+                summaryChartData && summaryChartData[formatted]?.length > 0;
+              return hasAppointment
+                ? '!relative flex items-center justify-center before:absolute before:inset-0 before:rounded-full before:bg-green-500 before:opacity-20 font-semibold'
+                : null;
+            }
+            return null;
+          }}
+          tileContent={({ date, view }) => {
+            if (view === 'month') {
+              const formatted = date.toLocaleDateString('en-CA');
+              const hasAppointment =
+                summaryChartData && summaryChartData[formatted]?.length > 0;
+              return hasAppointment ? (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="relative z-10 font-semibold text-green-800">
+                    {date.getDate()}
+                  </span>
+                </div>
+              ) : null;
+            }
+            return null;
+          }}
         />
       </div>
       <div className="flex flex-col justify-between bg-gray-50 px-5 py-7 @lg:w-2/5 dark:bg-gray-100">
         <div className="mb-10 space-y-6 @lg:pt-2">
-          {data.map((item) => (
+          {data.map((item: any) => (
             <Slider
               key={item.title}
               title={item.title}

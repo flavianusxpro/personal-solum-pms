@@ -79,7 +79,7 @@ export const initialFormData = {
   script_renewal_fee: '',
   treatment: '',
   fee: '',
-  couponId: ''
+  couponId: '',
 };
 
 export const formDataAtom = atom<FormDataType>(initialFormData);
@@ -151,15 +151,18 @@ export default function CreateUpdateAppointmentForm({
   }, [pathname, searchParams]);
 
   return (
-    <div className="relative flex flex-col h-[700px]">
-      <div className="flex justify-between w-full border-b p-5 border-gray-300">
+    <div className="relative flex h-[700px] flex-col">
+      <div className="flex w-full justify-between border-b border-gray-300 p-5">
         <Title as="h2" className="font-lexend text-lg font-semibold">
           Book an appointment
         </Title>
         <ActionIcon
           size="sm"
           variant="text"
-          onClick={() => closeModal()}
+          onClick={() => {
+            closeModal();
+            setFormData(initialFormData);
+          }}
           className="p-0 text-gray-500 hover:!text-gray-900"
         >
           <PiXBold className="h-5 w-5" />
