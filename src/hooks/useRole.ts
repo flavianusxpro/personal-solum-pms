@@ -39,7 +39,7 @@ export function useGetPermissions() {
     queryFn: async () => {
       return await getPermissions({
         page: 1,
-        perPage: 100,
+        perPage: 200,
       });
     },
     refetchOnWindowFocus: false,

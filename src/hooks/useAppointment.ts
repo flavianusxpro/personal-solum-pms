@@ -55,7 +55,11 @@ export function usePostCancelAppointment() {
 }
 
 export function usePostRescheduleAppointmentByDate() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: postRescheduleAppointmentByDate,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['getAppointments'] });
+    },
   });
 }

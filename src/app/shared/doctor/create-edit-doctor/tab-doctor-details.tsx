@@ -1,6 +1,6 @@
 'use client';
 
-import { Controller, SubmitHandler } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
@@ -27,6 +27,11 @@ import Divider from '@/app/shared/ui/divider';
 import { useMemo } from 'react';
 import { PhoneNumber } from '@/core/ui/phone-input';
 import { useGetPatientProblem } from '@/hooks/usePatient';
+import {
+  settingsDoctorSchema,
+  SettingsDoctorSchema,
+} from '@/validators/settings-doctor.schema';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const QuillEditor = dynamic(() => import('@core/ui/quill-editor'), {
   ssr: false,
@@ -60,6 +65,18 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
   const { data: dataProblemTypes } = useGetPatientProblem({
     page: 1,
     perPage: 100,
+  });
+
+  const {
+    register,
+    control,
+    setValue,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SettingsDoctorSchema>({
+    resolver: zodResolver(settingsDoctorSchema),
+    mode: 'all',
   });
 
   const specialistsOptions = useMemo(() => {
@@ -138,6 +155,7 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
     }
   };
 
+  console.log(dataDoctor);
   if (isLoadingGetDataDoctor) return <Loader size="lg" />;
 
   return (
@@ -365,6 +383,43 @@ export default function DoctorDetails({ isView }: { isView?: boolean }) {
             </div>
 
             <Divider />
+
+            <FormGroup title="Qualification (not ready yet)">
+              <Input
+                {...register('academic_degree')}
+                label="Academic Degree"
+                placeholder="Enter your academic degree (e.g., MBBS, MD)"
+                error={errors.academic_degree?.message}
+                className="w-full"
+                disabled={isView}
+              />
+              <Input
+                {...register('fellowship')}
+                label="Fellowship"
+                placeholder="Enter your fellowship qualification (e.g., FRACGP)"
+                error={errors.fellowship?.message}
+                className="w-full"
+                disabled={isView}
+              />
+              <Input
+                {...register('certificate')}
+                label="Certificate / Diploma"
+                placeholder="Enter any certificates or diplomas (e.g., DCH)"
+                error={errors.certificate?.message}
+                className="w-full"
+                disabled={isView}
+              />
+              <Input
+                {...register('other_qualification')}
+                label="Other Qualifications"
+                placeholder="Enter other qualifications (e.g., BioMed, MSc)"
+                error={errors.other_qualification?.message}
+                className="w-full"
+                disabled={isView}
+              />
+            </FormGroup>
+
+            <Divider className="" />
 
             <div className="section-container">
               <FormGroup title="Problem Type" isLabel>

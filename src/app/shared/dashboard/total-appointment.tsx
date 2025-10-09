@@ -218,26 +218,29 @@ function CustomizedLabel(props: any) {
   const radius = 8;
 
   return (
-    <g>
-      <rect
-        x={x + 3}
-        y={y + 3}
-        width={width - 6}
-        height={20}
-        rx={radius}
-        fill="#ffffff"
-      />
-      <text
-        x={x + width / 2}
-        y={y + 14}
-        fill="currentColor"
-        className="text-xs font-medium text-gray-800 dark:text-gray-200"
-        textAnchor="middle"
-        dominantBaseline="middle"
-      >
-        {/* {formatNumber(value)} */}
-        {value}
-      </text>
-    </g>
+    <>
+      {value !== 0 && (
+        <g>
+          <rect
+            x={x + 3}
+            y={y + 3}
+            width={width - 6}
+            height={20}
+            rx={radius}
+            fill="#ffffff"
+          />
+          <text
+            x={x + width / 2}
+            y={y + 14}
+            fill="currentColor"
+            className="text-xs font-medium text-gray-800 dark:text-gray-200"
+            textAnchor="middle"
+            dominantBaseline="middle"
+          >
+            {formatNumber(value)}
+          </text>
+        </g>
+      )}
+    </>
   );
 }

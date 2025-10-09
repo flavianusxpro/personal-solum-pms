@@ -368,9 +368,7 @@ export const adminMenuItems = [
         name: 'Communication Analytics',
         href: routes.reportAnalytics.communicationAnalytics,
         icon: <PiUser />,
-        permissionReadName: [
-          'report.patientengagement.communicationanalytics',
-        ],
+        permissionReadName: ['report.patientengagement.communicationanalytics'],
       },
       {
         name: 'Referral Sources',

@@ -39,6 +39,11 @@ export const doctorDetailsFormSchema = z.object({
   ),
   language: z.array(z.string()),
 
+  academic_degree: z.string().optional(),
+  fellowship: z.string().optional(),
+  certificate: z.string().optional(),
+  other_qualification: z.string().optional(),
+
   doctorType: z.array(z.string()).optional(),
   about: z.string().optional(),
   avatar: z.string().optional().nullable(),

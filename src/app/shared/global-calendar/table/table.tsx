@@ -17,10 +17,21 @@ import { Calendar, dayjsLocalizer } from 'react-big-calendar';
 import cn from '@/core/utils/class-names';
 import ModalAppointmentDetails from '../modal/ModalAppointmentDetail';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
+import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
+import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
+import RescheduleAppointmentForm, {
+  formRescheduleDataAtom,
+  useStepperCancelAppointment,
+} from '../reschedule';
+import { useAtom } from 'jotai';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+
+const DnDCalendar = withDragAndDrop<any, any>(Calendar);
 
 const localizer = dayjsLocalizer(dayjs);
 
-const EventCard = ({ event }: any) => {
+const EventCard = ({ event, selectedDoctor }: any) => {
   const doctorColors: Record<string, string> = {
     emily: 'red',
     benjamin: 'blue',
@@ -37,29 +48,68 @@ const EventCard = ({ event }: any) => {
   const color = matchedKey ? doctorColors[matchedKey] : 'gray';
 
   const colorClasses: Record<string, string> = {
-    red: 'bg-red-50 text-red-600',
-    blue: 'bg-blue-50 text-blue-600',
+    red: 'bg-red-50 text-green-600',
+    blue: 'bg-blue-50 text-green-600',
     green: 'bg-green-50 text-green-600',
-    purple: 'bg-purple-50 text-purple-600',
-    amber: 'bg-amber-50 text-amber-600',
-    gray: 'bg-gray-50 text-gray-600',
-    pink: 'bg-pink-50 text-pink-600',
+    purple: 'bg-purple-50 text-green-600',
+    amber: 'bg-amber-50 text-green-600',
+    gray: 'bg-gray-50 text-green-600',
+    pink: 'bg-pink-50 text-green-600',
   };
 
   return (
     <div
       className={`rounded-md border-none px-3 py-1 shadow-sm ${colorClasses[color]} w-full min-w-0 whitespace-normal break-words`}
     >
-      <div className="whitespace-normal break-words text-xs font-semibold leading-snug">
-        Dr. {event.doctor}
-      </div>
+      {!selectedDoctor && (
+        <div className="whitespace-normal break-words text-xs font-semibold leading-snug">
+          Dr. {event.doctor}
+        </div>
+      )}
+
       <div className="whitespace-normal break-words text-xs leading-snug text-gray-500">
-        {event.patient} – {event.time}
+        {event.time} - {event.patient}
       </div>
     </div>
   );
 };
 
+const EventCardByPatient = ({ event }: any) => {
+  const doctorColors: Record<string, string> = {
+    emily: 'red',
+    benjamin: 'blue',
+    isabella: 'green',
+    daniel: 'purple',
+    sophie: 'amber',
+    olivia: 'pink',
+  };
+
+  const doctorName = event.doctor?.toLowerCase() || '';
+  const matchedKey = Object.keys(doctorColors).find((key) =>
+    doctorName.includes(key)
+  );
+  const color = matchedKey ? doctorColors[matchedKey] : 'gray';
+
+  const colorClasses: Record<string, string> = {
+    red: 'bg-red-50 text-green-600',
+    blue: 'bg-blue-50 text-green-600',
+    green: 'bg-green-50 text-green-600',
+    purple: 'bg-purple-50 text-green-600',
+    amber: 'bg-amber-50 text-green-600',
+    gray: 'bg-gray-50 text-green-600',
+    pink: 'bg-pink-50 text-green-600',
+  };
+
+  return (
+    <div
+      className={`rounded-md border-none px-3 py-1 shadow-sm ${colorClasses[color]} w-full min-w-0 whitespace-normal break-words`}
+    >
+      <div className="whitespace-normal break-words text-xs leading-snug text-gray-500">
+        {event.patient}
+      </div>
+    </div>
+  );
+};
 export default function GlobalCalendarTable({}: {}) {
   const { openModal } = useModal();
   const [pageSize] = useState(100);
@@ -80,7 +130,8 @@ export default function GlobalCalendarTable({}: {}) {
 
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const { colorPresetName } = useColorPresetName();
-
+  const { closeModal } = useModal();
+  const [formData, setFormData] = useAtom(formRescheduleDataAtom);
   const { data: dataProfile } = useProfile(true);
   const {
     data,
@@ -118,7 +169,7 @@ export default function GlobalCalendarTable({}: {}) {
     if (!doctorDatas?.data) return [];
     return doctorDatas?.data?.map((doctor) => {
       return {
-        label: `${doctor.first_name} ${doctor.last_name}`,
+        label: `Dr. ${doctor.first_name} ${doctor.last_name}`,
         value: doctor.id,
       };
     });
@@ -263,11 +314,46 @@ export default function GlobalCalendarTable({}: {}) {
     return formatAppointments(data?.data ?? []);
   }, [data?.data, formatAppointments]);
 
+  // ✅ Tambahkan ini di dalam GlobalCalendarTable, sebelum const columns
+  const handleDrop = useCallback(
+    (appointment: any, newDoctor: string, newTime: string) => {
+      console.log('📦 Appointment dipindahkan:', appointment);
+      console.log('➡️ Ke dokter:', newDoctor, 'jam:', newTime);
+
+      // Update data lokal (kalau mau efek langsung)
+      const updated = tableData.map((row: any) => {
+        const newRow = { ...row };
+
+        // hapus appointment lama
+        Object.keys(newRow).forEach((key) => {
+          if (newRow[key]?.id === appointment.id) {
+            newRow[key] = '';
+          }
+        });
+
+        // tambahkan ke posisi baru
+        if (row.time === newTime) {
+          newRow[newDoctor] = appointment;
+        }
+
+        return newRow;
+      });
+
+      // optional: update state kalau ControlledTable dikontrol secara lokal
+      // setTableData(updated);
+
+      // optional: panggil modal untuk konfirmasi reschedule
+      rescheduleModal(appointment, dayjs().format('YYYY-MM-DD'));
+    },
+    [tableData]
+  );
+
   const columns = React.useMemo(
     () =>
       getColumns({
         data: tableData,
         openModal,
+        handleDrop,
       }),
 
     [openModal, tableData]
@@ -285,8 +371,11 @@ export default function GlobalCalendarTable({}: {}) {
       }),
       start: new Date(item.date),
       end: new Date(new Date(item.date).getTime() + 60 * 60 * 1000),
+      resourceId: item.doctor?.id,
       raw: item,
     }));
+
+  console.log(events);
 
   const openModalDetail = (data: any) => {
     openModal({
@@ -307,113 +396,162 @@ export default function GlobalCalendarTable({}: {}) {
     );
   }, [viewType]);
 
+  function rescheduleModal(row: any, newDate: string) {
+    closeModal(),
+      openModal({
+        view: <RescheduleAppointmentForm data={row} newDate={newDate} />,
+        customSize: '600px',
+      });
+  }
+
+  const doctorName = optionDoctors.find((item: any) => {
+    return item.value == selectedDoctor;
+  });
+
   return (
     <div>
       {tableData && columns && tableData?.length > 0 && columns.length > 0 ? (
         <>
           <TableHeader isCustomHeader checkedItems={[]}>
-            <Flex align="center" gap="3">
-              <div className="flex w-12 flex-col items-center justify-center rounded-md border border-gray-300">
-                <div className="w-12 rounded-tl-md rounded-tr-md bg-muted">
-                  <Text className="w-full text-center text-xs font-medium text-muted-foreground">
-                    {year}
+            <div
+              className={` ${selectedDoctor ? 'grid grid-cols-[repeat(2,1fr)_1.5fr]' : 'flex w-full justify-between'} items-center`}
+            >
+              <Flex align="center" gap="3">
+                <div className="flex w-12 flex-col items-center justify-center rounded-md border border-gray-300">
+                  <div className="w-12 rounded-tl-md rounded-tr-md bg-muted">
+                    <Text className="w-full text-center text-xs font-medium text-muted-foreground">
+                      {year}
+                    </Text>
+                  </div>
+                  <div className="py-2">
+                    <Text className="text-md font-semibold">{shortMonth}</Text>
+                  </div>
+                </div>
+
+                <div>
+                  <Text className="text-md font-semibold">{monthLabel}</Text>
+                  <Text className="text-sm text-muted-foreground">
+                    {`${startOfMonth} - ${endOfMonth}`}
                   </Text>
                 </div>
-                <div className="py-2">
-                  <Text className="text-md font-semibold">{shortMonth}</Text>
-                </div>
-              </div>
-
-              <div>
-                <Text className="text-md font-semibold">{monthLabel}</Text>
-                <Text className="text-sm text-muted-foreground">
-                  {`${startOfMonth} - ${endOfMonth}`}
-                </Text>
-              </div>
-            </Flex>
-
-            <Flex align="center" gap="3">
-              <Flex className="w-fit" align="center">
-                <ActionButton
-                  variant="outline"
-                  tooltipContent=""
-                  onClick={previousDate}
-                >
-                  <PiArrowLeft className="text-muted-foreground" size={20} />
-                </ActionButton>
-                {viewType === 'monthly' ? (
-                  <Input
-                    type="month"
-                    value={selectedDate}
-                    onChange={(event) => setSelectedDate(event.target.value)}
-                    className="!h-15"
-                  />
-                ) : (
-                  <Input
-                    type="date"
-                    value={selectedDate}
-                    onChange={(event) => setSelectedDate(event.target.value)}
-                    className="!h-15"
-                  />
-                )}
-
-                <ActionButton
-                  onClick={nextDate}
-                  variant="outline"
-                  tooltipContent=""
-                >
-                  <PiArrowRight className="text-muted-foreground" size={20} />
-                </ActionButton>
               </Flex>
-              <Select
-                size="sm"
-                value={viewType}
-                onChange={(e: any) => {
-                  setViewType(e.value);
-                }}
-                options={[
-                  { label: 'Daily', value: 'daily' },
-                  { label: 'Weekly', value: 'weekly' },
-                  { label: 'Monthly', value: 'monthly' },
-                ]}
-                prefix={<PiCalendar size={16} />}
-                displayValue={(value: string) =>
-                  value ? value.charAt(0).toUpperCase() + value.slice(1) : ''
-                }
-              />
-              <Select
-                size="sm"
-                value={selectedDoctor}
-                placeholder="Select doctor"
-                onChange={(e: any) => setSelectedDoctor(e.value)}
-                options={[
-                  {
-                    label: 'All Doctor',
-                    value: 0,
-                  },
-                  ...optionDoctors,
-                ]}
-                prefix={<PiUser size={16} />}
-                displayValue={(value: number) => {
-                  const item = optionDoctors.find((item) => {
-                    return item.value == value;
-                  });
-                  return item ? item.label : 'All Doctors';
-                }}
-              />
-            </Flex>
+              {doctorName && (
+                <Text className="text-md font-semibold">
+                  {doctorName?.label || ''}
+                </Text>
+              )}
+              <Flex align="center" gap="3">
+                <Flex className="w-fit" align="center">
+                  <ActionButton
+                    variant="outline"
+                    tooltipContent=""
+                    onClick={previousDate}
+                  >
+                    <PiArrowLeft className="text-muted-foreground" size={20} />
+                  </ActionButton>
+                  {viewType === 'monthly' ? (
+                    <Input
+                      type="month"
+                      value={selectedDate}
+                      onChange={(event) => setSelectedDate(event.target.value)}
+                      size="sm"
+                    />
+                  ) : (
+                    <Input
+                      type="date"
+                      value={selectedDate}
+                      onChange={(event) => setSelectedDate(event.target.value)}
+                      size="sm"
+                    />
+                  )}
+
+                  <ActionButton
+                    onClick={nextDate}
+                    variant="outline"
+                    tooltipContent=""
+                  >
+                    <PiArrowRight className="text-muted-foreground" size={20} />
+                  </ActionButton>
+                </Flex>
+                <Flex className="w-full">
+                  <Select
+                    size="sm"
+                    value={viewType}
+                    onChange={(e: any) => {
+                      setViewType(e.value);
+                    }}
+                    options={[
+                      { label: 'Daily', value: 'daily' },
+                      // { label: 'Weekly', value: 'weekly' },
+                      { label: 'Monthly', value: 'monthly' },
+                    ]}
+                    prefix={<PiCalendar size={16} />}
+                    displayValue={(value: string) =>
+                      value
+                        ? value.charAt(0).toUpperCase() + value.slice(1)
+                        : ''
+                    }
+                  />
+                  <Select
+                    size="sm"
+                    value={selectedDoctor}
+                    placeholder="Select doctor"
+                    onChange={(e: any) => setSelectedDoctor(e.value)}
+                    options={[
+                      {
+                        label: 'All Doctor',
+                        value: 0,
+                      },
+                      ...optionDoctors,
+                    ]}
+                    prefix={<PiUser size={16} />}
+                    displayValue={(value: number) => {
+                      const item = optionDoctors.find((item) => {
+                        return item.value == value;
+                      });
+                      return item ? item.label : 'All Doctors';
+                    }}
+                  />
+                </Flex>
+              </Flex>
+            </div>
           </TableHeader>
           {viewType == 'daily' ? (
-            <ControlledTable
-              isLoading={isLoadingGetAppointments}
-              showLoadingText={true}
-              data={tableData ?? []}
-              // @ts-ignore
-              columns={columns}
-              variant="bordered"
-            />
+            <DndProvider backend={HTML5Backend}>
+              <ControlledTable
+                isLoading={isLoadingGetAppointments}
+                showLoadingText={true}
+                data={tableData ?? []}
+                // @ts-ignore
+                columns={columns}
+                variant="bordered"
+              />
+            </DndProvider>
           ) : (
-            <Calendar
+            // <Calendar
+            //   localizer={localizer}
+            //   startAccessor="start"
+            //   endAccessor="end"
+            //   events={events}
+            //   defaultView="day"
+            //   views={['day']}
+            //   resources={tableData || []} // array of doctors
+            //   resourceIdAccessor="id"
+            //   resourceTitleAccessor="name"
+            //   step={15} // interval per 15 menit
+            //   timeslots={1}
+            //   style={{ height: 800 }}
+            //   components={{
+            //     event: EventCard,
+            //   }}
+            //   toolbar={false}
+            //   draggableAccessor={() => true}
+            //   onEventDrop={({ event, start, end, resourceId }: any) => {
+            //     console.log('Dipindah ke:', start, 'dokter:', resourceId);
+            //     rescheduleModal(event, dayjs(start).format('YYYY-MM-DD'));
+            //   }}
+            // />
+            <DnDCalendar
               localizer={localizer}
               events={events}
               startAccessor="start"
@@ -421,7 +559,9 @@ export default function GlobalCalendarTable({}: {}) {
               className={cn('h-[650px] md:h-[1000px]')}
               toolbar={false}
               components={{
-                event: EventCard,
+                event: (props) => (
+                  <EventCard {...props} selectedDoctor={selectedDoctor} />
+                ),
               }}
               popup
               eventPropGetter={() => ({
@@ -434,6 +574,12 @@ export default function GlobalCalendarTable({}: {}) {
                 },
               })}
               onSelectEvent={openModalDetail}
+              onEventDrop={({ event, start, end, allDay }: any) => {
+                // event = data asli
+                // start & end = tanggal baru setelah di-drag
+                rescheduleModal(event.raw, dayjs(start).format('YYYY-MM-DD'));
+              }}
+              draggableAccessor={(event) => true}
             />
           )}
         </>
