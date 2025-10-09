@@ -30,6 +30,10 @@ const menuItems: menuInterface[] = [
     value: routes.setting.payment,
   },
   {
+    label: 'Date & Time Format',
+    value: routes.setting.dateTimeFormat,
+  },
+  {
     label: 'Email Notification & Reminder',
     value: routes.setting.notificationReminder,
   },
