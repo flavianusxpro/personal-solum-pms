@@ -132,7 +132,7 @@ export default function Payment() {
                   labelClassName="font-medium text-sm text-gray-900"
                 />
                 <Switch
-                  label="Paypall"
+                  label="Paypal"
                   variant="flat"
                   labelClassName="font-medium text-sm text-gray-900"
                 />
