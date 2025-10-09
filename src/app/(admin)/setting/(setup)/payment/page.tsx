@@ -119,15 +119,20 @@ export default function Payment() {
             </div>
 
             <FormGroup
-              title="Eftpos/Cash"
-              description="Configure your Eftpos/Cash payment settings here"
+              title="Payment Options"
+              description="Configure your payment options here"
               className="mb-6 mt-4 border-t border-t-slate-300 pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
             />
 
             <div className="mb-10 grid grid-cols-2 gap-7 divide-y divide-dashed divide-gray-200 @2xl:gap-9 @3xl:gap-11">
               <div className="flex items-center gap-4">
                 <Switch
-                  label="Eftpos"
+                  label="Counter"
+                  variant="flat"
+                  labelClassName="font-medium text-sm text-gray-900"
+                />
+                <Switch
+                  label="Paypall"
                   variant="flat"
                   labelClassName="font-medium text-sm text-gray-900"
                 />
