@@ -4,31 +4,31 @@ import dynamic from 'next/dynamic';
 import { atom, useAtom } from 'jotai';
 
 const SelectOption = dynamic(
-  () => import('@/app/shared/appointment/modal/reschedule/options'),
+  () => import('@/app/shared/global-calendar/reschedule/options'),
   {
     ssr: false,
   }
 );
 const SelectDoctorTime = dynamic(
-  () => import('@/app/shared/appointment/modal/reschedule/doctor-time'),
+  () => import('@/app/shared/global-calendar/reschedule/doctor-time'),
   {
     ssr: false,
   }
 );
 const SelectDate = dynamic(
-  () => import('@/app/shared/appointment/modal/reschedule/select-date'),
+  () => import('@/app/shared/global-calendar/reschedule/select-date'),
   {
     ssr: false,
   }
 );
 const AddReason = dynamic(
-  () => import('@/app/shared/appointment/modal/reschedule/add-reason'),
+  () => import('@/app/shared/global-calendar/reschedule/add-reason'),
   {
     ssr: false,
   }
 );
 const RescheduleConfirmation = dynamic(
-  () => import('@/app/shared/appointment/modal/reschedule/confirmation'),
+  () => import('@/app/shared/global-calendar/reschedule/confirmation'),
   {
     ssr: false,
   }

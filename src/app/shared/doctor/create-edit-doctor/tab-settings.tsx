@@ -432,43 +432,6 @@ export default function TabSettings({
 
           <Divider className="" />
 
-          <FormGroup title="Qualification (not ready yet)">
-            <Input
-              {...register('academic_degree')}
-              label="Academic Degree"
-              placeholder="Enter your academic degree (e.g., MBBS, MD)"
-              error={errors.academic_degree?.message}
-              className="w-full"
-              disabled={isView}
-            />
-            <Input
-              {...register('fellowship')}
-              label="Fellowship"
-              placeholder="Enter your fellowship qualification (e.g., FRACGP)"
-              error={errors.fellowship?.message}
-              className="w-full"
-              disabled={isView}
-            />
-            <Input
-              {...register('certificate')}
-              label="Certificate / Diploma"
-              placeholder="Enter any certificates or diplomas (e.g., DCH)"
-              error={errors.certificate?.message}
-              className="w-full"
-              disabled={isView}
-            />
-            <Input
-              {...register('other_qualification')}
-              label="Other Qualifications"
-              placeholder="Enter other qualifications (e.g., BioMed, MSc)"
-              error={errors.other_qualification?.message}
-              className="w-full"
-              disabled={isView}
-            />
-          </FormGroup>
-
-          <Divider className="" />
-
           <FormGroup title="Cost Setup">
             <Flex justify="between" align="center" gap="4">
               <Text className="w-1/2 font-semibold">Treatment</Text>

@@ -17,6 +17,11 @@ import { Calendar, dayjsLocalizer } from 'react-big-calendar';
 import cn from '@/core/utils/class-names';
 import ModalAppointmentDetails from '../modal/ModalAppointmentDetail';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
+import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
+import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
+import RescheduleAppointmentForm from '../reschedule';
+
+const DnDCalendar = withDragAndDrop<any, any>(Calendar);
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -80,6 +85,7 @@ export default function GlobalCalendarTable({}: {}) {
 
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const { colorPresetName } = useColorPresetName();
+  const { closeModal } = useModal();
 
   const { data: dataProfile } = useProfile(true);
   const {
@@ -307,6 +313,14 @@ export default function GlobalCalendarTable({}: {}) {
     );
   }, [viewType]);
 
+  function rescheduleModal(row: any) {
+    closeModal(),
+      openModal({
+        view: <RescheduleAppointmentForm data={row} />,
+        customSize: '600px',
+      });
+  }
+
   return (
     <div>
       {tableData && columns && tableData?.length > 0 && columns.length > 0 ? (
@@ -413,7 +427,7 @@ export default function GlobalCalendarTable({}: {}) {
               variant="bordered"
             />
           ) : (
-            <Calendar
+            <DnDCalendar
               localizer={localizer}
               events={events}
               startAccessor="start"
@@ -434,6 +448,12 @@ export default function GlobalCalendarTable({}: {}) {
                 },
               })}
               onSelectEvent={openModalDetail}
+              onEventDrop={({ event, start, end, allDay }: any) => {
+                // event = data asli
+                // start & end = tanggal baru setelah di-drag
+                rescheduleModal(event.raw);
+              }}
+              draggableAccessor={(event) => true}
             />
           )}
         </>
