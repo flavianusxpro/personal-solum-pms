@@ -148,7 +148,6 @@ export default function InvoiceDetails({ id }: { id: string }) {
   });
 
   if (isLoading) return <Loader className="h-10 w-10" />;
-  console.log(dataInvoice);
 
   return (
     <>
@@ -299,7 +298,8 @@ export default function InvoiceDetails({ id }: { id: string }) {
             <Text className="flex items-center justify-between border-b border-muted py-3.5 lg:py-5">
               Other Fee:{' '}
               <Text as="span" className="font-semibold">
-                ${Number(dataInvoice?.other_fee)}
+                {currencyData.active.symbol}
+                {Number(dataInvoice?.other_fee)}
               </Text>
             </Text>
             <Text className="flex items-center justify-between pt-4 text-base font-semibold text-gray-900 lg:pt-5">
