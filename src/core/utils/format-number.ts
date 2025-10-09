@@ -25,10 +25,10 @@ export function formatNumber(value: number): string {
     return `${formattedValue.toFixed(1)}K`;
   } else {
     // If the value is less than 1 thousand, return the original value as a string
-    return value.toString();
+    return value?.toString();
   }
 }
 
 export function formatNumberWithCommas(value: number): string {
-  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }

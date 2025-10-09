@@ -19,6 +19,7 @@ import cn from '@/core/utils/class-names';
 import dayjs from 'dayjs';
 import { formRescheduleDataAtom, useStepperCancelAppointment } from '.';
 import { rescheduleAppointmentSchema } from '@/validators/reschedule-appointment.schema';
+import { useGetDoctorById } from '@/hooks/useDoctor';
 
 const FormSchema = rescheduleAppointmentSchema['selectDoctorAndTime'];
 
@@ -29,6 +30,7 @@ export default function AppointmentPatientDoctor() {
 
   const [formData, setFormData] = useAtom(formRescheduleDataAtom);
   const [currentOpen, setCurrentOpen] = useState<number | null>(null);
+  console.log(formData);
 
   const {
     formState: { errors },
@@ -54,19 +56,17 @@ export default function AppointmentPatientDoctor() {
     problem_type: 'Anxiety',
     doctorId: formData.rescedule_by === 'date' ? formData?.doctorId : undefined,
   });
-
-  // console.log(formData);
-
   const { data: dataDoctor, isLoading } = useGetDoctorByClinic(params);
+
+  const { data: doctorById, isLoading: isLoadingDoctorById } = useGetDoctorById(
+    formData?.doctorId?.toString() ?? ''
+  );
 
   const doctor = useMemo(() => {
     return dataDoctor?.find((doctor) => {
-      // console.log(doctor);
       return doctor.id === Number(watchDoctor);
     });
   }, [dataDoctor, watchDoctor]);
-
-  // console.log(dataDoctor, watchDoctor, params);
 
   const onSubmit: SubmitHandler<FormSchemaType> = (data) => {
     setFormData((prev) => ({
@@ -77,7 +77,6 @@ export default function AppointmentPatientDoctor() {
     }));
     gotoNextStep();
   };
-  console.log(doctor);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -86,7 +85,8 @@ export default function AppointmentPatientDoctor() {
           <Input
             label="Doctor"
             value={
-              doctor && `${doctor?.first_name ?? ''} ${doctor?.last_name ?? ''}`
+              doctorById &&
+              `Dr. ${doctorById?.first_name ?? ''} ${doctorById?.last_name ?? ''}`
             }
             disabled
             className="w-full"
@@ -94,15 +94,16 @@ export default function AppointmentPatientDoctor() {
             error={errors.doctorId?.message}
           />
           <Input
+            type="time"
             label="Doctor Time"
             placeholder="Select Time"
             value={watchDoctorTime}
-            disabled
             error={errors.doctorTime?.message}
+            onChange={(e) => setValue('doctorTime', e.target.value)}
           />
         </Flex>
         <div className="mx-auto max-h-80 max-w-4xl divide-y divide-gray-200 overflow-auto">
-          {isLoading && <Loader variant="spinner" size="xl" />}
+          {isLoadingDoctorById && <Loader variant="spinner" size="xl" />}
           {dataDoctor?.map((doctor, index: number) => {
             if (!doctor.id) return null;
 
@@ -164,7 +165,7 @@ export default function AppointmentPatientDoctor() {
           })}
         </div>
       </div>
-      <Footer goBackToStepNumber={0} />
+      <Footer />
     </form>
   );
 }

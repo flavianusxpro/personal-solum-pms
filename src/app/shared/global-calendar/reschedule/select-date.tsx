@@ -53,7 +53,7 @@ export default function DateTime() {
       date: dayjs(data.date).format('YYYY-MM-DD'),
     }));
 
-    gotoStep(2);
+    gotoStep(1);
   };
 
   return (

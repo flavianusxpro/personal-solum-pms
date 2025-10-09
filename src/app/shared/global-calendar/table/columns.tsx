@@ -13,6 +13,9 @@ import {
 } from 'react-big-calendar';
 import dayjs from 'dayjs';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
+import { useDrag, useDrop } from 'react-dnd';
+
+// tipe unik untuk item yang di-drag
 const localizer = dayjsLocalizer(dayjs);
 
 const calendarToolbarClassName =
@@ -24,6 +27,7 @@ const rtcEventClassName =
 type Columns = {
   data: any[];
   openModal: (props: any) => void;
+  handleDrop?: any;
 };
 
 type Row = {
@@ -32,7 +36,7 @@ type Row = {
   type: string;
 };
 
-export const getColumns = ({ data, openModal }: Columns) => {
+export const getColumns = ({ data, openModal, handleDrop }: Columns) => {
   const doctorNames = Object.keys(data[0]).filter(
     (key) => key !== 'time' && key !== 'type'
   );
@@ -47,37 +51,127 @@ export const getColumns = ({ data, openModal }: Columns) => {
   };
 
   const doctorColumns = doctorNames.map((name) => ({
-    title: <HeaderCell title={name} />,
+    title: <HeaderCell title={`Dr. ${name}`} />,
     dataIndex: name,
     key: name,
     render: (value: any, row: Row) =>
-      getRowAppointment(value, row.type, openModal),
+      // getRowAppointment(value, row.type, openModal),
+      getRowAppointment(value, row.type, openModal, row, name, handleDrop),
   }));
 
   return [baseColumn, ...doctorColumns];
 };
 
+// function getRowAppointment(
+//   value: any,
+//   type: string,
+//   openModal: (props: any) => void
+// ) {
+//   const ITEM_TYPE = 'APPOINTMENT';
+//   let bgColor = '';
+//   if (type?.toLowerCase().includes('initial')) {
+//     bgColor = 'bg-green-600';
+//   } else if (type?.toLowerCase().includes('follow')) {
+//     bgColor = 'bg-blue-600';
+//   } else if (type?.toLowerCase().includes('script')) {
+//     bgColor = 'bg-yellow-600';
+//   } else if (type?.toLowerCase().includes('rescheduled')) {
+//     bgColor = 'bg-pink-600';
+//   } else {
+//     bgColor = 'bg-gray-600';
+//   }
+
+//   if (!value) return null;
+//   const patientName =
+//     `${value.patient?.first_name ?? ''} ${value.patient?.last_name ?? ''}`.trim();
+
+//   // 🎯 Setup drag
+//   const [{ isDragging }, dragRef] = useDrag({
+//     type: ITEM_TYPE,
+//     item: { appointment: value },
+//     collect: (monitor) => ({
+//       isDragging: monitor.isDragging(),
+//     }),
+//   });
+
+//   // 🎯 Setup drop
+//   const [, dropRef] = useDrop({
+//     accept: ITEM_TYPE,
+//     drop: (item: any) => {
+//       console.log('📦 Dipindah ke:', value, '➡️ dari:', item.appointment);
+//       // TODO: update state atau panggil API untuk ubah dokter/jam
+//     },
+//   });
+
+//   const handleOpenModal = () => {
+//     openModal({
+//       view: <ModalAppointmentDetails data={value} />,
+//       customSize: '700px',
+//     });
+//   };
+
+//   return (
+//     <div
+//       ref={(node) => {
+//         dragRef(dropRef(node));
+//       }}
+//       onClick={handleOpenModal}
+//       className={cn('w-fit cursor-pointer rounded-md p-2', bgColor)}
+//     >
+//       <Text className="font-medium text-white">{patientName || '-'}</Text>
+//     </div>
+//   );
+// }
+
 function getRowAppointment(
   value: any,
   type: string,
-  openModal: (props: any) => void
+  openModal: any,
+  row?: any,
+  doctor?: string,
+  onDrop?: any
 ) {
-  let bgColor = '';
-  if (type?.toLowerCase().includes('initial')) {
-    bgColor = 'bg-green-600';
-  } else if (type?.toLowerCase().includes('follow')) {
-    bgColor = 'bg-blue-600';
-  } else if (type?.toLowerCase().includes('script')) {
-    bgColor = 'bg-yellow-600';
-  } else if (type?.toLowerCase().includes('rescheduled')) {
-    bgColor = 'bg-pink-600';
-  } else {
-    bgColor = 'bg-gray-600';
+  if (value) {
+    return <AppointmentCell value={value} type={type} openModal={openModal} />;
   }
+  return <DropCell row={row} doctor={doctor} onDrop={onDrop} />;
+}
+
+export function AppointmentCell({ value, type, openModal }: any) {
+  const ITEM_TYPE = 'APPOINTMENT';
+
+  let bgColor = '';
+  if (type?.toLowerCase().includes('initial')) bgColor = 'bg-green-600';
+  else if (type?.toLowerCase().includes('follow')) bgColor = 'bg-blue-600';
+  else if (type?.toLowerCase().includes('script')) bgColor = 'bg-yellow-600';
+  else if (type?.toLowerCase().includes('rescheduled')) bgColor = 'bg-pink-600';
+  else bgColor = 'bg-gray-600';
 
   if (!value) return null;
-  const patientName =
-    `${value.patient?.first_name ?? ''} ${value.patient?.last_name ?? ''}`.trim();
+
+  const [{ isDragging }, dragRef] = useDrag(() => ({
+    type: ITEM_TYPE,
+    item: { appointment: value },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  }));
+
+  const [, dropRef] = useDrop(() => ({
+    accept: ITEM_TYPE,
+    drop: (item: any) => {
+      console.log('📦 Dipindah ke:', value, '➡️ dari:', item.appointment);
+      // TODO: update state atau panggil API
+    },
+  }));
+
+  //   const [{ isOver }, dropRef] = useDrop(() => ({
+  //   accept: ITEM_TYPE,
+  //   drop: (item) => handleDrop(item),
+  //   collect: (monitor) => ({
+  //     isOver: monitor.isOver(),
+  //   }),
+  // }));
 
   const handleOpenModal = () => {
     openModal({
@@ -88,10 +182,46 @@ function getRowAppointment(
 
   return (
     <div
+      ref={(node) => {
+        dragRef(dropRef(node));
+      }}
       onClick={handleOpenModal}
-      className={cn('w-fit cursor-pointer rounded-md p-2', bgColor)}
+      className={cn(
+        'w-fit cursor-pointer rounded-md p-2 transition-opacity',
+        bgColor,
+        isDragging && 'opacity-50'
+      )}
     >
-      <Text className="font-medium text-white">{patientName || '-'}</Text>
+      <Text className="font-medium text-white">
+        {`${value.patient?.first_name ?? ''} ${value.patient?.last_name ?? ''}`.trim() ||
+          '-'}
+      </Text>
     </div>
+  );
+}
+
+export function DropCell({ row, doctor, onDrop }: any) {
+  const ITEM_TYPE = 'APPOINTMENT';
+
+  const [{ isOver }, dropRef] = useDrop(() => ({
+    accept: ITEM_TYPE,
+    drop: (item: any) => {
+      console.log(
+        `✅ Dropped ${item.appointment.id} to ${doctor} at ${row.time}`
+      );
+      onDrop?.(item.appointment, doctor, row.time);
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  }));
+
+  return (
+    <div
+      ref={() => {
+        dropRef;
+      }}
+      className={cn(isOver ? 'bg-blue-100' : 'bg-transparent')}
+    />
   );
 }

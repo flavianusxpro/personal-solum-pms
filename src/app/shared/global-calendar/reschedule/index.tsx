@@ -124,14 +124,14 @@ export const initialFormData = {
 export const formRescheduleDataAtom = atom<FormDataType>(initialFormData);
 
 export enum Step {
-  SelectOption,
-  SelectDate,
+  // SelectOption,
+  // SelectDate,
   SelectDoctorTime,
-  AddReason,
+  // AddReason,
   Confirmation,
 }
 
-const firstStep = Step.SelectOption;
+const firstStep = Step.SelectDoctorTime;
 export const stepperAtomCancelAppointment = atomWithReset<Step>(firstStep);
 
 export function useStepperCancelAppointment() {
@@ -164,10 +164,10 @@ export function useStepperCancelAppointment() {
 }
 
 const MAP_STEP_TO_COMPONENT = {
-  [Step.SelectOption]: SelectOption,
-  [Step.SelectDate]: SelectDate,
+  // [Step.SelectOption]: SelectOption,
+  // [Step.SelectDate]: SelectDate,
   [Step.SelectDoctorTime]: SelectDoctorTime,
-  [Step.AddReason]: AddReason,
+  // [Step.AddReason]: AddReason,
   [Step.Confirmation]: RescheduleConfirmation,
 };
 
@@ -177,10 +177,12 @@ export const stepAppointmentTotalSteps = Object.keys(
 
 export default function CancelAppointmentForm({
   data,
+  newDate,
 }: {
   data?: IGetAppointmentListResponse['data'][number];
+  newDate?: string;
 }) {
-  console.log(data);
+  console.log(newDate);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { closeModal } = useModal();
@@ -197,7 +199,7 @@ export default function CancelAppointmentForm({
         id: data?.id,
         appointment_type: data?.type,
         clinicId: data?.clinicId,
-        date: data?.date,
+        date: newDate ?? '',
         doctorId: data?.doctor?.id,
         doctorTime: dayjs(data?.date).format('HH:mm'),
         meeting_preference: '',

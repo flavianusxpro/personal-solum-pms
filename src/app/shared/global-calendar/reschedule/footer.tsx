@@ -53,6 +53,8 @@ export default function Footer({
     );
   }
 
+  console.log(step > 0 && !isLastStep, step, isLastStep);
+
   return (
     <footer
       className={cn(
@@ -74,10 +76,13 @@ export default function Footer({
           Back
         </Button>
       )}
-      {step > 0 && !isLastStep && (
-        <Button className="!w-auto" type={'submit'} rounded="lg">
-          {'Next'}
-        </Button>
+      {step == 0 && !isLastStep && (
+        <>
+          <div></div>
+          <Button className="!w-auto" type={'submit'} rounded="lg">
+            {'Next'}
+          </Button>
+        </>
       )}
 
       {isLastStep && (
