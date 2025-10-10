@@ -95,6 +95,7 @@ export const routes = {
     emailTemplate: '/setting/email-template',
     smsTemplate: '/setting/sms-template',
     roles: '/setting/roles',
+    dateTimeFormat: '/setting/date-time-format',
     taxSettings: '/setting/tax',
     invoiceSettings: '/setting/invoice-settings',
     branch: '/setting/branch',

@@ -164,6 +164,7 @@ export default function CreateEditItemModal({
                 placeholder="15"
                 {...register('price')}
                 error={errors.price?.message}
+                disabled={isView}
               />
 
               <Controller
@@ -175,6 +176,7 @@ export default function CreateEditItemModal({
                     label="Tax Fee"
                     placeholder="Select Tax Fee"
                     options={taxFeeOptions}
+                    disabled={isView}
                   />
                 )}
               />

@@ -167,7 +167,7 @@ export default function TotalAppointment({
               >
                 <LabelList dataKey="booking" content={<CustomizedLabel />} />
               </Bar>
-              <Bar
+              {/* <Bar
                 type="natural"
                 dataKey="visitors"
                 {...(theme && {
@@ -178,7 +178,7 @@ export default function TotalAppointment({
                 radius={10}
               >
                 <LabelList dataKey="visitors" content={<CustomizedLabel />} />
-              </Bar>
+              </Bar> */}
             </ComposedChart>
           </ResponsiveContainer>
         </div>
@@ -216,6 +216,7 @@ function CustomLegend({ className }: { className?: string }) {
 function CustomizedLabel(props: any) {
   const { x, y, width, height, value } = props;
   const radius = 8;
+  console.log(value);
 
   return (
     <>
