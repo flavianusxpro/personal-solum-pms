@@ -128,7 +128,7 @@ export default function GlobalCalendarTable({}: {}) {
   const shortMonth = dayjs(selectedDate).format('MMM').toUpperCase();
   const year = dayjs(selectedDate).format('YYYY');
 
-  const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<string | number>(0);
   const { colorPresetName } = useColorPresetName();
   const { closeModal } = useModal();
   const [formData, setFormData] = useAtom(formRescheduleDataAtom);
