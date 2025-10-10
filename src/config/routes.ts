@@ -45,9 +45,9 @@ export const routes = {
   },
   requestCallBack: '/requestcallback',
   communications: {
-    sms: '/sms-communication',
-    email: '/email-communication',
-    socialMedia: 'social-media-communication',
+    sms: '/communications/call-sms',
+    email: '/communications/email',
+    socialMedia: '/communications/social-media',
   },
   report: '/report',
   reportAnalytics: {

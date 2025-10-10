@@ -171,7 +171,7 @@ export const adminMenuItems = [
         permissionReadName: ['requestcallback'],
       },
       {
-        name: 'SMS',
+        name: 'Call & SMS',
         href: routes.communications.sms,
         icon: <PiDoorOpen />,
         permissionReadName: ['communications.sms'],
