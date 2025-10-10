@@ -11,7 +11,7 @@ import {
   SettingFormatFormTypes,
 } from '@/validators/setting-format-schema';
 
-export const dateFormats = [
+const dateFormats = [
   { label: 'YYYY-MM-DD', value: 'YYYY-MM-DD' },
   { label: 'DD-MM-YYYY', value: 'DD-MM-YYYY' },
   { label: 'MM-DD-YYYY', value: 'MM-DD-YYYY' },
@@ -22,7 +22,7 @@ export const dateFormats = [
   { label: 'MMM DD, YYYY', value: 'MMM DD, YYYY' },
 ];
 
-export const timeFormats = [
+const timeFormats = [
   { label: 'HH:mm (24-hour)', value: 'HH:mm' },
   { label: 'hh:mm A (12-hour)', value: 'hh:mm A' },
   { label: 'HH:mm:ss (24-hour with seconds)', value: 'HH:mm:ss' },
