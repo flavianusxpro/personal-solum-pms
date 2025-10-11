@@ -32,6 +32,7 @@ import AddChannel from './modal/create-channel';
 import { useModal } from '../modal-views/use-modal';
 import AddInvitePeople from './modal/invite-people';
 import MembersLayout from './member-lists';
+import ChannelSettingsLayout from './channel-settings';
 import { AvatarWithBadge } from '@/core/ui/avatar';
 
 const channels = [
@@ -62,6 +63,7 @@ const SmsCommunication = () => {
   const [selectedChannel, setSelectedChannel] = useState('');
   const [isReplies, setIsReplies] = useState(false);
   const [openMembers, setOpenMembers] = useState(false);
+  const [openChannelSetting, setOpenChannelSetting] = useState(false);
   const [selectedUser, setSelectedUser] = useState({});
 
   const showModalAddChannel = () => {
@@ -77,8 +79,6 @@ const SmsCommunication = () => {
       customSize: '600px',
     });
   };
-
-  console.log(selectedUser);
 
   return (
     <div className="flex h-screen w-full rounded-2xl border">
@@ -101,7 +101,7 @@ const SmsCommunication = () => {
                 <Title
                   as="h6"
                   className={cn(
-                    'mb-2 truncate text-xs uppercase tracking-widest text-gray-500 2xl:px-8'
+                    'mb-2 truncate px-2 text-xs uppercase tracking-widest text-gray-500'
                   )}
                 >
                   All Channels
@@ -141,7 +141,7 @@ const SmsCommunication = () => {
               <Title
                 as="h6"
                 className={cn(
-                  'mb-2 truncate text-xs uppercase tracking-widest text-gray-500 2xl:px-8'
+                  'mb-2 truncate px-2 text-xs uppercase tracking-widest text-gray-500'
                 )}
               >
                 Direct Messages
@@ -277,7 +277,11 @@ const SmsCommunication = () => {
             )}
 
             <Tooltip content="Channel Setting">
-              <ActionIcon size="sm" variant="text">
+              <ActionIcon
+                size="sm"
+                variant="text"
+                onClick={() => setOpenChannelSetting(true)}
+              >
                 <LuEllipsisVertical className="h-4 w-4 text-gray-400" />
               </ActionIcon>
             </Tooltip>
@@ -318,6 +322,18 @@ const SmsCommunication = () => {
           >
             {openMembers == true && (
               <MembersLayout onCloseMembers={() => setOpenMembers(false)} />
+            )}
+          </div>
+          <div
+            className={`absolute bottom-0 right-0 top-0 h-full w-full max-w-[250px] transform bg-white shadow-lg transition-transform duration-300 ease-in-out ${
+              openChannelSetting ? 'translate-x-0' : 'translate-x-full'
+            }`}
+          >
+            {openChannelSetting == true && (
+              <ChannelSettingsLayout
+                onClose={() => setOpenChannelSetting(false)}
+                channelName={selectedChannel}
+              />
             )}
           </div>
         </div>
