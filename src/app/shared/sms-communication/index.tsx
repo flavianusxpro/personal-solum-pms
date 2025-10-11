@@ -83,7 +83,7 @@ const SmsCommunication = () => {
   return (
     <div className="flex h-screen w-full rounded-2xl border">
       {/* Sidebar kiri */}
-      <aside className="flex w-[280px] flex-col border-r border-gray-200">
+      <aside className="hidden w-[280px] flex-col border-r border-gray-200 md:flex">
         <div className="border-b p-5">
           <Input
             type="text"
@@ -182,7 +182,7 @@ const SmsCommunication = () => {
         <div className="flex items-center justify-between border-t px-4 py-[1.13rem]">
           <Flex align="center">
             {selectedUser ? (
-              <AvatarWithBadge data={{ name: 'Budi Setiadi' }} />
+              <AvatarWithBadge data={{ name: 'Budi Setiadi' }} size="sm" />
             ) : (
               <Avatar src="" name="Budi Setiadi" size="sm" />
             )}
@@ -206,8 +206,8 @@ const SmsCommunication = () => {
           {selectedChannel ? (
             <span>{`#${selectedChannel}`}</span>
           ) : (
-            <Flex align="center">
-              <Avatar name="Viola Yosevi" src="" />
+            <Flex align="center" className="h-5">
+              <Avatar name="Viola Yosevi" src="" size="sm" />
               <div className="flex flex-col">
                 <Text>Dr. Viola Yosevi</Text>
                 <Text className="text-xs text-gray-500">Specialist</Text>
