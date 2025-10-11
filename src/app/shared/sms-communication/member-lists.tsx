@@ -33,8 +33,8 @@ const MembersLayout = ({ onCloseMembers }: { onCloseMembers?: () => void }) => {
         </Title>
       </div>
       <div className="flex flex-col gap-3">
-        {members.map((member) => (
-          <div className="flex items-center gap-3">
+        {members.map((member, index) => (
+          <div className="flex items-center gap-3" key={index}>
             {member.isActive == true ? (
               <AvatarWithBadge data={member} />
             ) : (
