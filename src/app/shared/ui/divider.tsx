@@ -24,13 +24,13 @@ export function DividerSidebar({ className }: IProps) {
 }
 
 export function DividerWithText({
-  className,
+  className = 'my-6',
   text,
   borderColor = 'border-gray-200',
   textColor = 'text-gray-400',
 }: IProps) {
   return (
-    <div className="my-6 flex w-full items-center justify-center">
+    <div className={`flex w-full items-center justify-center ${className}`}>
       <div className={`flex-grow border-t ${borderColor} `}></div>
       <Title
         as="h6"

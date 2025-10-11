@@ -1,7 +1,9 @@
-import { Avatar, Title } from 'rizzui';
+import { Button, Flex, Title, Textarea } from 'rizzui';
 import { DividerWithText } from '../ui/divider';
 import RepliesMessage from './replies-message';
 import cn from '@/core/utils/class-names';
+import { PiPlusLight, PiSmileyLight, PiX } from 'react-icons/pi';
+import { LuSend } from 'react-icons/lu';
 
 const RepliesLayout = ({
   onCloseHandleReplies,
@@ -9,11 +11,8 @@ const RepliesLayout = ({
   onCloseHandleReplies?: () => void;
 }) => {
   return (
-    <div
-      className="flex-1 space-y-4 overflow-y-auto bg-white p-4"
-      onClick={onCloseHandleReplies}
-    >
-      <div>
+    <div className="flex flex-1 flex-col gap-4 space-y-4 overflow-y-auto bg-white p-4">
+      <div className="flex items-center justify-between">
         <Title
           as="h6"
           className={cn(
@@ -22,6 +21,11 @@ const RepliesLayout = ({
         >
           Conversation
         </Title>
+
+        <PiX
+          className="h-4 w-4 cursor-pointer"
+          onClick={onCloseHandleReplies}
+        />
       </div>
       <div>
         <div className="flex flex-col items-start gap-3">
@@ -42,6 +46,25 @@ const RepliesLayout = ({
             message="Hello Mr. Fajar, yes it’s confirmed 😊 Your consultation is still on for 9 AM with Dr. Daniel Morgan. Please arrive 10 minutes early for registration."
           />
         </div>
+      </div>
+      <div className="flex flex-col gap-3 rounded-2xl border border-gray-300 p-4">
+        <Textarea
+          placeholder="Reply here..."
+          className="!focus:ring-0 !focus:shadow-none !h-10 w-full !border-none !shadow-none !ring-0"
+          textareaClassName="!focus:ring-0 w-full !border-none !shadow-none !ring-0 !focus:shadow-none !h-10"
+          size="sm"
+        />
+        <Flex justify="between" align="center">
+          <Flex>
+            <PiPlusLight className="h-4 w-4" />
+            <PiSmileyLight className="h-4 w-4" />
+          </Flex>
+
+          <Button className="w-auto text-white" size="sm">
+            <LuSend className="me-1.5 h-4 w-4" />
+            Send
+          </Button>
+        </Flex>
       </div>
     </div>
   );
