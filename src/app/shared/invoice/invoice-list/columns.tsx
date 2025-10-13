@@ -310,7 +310,7 @@ function RenderAction({
                 >
                   <div className="flex items-center gap-3">
                     <PencilIcon className="h-4 w-4" />
-                    <span>Edit Invoice</span>
+                    <span>Edit</span>
                   </div>
                 </Button>
               </Link>
@@ -371,7 +371,7 @@ function RenderAction({
               >
                 <div className="flex items-center gap-3">
                   <EyeIcon className="h-4 w-4" />
-                  <span>View Invoice</span>
+                  <span>View</span>
                 </div>
               </Button>
             </Link>
@@ -388,7 +388,7 @@ function RenderAction({
               >
                 <div className="flex items-center gap-3">
                   <TrashIcon className="h-4 w-4" />
-                  <span>Delete Invoice</span>{' '}
+                  <span>Delete</span>{' '}
                 </div>
               </Button>
             </Dropdown.Item>

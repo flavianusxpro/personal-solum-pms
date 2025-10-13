@@ -19,14 +19,14 @@ const MembersLayout = ({ onCloseMembers }: { onCloseMembers?: () => void }) => {
   ];
   return (
     <div
-      className="flex-1 space-y-4 overflow-y-auto bg-white p-4"
+      className="flex-1 space-y-4 overflow-y-auto bg-white p-6"
       onClick={onCloseMembers}
     >
       <div>
         <Title
           as="h6"
           className={cn(
-            'mb-2 truncate text-xs font-medium uppercase tracking-widest text-gray-500 2xl:px-8'
+            'mb-2 truncate text-xs font-medium uppercase tracking-widest text-gray-500'
           )}
         >
           Member Lists

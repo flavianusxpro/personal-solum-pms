@@ -45,7 +45,7 @@ export const routes = {
   },
   requestCallBack: '/requestcallback',
   communications: {
-    sms: '/communications/call-sms',
+    sms: '/communications/chat',
     email: '/communications/email',
     socialMedia: '/communications/social-media',
   },

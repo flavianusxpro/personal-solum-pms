@@ -5,14 +5,14 @@ import PageHeader from '@/app/shared/ui/page-header';
 import SmsCommunication from '@/app/shared/sms-communication';
 
 const pageHeader = {
-  title: 'Call & SMS',
+  title: 'Chat',
   breadcrumb: [
     {
       href: routes.setting.communication,
       name: 'Communications',
     },
     {
-      name: 'Call & SMS',
+      name: 'Chat',
     },
   ],
 };

@@ -114,7 +114,7 @@ export const adminMenuItems = [
     permissionReadName: ['sales'],
     dropdownItems: [
       {
-        name: 'Invoice',
+        name: 'Invoices',
         href: routes.invoice.home,
         icon: <PiCurrencyDollarDuotone />,
         permissionReadName: ['sales.invoice'],
@@ -171,7 +171,7 @@ export const adminMenuItems = [
         permissionReadName: ['requestcallback'],
       },
       {
-        name: 'Call & SMS',
+        name: 'Chat',
         href: routes.communications.sms,
         icon: <PiDoorOpen />,
         permissionReadName: ['communications.sms'],
