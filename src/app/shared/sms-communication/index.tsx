@@ -81,13 +81,399 @@ const persons = [
     read_message: 2,
   },
   {
-    id: 3,
-    first_name: 'Aqeela',
-    last_name: 'Vaughan',
+    id: 4,
+    first_name: 'Lachlan',
+    last_name: 'Reid',
+    role: 'Consultant',
+    avatar: '',
+    time: '32 minutes ago',
+    read_message: 1,
+  },
+  {
+    id: 5,
+    first_name: 'Chloe',
+    last_name: 'Henderson',
+    role: 'Therapist',
+    avatar: '',
+    time: '1 hour ago',
+    read_message: 0,
+  },
+  {
+    id: 6,
+    first_name: 'Jack',
+    last_name: 'Thompson',
+    role: 'GP',
+    avatar: '',
+    time: '2 hours ago',
+    read_message: 5,
+  },
+  {
+    id: 7,
+    first_name: 'Olivia',
+    last_name: 'Campbell',
+    role: 'Nurse',
+    avatar: '',
+    time: '15 minutes ago',
+    read_message: 0,
+  },
+  {
+    id: 8,
+    first_name: 'Ethan',
+    last_name: 'O’Connor',
+    role: 'Physiotherapist',
+    avatar: '',
+    time: '10 minutes ago',
+    read_message: 3,
+  },
+  {
+    id: 9,
+    first_name: 'Sophie',
+    last_name: 'Williams',
+    role: 'Dentist',
+    avatar: '',
+    time: '5 hours ago',
+    read_message: 0,
+  },
+  {
+    id: 10,
+    first_name: 'Cooper',
+    last_name: 'Johnson',
+    role: 'Psychologist',
+    avatar: '',
+    time: '25 minutes ago',
+    read_message: 1,
+  },
+  {
+    id: 11,
+    first_name: 'Matilda',
+    last_name: 'Brown',
     role: 'Specialist',
     avatar: '',
-    time: '50 minutes ago',
+    time: '2 hours ago',
+    read_message: 4,
+  },
+  {
+    id: 12,
+    first_name: 'Harper',
+    last_name: 'Davies',
+    role: 'GP',
+    avatar: '',
+    time: '1 hour ago',
     read_message: 0,
+  },
+  {
+    id: 13,
+    first_name: 'Charlie',
+    last_name: 'Wilson',
+    role: 'Nurse',
+    avatar: '',
+    time: '8 minutes ago',
+    read_message: 2,
+  },
+  {
+    id: 14,
+    first_name: 'Ruby',
+    last_name: 'Harris',
+    role: 'Therapist',
+    avatar: '',
+    time: '45 minutes ago',
+    read_message: 1,
+  },
+  {
+    id: 15,
+    first_name: 'Noah',
+    last_name: 'Anderson',
+    role: 'Consultant',
+    avatar: '',
+    time: '3 hours ago',
+    read_message: 0,
+  },
+];
+
+const chatMessages = [
+  {
+    id: 1,
+    name: 'Auto-generated System',
+    date: 'Today at 8:45 AM',
+    message:
+      '🔔 Daily Summary: Total 42 appointments today. 7 initial consults and 12 follow-up consultations scheduled before noon.',
+    photo: '/bot-sparkle.svg',
+    className: '!bg-black !text-white',
+  },
+  {
+    id: 2,
+    name: 'Nanda Priani (Patient Coordinator)',
+    date: 'Today at 8:47 AM',
+    message:
+      'Good morning, team! All consultation links for this morning have been sent to patients. Please double-check your session dashboards before the first call.',
+    photo: '/avatars/nanda.png',
+  },
+  {
+    id: 3,
+    name: 'Dr. Daniel Morgan (GP)',
+    date: 'Today at 8:50 AM',
+    message:
+      'Thanks, Nanda. I’ll start with the 9 AM consult. Could you verify if the patient “Andi S.” has completed the pre-assessment form?',
+    photo: '/avatars/daniel.png',
+  },
+  {
+    id: 4,
+    name: 'Nanda Priani (Patient Coordinator)',
+    date: 'Today at 8:50 AM',
+    message:
+      'Yes, Doctor. The form was submitted last night — uploaded to the patient file under “Pre-Consult Notes.”',
+    photo: '/avatars/nanda.png',
+  },
+  {
+    id: 5,
+    name: 'Budi Setiadi (Admin)',
+    date: 'Today at 8:52 AM',
+    message:
+      'Quick note: We’ll run a short system optimization at 10 PM tonight. The platform might go offline for about 10 minutes.',
+    photo: '/avatars/budi.png',
+  },
+  {
+    id: 6,
+    name: 'Auto-generated System',
+    date: 'Today at 9:05 AM',
+    message:
+      '📅 Schedule Update: Dr. Emily Turner’s 10:30 AM consultation with Alicia K. has been rescheduled to Oct 9, 2025 – 2:00 PM by the administrative team.',
+    photo: '/bot-sparkle.svg',
+    className: '!bg-black !text-white',
+  },
+  {
+    id: 7,
+    name: 'Dr. Emily Turner (Specialist)',
+    date: 'Today at 9:10 AM',
+    message:
+      'Copy that. Thanks for the update — I’ll adjust my consultation notes accordingly.',
+    photo: '/avatars/emily.png',
+  },
+  {
+    id: 8,
+    name: 'Dr. Jack Thompson (GP)',
+    date: 'Today at 9:15 AM',
+    message:
+      'Morning all — quick reminder: Please review patient feedback before next week’s team meeting.',
+    photo: '/avatars/jack.png',
+  },
+  {
+    id: 9,
+    name: 'Olivia Campbell (Nurse)',
+    date: 'Today at 9:17 AM',
+    message:
+      'Got it, Jack. I’ve already compiled feedback for the first 10 patients — will send by EOD.',
+    photo: '/avatars/olivia.png',
+  },
+  {
+    id: 10,
+    name: 'Auto-generated System',
+    date: 'Today at 9:20 AM',
+    message:
+      '✅ Appointment Confirmation: Thank you, Noah! Your consultation with Dr. Harper Davies has been confirmed for October 14, 2025, at 2:30 PM.',
+    photo: '/bot-sparkle.svg',
+    className: '!bg-black !text-white',
+    messageClassName: 'bg-gray-300',
+  },
+];
+
+const patientMessages = [
+  {
+    id: 1,
+    name: 'Jack Thompson',
+    role: 'Patient',
+    message:
+      'Hi, just wanted to check if my appointment for tomorrow at 8:30 AM is confirmed?',
+    timestamp: 'Oct 12 at 9:05 AM',
+  },
+  {
+    id: 2,
+    name: 'Chloe Nguyen',
+    role: 'Patient',
+    message:
+      'Good morning, I need to update my contact number before my session today.',
+    timestamp: 'Oct 12 at 9:42 AM',
+  },
+  {
+    id: 3,
+    name: "Liam O'Connor",
+    role: 'Patient',
+    message:
+      'Hi there, could I please reschedule my consultation from Friday to next Monday?',
+    timestamp: 'Oct 12 at 10:17 AM',
+  },
+  {
+    id: 4,
+    name: 'Sophie Williams',
+    role: 'Patient',
+    message:
+      "I completed my pre-consultation form but haven't received the video call link yet.",
+    timestamp: 'Oct 12 at 10:54 AM',
+  },
+  {
+    id: 5,
+    name: 'Noah Patel',
+    role: 'Patient',
+    message:
+      'Just confirming — is Dr. Emily still available for my 2 PM consultation today?',
+    timestamp: 'Oct 12 at 11:22 AM',
+  },
+  {
+    id: 6,
+    name: 'Isla Brown',
+    role: 'Patient',
+    message:
+      'Hi, I might be running 10 minutes late for my appointment. Is that okay?',
+    timestamp: 'Oct 12 at 1:03 PM',
+  },
+  {
+    id: 7,
+    name: 'Ethan White',
+    role: 'Patient',
+    message:
+      'Could you please confirm if my blood test results have been uploaded to my profile?',
+    timestamp: 'Oct 12 at 2:14 PM',
+  },
+  {
+    id: 8,
+    name: 'Olivia Harris',
+    role: 'Patient',
+    message:
+      'Hello, just checking if my consultation link will be sent via email or SMS?',
+    timestamp: 'Oct 12 at 2:38 PM',
+  },
+  {
+    id: 9,
+    name: 'Mason Taylor',
+    role: 'Patient',
+    message: 'Hi, I accidentally submitted the wrong form. Can I resend it?',
+    timestamp: 'Oct 12 at 3:05 PM',
+  },
+  {
+    id: 10,
+    name: 'Harper Martin',
+    role: 'Patient',
+    message:
+      'I’d like to confirm if I can bring my medical documents in person for tomorrow’s appointment.',
+    timestamp: 'Oct 12 at 3:47 PM',
+  },
+];
+
+const randomChannel = [
+  {
+    id: 1,
+    name: 'Auto-generated System',
+    date: 'Today at 8:15 AM',
+    message:
+      '🔔 Daily Summary: Total 38 appointments today. 10 new consultations and 8 follow-ups before noon.',
+    photo: '/bot-sparkle.svg',
+    className: '!bg-black !text-white',
+  },
+  {
+    id: 2,
+    name: '+61 412 889 230',
+    date: 'Today at 8:20 AM',
+    message:
+      'Hi, just wanted to check if my consultation with Dr. Oliver is confirmed for this afternoon?',
+    photo: '/avatars/default.png',
+  },
+  {
+    id: 3,
+    name: 'Amelia Scott (Patient Coordinator)',
+    date: 'Today at 8:23 AM',
+    message:
+      'Hello! Yes, your consultation with Dr. Oliver Brown is confirmed for 3:00 PM today. Please join 10 minutes early.',
+    photo: '/avatars/amelia.png',
+  },
+  {
+    id: 4,
+    name: 'Auto-generated System',
+    date: 'Today at 8:45 AM',
+    message:
+      '✅ Match found: Ethan Riley (P-0284) — profile successfully linked with number +61 412 889 230.',
+    photo: '/bot-sparkle.svg',
+    className: '!bg-black !text-white',
+  },
+  {
+    id: 5,
+    name: 'Liam Johnson (Patient)',
+    date: 'Today at 9:10 AM',
+    message:
+      'Good morning, I’d like to request a new appointment for next Tuesday morning if available.',
+    photo: '/avatars/liam.png',
+  },
+  {
+    id: 6,
+    name: 'Chloe Robinson (Patient Coordinator)',
+    date: 'Today at 9:12 AM',
+    message:
+      'Hi Liam! I’ve checked — Dr. Grace is available on Tuesday at 10:30 AM. Shall I book it for you?',
+    photo: '/avatars/chloe.png',
+  },
+  {
+    id: 7,
+    name: 'Liam Johnson (Patient)',
+    date: 'Today at 9:14 AM',
+    message: 'Yes, please go ahead with that slot. Thank you!',
+    photo: '/avatars/liam.png',
+  },
+  {
+    id: 8,
+    name: 'Auto-generated System',
+    date: 'Today at 9:30 AM',
+    message:
+      '📩 Appointment confirmed: Liam Johnson with Dr. Grace Miller on Oct 15, 10:30 AM.',
+    photo: '/bot-sparkle.svg',
+    className: '!bg-black !text-white',
+  },
+  {
+    id: 9,
+    name: '+61 478 321 660',
+    date: 'Today at 10:05 AM',
+    message:
+      'Hi, I need to reschedule my teleconsultation from Friday to Monday morning.',
+    photo: '/avatars/default.png',
+  },
+  {
+    id: 10,
+    name: 'Noah Edwards (Patient Coordinator)',
+    date: 'Today at 10:10 AM',
+    message:
+      'Sure! Could you please confirm your full name so I can locate your record?',
+    photo: '/avatars/noah.png',
+  },
+];
+
+const chatWithPatient = [
+  {
+    id: 1,
+    name: 'Auto-generated System',
+    date: 'Today at 9:05 AM',
+    message:
+      'Hi Alicia, this is a reminder from Solum Clinic for your appointment on October 13, 2025 at 11:45 AM.\nPlease reply Y to confirm or N if you can’t make it.\nThank you and see you soon!',
+    photo: '/bot-sparkle.svg',
+    className: '!bg-black !text-white',
+    messageClassName: 'bg-gray-100 text-black',
+  },
+  {
+    id: 2,
+    name: 'Alicia Krawczyk',
+    date: 'Today at 1:12 PM',
+    message: 'Y',
+    photo: '/avatars/alicia.png',
+    className: '!bg-blue-100 !text-black',
+    messageClassName: 'bg-[#DDE7FF] w-10 flex justify-center',
+    divClassName: '',
+  },
+  {
+    id: 3,
+    name: 'Auto-generated System',
+    date: 'Today at 1:13 PM',
+    message:
+      'Thank you, Alicia! Your appointment on **October 13, 2025, at 11:45 AM** has been confirmed.\nIf you need to reschedule, please contact our support team via chat or call.',
+    photo: '/bot-sparkle.svg',
+    className: '!bg-black !text-white',
+    messageClassName: 'bg-gray-100 text-black',
   },
 ];
 
@@ -238,8 +624,8 @@ const SmsCommunication = () => {
                     >
                       <Flex align="center">
                         <Avatar
-                          name="Jane Doe"
-                          src="https://randomuser.me/api/portraits/women/40.jpg"
+                          name={`${item.first_name} ${item.last_name}`}
+                          src={item.avatar}
                         />
                         <div className="flex flex-col">
                           <span className="font-semibold">
@@ -325,8 +711,8 @@ const SmsCommunication = () => {
                       >
                         <Flex align="center">
                           <Avatar
-                            name="Jane Doe"
-                            src="https://randomuser.me/api/portraits/women/40.jpg"
+                            name={`${item.first_name} ${item.last_name}`}
+                            src={item.avatar}
                           />
                           <div className="flex flex-col">
                             <span className="font-semibold">
@@ -370,8 +756,8 @@ const SmsCommunication = () => {
                     >
                       <Flex align="center">
                         <Avatar
-                          name="Jane Doe"
-                          src="https://randomuser.me/api/portraits/women/40.jpg"
+                          name={`${item.first_name} ${item.last_name}`}
+                          src={item.avatar}
                         />
                         <div className="flex flex-col">
                           <span className="font-semibold">
@@ -396,12 +782,12 @@ const SmsCommunication = () => {
         <div className="flex items-center justify-between border-t px-4 py-[1.13rem]">
           <Flex align="center" className="h-9">
             {selectedUser ? (
-              <AvatarWithBadge data={{ name: 'Budi Setiadi' }} size="md" />
+              <AvatarWithBadge data={{ name: 'Nanda Priani ' }} size="md" />
             ) : (
-              <Avatar src="" name="Budi Setiadi" size="md" />
+              <Avatar src="" name="Nanda Priani " size="md" />
             )}
             <div className="flex flex-col">
-              <span>Budi Setiadi</span>
+              <span>Nanda Priani </span>
               <span className="text-xs text-gray-400">Administrator</span>
             </div>
           </Flex>
@@ -567,37 +953,68 @@ const SmsCommunication = () => {
         <div className="relative flex flex-1 overflow-y-hidden bg-[#FAFAFF]">
           <div className="flex-1 space-y-4 overflow-y-auto p-4">
             <div className="flex flex-col items-start gap-3">
-              <DividerWithText text="OCTOBER 08, 2025" />
-              <div className="flex flex-col gap-6">
-                <RepliesMessage
-                  name="Auto Generated System"
-                  date="Today 9:05 AM"
-                  photo="/bot-sparkle.svg"
-                  message="Hi Alicia, this is a reminder from Solum Clinic for your appointment on October 13, 2025 at 11:45 AM.Please reply Y to confirm or N if you can’t make it.Thank you and see you soon!"
-                  // isReplies={true}
-                  // handleReplies={() => {
-                  //   setIsReplies(!isReplies);
-                  //   setOpenMembers(false);
-                  // }}
-                  className="!w-10 !bg-black !text-white"
-                  messageClassName="bg-gray-300"
-                />
-                <RepliesMessage
-                  name="Alicia Krawczyk"
-                  date="Today at 1:12 PM"
-                  message="Y"
-                  photo="https://randomuser.me/api/portraits/women/41.jpg"
-                  messageClassName="bg-[#DDE7FF] w-10 flex items-center justify-center"
-                />
-                <RepliesMessage
-                  name="Auto Generated System"
-                  date="Today 9:05 AM"
-                  message="Thank you, Alicia! Your appointment on October 13, 2025, at 11:45 AM has been confirmed.If you need to reschedule, please contact our support team via chat or call."
-                  photo="/bot-sparkle.svg"
-                  className="!bg-black !text-white"
-                  messageClassName="bg-gray-300"
-                />
-              </div>
+              <DividerWithText text="OCTOBER 14, 2025" />
+              {selectedChannel == 'general' && (
+                <div className="flex flex-col gap-6">
+                  {chatMessages.map((msg) => (
+                    <RepliesMessage
+                      key={msg.id}
+                      name={msg.name}
+                      date={msg.date}
+                      message={msg.message}
+                      photo={msg.photo}
+                      className={msg.className}
+                      messageClassName={msg.messageClassName}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {selectedChannel == 'patient' && (
+                <div className="flex flex-col gap-6">
+                  {patientMessages.map((msg) => (
+                    <RepliesMessage
+                      key={msg.id}
+                      name={msg.name}
+                      date={msg.timestamp}
+                      message={msg.message}
+                      photo=""
+                    />
+                  ))}
+                </div>
+              )}
+
+              {selectedChannel == 'random' && (
+                <div className="flex flex-col gap-6">
+                  {randomChannel.map((msg) => (
+                    <RepliesMessage
+                      key={msg.id}
+                      name={msg.name}
+                      date={msg.date}
+                      message={msg.message}
+                      photo={msg.photo}
+                      className={msg.className}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {selectedUser && Object.keys(selectedUser).length > 0 && (
+                <div className="flex flex-col gap-6">
+                  {chatWithPatient.map((msg) => (
+                    <RepliesMessage
+                      key={msg.id}
+                      name={msg.name}
+                      date={msg.date}
+                      message={msg.message}
+                      photo={msg.photo}
+                      className={msg.className}
+                      messageClassName={msg.messageClassName}
+                      divMessageClassName={msg.divClassName}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           {isReplies && (

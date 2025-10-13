@@ -49,7 +49,13 @@ const RepliesMessage = ({
             <span className="text-xs text-gray-400">{date}</span>
           </div>
           <div className={divMessageClassName}>
-            <p className={`rounded-lg p-3 ${messageClassName}`}>{message}</p>
+            <p
+              className={`rounded-lg ${
+                messageClassName ? `p-3 ${messageClassName}` : ''
+              }`}
+            >
+              {message}
+            </p>
           </div>
         </div>
         {isReplies && (
