@@ -4,7 +4,10 @@ import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { getColumns } from './columns';
 import { useModal } from '../../modal-views/use-modal';
-import { useGetAppointments } from '@/hooks/useAppointment';
+import {
+  useGetAppointments,
+  usePostRescheduleAppointmentByDate,
+} from '@/hooks/useAppointment';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 import TableHeader from '../../ui/table-header';
 import { Flex, Input, Loader, Text, Select } from 'rizzui';
@@ -21,11 +24,12 @@ import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import RescheduleAppointmentForm, {
   formRescheduleDataAtom,
-  useStepperCancelAppointment,
 } from '../reschedule';
 import { useAtom } from 'jotai';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import toast from 'react-hot-toast';
+import ConfirmationView from '../reschedule/ConfirmationView';
 
 const DnDCalendar = withDragAndDrop<any, any>(Calendar);
 
@@ -63,12 +67,12 @@ const EventCard = ({ event, selectedDoctor }: any) => {
     >
       {!selectedDoctor && (
         <div className="whitespace-normal break-words text-xs font-semibold leading-snug">
-          Dr. {event.doctor}
+          {event.time} - Dr. {event.doctor}
         </div>
       )}
 
       <div className="whitespace-normal break-words text-xs leading-snug text-gray-500">
-        {event.time} - {event.patient}
+        {event.patient}
       </div>
     </div>
   );
@@ -111,28 +115,29 @@ const EventCardByPatient = ({ event }: any) => {
   );
 };
 export default function GlobalCalendarTable({}: {}) {
-  const { openModal } = useModal();
+  const { openModal, closeModal } = useModal();
   const [pageSize] = useState(100);
   const [viewType, setViewType] = useState<'daily' | 'weekly' | 'monthly'>(
     'monthly'
   );
   const [selectedDate, setSelectedDate] = useState(
     viewType === 'monthly'
-      ? dayjs().format('YYYY-MM')
+      ? dayjs().locale('en').format('YYYY-MM')
       : dayjs().format('YYYY-MM-DD')
   );
 
   const startOfMonth = dayjs(selectedDate).startOf('month').format('D MMMM');
   const endOfMonth = dayjs(selectedDate).endOf('month').format('D MMMM');
-  const monthLabel = dayjs(selectedDate).format('MMMM YYYY');
+  const monthLabel = dayjs(selectedDate).locale('en').format('MMMM YYYY');
   const shortMonth = dayjs(selectedDate).format('MMM').toUpperCase();
   const year = dayjs(selectedDate).format('YYYY');
 
   const [selectedDoctor, setSelectedDoctor] = useState<string | number>(0);
   const { colorPresetName } = useColorPresetName();
-  const { closeModal } = useModal();
   const [formData, setFormData] = useAtom(formRescheduleDataAtom);
   const { data: dataProfile } = useProfile(true);
+  const { mutate: mutateRescheduleByDate } =
+    usePostRescheduleAppointmentByDate();
   const {
     data,
     isLoading: isLoadingGetAppointments,
@@ -141,20 +146,18 @@ export default function GlobalCalendarTable({}: {}) {
     page: 1,
     perPage: pageSize,
     sort: 'DESC',
-    // from: selectedDate,
-    // to: selectedDate,
     from:
       viewType === 'monthly'
         ? dayjs(selectedDate).startOf('month').format('YYYY-MM-DD')
         : viewType === 'weekly'
-          ? dayjs(selectedDate).startOf('week').format('YYYY-MM-DD')
-          : selectedDate,
+        ? dayjs(selectedDate).startOf('week').format('YYYY-MM-DD')
+        : selectedDate,
     to:
       viewType === 'monthly'
         ? dayjs(selectedDate).endOf('month').format('YYYY-MM-DD')
         : viewType === 'weekly'
-          ? dayjs(selectedDate).endOf('week').format('YYYY-MM-DD')
-          : selectedDate,
+        ? dayjs(selectedDate).endOf('week').format('YYYY-MM-DD')
+        : selectedDate,
     clinicId: dataProfile?.clinics[0]?.id || 0,
     doctorId: selectedDoctor ? Number(selectedDoctor) : undefined,
   });
@@ -314,38 +317,80 @@ export default function GlobalCalendarTable({}: {}) {
     return formatAppointments(data?.data ?? []);
   }, [data?.data, formatAppointments]);
 
-  // ✅ Tambahkan ini di dalam GlobalCalendarTable, sebelum const columns
+  const rescheduleModal = useCallback(
+    (
+      row: any,
+      newDate: string,
+      newDoctorName?: string,
+      newTime?: string
+    ) => {
+      closeModal();
+
+      if (viewType === 'daily' && newDoctorName && newTime) {
+        const doctorId = optionDoctors.find(
+          (doc) => doc.label === `Dr. ${newDoctorName}`
+        )?.value;
+
+        const displayTime = dayjs(newTime, 'HH:mm').format('h:mm A');
+        const confirmationText = `Are you sure you want to reschedule to Dr. ${newDoctorName} at ${displayTime}?`;
+
+        const handleConfirm = () => {
+          const payload = {
+            id: row.id as number,
+            doctorId: doctorId,
+            date: `${dayjs(newDate).format('YYYY-MM-DD')} ${newTime}`,
+            note: 'Rescheduled from calendar drag and drop',
+          };
+
+          mutateRescheduleByDate(payload, {
+            onSuccess: () => {
+              toast.success('Appointment rescheduled successfully');
+              refetch();
+              closeModal();
+            },
+            onError: (error: any) => {
+              toast.error(
+                error?.response?.data?.message ||
+                  'Error rescheduling appointment'
+              );
+              console.error('Error rescheduling appointment:', error);
+              closeModal();
+            },
+          });
+        };
+
+        openModal({
+          view: (
+            <ConfirmationView
+              description={confirmationText}
+              onConfirm={handleConfirm}
+              onCancel={() => closeModal()}
+            />
+          ),
+          customSize: '400px',
+        });
+      } else {
+        openModal({
+          view: <RescheduleAppointmentForm data={row} newDate={newDate} />,
+          customSize: '600px',
+        });
+      }
+    },
+    [
+      closeModal,
+      viewType,
+      optionDoctors,
+      mutateRescheduleByDate,
+      refetch,
+      openModal,
+    ]
+  );
+
   const handleDrop = useCallback(
     (appointment: any, newDoctor: string, newTime: string) => {
-      console.log('📦 Appointment dipindahkan:', appointment);
-      console.log('➡️ Ke dokter:', newDoctor, 'jam:', newTime);
-
-      // Update data lokal (kalau mau efek langsung)
-      const updated = tableData.map((row: any) => {
-        const newRow = { ...row };
-
-        // hapus appointment lama
-        Object.keys(newRow).forEach((key) => {
-          if (newRow[key]?.id === appointment.id) {
-            newRow[key] = '';
-          }
-        });
-
-        // tambahkan ke posisi baru
-        if (row.time === newTime) {
-          newRow[newDoctor] = appointment;
-        }
-
-        return newRow;
-      });
-
-      // optional: update state kalau ControlledTable dikontrol secara lokal
-      // setTableData(updated);
-
-      // optional: panggil modal untuk konfirmasi reschedule
-      rescheduleModal(appointment, dayjs().format('YYYY-MM-DD'));
+      rescheduleModal(appointment, selectedDate, newDoctor, newTime);
     },
-    [tableData]
+    [rescheduleModal, selectedDate]
   );
 
   const columns = React.useMemo(
@@ -356,7 +401,7 @@ export default function GlobalCalendarTable({}: {}) {
         handleDrop,
       }),
 
-    [openModal, tableData]
+    [openModal, tableData, handleDrop]
   );
 
   const events =
@@ -391,18 +436,10 @@ export default function GlobalCalendarTable({}: {}) {
   useEffect(() => {
     setSelectedDate((prev) =>
       viewType === 'monthly'
-        ? dayjs(prev).format('YYYY-MM')
+        ? dayjs(prev).locale('en').format('YYYY-MM')
         : dayjs(prev).format('YYYY-MM-DD')
     );
   }, [viewType]);
-
-  function rescheduleModal(row: any, newDate: string) {
-    closeModal(),
-      openModal({
-        view: <RescheduleAppointmentForm data={row} newDate={newDate} />,
-        customSize: '600px',
-      });
-  }
 
   const doctorName = optionDoctors.find((item: any) => {
     return item.value == selectedDoctor;
@@ -453,6 +490,7 @@ export default function GlobalCalendarTable({}: {}) {
                     <Input
                       type="month"
                       value={selectedDate}
+                      min={dayjs().locale('en').format('YYYY-MM')}
                       onChange={(event) => setSelectedDate(event.target.value)}
                       size="sm"
                     />

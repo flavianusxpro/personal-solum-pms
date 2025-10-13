@@ -132,19 +132,36 @@ function getRowAppointment(
   onDrop?: any
 ) {
   if (value) {
-    return <AppointmentCell value={value} type={type} openModal={openModal} />;
+    return (
+      <AppointmentCell
+        value={value}
+        type={type}
+        openModal={openModal}
+        row={row}
+        doctor={doctor}
+        onDrop={onDrop}
+      />
+    );
   }
   return <DropCell row={row} doctor={doctor} onDrop={onDrop} />;
 }
 
-export function AppointmentCell({ value, type, openModal }: any) {
+export function AppointmentCell({
+  value,
+  type,
+  openModal,
+  row,
+  doctor,
+  onDrop,
+}: any) {
   const ITEM_TYPE = 'APPOINTMENT';
 
   let bgColor = '';
   if (type?.toLowerCase().includes('initial')) bgColor = 'bg-green-600';
   else if (type?.toLowerCase().includes('follow')) bgColor = 'bg-blue-600';
   else if (type?.toLowerCase().includes('script')) bgColor = 'bg-yellow-600';
-  else if (type?.toLowerCase().includes('rescheduled')) bgColor = 'bg-pink-600';
+  else if (type?.toLowerCase().includes('rescheduled'))
+    bgColor = 'bg-pink-600';
   else bgColor = 'bg-gray-600';
 
   if (!value) return null;
@@ -157,21 +174,20 @@ export function AppointmentCell({ value, type, openModal }: any) {
     }),
   }));
 
-  const [, dropRef] = useDrop(() => ({
+  const [{ isOver }, dropRef] = useDrop(() => ({
     accept: ITEM_TYPE,
     drop: (item: any) => {
-      console.log('📦 Dipindah ke:', value, '➡️ dari:', item.appointment);
-      // TODO: update state atau panggil API
+      // Prevent dropping on itself
+      if (item.appointment.id === value.id) return;
+      console.log(
+        `✅ Dropped ${item.appointment.id} to ${doctor} at ${row.time}`
+      );
+      onDrop?.(item.appointment, doctor, row.time);
     },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
   }));
-
-  //   const [{ isOver }, dropRef] = useDrop(() => ({
-  //   accept: ITEM_TYPE,
-  //   drop: (item) => handleDrop(item),
-  //   collect: (monitor) => ({
-  //     isOver: monitor.isOver(),
-  //   }),
-  // }));
 
   const handleOpenModal = () => {
     openModal({
@@ -182,19 +198,22 @@ export function AppointmentCell({ value, type, openModal }: any) {
 
   return (
     <div
-      ref={(node) => {
-        dragRef(dropRef(node));
+      ref={(instance) => {
+        dragRef(instance);
+        dropRef(instance);
       }}
       onClick={handleOpenModal}
       className={cn(
-        'w-fit cursor-pointer rounded-md p-2 transition-opacity',
+        'relative w-fit cursor-pointer rounded-md p-2 transition-opacity',
         bgColor,
         isDragging && 'opacity-50'
       )}
     >
+      {isOver && <div className="absolute inset-0 rounded-md bg-black/60" />}
       <Text className="font-medium text-white">
-        {`${value.patient?.first_name ?? ''} ${value.patient?.last_name ?? ''}`.trim() ||
-          '-'}
+        {`${value.patient?.first_name ?? ''} ${
+          value.patient?.last_name ?? ''
+        }`.trim() || '-'}
       </Text>
     </div>
   );
@@ -218,10 +237,13 @@ export function DropCell({ row, doctor, onDrop }: any) {
 
   return (
     <div
-      ref={() => {
-        dropRef;
+      ref={(instance) => {
+        dropRef(instance);
       }}
-      className={cn(isOver ? 'bg-blue-100' : 'bg-transparent')}
+      className={cn(
+        'h-12 w-full', // Important: give it a size
+        isOver ? 'bg-blue-100' : 'bg-transparent'
+      )}
     />
   );
 }
