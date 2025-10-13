@@ -67,12 +67,12 @@ const EventCard = ({ event, selectedDoctor }: any) => {
     >
       {!selectedDoctor && (
         <div className="whitespace-normal break-words text-xs font-semibold leading-snug">
-          Dr. {event.doctor}
+          {event.time} - Dr. {event.doctor}
         </div>
       )}
 
       <div className="whitespace-normal break-words text-xs leading-snug text-gray-500">
-        {event.time} - {event.patient}
+        {event.patient}
       </div>
     </div>
   );
@@ -122,13 +122,13 @@ export default function GlobalCalendarTable({}: {}) {
   );
   const [selectedDate, setSelectedDate] = useState(
     viewType === 'monthly'
-      ? dayjs().format('YYYY-MM')
+      ? dayjs().locale('en').format('YYYY-MM')
       : dayjs().format('YYYY-MM-DD')
   );
 
   const startOfMonth = dayjs(selectedDate).startOf('month').format('D MMMM');
   const endOfMonth = dayjs(selectedDate).endOf('month').format('D MMMM');
-  const monthLabel = dayjs(selectedDate).format('MMMM YYYY');
+  const monthLabel = dayjs(selectedDate).locale('en').format('MMMM YYYY');
   const shortMonth = dayjs(selectedDate).format('MMM').toUpperCase();
   const year = dayjs(selectedDate).format('YYYY');
 
@@ -436,7 +436,7 @@ export default function GlobalCalendarTable({}: {}) {
   useEffect(() => {
     setSelectedDate((prev) =>
       viewType === 'monthly'
-        ? dayjs(prev).format('YYYY-MM')
+        ? dayjs(prev).locale('en').format('YYYY-MM')
         : dayjs(prev).format('YYYY-MM-DD')
     );
   }, [viewType]);
@@ -490,6 +490,7 @@ export default function GlobalCalendarTable({}: {}) {
                     <Input
                       type="month"
                       value={selectedDate}
+                      min={dayjs().locale('en').format('YYYY-MM')}
                       onChange={(event) => setSelectedDate(event.target.value)}
                       size="sm"
                     />
