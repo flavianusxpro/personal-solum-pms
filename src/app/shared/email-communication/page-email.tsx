@@ -25,6 +25,8 @@ import {
   LuUnderline,
 } from 'react-icons/lu';
 import { BiImageAlt } from 'react-icons/bi';
+import { useState } from 'react';
+import { RiStarFill } from 'react-icons/ri';
 
 type IPageEmailProps = {
   selectedUser: {
@@ -38,6 +40,8 @@ type IPageEmailProps = {
 };
 
 const PageEmail = ({ selectedUser }: IPageEmailProps) => {
+  const [starredEmail, setStarredEmail] = useState(false);
+  const [isLinkPopupOpen, setLinkPopupOpen] = useState(false);
   const onSubmit: SubmitHandler<EmailProps> = (data) => {
     // mutate(
     //   {
