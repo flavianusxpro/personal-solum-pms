@@ -4,3 +4,6 @@ export { default as OrderApproveOutline } from './OrderApproveOutline.svg';
 export { default as TimeWhiteIcon } from './TimeWhiteIcon.svg';
 export { default as WalletWhiteIcon } from './WalletWhiteIcon.svg';
 export { default as TrashBlockIcon } from './TrashBlockIcon.svg';
+export { default as DraftsIcon } from './DraftsIcon.svg';
+export { default as ImportantIcon } from './ImportantIcon.svg';
+export { default as SpamIcon } from './SpamIcon.svg';

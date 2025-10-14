@@ -13,6 +13,19 @@ export const addInvitePeopleSchema = z.object({
   peoples: z.array(z.string()).optional(),
 });
 
+export const addEmailSchema = z.object({
+  recipient: z.string().min(1, {
+    message: messages.recipientIsRequired,
+  }),
+  subject: z.string().min(1, {
+    message: messages.subjectIsRequired,
+  }),
+  messages: z.string().optional(),
+  text: z.string().optional(),
+  link: z.string().optional(),
+});
+
 // generate form types from zod validation schema
 export type ChannelProps = z.infer<typeof addChannelSchema>;
 export type InviteProps = z.infer<typeof addInvitePeopleSchema>;
+export type EmailProps = z.infer<typeof addEmailSchema>;

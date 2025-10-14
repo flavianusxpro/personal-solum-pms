@@ -134,4 +134,7 @@ export const messages = {
   hostnameIsRequired: 'Hostname is required',
   categoryNameIsRequired: 'Condition name is required',
   channelNameIsRequired: 'Channel name is required',
+  recipientIsRequired: 'Recipient is required',
+  subjectIsRequired: 'Subject is required',
+  messagesIsRequired: 'Messages is required',
 };
