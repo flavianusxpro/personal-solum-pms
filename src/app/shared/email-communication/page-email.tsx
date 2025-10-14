@@ -25,8 +25,6 @@ import {
   LuUnderline,
 } from 'react-icons/lu';
 import { BiImageAlt } from 'react-icons/bi';
-import { useState } from 'react';
-import { RiStarFill } from 'react-icons/ri';
 
 type IPageEmailProps = {
   selectedUser: {
@@ -40,7 +38,6 @@ type IPageEmailProps = {
 };
 
 const PageEmail = ({ selectedUser }: IPageEmailProps) => {
-  const [starredEmail, setStarredEmail] = useState(false);
   const onSubmit: SubmitHandler<EmailProps> = (data) => {
     // mutate(
     //   {
@@ -151,42 +148,67 @@ const PageEmail = ({ selectedUser }: IPageEmailProps) => {
                   placeholder="Type here to reply"
                   {...register('messages')}
                 />
-                <Flex justify="between" align="center">
-                  <div className="flex items-center gap-8">
-                    <div className="flex items-center gap-3">
-                      <LuBold className="text-xl" />
-                      <LuItalic className="text-xl" />
-                      <LuUnderline className="text-xl" />
-                    </div>
+                <div className="relative">
+                  <Flex justify="between" align="center">
+                    <div className="flex items-center gap-8">
+                      <div className="flex items-center gap-3">
+                        <ActionIcon variant="text">
+                          <LuBold className="text-xl" />
+                        </ActionIcon>
+                        <ActionIcon variant="text">
+                          <LuItalic className="text-xl" />
+                        </ActionIcon>
+                        <ActionIcon variant="text">
+                          <LuUnderline className="text-xl" />
+                        </ActionIcon>
+                      </div>
 
-                    <div className="flex items-center gap-3">
-                      <LuLink2 className="text-xl" />
-                      <BiImageAlt className="text-xl" />
+                      <div className="flex items-center gap-3">
+                        <ActionIcon
+                          variant="text"
+                          onClick={() => setLinkPopupOpen(!isLinkPopupOpen)}
+                        >
+                          <LuLink2 className="text-xl" />
+                        </ActionIcon>
+                        <ActionIcon variant="text">
+                          <BiImageAlt className="text-xl" />
+                        </ActionIcon>
+                      </div>
                     </div>
-                  </div>
-                  <Button
-                    className="w-auto text-white"
-                    size="sm"
-                    type="submit"
-                  >
-                    <LuSend className="me-1.5 h-4 w-4" />
-                    Reply
-                  </Button>
-                </Flex>
-                <div className="flex items-end gap-3 rounded-lg border p-4 text-[#787878] shadow-lg">
-                  <div className="flex w-full flex-col gap-3">
-                    <Input
-                      placeholder="Text"
-                      prefix={<LuText className="text-lg" />}
-                      {...register('text')}
-                    />
-                    <Input
-                      placeholder="Type or paste a link"
-                      prefix={<LuLink2 className="text-lg" />}
-                      {...register('link')}
-                    />
-                  </div>
-                  <Text>Apply</Text>
+                    <Button
+                      className="w-auto text-white"
+                      size="sm"
+                      type="submit"
+                    >
+                      <LuSend className="me-1.5 h-4 w-4" />
+                      Reply
+                    </Button>
+                  </Flex>
+                  {isLinkPopupOpen && (
+                    <div className="absolute bottom-full z-10 mb-2 w-6/12 rounded-lg border bg-white p-4 text-[#787878] shadow-lg">
+                      <div className="flex items-end gap-3">
+                        <div className="flex w-full flex-col gap-3">
+                          <Input
+                            placeholder="Text"
+                            prefix={<LuText className="text-lg" />}
+                            {...register('text')}
+                          />
+                          <Input
+                            placeholder="Type or paste a link"
+                            prefix={<LuLink2 className="text-lg" />}
+                            {...register('link')}
+                          />
+                        </div>
+                        <Button
+                          variant="outline"
+                          className="w-auto"
+                          onClick={() => setLinkPopupOpen(false)}
+                        >
+                          Apply
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             );
