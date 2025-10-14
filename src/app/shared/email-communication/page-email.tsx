@@ -131,67 +131,67 @@ const PageEmail = ({ selectedUser }: IPageEmailProps) => {
           </div>
         </div>
       </div>
-      <div className="relative flex flex-col overflow-y-auto p-6">
+      <div className="flex-grow overflow-y-auto p-6">
         <div>{selectedUser?.message}</div>
-        <div className="sticky bottom-0 left-0 right-0 z-10 mt-4 bg-white pt-4">
-          <Form<EmailProps>
-            validationSchema={addEmailSchema}
-            // resetValues={reset}
-            onSubmit={onSubmit}
-            className="@container"
-            useFormProps={{
-              mode: 'onChange',
-            }}
-          >
-            {({ register, control, formState: { errors } }) => {
-              return (
-                <div className="flex flex-col gap-4">
-                  <Textarea
-                    placeholder="Type here to reply"
-                    {...register('messages')}
-                  />
-                  <Flex justify="between" align="center">
-                    <div className="flex items-center gap-8">
-                      <div className="flex items-center gap-3">
-                        <LuBold className="text-xl" />
-                        <LuItalic className="text-xl" />
-                        <LuUnderline className="text-xl" />
-                      </div>
+      </div>
+      <div className="border-t bg-white p-6">
+        <Form<EmailProps>
+          validationSchema={addEmailSchema}
+          // resetValues={reset}
+          onSubmit={onSubmit}
+          className="@container"
+          useFormProps={{
+            mode: 'onChange',
+          }}
+        >
+          {({ register, control, formState: { errors } }) => {
+            return (
+              <div className="flex flex-col gap-4">
+                <Textarea
+                  placeholder="Type here to reply"
+                  {...register('messages')}
+                />
+                <Flex justify="between" align="center">
+                  <div className="flex items-center gap-8">
+                    <div className="flex items-center gap-3">
+                      <LuBold className="text-xl" />
+                      <LuItalic className="text-xl" />
+                      <LuUnderline className="text-xl" />
+                    </div>
 
-                      <div className="flex items-center gap-3">
-                        <LuLink2 className="text-xl" />
-                        <BiImageAlt className="text-xl" />
-                      </div>
+                    <div className="flex items-center gap-3">
+                      <LuLink2 className="text-xl" />
+                      <BiImageAlt className="text-xl" />
                     </div>
-                    <Button
-                      className="w-auto text-white"
-                      size="sm"
-                      type="submit"
-                    >
-                      <LuSend className="me-1.5 h-4 w-4" />
-                      Reply
-                    </Button>
-                  </Flex>
-                  <div className="flex items-end gap-3 rounded-lg border p-4 text-[#787878] shadow-lg">
-                    <div className="flex w-full flex-col gap-3">
-                      <Input
-                        placeholder="Text"
-                        prefix={<LuText className="text-lg" />}
-                        {...register('text')}
-                      />
-                      <Input
-                        placeholder="Type or paste a link"
-                        prefix={<LuLink2 className="text-lg" />}
-                        {...register('link')}
-                      />
-                    </div>
-                    <Text>Apply</Text>
                   </div>
+                  <Button
+                    className="w-auto text-white"
+                    size="sm"
+                    type="submit"
+                  >
+                    <LuSend className="me-1.5 h-4 w-4" />
+                    Reply
+                  </Button>
+                </Flex>
+                <div className="flex items-end gap-3 rounded-lg border p-4 text-[#787878] shadow-lg">
+                  <div className="flex w-full flex-col gap-3">
+                    <Input
+                      placeholder="Text"
+                      prefix={<LuText className="text-lg" />}
+                      {...register('text')}
+                    />
+                    <Input
+                      placeholder="Type or paste a link"
+                      prefix={<LuLink2 className="text-lg" />}
+                      {...register('link')}
+                    />
+                  </div>
+                  <Text>Apply</Text>
                 </div>
-              );
-            }}
-          </Form>
-        </div>
+              </div>
+            );
+          }}
+        </Form>
       </div>
     </div>
   );
