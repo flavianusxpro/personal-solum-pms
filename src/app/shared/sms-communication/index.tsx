@@ -519,9 +519,9 @@ const SmsCommunication = () => {
   const unreadMessages = persons.filter((person) => person.read_message > 0);
 
   return (
-    <div className="flex h-screen w-full rounded-2xl border">
+    <div className="flex h-[100vh] w-full rounded-2xl border">
       {/* Sidebar kiri */}
-      <aside className="flex w-[280px] flex-col border-r border-gray-200">
+      <aside className="flex w-[360px] flex-col border-r border-gray-200">
         <div className="relative flex h-20 w-full flex-col items-center border-b p-5">
           <Input
             type="text"
@@ -553,13 +553,13 @@ const SmsCommunication = () => {
             className="w-full"
           />
           {openSort && (
-            <div className="absolute left-[4%] top-[80%] z-50 ml-2 flex rounded-lg bg-white p-2 shadow-md">
+            <div className="w-100 absolute left-[3%] top-[80%] z-50 ml-2 flex rounded-lg bg-white p-2 shadow-md">
               <div className="flex flex-col gap-3">
                 <span className="font-semibold text-black">Sort by:</span>
-                <div className="flex gap-3">
+                <div className="grid w-full grid-cols-3 gap-3">
                   <Button
                     rounded="pill"
-                    className={` ${onSort == 'most-recent' ? 'bg-[#3872F9] text-white' : '!border !border-gray-300 !bg-white !text-black'} `}
+                    className={` ${onSort == 'most-recent' ? 'text-white' : '!border !border-gray-300 !bg-white !text-black'} `}
                     size="sm"
                     onClick={() => handleSort('most-recent')}
                   >
@@ -567,7 +567,7 @@ const SmsCommunication = () => {
                   </Button>
                   <Button
                     rounded="pill"
-                    className={` ${onSort == 'status' ? 'bg-[#3872F9] text-white' : '!border !border-gray-300 !bg-white !text-black'} `}
+                    className={` ${onSort == 'status' ? 'text-white' : '!border !border-gray-300 !bg-white !text-black'} `}
                     size="sm"
                     onClick={() => handleSort('status')}
                   >
@@ -575,7 +575,7 @@ const SmsCommunication = () => {
                   </Button>
                   <Button
                     rounded="pill"
-                    className={` ${onSort == 'from' ? 'bg-[#3872F9] text-white' : '!border !border-gray-300 !bg-white !text-black'} `}
+                    className={` ${onSort == 'from' ? 'text-white' : '!border !border-gray-300 !bg-white !text-black'} `}
                     size="sm"
                     onClick={() => handleSort('from')}
                   >
@@ -588,8 +588,8 @@ const SmsCommunication = () => {
         </div>
 
         <div className="z-10 flex-1 overflow-y-auto">
-          <div className="flex flex-col gap-6 px-4 py-4">
-            <nav className="h-15 mb-2 flex w-full items-center gap-5 overflow-x-auto border-b border-gray-300 px-2 md:gap-7 lg:gap-10">
+          <div className="flex flex-col gap-6 px-4 py-2">
+            <nav className="flex w-full items-center gap-5 overflow-x-auto border-b border-gray-300 px-2 md:gap-7 lg:gap-10">
               {tabItems.map((item) => (
                 <TabButton
                   key={item.value}
@@ -603,15 +603,6 @@ const SmsCommunication = () => {
             </nav>
             {tabActive == 'all-messages' && (
               <div>
-                <Title
-                  as="h6"
-                  className={cn(
-                    'mb-2 truncate px-2 text-sm font-medium uppercase tracking-widest text-[#787878]'
-                  )}
-                >
-                  Patient Contacts
-                </Title>
-
                 <ul className="flex flex-col gap-2">
                   {persons.map((item, index) => (
                     <li
@@ -622,24 +613,27 @@ const SmsCommunication = () => {
                         setSelectedChannel('');
                       }}
                     >
-                      <Flex align="center">
+                      <div className="flex items-center gap-2">
                         <Avatar
                           name={`${item.first_name} ${item.last_name}`}
                           src={item.avatar}
                         />
                         <div className="flex flex-col">
-                          <span className="font-semibold">
+                          <Title className="text-sm font-semibold" as="h4">
                             {item.first_name} {item.last_name}
-                          </span>
+                          </Title>
                           <span className="text-xs text-gray-500">
                             {item.time}
                           </span>
                         </div>
-                      </Flex>
+                      </div>
                       {item.read_message > 0 && (
-                        <span className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-500 text-xs text-white">
+                        <Button
+                          as="span"
+                          className="flex h-6 w-6 items-center justify-center rounded-md text-xs text-white"
+                        >
                           {item.read_message}
-                        </span>
+                        </Button>
                       )}
                     </li>
                   ))}
@@ -654,7 +648,7 @@ const SmsCommunication = () => {
                     <Title
                       as="h6"
                       className={cn(
-                        'mb-2 truncate px-2 text-sm font-medium uppercase tracking-widest text-[#787878]'
+                        'mb-2 truncate px-2 text-sm font-medium uppercase text-[#787878]'
                       )}
                     >
                       All Channels
@@ -693,7 +687,7 @@ const SmsCommunication = () => {
                   <Title
                     as="h6"
                     className={cn(
-                      'mb-2 truncate px-2 text-sm font-medium uppercase tracking-widest text-[#787878]'
+                      'mb-2 truncate px-2 text-sm font-medium uppercase text-[#787878]'
                     )}
                   >
                     Direct Messages
@@ -709,23 +703,26 @@ const SmsCommunication = () => {
                           setSelectedChannel('');
                         }}
                       >
-                        <Flex align="center">
+                        <div className="flex items-center gap-2">
                           <Avatar
                             name={`${item.first_name} ${item.last_name}`}
                             src={item.avatar}
                           />
                           <div className="flex flex-col">
-                            <span className="font-semibold">
+                            <Title className="text-sm font-semibold" as="h4">
                               {item.first_name} {item.last_name}
-                            </span>
+                            </Title>
                             <span className="text-xs text-gray-500">
                               {item.time}
                             </span>
                           </div>
-                        </Flex>
-                        <span className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-500 text-xs text-white">
+                        </div>
+                        <Button
+                          as="span"
+                          className="flex h-6 w-6 items-center justify-center rounded-md text-xs text-white"
+                        >
                           {item.read_message}
-                        </span>
+                        </Button>
                       </li>
                     ))}
                   </ul>
@@ -738,7 +735,7 @@ const SmsCommunication = () => {
                 <Title
                   as="h6"
                   className={cn(
-                    'mb-2 truncate px-2 text-sm font-medium uppercase tracking-widest text-[#787878]'
+                    'mb-2 truncate px-2 text-sm font-medium uppercase text-[#787878]'
                   )}
                 >
                   Patient Contacts
@@ -754,23 +751,26 @@ const SmsCommunication = () => {
                         setSelectedChannel('');
                       }}
                     >
-                      <Flex align="center">
+                      <div className="flex items-center gap-2">
                         <Avatar
                           name={`${item.first_name} ${item.last_name}`}
                           src={item.avatar}
                         />
                         <div className="flex flex-col">
-                          <span className="font-semibold">
+                          <Title className="text-sm font-semibold" as="h4">
                             {item.first_name} {item.last_name}
-                          </span>
+                          </Title>
                           <span className="text-xs text-gray-500">
                             {item.time}
                           </span>
                         </div>
-                      </Flex>
-                      <span className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-500 text-xs text-white">
+                      </div>
+                      <Button
+                        as="span"
+                        className="flex h-6 w-6 items-center justify-center rounded-md text-xs text-white"
+                      >
                         {item.read_message}
-                      </span>
+                      </Button>
                     </li>
                   ))}
                 </ul>
