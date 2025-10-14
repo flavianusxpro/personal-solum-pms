@@ -732,15 +732,6 @@ const SmsCommunication = () => {
 
             {tabActive == 'unread' && (
               <div>
-                <Title
-                  as="h6"
-                  className={cn(
-                    'mb-2 truncate px-2 text-sm font-medium uppercase text-[#787878]'
-                  )}
-                >
-                  Patient Contacts
-                </Title>
-
                 <ul className="flex flex-col gap-2">
                   {unreadMessages.map((item, index) => (
                     <li
