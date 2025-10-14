@@ -794,7 +794,7 @@ const SmsCommunication = () => {
       <main className="flex flex-1 transform flex-col">
         {/* Header channel */}
         <div className="flex h-20 items-center justify-between border-b p-5">
-          {(tabActive == 'all-messages' || tabActive == 'status') &&
+          {(tabActive == 'all-messages' || tabActive == 'unread') &&
           selectedUser &&
           selectedUser?.first_name &&
           selectedUser?.last_name ? (

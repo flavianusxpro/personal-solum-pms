@@ -26,6 +26,7 @@ import {
 } from 'react-icons/lu';
 import { BiImageAlt } from 'react-icons/bi';
 import { useState } from 'react';
+import { RiStarFill } from 'react-icons/ri';
 
 type IPageEmailProps = {
   selectedUser: {
@@ -39,6 +40,7 @@ type IPageEmailProps = {
 };
 
 const PageEmail = ({ selectedUser }: IPageEmailProps) => {
+  const [starredEmail, setStarredEmail] = useState(false);
   const [isLinkPopupOpen, setLinkPopupOpen] = useState(false);
   const onSubmit: SubmitHandler<EmailProps> = (data) => {
     // mutate(
@@ -105,8 +107,16 @@ const PageEmail = ({ selectedUser }: IPageEmailProps) => {
           </div>
           <div className="flex gap-2">
             <Tooltip content="Not Starred">
-              <ActionIcon variant="text" size="sm">
-                <PiStar className="text-lg" />
+              <ActionIcon
+                variant="text"
+                size="sm"
+                onClick={() => setStarredEmail(!starredEmail)}
+              >
+                {starredEmail ? (
+                  <RiStarFill className="text-lg text-[#FFD735]" />
+                ) : (
+                  <PiStar className="text-lg" />
+                )}
               </ActionIcon>
             </Tooltip>
             <Tooltip content="Trash">
