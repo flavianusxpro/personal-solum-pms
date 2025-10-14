@@ -7,3 +7,6 @@ export { default as TrashBlockIcon } from './TrashBlockIcon.svg';
 export { default as DraftsIcon } from './DraftsIcon.svg';
 export { default as ImportantIcon } from './ImportantIcon.svg';
 export { default as SpamIcon } from './SpamIcon.svg';
+export { default as ImportantBlueIcon } from './ImportantBlueIcon.svg';
+export { default as DraftOutlineBlueIcon } from './DraftOutlineBlueIcon.svg';
+export { default as SpamBlueIcon } from './SpamBlueIcon.svg';

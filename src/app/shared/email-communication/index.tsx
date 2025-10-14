@@ -378,20 +378,7 @@ const EmailCommunications = () => {
         {/* Header channel */}
 
         {selectedEmail && Object.keys(selectedEmail).length > 0 ? (
-          <div className="flex">
-            <div className="basis-1/2">
-              <EmailLists
-                selectedSidebar={selectedSidebar}
-                openAddEmail={openAddEmail}
-                setOpenAddEmail={setOpenAddEmail}
-                selectedEmail={selectedEmail}
-                setSelectedEmail={setSelectedEmail}
-              />
-            </div>
-            <div className="basis-2/2">
-              <PageEmail selectedUser={selectedEmail} />
-            </div>
-          </div>
+          <PageEmail selectedUser={selectedEmail} />
         ) : (
           <EmailLists
             selectedSidebar={selectedSidebar}
