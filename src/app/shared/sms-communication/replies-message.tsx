@@ -1,28 +1,35 @@
-import { Avatar, Badge } from 'rizzui';
+import { Avatar, Badge, AvatarProps } from 'rizzui';
 type IProps = {
   isActiveUser?: boolean;
   name: string;
+  photo?: string;
   date: string;
   message: string;
   handleReplies?: () => void;
   isReplies?: boolean;
-};
+  color?: any;
+  className?: string;
+  messageClassName?: string;
+  divMessageClassName?: string;
+} & AvatarProps;
 const RepliesMessage = ({
   isActiveUser,
   name,
+  photo,
   date,
   message,
   handleReplies,
   isReplies = false,
+  color,
+  className,
+  messageClassName,
+  divMessageClassName,
 }: IProps) => {
   return (
     <div className="flex items-center gap-2">
       {isActiveUser ? (
         <div className="relative inline-flex">
-          <Avatar
-            name="Jane Doe"
-            src="https://randomuser.me/api/portraits/women/40.jpg"
-          />
+          <Avatar name={name} src={photo} color={color} className={className} />
           <Badge
             renderAsDot
             color="success"
@@ -32,20 +39,24 @@ const RepliesMessage = ({
           />
         </div>
       ) : (
-        <Avatar
-          name="John Doe"
-          initials="AB"
-          src="https://randomuser.me/api/portraits/women/40.jpg"
-        />
+        <Avatar name={name} src={photo} color={color} className={className} />
       )}
 
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center justify-start gap-2">
             <span className="font-semibold">{name}</span>
             <span className="text-xs text-gray-400">{date}</span>
           </div>
-          <p>{message}</p>
+          <div className={divMessageClassName}>
+            <p
+              className={`rounded-lg ${
+                messageClassName ? `p-3 ${messageClassName}` : ''
+              }`}
+            >
+              {message}
+            </p>
+          </div>
         </div>
         {isReplies && (
           <div
