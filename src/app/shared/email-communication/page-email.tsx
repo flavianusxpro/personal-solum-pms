@@ -1,7 +1,7 @@
-import { BsArchive, BsPrinter, BsTrash3 } from 'react-icons/bs';
+import { BsArchive, BsPrinter, BsTrash3, BsType } from 'react-icons/bs';
 import { CiFolderOn } from 'react-icons/ci';
-import { IoMailUnreadOutline } from 'react-icons/io5';
-import { MdBlockFlipped } from 'react-icons/md';
+import { IoLinkOutline, IoMailUnreadOutline } from 'react-icons/io5';
+import { MdBlockFlipped, MdOutlineAttachFile } from 'react-icons/md';
 import { PiArchive, PiPrinter, PiStar } from 'react-icons/pi';
 import {
   ActionIcon,
@@ -24,11 +24,22 @@ import {
   LuText,
   LuUnderline,
 } from 'react-icons/lu';
-import { BiArrowBack, BiImageAlt } from 'react-icons/bi';
+import { BiArrowBack, BiImage, BiImageAlt } from 'react-icons/bi';
 import { useState } from 'react';
-import { RiStarFill } from 'react-icons/ri';
-import { IoIosArrowDown } from 'react-icons/io';
+import { RiBallPenFill, RiBallPenLine, RiStarFill } from 'react-icons/ri';
+import {
+  IoIosArrowBack,
+  IoIosArrowDown,
+  IoIosArrowForward,
+} from 'react-icons/io';
 import dayjs from 'dayjs';
+import { GrEmoji } from 'react-icons/gr';
+import { LiaGoogleDrive } from 'react-icons/lia';
+import dynamic from 'next/dynamic';
+import Divider from '../ui/divider';
+const QuillEditorEmail = dynamic(() => import('@core/ui/quill-editor-email'), {
+  ssr: false,
+});
 
 type IPageEmailProps = {
   selectedUser: {
@@ -51,6 +62,9 @@ const PageEmail = ({ selectedUser, onBack }: IPageEmailProps) => {
   const [starredEmail, setStarredEmail] = useState(false);
   const [isLinkPopupOpen, setLinkPopupOpen] = useState(false);
   const [isToOpen, setIsToOpen] = useState(false);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [tooltip, setTooltip] = useState('');
+  const [isOpenTooltip, setIsOpenTooltip] = useState(false);
   const onSubmit: SubmitHandler<EmailProps> = (data) => {
     // mutate(
     //   {
@@ -72,60 +86,84 @@ const PageEmail = ({ selectedUser, onBack }: IPageEmailProps) => {
     //   }
     // );
   };
-  console.log(selectedUser);
+
+  const handleOpenTooltipInput = (tooltip: string) => {
+    setIsOpenTooltip(!isOpenTooltip);
+    setTooltip(tooltip);
+  };
+  console.log(tooltip == 'bs-type' ? true : false);
   return (
     <div className="flex h-full w-full flex-col">
       <div className="flex h-20 items-center justify-between border-b border-l p-5">
-        <div className="flex gap-8">
-          <div className="flex gap-2">
-            <ActionIcon variant="text" size="sm" onClick={onBack}>
-              <BiArrowBack className="text-lg" />
-            </ActionIcon>
-            <Tooltip content="Archive">
-              <ActionIcon variant="text" size="sm">
-                <BsArchive className="text-lg" />
+        <div className="flex w-full items-center justify-between">
+          <div className="flex gap-4">
+            <div className="flex gap-2">
+              <ActionIcon variant="text" size="sm" onClick={onBack}>
+                <BiArrowBack className="text-lg" />
               </ActionIcon>
-            </Tooltip>
-            <Tooltip content="Report Spam">
-              <ActionIcon variant="text" size="sm">
-                <MdBlockFlipped className="text-lg" />
-              </ActionIcon>
-            </Tooltip>
-            <Tooltip content="Mark Unread">
-              <ActionIcon variant="text" size="sm">
-                <IoMailUnreadOutline className="text-lg" />
-              </ActionIcon>
-            </Tooltip>
-            <Tooltip content="Add Label">
-              <ActionIcon variant="text" size="sm">
-                <CiFolderOn className="text-lg" />
-              </ActionIcon>
-            </Tooltip>
+              <Tooltip content="Archive">
+                <ActionIcon variant="text" size="sm">
+                  <BsArchive className="text-lg" />
+                </ActionIcon>
+              </Tooltip>
+              <Tooltip content="Report Spam">
+                <ActionIcon variant="text" size="sm">
+                  <MdBlockFlipped className="text-lg" />
+                </ActionIcon>
+              </Tooltip>
+              <Tooltip content="Mark Unread">
+                <ActionIcon variant="text" size="sm">
+                  <IoMailUnreadOutline className="text-lg" />
+                </ActionIcon>
+              </Tooltip>
+              <Tooltip content="Add Label">
+                <ActionIcon variant="text" size="sm">
+                  <CiFolderOn className="text-lg" />
+                </ActionIcon>
+              </Tooltip>
+            </div>
+            <div className="inline-block h-auto min-h-[1em] w-0.5 self-stretch bg-[#7878784D]"></div>
+
+            <div className="flex gap-2">
+              <Tooltip content="Not Starred">
+                <ActionIcon
+                  variant="text"
+                  size="sm"
+                  onClick={() => setStarredEmail(!starredEmail)}
+                >
+                  {starredEmail ? (
+                    <RiStarFill className="text-lg text-[#FFD735]" />
+                  ) : (
+                    <PiStar className="text-lg" />
+                  )}
+                </ActionIcon>
+              </Tooltip>
+              <Tooltip content="Trash">
+                <ActionIcon variant="text" size="sm">
+                  <BsTrash3 className="text-lg" />
+                </ActionIcon>
+              </Tooltip>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <Tooltip content="Not Starred">
-              <ActionIcon
-                variant="text"
-                size="sm"
-                onClick={() => setStarredEmail(!starredEmail)}
-              >
-                {starredEmail ? (
-                  <RiStarFill className="text-lg text-[#FFD735]" />
-                ) : (
-                  <PiStar className="text-lg" />
-                )}
-              </ActionIcon>
-            </Tooltip>
-            <Tooltip content="Trash">
-              <ActionIcon variant="text" size="sm">
-                <BsTrash3 className="text-lg" />
-              </ActionIcon>
-            </Tooltip>
-            <Tooltip content="Print">
-              <ActionIcon variant="text" size="sm">
-                <BsPrinter className="text-lg" />
-              </ActionIcon>
-            </Tooltip>
+          <div className="flex items-center gap-3 text-[#787878]">
+            <Text>4 of 35</Text>
+            <div>
+              <Tooltip content="Newer">
+                <ActionIcon variant="text" size="sm">
+                  <IoIosArrowBack className="text-lg" />
+                </ActionIcon>
+              </Tooltip>
+              <Tooltip content="Older">
+                <ActionIcon variant="text" size="sm">
+                  <IoIosArrowForward className="text-lg" />
+                </ActionIcon>
+              </Tooltip>
+              <Tooltip content="Print">
+                <ActionIcon variant="text" size="sm">
+                  <BsPrinter className="text-lg" />
+                </ActionIcon>
+              </Tooltip>
+            </div>
           </div>
         </div>
       </div>
@@ -225,38 +263,166 @@ const PageEmail = ({ selectedUser, onBack }: IPageEmailProps) => {
             return (
               <div className="flex flex-col gap-4">
                 <div className="relative z-10">
-                  <div className="rounded-lg border p-4">
+                  <div className="rounded-lg border">
                     <div className="flex flex-col gap-2">
-                      <Textarea
-                        placeholder="Type here to reply"
-                        className="!focus:ring-0 !focus:shadow-none w-full !border-none !shadow-none !ring-0"
-                        textareaClassName="!focus:ring-0 w-full !border-none !shadow-none !ring-0 !focus:shadow-none"
-                        {...register('messages')}
+                      {/* {tooltip == 'bs-type' ? (
+                        <Controller
+                          name="messages"
+                          control={control}
+                          render={({ field }) => (
+                            <QuillEditorEmail
+                              {...field}
+                              className="border-none shadow-none @3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[50px]"
+                              toolbarPosition="bottom"
+                              placeholder="Type here to reply"
+                            />
+                          )}
+                        />
+                      ) : (
+                        <Textarea
+                          placeholder="Type here to reply"
+                          className="!focus:ring-0 !focus:shadow-none w-full !border-none !shadow-none !ring-0"
+                          textareaClassName="!focus:ring-0 w-full !border-none !shadow-none !ring-0 !focus:shadow-none"
+                          {...register('messages')}
+                        />
+                      )} */}
+                      <Controller
+                        name="messages"
+                        control={control}
+                        render={({ field }) => (
+                          <QuillEditorEmail
+                            {...field}
+                            className="border-none shadow-none @3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[50px]"
+                            toolbarPosition="bottom"
+                            placeholder="Type here to reply"
+                            tooltipType={tooltip}
+                          />
+                        )}
                       />
-                      <Flex justify="between" align="center">
+                      <Flex
+                        justify="between"
+                        align="center"
+                        className="px-6 pb-4"
+                      >
                         <div className="flex items-center gap-8">
                           <div className="flex items-center gap-3">
-                            <ActionIcon variant="text">
-                              <LuBold className="text-xl" />
-                            </ActionIcon>
-                            <ActionIcon variant="text">
-                              <LuItalic className="text-xl" />
-                            </ActionIcon>
-                            <ActionIcon variant="text">
-                              <LuUnderline className="text-xl" />
-                            </ActionIcon>
-                          </div>
+                            <Tooltip content="Formatting options">
+                              <ActionIcon
+                                variant="text"
+                                onClick={() =>
+                                  handleOpenTooltipInput('bs-type')
+                                }
+                                className={
+                                  tooltip == 'bs-type'
+                                    ? 'h-8 w-8 rounded-full bg-[#3872F926]'
+                                    : ''
+                                }
+                              >
+                                <BsType
+                                  className={`text-xl ${tooltip == 'bs-type' && 'text-[#3872F9]'}`}
+                                />
+                              </ActionIcon>
+                            </Tooltip>
+                            <Tooltip content="Attach files">
+                              <ActionIcon
+                                variant="text"
+                                onClick={() =>
+                                  handleOpenTooltipInput('archive-file')
+                                }
+                                className={
+                                  tooltip == 'archive-file'
+                                    ? 'h-8 w-8 rounded-full bg-[#3872F926]'
+                                    : ''
+                                }
+                              >
+                                <MdOutlineAttachFile
+                                  className={`text-xl ${tooltip == 'archive-file' && 'text-[#3872F9]'}`}
+                                />
+                              </ActionIcon>
+                            </Tooltip>
+                            <Tooltip content="Insert link">
+                              <ActionIcon
+                                variant="text"
+                                onClick={() => handleOpenTooltipInput('link')}
+                                className={
+                                  tooltip == 'link'
+                                    ? 'h-8 w-8 rounded-full bg-[#3872F926]'
+                                    : ''
+                                }
+                              >
+                                <IoLinkOutline
+                                  className={`text-xl ${tooltip == 'link' && 'text-[#3872F9]'}`}
+                                />
+                              </ActionIcon>
+                            </Tooltip>
 
-                          <div className="flex items-center gap-3">
-                            <ActionIcon
-                              variant="text"
-                              onClick={() => setLinkPopupOpen(!isLinkPopupOpen)}
-                            >
-                              <LuLink2 className="text-xl" />
-                            </ActionIcon>
-                            <ActionIcon variant="text">
-                              <BiImageAlt className="text-xl" />
-                            </ActionIcon>
+                            <Tooltip content="Insert emoji">
+                              <ActionIcon
+                                variant="text"
+                                onClick={() => handleOpenTooltipInput('emoji')}
+                                className={
+                                  tooltip == 'emoji'
+                                    ? 'h-8 w-8 rounded-full bg-[#3872F926]'
+                                    : ''
+                                }
+                              >
+                                <GrEmoji
+                                  className={`text-xl ${tooltip == 'emoji' && 'text-[#3872F9]'}`}
+                                />
+                              </ActionIcon>
+                            </Tooltip>
+
+                            <Tooltip content="Insert files using Drive">
+                              <ActionIcon
+                                variant="text"
+                                onClick={() => handleOpenTooltipInput('gdrive')}
+                                className={
+                                  tooltip == 'gdrive'
+                                    ? 'h-8 w-8 rounded-full bg-[#3872F926]'
+                                    : ''
+                                }
+                              >
+                                <LiaGoogleDrive
+                                  className={`text-xl ${tooltip == 'gdrive' && 'text-[#3872F9]'}`}
+                                />
+                              </ActionIcon>
+                            </Tooltip>
+
+                            <Tooltip content="Insert photo">
+                              <ActionIcon
+                                variant="text"
+                                onClick={() =>
+                                  handleOpenTooltipInput('image-alt')
+                                }
+                                className={
+                                  tooltip == 'image-alt'
+                                    ? 'h-8 w-8 rounded-full bg-[#3872F926]'
+                                    : ''
+                                }
+                              >
+                                <BiImageAlt
+                                  className={`text-xl ${tooltip == 'image-alt' && 'text-[#3872F9]'}`}
+                                />
+                              </ActionIcon>
+                            </Tooltip>
+
+                            <Tooltip content="Insert signature">
+                              <ActionIcon
+                                variant="text"
+                                onClick={() =>
+                                  handleOpenTooltipInput('pen-line')
+                                }
+                                className={
+                                  tooltip == 'pen-line'
+                                    ? 'h-8 w-8 rounded-full bg-[#3872F926]'
+                                    : ''
+                                }
+                              >
+                                <RiBallPenLine
+                                  className={`text-xl ${tooltip == 'pen-line' && 'text-[#3872F9]'}`}
+                                />
+                              </ActionIcon>
+                            </Tooltip>
                           </div>
                         </div>
                         <Button
@@ -269,7 +435,7 @@ const PageEmail = ({ selectedUser, onBack }: IPageEmailProps) => {
                         </Button>
                       </Flex>
                     </div>
-                    {isLinkPopupOpen && (
+                    {tooltip == 'link' && (
                       <div className="absolute bottom-full z-10 mb-2 w-6/12 rounded-lg border bg-white p-4 text-[#787878] shadow-lg">
                         <div className="flex items-end gap-3">
                           <div className="flex w-full flex-col gap-3">

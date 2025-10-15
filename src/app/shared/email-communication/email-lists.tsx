@@ -1,6 +1,7 @@
 import { PiMagnifyingGlassLight } from 'react-icons/pi';
 import { Avatar, Flex, Input, Text, Title } from 'rizzui';
 import AddNewEmail from './modal/email-compose';
+import { useModal } from '../modal-views/use-modal';
 const emailMessages = [
   {
     section: 'Today',
@@ -116,6 +117,8 @@ type IEmailListsProps = {
   openAddEmail: boolean;
   setSelectedEmail?: (email: any) => void;
   setOpenAddEmail: (open: boolean) => void;
+  openFullScreen?: boolean;
+  setOpenFullScreen?: (open: boolean) => void;
 };
 
 const EmailLists = ({
@@ -124,7 +127,30 @@ const EmailLists = ({
   setSelectedEmail,
   openAddEmail,
   setOpenAddEmail,
+  openFullScreen,
+  setOpenFullScreen,
 }: IEmailListsProps) => {
+  const { openModal, closeModal } = useModal();
+  const showFullAddEmail = () => {
+    openModal({
+      view: (
+        <AddNewEmail
+          user_id={1}
+          onClose={closeModal}
+          onFullScreen={() => {
+            setOpenAddEmail(true);
+            closeModal();
+          }}
+          isFullScreen
+        />
+      ),
+      customSize: '900px',
+      size: 'xl',
+    });
+    setOpenAddEmail(false);
+  };
+
+  console.log(openAddEmail, openFullScreen);
   return (
     <div className="flex h-full w-full flex-col">
       <div className="flex h-20 items-center justify-between border-b p-5">
@@ -194,15 +220,21 @@ const EmailLists = ({
             </div>
           </div>
         ))}
-        <div
-          className={`absolute bottom-0 right-0 top-0 h-full w-full max-w-[350px] transform bg-white shadow-lg transition-transform duration-300 ease-in-out ${
-            openAddEmail ? 'translate-x-0' : 'translate-x-full'
-          }`}
-        >
-          {openAddEmail && (
-            <AddNewEmail user_id={1} onClose={() => setOpenAddEmail(false)} />
-          )}
-        </div>
+        {openAddEmail && (
+          <div
+            className={`absolute bottom-0 right-[5%] h-[50%] w-[70%] transform overflow-auto rounded-xl bg-white shadow-xl transition-transform duration-300 ease-in-out ${
+              openAddEmail ? 'translate-x-0' : 'translate-x-full'
+            }`}
+          >
+            {openAddEmail && (
+              <AddNewEmail
+                user_id={1}
+                onClose={() => setOpenAddEmail(false)}
+                onFullScreen={showFullAddEmail}
+              />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

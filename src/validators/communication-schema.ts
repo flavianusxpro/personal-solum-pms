@@ -23,6 +23,8 @@ export const addEmailSchema = z.object({
   messages: z.string().optional(),
   text: z.string().optional(),
   link: z.string().optional(),
+  cc: z.string().optional(),
+  bcc: z.string().optional(),
 });
 
 // generate form types from zod validation schema

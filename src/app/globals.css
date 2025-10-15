@@ -1534,3 +1534,69 @@ div[style='z-index: 1000001;'],
   overflow-y: auto;
   max-height: 200px;
 }
+
+/* === Wrapper styling === */
+.quill-email-wrapper {
+  position: relative;
+}
+
+/* === Quill custom styling === */
+.tooltip .ql-toolbar {
+  border: none !important;
+  background: rgba(59, 91, 255, 0.08);
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  width: fit-content;
+}
+.no-tooltip .ql-toolbar {
+  background: none;
+  border: none !important;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  width: fit-content;
+}
+
+.custom-quill-editor .ql-toolbar button {
+  color: #444;
+}
+
+.custom-quill-editor .ql-toolbar.ql-snow {
+  border-radius: 999px;
+  margin: 0 1.5rem;
+}
+
+.custom-quill-editor .ql-toolbar button:hover,
+.custom-quill-editor .ql-toolbar button.ql-active {
+  color: #3b5bff;
+}
+
+.custom-quill-editor .ql-toolbar .ql-picker {
+  color: #444;
+}
+
+/* Hilangkan border editor dan buat clean */
+.custom-quill-editor .ql-container {
+  border: none !important;
+}
+
+.custom-quill-editor .ql-editor {
+  min-height: 100px;
+  font-size: 15px;
+}
+
+/* Jika toolbar di bawah */
+.react-quill-toolbar-bottom .ql-toolbar {
+  order: 2;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.custom-quill-editor .ql-editor.ql-blank::before {
+  font-style: normal !important;
+}
