@@ -218,71 +218,77 @@ const PageEmail = ({ selectedUser, onBack }: IPageEmailProps) => {
           {({ register, control, formState: { errors } }) => {
             return (
               <div className="flex flex-col gap-4">
-                <Textarea
-                  placeholder="Type here to reply"
-                  {...register('messages')}
-                />
                 <div className="relative z-10">
-                  <Flex justify="between" align="center">
-                    <div className="flex items-center gap-8">
-                      <div className="flex items-center gap-3">
-                        <ActionIcon variant="text">
-                          <LuBold className="text-xl" />
-                        </ActionIcon>
-                        <ActionIcon variant="text">
-                          <LuItalic className="text-xl" />
-                        </ActionIcon>
-                        <ActionIcon variant="text">
-                          <LuUnderline className="text-xl" />
-                        </ActionIcon>
-                      </div>
+                  <div className="rounded-lg border p-4">
+                    <div className="flex flex-col gap-2">
+                      <Textarea
+                        placeholder="Type here to reply"
+                        className="!focus:ring-0 !focus:shadow-none w-full !border-none !shadow-none !ring-0"
+                        textareaClassName="!focus:ring-0 w-full !border-none !shadow-none !ring-0 !focus:shadow-none"
+                        {...register('messages')}
+                      />
+                      <Flex justify="between" align="center">
+                        <div className="flex items-center gap-8">
+                          <div className="flex items-center gap-3">
+                            <ActionIcon variant="text">
+                              <LuBold className="text-xl" />
+                            </ActionIcon>
+                            <ActionIcon variant="text">
+                              <LuItalic className="text-xl" />
+                            </ActionIcon>
+                            <ActionIcon variant="text">
+                              <LuUnderline className="text-xl" />
+                            </ActionIcon>
+                          </div>
 
-                      <div className="flex items-center gap-3">
-                        <ActionIcon
-                          variant="text"
-                          onClick={() => setLinkPopupOpen(!isLinkPopupOpen)}
-                        >
-                          <LuLink2 className="text-xl" />
-                        </ActionIcon>
-                        <ActionIcon variant="text">
-                          <BiImageAlt className="text-xl" />
-                        </ActionIcon>
-                      </div>
-                    </div>
-                    <Button
-                      className="w-auto text-white"
-                      size="sm"
-                      type="submit"
-                    >
-                      <LuSend className="me-1.5 h-4 w-4" />
-                      Reply
-                    </Button>
-                  </Flex>
-                  {isLinkPopupOpen && (
-                    <div className="absolute bottom-full z-10 mb-2 w-6/12 rounded-lg border bg-white p-4 text-[#787878] shadow-lg">
-                      <div className="flex items-end gap-3">
-                        <div className="flex w-full flex-col gap-3">
-                          <Input
-                            placeholder="Text"
-                            prefix={<LuText className="text-lg" />}
-                            {...register('text')}
-                          />
-                          <Input
-                            placeholder="Type or paste a link"
-                            prefix={<LuLink2 className="text-lg" />}
-                            {...register('link')}
-                          />
+                          <div className="flex items-center gap-3">
+                            <ActionIcon
+                              variant="text"
+                              onClick={() => setLinkPopupOpen(!isLinkPopupOpen)}
+                            >
+                              <LuLink2 className="text-xl" />
+                            </ActionIcon>
+                            <ActionIcon variant="text">
+                              <BiImageAlt className="text-xl" />
+                            </ActionIcon>
+                          </div>
                         </div>
                         <Button
-                          variant="outline"
-                          className="w-auto"
-                          onClick={() => setLinkPopupOpen(false)}
+                          className="w-auto text-white"
+                          size="sm"
+                          type="submit"
                         >
-                          Apply
+                          <LuSend className="me-1.5 h-4 w-4" />
+                          Reply
                         </Button>
-                      </div>
+                      </Flex>
                     </div>
-                  )}
+                    {isLinkPopupOpen && (
+                      <div className="absolute bottom-full z-10 mb-2 w-6/12 rounded-lg border bg-white p-4 text-[#787878] shadow-lg">
+                        <div className="flex items-end gap-3">
+                          <div className="flex w-full flex-col gap-3">
+                            <Input
+                              placeholder="Text"
+                              prefix={<LuText className="text-lg" />}
+                              {...register('text')}
+                            />
+                            <Input
+                              placeholder="Type or paste a link"
+                              prefix={<LuLink2 className="text-lg" />}
+                              {...register('link')}
+                            />
+                          </div>
+                          <Button
+                            variant="outline"
+                            className="w-auto"
+                            onClick={() => setLinkPopupOpen(false)}
+                          >
+                            Apply
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             );
