@@ -295,7 +295,7 @@ const EmailCommunications = () => {
   };
 
   const unreadMessages = persons.filter((person) => person.read_message > 0);
-  console.log(selectedEmail);
+  console.log(openAddEmail);
 
   return (
     <div className="flex w-full rounded-2xl border">
@@ -378,7 +378,10 @@ const EmailCommunications = () => {
         {/* Header channel */}
 
         {selectedEmail && Object.keys(selectedEmail).length > 0 ? (
-          <PageEmail selectedUser={selectedEmail} />
+          <PageEmail
+            selectedUser={selectedEmail}
+            onBack={() => setSelectedEmail(null)}
+          />
         ) : (
           <EmailLists
             selectedSidebar={selectedSidebar}
