@@ -130,80 +130,86 @@ const PageEmail = ({ selectedUser, onBack }: IPageEmailProps) => {
         </div>
       </div>
       <div className="flex-grow overflow-y-auto p-6">
-        <div className="flex flex-col gap-10">
-          <Flex align="center" className="z-1000 h-5">
-            <Avatar
-              // name={`${selectedUser.first_name} ${selectedUser.last_name}` || ''}
-              name={selectedUser?.sender || ''}
-              src={selectedUser?.avatar}
-              size="md"
-            />
-            <div className="z-1000 flex w-full flex-col">
-              <Flex align="center" justify="between" className="w-full">
-                <Flex gap="2" className="w-2/2">
-                  <Text className="text-[16px] text-black">
-                    {/* {selectedUser?.first_name} {selectedUser?.last_name} */}
+        <div className="pb-8">
+          <div className="flex items-start justify-between">
+            <Flex align="center" className="gap-3">
+              <Avatar
+                name={selectedUser?.sender || ''}
+                src={selectedUser?.avatar}
+                size="lg"
+              />
+              <div className="flex flex-col">
+                <Flex align="center" className="gap-2">
+                  <Text className="text-base font-semibold text-black">
                     {selectedUser?.sender}
                   </Text>
-                  <Text className="text-[#787878]">
-                    {`(${selectedUser?.email})`}
-                  </Text>
+                  <Text className="text-gray-500">{`<${selectedUser?.email}>`}</Text>
                 </Flex>
-                <div className="w-100">
-                  <Text className="text-xs text-gray-500">
-                    {selectedUser?.time}
-                  </Text>
+                <div className="relative">
+                  <Flex
+                    as="button"
+                    align="center"
+                    className="mt-1 gap-1"
+                    onClick={() => setIsToOpen(!isToOpen)}
+                  >
+                    <Text className="text-xs text-gray-500">to me</Text>
+                    <IoIosArrowDown className="text-gray-500" />
+                  </Flex>
+                  {isToOpen && (
+                    <div className="absolute top-full z-10 mt-2 rounded-xl bg-white p-4 shadow-xl">
+                      <div className="space-y-2 text-sm">
+                        <Flex className="gap-2">
+                          <Text className="font-semibold">From:</Text>
+                          <Text>{selectedUser?.email}</Text>
+                        </Flex>
+                        <Flex className="gap-2">
+                          <Text className="font-semibold">To:</Text>
+                          <Text>
+                            {selectedUser?.to?.map((item) => item).join(', ')}
+                          </Text>
+                        </Flex>
+                        {selectedUser?.cc && selectedUser.cc.length > 0 && (
+                          <Flex className="gap-2">
+                            <Text className="font-semibold">Cc:</Text>
+                            <Text>
+                              {selectedUser.cc.map((item) => item).join(', ')}
+                            </Text>
+                          </Flex>
+                        )}
+                        {selectedUser?.bcc && selectedUser.bcc.length > 0 && (
+                          <Flex className="gap-2">
+                            <Text className="font-semibold">Bcc:</Text>
+                            <Text>
+                              {selectedUser.bcc.map((item) => item).join(', ')}
+                            </Text>
+                          </Flex>
+                        )}
+                        <Flex className="gap-2">
+                          <Text className="font-semibold">Date:</Text>
+                          <Text>
+                            {selectedUser?.date
+                              ? dayjs(selectedUser?.date).format(
+                                  'ddd, MMM D, YYYY at h:mm A'
+                                )
+                              : ''}
+                          </Text>
+                        </Flex>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </Flex>
-              <div className="relative">
-                <Flex
-                  align="center"
-                  gap="1"
-                  onClick={() => setIsToOpen(!isToOpen)}
-                >
-                  <Text className="text-xs text-gray-500">to</Text>
-                  <IoIosArrowDown className="text-[#787878]" />
-                </Flex>
-                {isToOpen && (
-                  <div className="absolute z-50 rounded-xl p-4 shadow-xl">
-                    <Flex>
-                      <Text>From:</Text>
-                      <Text>{selectedUser?.email}</Text>
-                    </Flex>
-                    <Flex>
-                      <Text>To:</Text>
-                      <Text>
-                        {' '}
-                        {selectedUser?.to?.map((item) => item).join(', ')}
-                      </Text>
-                    </Flex>
-                    <Flex>
-                      <Text>Cc:</Text>
-                      <Text>
-                        {selectedUser?.cc?.map((item) => item).join(', ')}
-                      </Text>
-                    </Flex>
-                    <Flex>
-                      <Text>Bcc:</Text>
-                      <Text>
-                        {selectedUser?.bcc?.map((item) => item).join(', ')}
-                      </Text>
-                    </Flex>
-                    <Flex>
-                      <Text>Date:</Text>
-                      <Text>
-                        {selectedUser?.date
-                          ? dayjs(selectedUser?.date).format('DD MMMM, YYYY')
-                          : ''}
-                      </Text>
-                    </Flex>
-                  </div>
-                )}
               </div>
-            </div>
-          </Flex>
-          <div>{selectedUser?.message}</div>
+            </Flex>
+            <Text className="text-xs text-gray-500">{selectedUser?.time}</Text>
+          </div>
         </div>
+
+        <div
+          className="prose max-w-none"
+          dangerouslySetInnerHTML={{
+            __html: selectedUser?.message || '',
+          }}
+        />
       </div>
       <div className="border-t bg-white p-6">
         <Form<EmailProps>
