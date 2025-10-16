@@ -198,49 +198,53 @@ const PageEmail = ({ selectedUser, onBack }: IPageEmailProps) => {
                   {isToOpen && (
                     <div className="absolute top-full z-10 mt-2 rounded-xl bg-white p-4 shadow-xl">
                       <div className="space-y-2 text-sm">
-                        <Flex className="gap-2">
+                        <div className="flex gap-2">
                           <Text className="font-semibold">From:</Text>
                           <Text>{selectedUser?.email}</Text>
-                        </Flex>
-                        <Flex className="gap-2">
+                        </div>
+                        <div className="flex gap-2">
                           <Text className="font-semibold">To:</Text>
                           <Text>
                             {selectedUser?.to?.map((item) => item).join(', ')}
                           </Text>
-                        </Flex>
+                        </div>
                         {selectedUser?.cc && selectedUser.cc.length > 0 && (
-                          <Flex className="gap-2">
+                          <div className="flex gap-2">
                             <Text className="font-semibold">Cc:</Text>
                             <Text>
                               {selectedUser.cc.map((item) => item).join(', ')}
                             </Text>
-                          </Flex>
+                          </div>
                         )}
                         {selectedUser?.bcc && selectedUser.bcc.length > 0 && (
-                          <Flex className="gap-2">
+                          <div className="flex gap-2">
                             <Text className="font-semibold">Bcc:</Text>
                             <Text>
                               {selectedUser.bcc.map((item) => item).join(', ')}
                             </Text>
-                          </Flex>
+                          </div>
                         )}
-                        <Flex className="gap-2">
+                        <div className="flex gap-2">
                           <Text className="font-semibold">Date:</Text>
                           <Text>
                             {selectedUser?.date
                               ? dayjs(selectedUser?.date).format(
-                                  'ddd, MMM D, YYYY at h:mm A'
+                                  'DD MMMM, YYYY'
                                 )
                               : ''}
                           </Text>
-                        </Flex>
+                        </div>
                       </div>
                     </div>
                   )}
                 </div>
               </div>
             </Flex>
-            <Text className="text-xs text-gray-500">{selectedUser?.time}</Text>
+            <Text className="whitespace-nowrap text-xs text-gray-500">
+              {selectedUser?.date
+                ? dayjs(selectedUser?.date).format('DD MMM, YYYY hh:mm')
+                : ''}
+            </Text>
           </div>
         </div>
 
@@ -463,7 +467,7 @@ const PageEmail = ({ selectedUser, onBack }: IPageEmailProps) => {
                                 >
                                   <div className="flex gap-3">
                                     <div className="flex w-full flex-col gap-3">
-                                      <div>
+                                      <div className="pl-6">
                                         <Text
                                           className="cursor-pointer text-black"
                                           onClick={handleLinkToEmailSetup}

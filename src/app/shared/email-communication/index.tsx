@@ -299,7 +299,7 @@ const EmailCommunications = () => {
   return (
     <div className="flex w-full rounded-2xl border">
       {/* Sidebar kiri */}
-      <aside className="flex w-[360px] flex-col border-r">
+      <aside className="flex w-[300px] flex-col border-r">
         <div className="relative flex h-20 w-full flex-col items-center p-5">
           <Button
             className="w-full"

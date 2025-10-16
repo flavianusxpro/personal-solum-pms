@@ -11,7 +11,7 @@ import EmailSetup from './email-setup';
 import { useParams } from 'next/navigation';
 import { useGetUserById } from '@/hooks/useUser';
 import useQueryParams from '@/core/hooks/use-query-params';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { emailSetupNavigationAtom } from '@/store/user';
 
 export const navItems = [
@@ -38,13 +38,11 @@ export default function EditUser({ isView = false }: { isView?: boolean }) {
   const query = useQueryParams().getParams();
   const isTabPassword = query.tab === 'password';
   const isTabActivity = query.tab === 'activity';
-  const emailNavigationValue = useAtomValue(emailSetupNavigationAtom);
-
-  const [tab, setTab] = useState(
-    emailNavigationValue ? emailNavigationValue : navItems[0].value
+  const [emailNavigationValue, setEmailNavigationValue] = useAtom(
+    emailSetupNavigationAtom
   );
 
-  console.log(emailNavigationValue);
+  const [tab, setTab] = useState(navItems[0].value);
   const { data: dataUser } = useGetUserById(id);
 
   function selectTab(nextTab: string) {
@@ -75,6 +73,13 @@ export default function EditUser({ isView = false }: { isView?: boolean }) {
       setTab('user');
     }
   }, [isTabPassword, isTabActivity]);
+
+  useEffect(() => {
+    if (emailNavigationValue) {
+      setTab(emailNavigationValue);
+      setEmailNavigationValue('');
+    }
+  }, [emailNavigationValue, setEmailNavigationValue]);
 
   return (
     <>
