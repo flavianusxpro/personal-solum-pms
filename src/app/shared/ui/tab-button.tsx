@@ -3,7 +3,7 @@ import cn from '@core/utils/class-names';
 interface TabButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   item: {
     value: string;
-    label: string;
+    label: string | any;
   };
   isActive: boolean;
   onClick: () => void;

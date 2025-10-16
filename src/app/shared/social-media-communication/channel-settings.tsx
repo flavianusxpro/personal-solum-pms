@@ -118,8 +118,8 @@ const ChannelSettingsLayout = ({
         <div className="flex w-full flex-col gap-2">
           <div className="flex w-full items-center justify-between">
             <div className="flex items-center gap-2">
-              <PiBell className="h-4 w-4 text-black" />
-              <span className="text-black">Notifications</span>
+              <PiBell className="h-4 w-4" />
+              <span>Notifications</span>
             </div>
             <div onClick={(e) => e.stopPropagation()}>
               <Switch

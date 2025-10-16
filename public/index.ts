@@ -10,3 +10,5 @@ export { default as SpamIcon } from './SpamIcon.svg';
 export { default as ImportantBlueIcon } from './ImportantBlueIcon.svg';
 export { default as DraftOutlineBlueIcon } from './DraftOutlineBlueIcon.svg';
 export { default as SpamBlueIcon } from './SpamBlueIcon.svg';
+export { default as InstagramIcon } from './instagram-icon.svg';
+export { default as LinkedinIcon } from './linkedin-icon.svg';

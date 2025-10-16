@@ -3,7 +3,7 @@ import { Avatar, Badge } from 'rizzui';
 export const AvatarWithBadge = ({ data, size }: any) => {
   return (
     <div className="relative inline-flex">
-      <Avatar name={data.name} src={data.avatar} size={size} />
+      <Avatar name={data?.name} src={data?.avatar} size={size} />
       <Badge
         renderAsDot
         color="success"
