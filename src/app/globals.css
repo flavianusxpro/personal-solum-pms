@@ -1562,6 +1562,13 @@ div[style='z-index: 1000001;'],
   width: fit-content;
 }
 
+.quill-signature .ql-toolbar {
+  border: none !important;
+  border-top: 1px solid #ccc !important;
+  align-items: center;
+  width: 100%;
+}
+
 .custom-quill-editor .ql-toolbar button {
   color: #444;
 }
@@ -1580,7 +1587,7 @@ div[style='z-index: 1000001;'],
   color: #444;
 }
 
-/* Hilangkan border editor dan buat clean */
+.quill-signature .ql-container,
 .custom-quill-editor .ql-container {
   border: none !important;
 }
@@ -1590,13 +1597,26 @@ div[style='z-index: 1000001;'],
   font-size: 15px;
 }
 
-/* Jika toolbar di bawah */
 .react-quill-toolbar-bottom .ql-toolbar {
   order: 2;
   margin-top: 0;
   margin-bottom: 10px;
 }
 
+.quill-signature .ql-toolbar {
+  margin-bottom: 0px !important;
+}
+
+.quill-signature .ql-editor.ql-blank::before,
 .custom-quill-editor .ql-editor.ql-blank::before {
   font-style: normal !important;
+  font-size: 14px;
+}
+
+.custom-quill-add-email {
+  height: 20vh;
+}
+.custom-quill-add-email .ql-toolbar.ql-snow {
+  border-radius: 999px;
+  margin: 0;
 }

@@ -98,6 +98,7 @@ export const routes = {
     dateTimeFormat: '/setting/date-time-format',
     taxSettings: '/setting/tax',
     invoiceSettings: '/setting/invoice-settings',
+    emailSettings: '/setting/email-settings',
     branch: '/setting/branch',
     currency: '/setting/currency',
   },

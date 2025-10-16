@@ -7,9 +7,12 @@ import SimpleBar from 'simplebar-react';
 import UserDetails from './tab-user-details';
 import TabPassword from './tab-password';
 import TabActivity from './tab-activity';
+import EmailSetup from './email-setup';
 import { useParams } from 'next/navigation';
 import { useGetUserById } from '@/hooks/useUser';
 import useQueryParams from '@/core/hooks/use-query-params';
+import { useAtomValue } from 'jotai';
+import { emailSetupNavigationAtom } from '@/store/user';
 
 export const navItems = [
   {
@@ -24,6 +27,10 @@ export const navItems = [
     value: 'activity',
     label: 'Activity',
   },
+  {
+    value: 'email-setup',
+    label: 'Email Setup',
+  },
 ];
 
 export default function EditUser({ isView = false }: { isView?: boolean }) {
@@ -31,9 +38,13 @@ export default function EditUser({ isView = false }: { isView?: boolean }) {
   const query = useQueryParams().getParams();
   const isTabPassword = query.tab === 'password';
   const isTabActivity = query.tab === 'activity';
+  const emailNavigationValue = useAtomValue(emailSetupNavigationAtom);
 
-  const [tab, setTab] = useState(navItems[0].value);
+  const [tab, setTab] = useState(
+    emailNavigationValue ? emailNavigationValue : navItems[0].value
+  );
 
+  console.log(emailNavigationValue);
   const { data: dataUser } = useGetUserById(id);
 
   function selectTab(nextTab: string) {
@@ -86,6 +97,7 @@ export default function EditUser({ isView = false }: { isView?: boolean }) {
         {tab === 'user' && <UserDetails isView={isView} />}
         {tab === 'password' && <TabPassword isView={isView} />}
         {tab === 'activity' && <TabActivity isView={isView} />}
+        {tab === 'email-setup' && <EmailSetup />}
       </div>
     </>
   );

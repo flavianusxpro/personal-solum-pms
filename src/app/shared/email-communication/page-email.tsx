@@ -2,31 +2,15 @@ import { BsArchive, BsPrinter, BsTrash3, BsType } from 'react-icons/bs';
 import { CiFolderOn } from 'react-icons/ci';
 import { IoLinkOutline, IoMailUnreadOutline } from 'react-icons/io5';
 import { MdBlockFlipped, MdOutlineAttachFile } from 'react-icons/md';
-import { PiArchive, PiPrinter, PiStar } from 'react-icons/pi';
-import {
-  ActionIcon,
-  Avatar,
-  Button,
-  Flex,
-  Input,
-  Text,
-  Textarea,
-  Tooltip,
-} from 'rizzui';
+import { PiCheckBold, PiStar } from 'react-icons/pi';
+import { ActionIcon, Avatar, Button, Flex, Input, Text, Tooltip } from 'rizzui';
 import { Controller, SubmitHandler } from 'react-hook-form';
 import { Form } from '@/core/ui/form';
 import { addEmailSchema, EmailProps } from '@/validators/communication-schema';
-import {
-  LuBold,
-  LuItalic,
-  LuLink2,
-  LuSend,
-  LuText,
-  LuUnderline,
-} from 'react-icons/lu';
-import { BiArrowBack, BiImage, BiImageAlt } from 'react-icons/bi';
+import { LuLink2, LuSend, LuText } from 'react-icons/lu';
+import { BiArrowBack, BiImageAlt } from 'react-icons/bi';
 import { useState } from 'react';
-import { RiBallPenFill, RiBallPenLine, RiStarFill } from 'react-icons/ri';
+import { RiBallPenLine, RiStarFill } from 'react-icons/ri';
 import {
   IoIosArrowBack,
   IoIosArrowDown,
@@ -36,7 +20,12 @@ import dayjs from 'dayjs';
 import { GrEmoji } from 'react-icons/gr';
 import { LiaGoogleDrive } from 'react-icons/lia';
 import dynamic from 'next/dynamic';
-import Divider from '../ui/divider';
+import Link from 'next/link';
+import { useProfile } from '@/hooks/useProfile';
+import { routes } from '@/config/routes';
+import { useSetAtom } from 'jotai';
+import { emailSetupNavigationAtom } from '@/store/user';
+import { useRouter } from 'next/navigation';
 const QuillEditorEmail = dynamic(() => import('@core/ui/quill-editor-email'), {
   ssr: false,
 });
@@ -59,12 +48,15 @@ type IPageEmailProps = {
 };
 
 const PageEmail = ({ selectedUser, onBack }: IPageEmailProps) => {
+  const router = useRouter();
   const [starredEmail, setStarredEmail] = useState(false);
   const [isLinkPopupOpen, setLinkPopupOpen] = useState(false);
   const [isToOpen, setIsToOpen] = useState(false);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [tooltip, setTooltip] = useState('');
   const [isOpenTooltip, setIsOpenTooltip] = useState(false);
+  const { data: dataProfile } = useProfile(status == 'authenticated');
+  const setNavigationEmailSetup = useSetAtom(emailSetupNavigationAtom);
   const onSubmit: SubmitHandler<EmailProps> = (data) => {
     // mutate(
     //   {
@@ -87,11 +79,21 @@ const PageEmail = ({ selectedUser, onBack }: IPageEmailProps) => {
     // );
   };
 
-  const handleOpenTooltipInput = (tooltip: string) => {
+  const handleOpenTooltipInput = (checkedTooltip: string) => {
     setIsOpenTooltip(!isOpenTooltip);
-    setTooltip(tooltip);
+    if (tooltip == checkedTooltip) {
+      setTooltip('');
+    } else {
+      setTooltip(checkedTooltip);
+    }
   };
-  console.log(tooltip == 'bs-type' ? true : false);
+
+  const handleLinkToEmailSetup = () => {
+    dataProfile?.id
+      ? router.push(routes.user.edit(`${dataProfile.id.toString()}`))
+      : '#';
+    setNavigationEmailSetup('email-setup');
+  };
   return (
     <div className="flex h-full w-full flex-col">
       <div className="flex h-20 items-center justify-between border-b border-l p-5">
@@ -292,7 +294,7 @@ const PageEmail = ({ selectedUser, onBack }: IPageEmailProps) => {
                         render={({ field }) => (
                           <QuillEditorEmail
                             {...field}
-                            className="border-none shadow-none @3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[50px]"
+                            className="border-none p-2 shadow-none @3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[50px]"
                             toolbarPosition="bottom"
                             placeholder="Type here to reply"
                             tooltipType={tooltip}
@@ -340,22 +342,52 @@ const PageEmail = ({ selectedUser, onBack }: IPageEmailProps) => {
                                 />
                               </ActionIcon>
                             </Tooltip>
-                            <Tooltip content="Insert link">
-                              <ActionIcon
-                                variant="text"
-                                onClick={() => handleOpenTooltipInput('link')}
-                                className={
-                                  tooltip == 'link'
-                                    ? 'h-8 w-8 rounded-full bg-[#3872F926]'
-                                    : ''
-                                }
-                              >
-                                <IoLinkOutline
-                                  className={`text-xl ${tooltip == 'link' && 'text-[#3872F9]'}`}
-                                />
-                              </ActionIcon>
-                            </Tooltip>
+                            <div className="relative">
+                              <Tooltip content="Insert link">
+                                <ActionIcon
+                                  variant="text"
+                                  onClick={() => handleOpenTooltipInput('link')}
+                                  className={
+                                    tooltip == 'link'
+                                      ? 'h-8 w-8 rounded-full bg-[#3872F926]'
+                                      : ''
+                                  }
+                                >
+                                  <IoLinkOutline
+                                    className={`text-xl ${tooltip == 'link' && 'text-[#3872F9]'}`}
+                                  />
+                                </ActionIcon>
+                              </Tooltip>
 
+                              {tooltip == 'link' && (
+                                <div
+                                  className="absolute bottom-full z-10 mb-2 rounded-lg border bg-white p-4 text-[#787878] shadow-lg"
+                                  style={{ width: 'max-content' }}
+                                >
+                                  <div className="flex items-end gap-3">
+                                    <div className="flex w-full flex-col gap-3">
+                                      <Input
+                                        placeholder="Text"
+                                        prefix={<LuText className="text-lg" />}
+                                        {...register('text')}
+                                      />
+                                      <Input
+                                        placeholder="Type or paste a link"
+                                        prefix={<LuLink2 className="text-lg" />}
+                                        {...register('link')}
+                                      />
+                                    </div>
+                                    <Button
+                                      variant="outline"
+                                      className="w-auto"
+                                      onClick={() => setLinkPopupOpen(false)}
+                                    >
+                                      Apply
+                                    </Button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                             <Tooltip content="Insert emoji">
                               <ActionIcon
                                 variant="text"
@@ -406,23 +438,51 @@ const PageEmail = ({ selectedUser, onBack }: IPageEmailProps) => {
                               </ActionIcon>
                             </Tooltip>
 
-                            <Tooltip content="Insert signature">
-                              <ActionIcon
-                                variant="text"
-                                onClick={() =>
-                                  handleOpenTooltipInput('pen-line')
-                                }
-                                className={
-                                  tooltip == 'pen-line'
-                                    ? 'h-8 w-8 rounded-full bg-[#3872F926]'
-                                    : ''
-                                }
-                              >
-                                <RiBallPenLine
-                                  className={`text-xl ${tooltip == 'pen-line' && 'text-[#3872F9]'}`}
-                                />
-                              </ActionIcon>
-                            </Tooltip>
+                            <div className="relative">
+                              <Tooltip content="Insert signature">
+                                <ActionIcon
+                                  variant="text"
+                                  onClick={() =>
+                                    handleOpenTooltipInput('pen-line')
+                                  }
+                                  className={
+                                    tooltip == 'pen-line'
+                                      ? 'h-8 w-8 rounded-full bg-[#3872F926]'
+                                      : ''
+                                  }
+                                >
+                                  <RiBallPenLine
+                                    className={`text-xl ${tooltip == 'pen-line' && 'text-[#3872F9]'}`}
+                                  />
+                                </ActionIcon>
+                              </Tooltip>
+                              {tooltip == 'pen-line' && (
+                                <div
+                                  className="absolute bottom-full z-10 mb-2 rounded-lg border bg-white p-4 text-[#787878] shadow-lg"
+                                  style={{ width: 'max-content' }}
+                                >
+                                  <div className="flex gap-3">
+                                    <div className="flex w-full flex-col gap-3">
+                                      <div>
+                                        <Text
+                                          className="cursor-pointer text-black"
+                                          onClick={handleLinkToEmailSetup}
+                                        >
+                                          Manage Signatures
+                                        </Text>
+                                      </div>
+                                      <hr />
+                                      <div className="flex items-center gap-2">
+                                        <PiCheckBold className="text-lg text-black" />
+                                        <Text className="text-black">
+                                          No Signature
+                                        </Text>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
                         <Button
@@ -435,31 +495,6 @@ const PageEmail = ({ selectedUser, onBack }: IPageEmailProps) => {
                         </Button>
                       </Flex>
                     </div>
-                    {tooltip == 'link' && (
-                      <div className="absolute bottom-full z-10 mb-2 w-6/12 rounded-lg border bg-white p-4 text-[#787878] shadow-lg">
-                        <div className="flex items-end gap-3">
-                          <div className="flex w-full flex-col gap-3">
-                            <Input
-                              placeholder="Text"
-                              prefix={<LuText className="text-lg" />}
-                              {...register('text')}
-                            />
-                            <Input
-                              placeholder="Type or paste a link"
-                              prefix={<LuLink2 className="text-lg" />}
-                              {...register('link')}
-                            />
-                          </div>
-                          <Button
-                            variant="outline"
-                            className="w-auto"
-                            onClick={() => setLinkPopupOpen(false)}
-                          >
-                            Apply
-                          </Button>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>

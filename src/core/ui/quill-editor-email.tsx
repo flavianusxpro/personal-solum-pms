@@ -60,7 +60,7 @@ export default function QuillEditorEmail({
   return (
     <div
       className={cn(
-        'quill-email-wrapper rounded-xl border border-gray-200 bg-white p-4',
+        'quill-email-wrapper rounded-xl border border-gray-200 bg-white',
         className
       )}
     >
@@ -85,7 +85,7 @@ export default function QuillEditorEmail({
           tooltipType !== 'bs-type' ? 'no-tooltip' : 'tooltip',
           className
         )}
-        placeholder={placeholder ?? 'Type here to reply ...'}
+        placeholder={placeholder}
         {...props}
       />
 

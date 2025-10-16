@@ -295,7 +295,6 @@ const EmailCommunications = () => {
   };
 
   const unreadMessages = persons.filter((person) => person.read_message > 0);
-  console.log(openAddEmail);
 
   return (
     <div className="flex w-full rounded-2xl border">

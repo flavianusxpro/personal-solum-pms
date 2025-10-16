@@ -15,7 +15,7 @@ import {
   LuText,
   LuUnderline,
 } from 'react-icons/lu';
-import { PiX } from 'react-icons/pi';
+import { PiCheckBold, PiX } from 'react-icons/pi';
 import {
   ActionIcon,
   Button,
@@ -84,9 +84,13 @@ export default function AddNewEmail({
     // );
   };
 
-  const handleOpenTooltipInput = (tooltip: string) => {
+  const handleOpenTooltipInput = (clickedTooltip: string) => {
     setIsOpenTooltip(!isOpenTooltip);
-    setTooltip(tooltip);
+    if (tooltip == clickedTooltip) {
+      setTooltip('');
+    } else {
+      setTooltip(clickedTooltip);
+    }
   };
 
   return (
@@ -118,11 +122,11 @@ export default function AddNewEmail({
                 </ActionIcon>
               </div>
             </Flex>
-            <div className="px-6 pt-4">
+            <div className="px-8 pt-4">
               <div className="flex flex-col">
                 <div className="flex flex-col">
                   <div className="flex w-full items-center">
-                    <label className="w-1/4 text-[#787878]">Recipients</label>
+                    <label className="w-1/12 text-[#787878]">To</label>
                     <Input
                       size="md"
                       type="text"
@@ -167,7 +171,7 @@ export default function AddNewEmail({
                   <>
                     <div className="flex flex-col">
                       <div className="flex w-full items-center">
-                        <label className="w-1/4 text-[#787878]">CC</label>
+                        <label className="w-1/12 text-[#787878]">CC</label>
                         <Input
                           size="md"
                           type="text"
@@ -199,7 +203,7 @@ export default function AddNewEmail({
                   <>
                     <div className="flex flex-col">
                       <div className="flex w-full items-center">
-                        <label className="w-1/4 text-[#787878]">BCC</label>
+                        <label className="w-1/12 text-[#787878]">BCC</label>
                         <Input
                           size="md"
                           type="text"
@@ -229,7 +233,7 @@ export default function AddNewEmail({
 
                 <div className="flex flex-col">
                   <div className="flex items-center">
-                    <label className="w-1/4 text-[#787878]">Subject</label>
+                    <label className="w-1/12 text-[#787878]">Subject</label>
                     <Input
                       type="text"
                       {...register('subject')}
@@ -255,9 +259,8 @@ export default function AddNewEmail({
                   render={({ field }) => (
                     <QuillEditorEmail
                       {...field}
-                      className="border-none shadow-none @3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[50px]"
+                      className="custom-quill-add-email border-none shadow-none @3xl:col-span-12 [&>.ql-container_.ql-editor]:min-h-[50px]"
                       toolbarPosition="bottom"
-                      placeholder="Type here to reply"
                       tooltipType={tooltip}
                     />
                   )}
@@ -306,22 +309,47 @@ export default function AddNewEmail({
                             />
                           </ActionIcon>
                         </Tooltip>
-                        <Tooltip content="Insert link">
-                          <ActionIcon
-                            variant="text"
-                            onClick={() => handleOpenTooltipInput('link')}
-                            className={
-                              tooltip == 'link'
-                                ? 'h-8 w-8 rounded-full bg-[#3872F926]'
-                                : ''
-                            }
-                          >
-                            <IoLinkOutline
-                              className={`text-xl ${tooltip == 'link' && 'text-[#3872F9]'}`}
-                            />
-                          </ActionIcon>
-                        </Tooltip>
-
+                        <div className="relative">
+                          <Tooltip content="Insert link">
+                            <ActionIcon
+                              variant="text"
+                              onClick={() => handleOpenTooltipInput('link')}
+                              className={
+                                tooltip == 'link'
+                                  ? 'h-8 w-8 rounded-full bg-[#3872F926]'
+                                  : ''
+                              }
+                            >
+                              <IoLinkOutline
+                                className={`text-xl ${tooltip == 'link' && 'text-[#3872F9]'}`}
+                              />
+                            </ActionIcon>
+                          </Tooltip>
+                          {tooltip == 'link' && (
+                            <div
+                              className="absolute bottom-full z-10 mb-2 w-6/12 rounded-lg border bg-white p-4 text-[#787878] shadow-lg"
+                              style={{ width: 'max-content' }}
+                            >
+                              <div className="flex items-end gap-3">
+                                <div className="flex w-full flex-col gap-3">
+                                  <Input
+                                    placeholder="Text"
+                                    prefix={<LuText className="text-lg" />}
+                                    {...register('text')}
+                                  />
+                                  <Input
+                                    placeholder="Type or paste a link"
+                                    prefix={<LuLink2 className="text-lg" />}
+                                    {...register('link')}
+                                  />
+                                </div>
+                                <Button variant="outline" className="w-auto">
+                                  Send
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                         <Tooltip content="Insert emoji">
                           <ActionIcon
                             variant="text"
@@ -370,21 +398,46 @@ export default function AddNewEmail({
                           </ActionIcon>
                         </Tooltip>
 
-                        <Tooltip content="Insert signature">
-                          <ActionIcon
-                            variant="text"
-                            onClick={() => handleOpenTooltipInput('pen-line')}
-                            className={
-                              tooltip == 'pen-line'
-                                ? 'h-8 w-8 rounded-full bg-[#3872F926]'
-                                : ''
-                            }
-                          >
-                            <RiBallPenLine
-                              className={`text-xl ${tooltip == 'pen-line' && 'text-[#3872F9]'}`}
-                            />
-                          </ActionIcon>
-                        </Tooltip>
+                        <div className="relative">
+                          <Tooltip content="Insert signature">
+                            <ActionIcon
+                              variant="text"
+                              onClick={() => handleOpenTooltipInput('pen-line')}
+                              className={
+                                tooltip == 'pen-line'
+                                  ? 'h-8 w-8 rounded-full bg-[#3872F926]'
+                                  : ''
+                              }
+                            >
+                              <RiBallPenLine
+                                className={`text-xl ${tooltip == 'pen-line' && 'text-[#3872F9]'}`}
+                              />
+                            </ActionIcon>
+                          </Tooltip>
+                          {tooltip == 'pen-line' && (
+                            <div
+                              className="absolute bottom-full z-10 mb-2 rounded-lg border bg-white p-4 text-[#787878] shadow-lg"
+                              style={{ width: 'max-content' }}
+                            >
+                              <div className="flex gap-3">
+                                <div className="flex w-full flex-col gap-3">
+                                  <div>
+                                    <Text className="text-black">
+                                      Manage Signatures
+                                    </Text>
+                                  </div>
+                                  <hr />
+                                  <div className="flex items-center gap-2">
+                                    <PiCheckBold className="text-lg text-black" />
+                                    <Text className="text-black">
+                                      No Signature
+                                    </Text>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                     <Button
@@ -397,27 +450,6 @@ export default function AddNewEmail({
                     </Button>
                   </Flex>
                 </div>
-                {tooltip == 'link' && (
-                  <div className="absolute bottom-full z-10 mb-2 w-6/12 rounded-lg border bg-white p-4 text-[#787878] shadow-lg">
-                    <div className="flex items-end gap-3">
-                      <div className="flex w-full flex-col gap-3">
-                        <Input
-                          placeholder="Text"
-                          prefix={<LuText className="text-lg" />}
-                          {...register('text')}
-                        />
-                        <Input
-                          placeholder="Type or paste a link"
-                          prefix={<LuLink2 className="text-lg" />}
-                          {...register('link')}
-                        />
-                      </div>
-                      <Button variant="outline" className="w-auto">
-                        Send
-                      </Button>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>

@@ -222,7 +222,7 @@ const EmailLists = ({
         ))}
         {openAddEmail && (
           <div
-            className={`absolute bottom-0 right-[5%] h-[50%] w-[70%] transform overflow-auto rounded-xl bg-white shadow-xl transition-transform duration-300 ease-in-out ${
+            className={`absolute bottom-0 right-[5%] h-[50%] w-[60%] transform overflow-auto rounded-xl bg-white shadow-xl transition-transform duration-300 ease-in-out ${
               openAddEmail ? 'translate-x-0' : 'translate-x-full'
             }`}
           >
