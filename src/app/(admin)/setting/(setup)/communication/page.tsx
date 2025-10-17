@@ -6,7 +6,15 @@ import toast from 'react-hot-toast';
 import FormGroup from '@/app/shared/ui/form-group';
 import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
-import { Input, Loader, Switch, SelectOption, Flex, Text } from 'rizzui';
+import {
+  Input,
+  Loader,
+  Switch,
+  SelectOption,
+  Flex,
+  Text,
+  Button,
+} from 'rizzui';
 import {
   settingCommunicationFormSchema,
   SettingCommunicationFormTypes,
@@ -26,6 +34,9 @@ import { useGetSmtpConfig, useUpdateSmtpConfig } from '@/hooks/useSmpt';
 import { useGetAwsS3Config, useUpdateAwsS3Config } from '@/hooks/useAws';
 import { useState } from 'react';
 import { useProfile } from '@/hooks/useProfile';
+import { PiPlus } from 'react-icons/pi';
+import AddPlatform from './modal/add-platform';
+import { useModal } from '@/app/shared/modal-views/use-modal';
 
 const types: SelectOption[] = [
   {
@@ -66,6 +77,13 @@ export default function Communication() {
   const { mutate: mutateUpdateAwsS3, isPending: isPendingUpdateAwsS3 } =
     useUpdateAwsS3Config();
 
+  const { openModal } = useModal();
+  const showModalAddPlatform = () => {
+    openModal({
+      view: <AddPlatform />,
+      customSize: '600px',
+    });
+  };
   const onSubmit: SubmitHandler<SettingCommunicationFormTypes> = (data) => {
     const payloadTwilioConfig: IPayloadUpdateTwilioConfig = {
       clinicId: dataProfile?.clinics[0].id || 0,
@@ -575,6 +593,73 @@ export default function Communication() {
                 }}
               />
             </FormGroup>
+
+            <FormGroup
+              title="Social Media Configuration"
+              description="Set up and manage your connected social media platforms"
+              className="mb-10 mt-4 border-t border-t-slate-300 pt-7 @2xl:pt-9 @3xl:grid-cols-12 @3xl:pt-11"
+            />
+
+            <div className="mb-10">
+              <StatusCard
+                icon={<IoChevronDownCircleOutline />}
+                meetName="Facebook"
+                onSwitchChange={(checked) => {
+                  setValue('facebook_status', checked);
+                }}
+                switchValue={watch('facebook_status')}
+                containClassName="grid grid-cols-2 gap-4"
+              >
+                <Input
+                  label="Secret Key"
+                  placeholder="Secret Key"
+                  {...register('facebook_secret_key')}
+                  error={errors.aws_id?.message}
+                  className="flex-grow"
+                />
+                <Input
+                  label="Client ID"
+                  placeholder="Client ID"
+                  {...register('facebook_client_id')}
+                  error={errors.aws_secret_key?.message}
+                  className="flex-grow"
+                />
+              </StatusCard>
+            </div>
+
+            <div className="mb-5">
+              <StatusCard
+                icon={<IoChevronDownCircleOutline />}
+                meetName="Instagram"
+                onSwitchChange={(checked) => {
+                  setValue('instagram_status', checked);
+                }}
+                switchValue={watch('instagram_status')}
+                containClassName="grid grid-cols-2 gap-4"
+              >
+                <Input
+                  label="Secret Key"
+                  placeholder="Secret Key"
+                  {...register('instagram_secret_key')}
+                  error={errors.aws_id?.message}
+                  className="flex-grow"
+                />
+                <Input
+                  label="Client ID"
+                  placeholder="Client ID"
+                  {...register('instagram_client_id')}
+                  error={errors.aws_secret_key?.message}
+                  className="flex-grow"
+                />
+              </StatusCard>
+            </div>
+
+            <div className="w-50 mb-5 flex items-start">
+              <Button onClick={showModalAddPlatform}>
+                <PiPlus className="text-lg" />
+                Add Platform
+              </Button>
+            </div>
 
             <FormFooter
               isLoading={

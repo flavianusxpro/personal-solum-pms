@@ -27,7 +27,7 @@ import {
   Tooltip,
 } from 'rizzui';
 import { DividerWithText } from '../ui/divider';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import RepliesLayout from './replies-layout';
 import RepliesMessage from './replies-message';
 import AddChannel from './modal/create-channel';
@@ -48,7 +48,10 @@ import DropdownComponent from '../ui/dropdown';
 import { sortBy } from 'lodash';
 import { Channel } from '@/types/chat';
 import axios from 'axios';
+import useChatScroll from '@/core/hooks/use-chat-scroll';
 import { getTestDataBro } from '@/service/appointment';
+import { useProfile } from '@/hooks/useProfile';
+import { useSession } from 'next-auth/react';
 
 type IPersonType = {
   id: number;
@@ -495,15 +498,17 @@ const SmsCommunication = () => {
   const [openCallHistory, setOpenCallHistory] = useState(false);
   const [openSort, setOpenSort] = useState(false);
   const tabItems = [
-    { label: 'All Messages', value: 'all-messages' },
-    { label: 'Unread (20)', value: 'unread' },
-    { label: 'Channel', value: 'channel' },
+    { label: 'Messages', value: 'messages' },
+    { label: 'Channels', value: 'channels' },
   ];
   const [tabActive, setTabActive] = useState(tabItems[0].value);
   const [onSort, setOnSort] = useState('');
   const [newMessage, setNewMessage] = useState('');
   const [apiChannels, setApiChannels] = useState<Channel[]>([]);
   const { messages, sendMessage, error } = useChat(selectedChannel);
+  const ref = useChatScroll(messages);
+  const { status } = useSession();
+  const { data: dataProfile } = useProfile(status == 'authenticated');
 
   const fetchChannels = useCallback(async () => {
     try {
@@ -550,7 +555,11 @@ const SmsCommunication = () => {
     }
   };
 
-  const unreadMessages = persons.filter((person) => person.read_message > 0);
+  const sortedData = persons.filter((person) => {
+    if (onSort == 'unread') {
+      return person.read_message > 0;
+    } else return person;
+  });
 
   return (
     <div className="flex h-[100vh] w-full rounded-2xl border">
@@ -564,20 +573,6 @@ const SmsCommunication = () => {
             prefix={
               <PiMagnifyingGlassLight className="h-5 w-5 cursor-pointer" />
             }
-            // suffix={
-            //   <DropdownComponent
-            //     actionComponent={
-            //       <BsFilter className="h-5 w-5 cursor-pointer" />
-            //     }
-            //     menuItems={
-            //       <div className="w-200 flex gap-3">
-            //         <Dropdown.Item>Most Recent</Dropdown.Item>
-            //         <Dropdown.Item>Status</Dropdown.Item>
-            //         <Dropdown.Item>From </Dropdown.Item>
-            //       </div>
-            //     }
-            //   />
-            // }
             suffix={
               <BsFilter
                 className="h-5 w-5 cursor-pointer"
@@ -643,10 +638,10 @@ const SmsCommunication = () => {
                 />
               ))}
             </nav>
-            {tabActive == 'all-messages' && (
+            {tabActive == 'messages' && (
               <div>
                 <ul className="flex flex-col gap-2">
-                  {persons.map((item, index) => (
+                  {sortedData.map((item, index) => (
                     <li
                       className={`flex cursor-pointer items-center justify-between rounded-lg px-2 py-2 hover:bg-gray-100 ${selectedUser?.id === item.id && 'rounded-lg bg-[#3872F90D]'} `}
                       key={index}
@@ -683,7 +678,7 @@ const SmsCommunication = () => {
               </div>
             )}
 
-            {tabActive == 'channel' && (
+            {tabActive == 'channels' && (
               <div className="flex flex-col gap-6">
                 <div>
                   <Flex justify="between" align="center">
@@ -736,7 +731,7 @@ const SmsCommunication = () => {
                   </Title>
 
                   <ul className="flex flex-col gap-2">
-                    {unreadMessages.map((item, index) => (
+                    {persons.map((item, index) => (
                       <li
                         className={`flex cursor-pointer items-center justify-between rounded-lg px-2 py-2 hover:bg-gray-100 ${selectedUser?.id === item.id && 'rounded-lg bg-[#3872F90D]'} `}
                         key={index}
@@ -771,57 +766,25 @@ const SmsCommunication = () => {
                 </div>
               </div>
             )}
-
-            {tabActive == 'unread' && (
-              <div>
-                <ul className="flex flex-col gap-2">
-                  {unreadMessages.map((item, index) => (
-                    <li
-                      className={`flex cursor-pointer items-center justify-between rounded-lg px-2 py-2 hover:bg-gray-100 ${selectedUser?.id === item.id && 'rounded-lg bg-[#3872F90D]'} `}
-                      key={index}
-                      onClick={() => {
-                        setSelectedUser(item);
-                        setSelectedChannel('');
-                      }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Avatar
-                          name={`${item.first_name} ${item.last_name}`}
-                          src={item.avatar}
-                        />
-                        <div className="flex flex-col">
-                          <Title className="text-sm font-semibold" as="h4">
-                            {item.first_name} {item.last_name}
-                          </Title>
-                          <span className="text-xs text-gray-500">
-                            {item.time}
-                          </span>
-                        </div>
-                      </div>
-                      <Button
-                        as="span"
-                        className="flex h-6 w-6 items-center justify-center rounded-md text-xs text-white"
-                      >
-                        {item.read_message}
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
           </div>
         </div>
 
         <div className="flex items-center justify-between border-t px-4 py-[1.13rem]">
           <Flex align="center" className="h-9">
             {selectedUser ? (
-              <AvatarWithBadge data={{ name: 'Nanda Priani ' }} size="md" />
+              <AvatarWithBadge data={dataProfile} size="md" />
             ) : (
-              <Avatar src="" name="Nanda Priani " size="md" />
+              <Avatar
+                src=""
+                name={dataProfile ? dataProfile?.name : ''}
+                size="md"
+              />
             )}
             <div className="flex flex-col">
-              <span>Nanda Priani </span>
-              <span className="text-xs text-gray-400">Administrator</span>
+              <span>{dataProfile?.name}</span>
+              <span className="text-xs capitalize text-gray-400">
+                {dataProfile?.role?.name}
+              </span>
             </div>
           </Flex>
           <Tooltip content="User Setting">
@@ -984,7 +947,7 @@ const SmsCommunication = () => {
         </div>
 
         <div className="relative flex flex-1 overflow-y-hidden bg-[#FAFAFF]">
-          <div className="flex-1 space-y-4 overflow-y-auto p-4">
+          <div className="flex-1 space-y-4 overflow-y-auto p-4" ref={ref}>
             <div className="flex flex-col items-start gap-3">
               <DividerWithText text="OCTOBER 14, 2025" />
               {selectedChannel && (

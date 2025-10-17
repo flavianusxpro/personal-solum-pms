@@ -577,20 +577,6 @@ const SocialMediaCommunication = () => {
             prefix={
               <PiMagnifyingGlassLight className="h-5 w-5 cursor-pointer" />
             }
-            // suffix={
-            //   <DropdownComponent
-            //     actionComponent={
-            //       <BsFilter className="h-5 w-5 cursor-pointer" />
-            //     }
-            //     menuItems={
-            //       <div className="w-200 flex gap-3">
-            //         <Dropdown.Item>Most Recent</Dropdown.Item>
-            //         <Dropdown.Item>Status</Dropdown.Item>
-            //         <Dropdown.Item>From </Dropdown.Item>
-            //       </div>
-            //     }
-            //   />
-            // }
             suffix={
               <BsFilter
                 className="h-5 w-5 cursor-pointer"
@@ -722,12 +708,14 @@ const SocialMediaCommunication = () => {
                           </span>
                         </div>
                       </div>
-                      <Button
-                        as="span"
-                        className="flex h-6 w-6 items-center justify-center rounded-md text-xs text-white"
-                      >
-                        {item.read_message}
-                      </Button>
+                      {item.read_message > 0 && (
+                        <Button
+                          as="span"
+                          className="flex h-6 w-6 items-center justify-center rounded-md text-xs text-white"
+                        >
+                          {item.read_message}
+                        </Button>
+                      )}
                     </li>
                   ))}
                 </ul>

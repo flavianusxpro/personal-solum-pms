@@ -31,9 +31,25 @@ export const settingCommunicationFormSchema = z.object({
 
   tawk_plugin_status: z.boolean().optional(),
   facebook_plugin_status: z.boolean().optional(),
+
+  facebook_status: z.boolean().optional(),
+  facebook_client_id: z.string().optional(),
+  facebook_secret_key: z.string().optional(),
+
+  instagram_status: z.boolean().optional(),
+  instagram_client_id: z.string().optional(),
+  instagram_secret_key: z.string().optional(),
+});
+
+export const addNewPlatformSchema = z.object({
+  platform_name: z.string().optional(),
+  secret_key: z.string().optional(),
+  client_id: z.string().optional(),
 });
 
 // generate form types from zod validation schema
 export type SettingCommunicationFormTypes = z.infer<
   typeof settingCommunicationFormSchema
 >;
+
+export type NewPlatformFormTypes = z.infer<typeof addNewPlatformSchema>;
