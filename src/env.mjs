@@ -32,6 +32,7 @@ export const env = createEnv({
     NEXT_PUBLIC_GOOGLE_MAP_API_KEY: z.string().optional(),
     NEXT_PUBLIC_BOOKING_API_URL: z.string(),
     NEXT_PUBLIC_STRIPE_KEY: z.string(),
+    NEXT_PUBLIC_CHAT_SERVICE_URL: z.string().url().default('http://localhost:4000'),
     NEXT_PUBLIC_CLINIC_NAME: z.string(),
     NEXT_PUBLIC_X_IDENTITY_ID: z.string(),
     NEXT_PUBLIC_X_SECRET_KEY: z.string(),

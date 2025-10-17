@@ -3,9 +3,10 @@ import { messages } from '@/config/messages';
 
 // form zod validation schema
 export const addChannelSchema = z.object({
-  channel_name: z.string().min(1, {
+  name: z.string().min(1, {
     message: messages.channelNameIsRequired,
   }),
+  description: z.string().optional(),
 });
 
 export const addInvitePeopleSchema = z.object({

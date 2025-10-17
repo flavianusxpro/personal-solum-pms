@@ -13,6 +13,10 @@ export const axiosApi = axios.create({
   baseURL: API_URL,
 });
 
+export const axiosChat = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_CHAT_SERVICE_URL,
+});
+
 async function attachToken(
   config: InternalAxiosRequestConfig
 ): Promise<InternalAxiosRequestConfig> {
@@ -29,7 +33,26 @@ axiosApi.interceptors.request.use(attachToken, (error) =>
   Promise.reject(error)
 );
 
+axiosChat.interceptors.request.use(attachToken, (error) =>
+  Promise.reject(error)
+);
+
 axiosApi.interceptors.response.use(
+  (response: AxiosResponse) => response,
+  async (error: any) => {
+    if (error.response?.status === 401) {
+      await signOut({ redirect: true, callbackUrl: routes.auth.signIn });
+    }
+
+    if (error.response?.status === 500) {
+      toast.error('Server error. Please try again later or contact support.');
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+axiosChat.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: any) => {
     if (error.response?.status === 401) {
@@ -53,12 +76,31 @@ export async function get<T>(
     .then((response: any) => response.data);
 }
 
+export async function getChat<T>(
+  url: string,
+  config: AxiosRequestConfig = {}
+): Promise<T> {
+  return await axiosChat
+    .get<T>(url, config)
+    .then((response: any) => response.data);
+}
+
 export async function post<T>(
   url: string,
   data: any,
   config: AxiosRequestConfig = {}
 ): Promise<T> {
   return await axiosApi
+    .post<T>(url, data, config)
+    .then((response: any) => response.data);
+}
+
+export async function postChat<T>(
+  url: string,
+  data: any,
+  config: AxiosRequestConfig = {}
+): Promise<T> {
+  return await axiosChat
     .post<T>(url, data, config)
     .then((response: any) => response.data);
 }

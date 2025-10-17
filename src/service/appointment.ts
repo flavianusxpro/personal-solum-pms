@@ -1,4 +1,4 @@
-import { del, get, post, put } from '@/config/base-api';
+import { del, get, getChat, post, postChat, put } from '@/config/base-api';
 import {
   IGetAppointmentListResponse,
   IGetAppointmentSummaryResponse,
@@ -19,6 +19,10 @@ export async function getAppointmentList(params: IParamGetAppointments) {
     },
   });
 }
+export async function getTestDataBro() {
+  return await getChat<any>('/api/channels', {
+  });
+}
 export async function getSummaryAppointments() {
   return await get<IGetAppointmentSummaryResponse>(
     '/admin/appointment/analytics/summary'
@@ -28,6 +32,10 @@ export async function getSummaryAppointments() {
 }
 export async function postCreateAppointment(payload: IPayloadPostAppoinment) {
   return await post<any>('/admin/appointment/', payload);
+}
+
+export async function postCreateNewChannel(payload: any) {
+  return await postChat<any>('/api/channels', payload);
 }
 
 export async function putUpdateAppointment(

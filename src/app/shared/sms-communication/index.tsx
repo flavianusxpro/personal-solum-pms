@@ -27,7 +27,7 @@ import {
   Tooltip,
 } from 'rizzui';
 import { DividerWithText } from '../ui/divider';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import RepliesLayout from './replies-layout';
 import RepliesMessage from './replies-message';
 import AddChannel from './modal/create-channel';
@@ -36,6 +36,7 @@ import AddInvitePeople from './modal/invite-people';
 import MembersLayout from './member-lists';
 import ChannelSettingsLayout from './channel-settings';
 import UserSettingsLayout from './user-settings/user-settings';
+import { useChat } from '@/core/hooks/use-chat';
 import FileHistoryLayout from './user-settings/file-history';
 import CallHistoryLayout from './user-settings/call-history';
 import { AvatarWithBadge } from '@/core/ui/avatar';
@@ -45,6 +46,10 @@ import SimpleBar from 'simplebar-react';
 import { TabButton } from '../ui/tab-button';
 import DropdownComponent from '../ui/dropdown';
 import { sortBy } from 'lodash';
+import { Channel } from '@/types/chat';
+import axios from 'axios';
+import { getTestDataBro } from '@/service/appointment';
+
 
 type IPersonType = {
   id: number;
@@ -497,10 +502,34 @@ const SmsCommunication = () => {
   ];
   const [tabActive, setTabActive] = useState(tabItems[0].value);
   const [onSort, setOnSort] = useState('');
+  const [newMessage, setNewMessage] = useState('');
+  const [apiChannels, setApiChannels] = useState<Channel[]>([]);
+  const { messages, sendMessage, error } = useChat(selectedChannel);
+
+  const fetchChannels = useCallback(async () => {
+    try {
+      // This is an assumed endpoint. Replace with the correct one if different.
+      const response = await getTestDataBro();
+      setApiChannels(response);
+      if (response && response.length > 0) {
+        // Avoid resetting the channel if one is already selected
+        if (!selectedChannel) {
+          setSelectedChannel(response[0].channelId);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch channels:', error);
+    }
+  }, [selectedChannel]); // Dependency on selectedChannel to avoid resetting it
+
+  useEffect(() => {
+    fetchChannels();
+  }, [fetchChannels]); // Runs when fetchChannels is created/changed
+
 
   const showModalAddChannel = () => {
     openModal({
-      view: <AddChannel user_id={1} />,
+      view: <AddChannel onChannelCreated={fetchChannels} />,
       customSize: '600px',
     });
   };
@@ -514,6 +543,13 @@ const SmsCommunication = () => {
 
   const handleSort = (sortBy: string) => {
     setOnSort(sortBy);
+  };
+
+  const handleSendMessage = () => {
+    if (selectedChannel && newMessage.trim()) {
+      sendMessage(newMessage);
+      setNewMessage('');
+    }
   };
 
   const unreadMessages = persons.filter((person) => person.read_message > 0);
@@ -664,19 +700,19 @@ const SmsCommunication = () => {
                     </Tooltip>
                   </Flex>
                   <ul>
-                    {channels.map((channel, index) => (
+                    {apiChannels.map((channel) => (
                       <li
                         className="cursor-pointer py-2"
-                        key={index}
+                        key={channel.channelId}
                         onClick={() => {
-                          setSelectedChannel(channel.value);
+                          setSelectedChannel(channel.channelId.toString());
                           setSelectedUser({} as IPersonType);
                         }}
                       >
                         <span
-                          className={`${channel.value == selectedChannel && 'rounded-md bg-[#3872F91A] font-semibold text-[#3872F9]'} px-2 py-1`}
+                          className={`${channel.channelId.toString() === selectedChannel && 'rounded-md bg-[#3872F91A] font-semibold text-[#3872F9]'} px-2 py-1`}
                         >
-                          #{channel.label}
+                          #{channel.name}
                         </span>
                       </li>
                     ))}
@@ -945,46 +981,15 @@ const SmsCommunication = () => {
           <div className="flex-1 space-y-4 overflow-y-auto p-4">
             <div className="flex flex-col items-start gap-3">
               <DividerWithText text="OCTOBER 14, 2025" />
-              {selectedChannel == 'general' && (
+              {selectedChannel && (
                 <div className="flex flex-col gap-6">
-                  {chatMessages.map((msg) => (
+                  {messages.map((msg) => (
                     <RepliesMessage
                       key={msg.id}
-                      name={msg.name}
-                      date={msg.date}
-                      message={msg.message}
-                      photo={msg.photo}
-                      className={msg.className}
-                      messageClassName={msg.messageClassName}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {selectedChannel == 'patient' && (
-                <div className="flex flex-col gap-6">
-                  {patientMessages.map((msg) => (
-                    <RepliesMessage
-                      key={msg.id}
-                      name={msg.name}
-                      date={msg.timestamp}
-                      message={msg.message}
-                      photo=""
-                    />
-                  ))}
-                </div>
-              )}
-
-              {selectedChannel == 'random' && (
-                <div className="flex flex-col gap-6">
-                  {randomChannel.map((msg) => (
-                    <RepliesMessage
-                      key={msg.id}
-                      name={msg.name}
-                      date={msg.date}
-                      message={msg.message}
-                      photo={msg.photo}
-                      className={msg.className}
+                      name={"Test User"} // TODO: Implement a function to resolve user ID to a name
+                      date={new Date(msg.createdAt).toLocaleString()}
+                      message={msg.text}
+                      photo={''} // TODO: Implement a function to resolve user ID to an avatar
                     />
                   ))}
                 </div>
@@ -1109,13 +1114,30 @@ const SmsCommunication = () => {
           <div className="flex w-full items-center gap-2 px-2 py-5">
             <Input
               type="text"
-              placeholder="Message type here..."
+              placeholder={
+                selectedChannel
+                  ? 'Message type here...'
+                  : 'Select a channel to start typing'
+              }
               size="sm"
               className="!focus:ring-0 w-full !border-none !shadow-none !ring-0 focus:!shadow-none"
               inputClassName="!border-none !ring-0 !focus:ring-0 !shadow-none focus:!shadow-none"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              disabled={!selectedChannel}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && newMessage.trim()) {
+                  handleSendMessage();
+                }
+              }}
             />
             <PiSmileyLight className="h-5 w-5" />
-            <Button className="w-auto text-white" size="sm">
+            <Button
+              className="w-auto text-white"
+              size="sm"
+              onClick={handleSendMessage}
+              disabled={!selectedChannel || !newMessage.trim()}
+            >
               <LuSend className="me-1.5 h-4 w-4" />
               Send
             </Button>

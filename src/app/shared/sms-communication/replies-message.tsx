@@ -1,4 +1,6 @@
 import { Avatar, Badge, AvatarProps } from 'rizzui';
+import cn from '@/core/utils/class-names';
+
 type IProps = {
   isActiveUser?: boolean;
   name: string;
@@ -29,7 +31,7 @@ const RepliesMessage = ({
     <div className="flex items-center gap-2">
       {isActiveUser ? (
         <div className="relative inline-flex">
-          <Avatar name={name} src={photo} color={color} className={className} />
+          <Avatar name={name} src={photo} color={color} className={cn(className)} />
           <Badge
             renderAsDot
             color="success"
@@ -39,7 +41,7 @@ const RepliesMessage = ({
           />
         </div>
       ) : (
-        <Avatar name={name} src={photo} color={color} className={className} />
+        <Avatar name={name} src={photo} color={color} className={cn(className)} />
       )}
 
       <div className="flex flex-col gap-2">
@@ -48,13 +50,14 @@ const RepliesMessage = ({
             <span className="font-semibold">{name}</span>
             <span className="text-xs text-gray-400">{date}</span>
           </div>
-          <div className={divMessageClassName}>
-            <p
-              className={`rounded-lg ${
-                messageClassName ? `p-3 ${messageClassName}` : ''
-              }`}
-            >
-              {message}
+                <div className={cn(divMessageClassName)}>
+                  <p
+                    className={cn(
+                      `rounded-lg ${
+                        messageClassName ? `p-3 ${messageClassName}` : ''
+                      }`
+                    )}
+                  >              {message}
             </p>
           </div>
         </div>

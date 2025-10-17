@@ -10,6 +10,7 @@ import {
   JotaiProvider,
   ThemeProvider,
 } from '@/app/shared/providers/theme-provider';
+import { SocketProvider } from '@/core/contexts/socket-context';
 import { siteConfig } from '@/config/site.config';
 import { inter, lexendDeca } from '@/app/fonts';
 import cn from '@core/utils/class-names';
@@ -47,15 +48,17 @@ export default async function RootLayout({
       >
         <QueryQlientProvider>
           <AuthProvider session={session}>
-            <ThemeProvider>
-              <NextProgress />
-              <JotaiProvider>
-                <ProtectedLayout>{children}</ProtectedLayout>
-                <Toaster />
-                <GlobalDrawer />
-                <GlobalModal />
-              </JotaiProvider>
-            </ThemeProvider>
+            <SocketProvider>
+              <ThemeProvider>
+                <NextProgress />
+                <JotaiProvider>
+                  <ProtectedLayout>{children}</ProtectedLayout>
+                  <Toaster />
+                  <GlobalDrawer />
+                  <GlobalModal />
+                </JotaiProvider>
+              </ThemeProvider>
+            </SocketProvider>
           </AuthProvider>
         </QueryQlientProvider>
       </body>
