@@ -24,7 +24,7 @@ export default function AddChannel({ user_id }: { user_id: number }) {
   const onSubmit: SubmitHandler<ChannelProps> = (data) => {
     // mutate(
     //   {
-    //     channel_name: data.channel_name,
+    //     channel_name: data.name,
     //     user_id: user_id,
     //   },
     //   {
@@ -66,8 +66,8 @@ export default function AddChannel({ user_id }: { user_id: number }) {
               label="Channel Name"
               placeholder="Enter channel name"
               type="text"
-              {...register('channel_name')}
-              error={errors?.channel_name?.message}
+              {...register('name')}
+              error={errors?.name?.message}
             />
 
             <FormFooter

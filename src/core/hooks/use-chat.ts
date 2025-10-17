@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { useSocket } from '@/core/contexts/socket-context';
-import type { Message } from '@/types/chat';
+import { useEffect, useState } from "react";
+import { useSocket } from "@/core/contexts/socket-context";
+import type { Message } from "@/types/chat";
 
 export const useChat = (channelId: string) => {
   const { socket, isConnected } = useSocket();
@@ -8,40 +8,53 @@ export const useChat = (channelId: string) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!socket || !isConnected) return;
+    if (!socket || !isConnected || !channelId) {
+      setMessages([]); // Bersihkan pesan saat channel tidak valid
+      return;
+    }
 
     const handleNewMessage = (message: Message) => {
-      console.log("pesan masuk ngab : ", message);
-      setMessages((prevMessages) => [...prevMessages, message]);
+      console.log("Pesan masuk:", message);
+      setMessages((prev) => [...prev, message]);
     };
 
-    const handleError = (errorMessage: string) => {
-      console.error('Socket Error:', errorMessage);
-      setError(errorMessage);
+    const handleError = (errMsg: string) => {
+      console.error("Socket Error:", errMsg);
+      setError(errMsg);
     };
 
-    socket.emit('joinChannel', channelId);
+    // Join channel hanya sekali per socket connect
+    socket.emit("joinChannel", channelId, (response: any) => {
+      if (response?.error) {
+        setError(response.error);
+      }
+    });
 
-    socket.on('newMessage', handleNewMessage);
-    socket.on('error', handleError);
+    socket.on("newMessage", handleNewMessage);
+    socket.on("error", handleError);
 
     return () => {
-      socket.off('newMessage', handleNewMessage);
-      socket.off('error', handleError);
-      // Optional: leave channel event if backend supports it
-      // socket.emit('leaveChannel', channelId);
+      socket.off("newMessage", handleNewMessage);
+      socket.off("error", handleError);
+      // Hanya emit leaveChannel jika socket masih terhubung
+      if (socket.connected) {
+        socket.emit("leaveChannel", channelId);
+      }
     };
   }, [socket, isConnected, channelId]);
 
   const sendMessage = (text: string) => {
-    if (!socket) return;
+    if (!socket || !isConnected || !channelId) {
+      console.warn("Socket not ready or no channel selected");
+      return;
+    }
 
-    const messageData = {
-      channelId: channelId,
-      text: text,
-    };
-
-    socket.emit('sendMessageToChannel', messageData);
+    const payload = { channelId, text };
+    socket.emit("sendMessageToChannel", payload, (response: any) => {
+      if (response?.error) {
+        setError(response.error);
+      }
+    });
   };
 
   return { messages, sendMessage, error };
