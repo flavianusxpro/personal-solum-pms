@@ -31,7 +31,11 @@ export const routes = {
   marketing: {
     coupon: '/marketing/coupon',
     emailMarketing: '/marketing/email-broadcast',
+    createEmailBroadcast: '/marketing/email-broadcast/create',
+    editEmailBroadcast: (id: string) => `/marketing/email-broadcast/edit/${id}`,
     smsMarketing: '/marketing/sms-broadcast',
+    createSmsBroadcast: '/marketing/sms-broadcast/create',
+    editSmsBroadcast: (id: string) => `/marketing/sms-broadcast/edit/${id}`,
     subscribePromotion: '/marketing/subscribe-promotion',
   },
   invoice: {
