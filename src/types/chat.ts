@@ -11,6 +11,7 @@ export interface Channel {
 export interface Message {
   id: string; // UUID
   text: string;
+  name: string;
   userId: string; // UUID of the sender
   channelId: string; // UUID of the channel
   createdAt: Date;

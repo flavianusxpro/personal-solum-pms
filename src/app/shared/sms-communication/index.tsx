@@ -992,7 +992,7 @@ const SmsCommunication = () => {
                   {messages.map((msg) => (
                     <RepliesMessage
                       key={msg.id}
-                      name={'Test User'} // TODO: Implement a function to resolve user ID to a name
+                      name={msg.name} // TODO: Implement a function to resolve user ID to a name
                       date={new Date(msg.createdAt).toLocaleString()}
                       message={msg.text}
                       photo={''} // TODO: Implement a function to resolve user ID to an avatar
