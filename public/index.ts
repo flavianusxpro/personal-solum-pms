@@ -12,3 +12,4 @@ export { default as DraftOutlineBlueIcon } from './DraftOutlineBlueIcon.svg';
 export { default as SpamBlueIcon } from './SpamBlueIcon.svg';
 export { default as InstagramIcon } from './instagram-icon.svg';
 export { default as LinkedinIcon } from './linkedin-icon.svg';
+export { default as FacebookIcon } from './Facebook Icon.svg';

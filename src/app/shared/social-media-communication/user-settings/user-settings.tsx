@@ -8,7 +8,7 @@ import { VscCallIncoming, VscCallOutgoing } from 'react-icons/vsc';
 import { MdOutlinePhoneMissed } from 'react-icons/md';
 import { useState } from 'react';
 import { CiImageOff } from 'react-icons/ci';
-import { InstagramIcon, LinkedinIcon, TrashBlockIcon } from '@public/index';
+import { InstagramIcon, LinkedinIcon, FacebookIcon } from '@public/index';
 import { BsLink45Deg, BsTrash } from 'react-icons/bs';
 import { PiBell } from 'react-icons/pi';
 import { TfiUnlink } from 'react-icons/tfi';
@@ -50,7 +50,7 @@ const UserSettingsLayout = ({
       case 'facebook':
         return (
           <Image
-            src={LinkedinIcon}
+            src={FacebookIcon}
             alt="facebook-icon"
             width={15}
             height={15}

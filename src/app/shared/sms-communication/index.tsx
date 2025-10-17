@@ -50,7 +50,6 @@ import { Channel } from '@/types/chat';
 import axios from 'axios';
 import { getTestDataBro } from '@/service/appointment';
 
-
 type IPersonType = {
   id: number;
   first_name: string;
@@ -526,7 +525,6 @@ const SmsCommunication = () => {
     fetchChannels();
   }, [fetchChannels]); // Runs when fetchChannels is created/changed
 
-
   const showModalAddChannel = () => {
     openModal({
       view: <AddChannel onChannelCreated={fetchChannels} />,
@@ -558,7 +556,7 @@ const SmsCommunication = () => {
     <div className="flex h-[100vh] w-full rounded-2xl border">
       {/* Sidebar kiri */}
       <aside className="flex w-[360px] flex-col border-r border-gray-200">
-        <div className="relative flex h-20 w-full flex-col items-center border-b p-5">
+        <div className="relative flex h-20 w-full flex-col items-center justify-center border-b p-5">
           <Input
             type="text"
             placeholder="Search by name"
@@ -617,6 +615,14 @@ const SmsCommunication = () => {
                   >
                     From
                   </Button>
+                  <Button
+                    rounded="pill"
+                    className={` ${onSort == 'unread' ? 'text-white' : '!border !border-gray-300 !bg-white !text-black'} `}
+                    size="sm"
+                    onClick={() => handleSort('unread')}
+                  >
+                    Unread
+                  </Button>
                 </div>
               </div>
             </div>
@@ -625,7 +631,7 @@ const SmsCommunication = () => {
 
         <div className="z-10 flex-1 overflow-y-auto">
           <div className="flex flex-col gap-6 px-4 py-2">
-            <nav className="flex w-full items-center gap-5 overflow-x-auto border-b border-gray-300 px-2 md:gap-7 lg:gap-10">
+            <nav className="flex h-auto w-full items-center gap-5 border-b border-gray-300 px-2 md:gap-7 lg:gap-10">
               {tabItems.map((item) => (
                 <TabButton
                   key={item.value}
@@ -986,7 +992,7 @@ const SmsCommunication = () => {
                   {messages.map((msg) => (
                     <RepliesMessage
                       key={msg.id}
-                      name={"Test User"} // TODO: Implement a function to resolve user ID to a name
+                      name={'Test User'} // TODO: Implement a function to resolve user ID to a name
                       date={new Date(msg.createdAt).toLocaleString()}
                       message={msg.text}
                       photo={''} // TODO: Implement a function to resolve user ID to an avatar

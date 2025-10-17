@@ -569,7 +569,7 @@ const SocialMediaCommunication = () => {
     <div className="flex h-[100vh] w-full rounded-2xl border">
       {/* Sidebar kiri */}
       <aside className="flex w-[360px] flex-col border-r border-gray-200">
-        <div className="relative flex h-20 w-full flex-col items-center border-b p-5">
+        <div className="relative flex h-20 w-full flex-col items-center justify-center border-b p-5">
           <Input
             type="text"
             placeholder="Search by name"
@@ -636,7 +636,7 @@ const SocialMediaCommunication = () => {
 
         <div className="z-10 flex-1 overflow-y-auto">
           <div className="flex flex-col gap-6 px-4 py-2">
-            <nav className="flex w-full items-center gap-5 overflow-x-auto border-b border-gray-300 px-2 md:gap-7 lg:gap-10">
+            <nav className="flex w-full items-center gap-5 border-b border-gray-300 px-2 md:gap-7 lg:gap-10">
               {tabItems.map((item) => (
                 <TabButton
                   key={item.value}
@@ -929,7 +929,7 @@ const SocialMediaCommunication = () => {
                     variant="text"
                     onClick={showModalAddInvitePeople}
                   >
-                    <LuPhone className="h-5 w-5 text-gray-400" />
+                    <LuPhone className="h-5 w-5 text-[#0DA345] text-gray-400" />
                   </ActionIcon>
                 </Tooltip>
                 <Tooltip content="User Details">
