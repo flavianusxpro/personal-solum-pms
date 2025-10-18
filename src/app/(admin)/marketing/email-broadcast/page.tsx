@@ -14,7 +14,7 @@ const pageHeader = {
   title: 'Email Broadcast',
   breadcrumb: [
     {
-      href: routes.invoice.home,
+      href: routes.marketing.emailMarketing,
       name: 'Email Broadcast',
     },
     {

@@ -9,16 +9,18 @@ import { useState } from 'react';
 import {
   EmailBroadcastSchema,
   emailBroadcastsSchema,
+  SmsBroadcastSchema,
+  smsBroadcastsSchema,
 } from '@/validators/email-sms-broadcast.schema';
 import CSelect from '../../ui/select';
 import { DatePicker } from '@/core/ui/datepicker';
-import PreviewEmail from '../modal/preview-email';
+import PreviewSms from '../modal/preview-sms';
 import { useModal } from '../../modal-views/use-modal';
 
-const CreateEditEmailBroadcast = () => {
+const CreateEditSmsBroadcast = () => {
   const [setupData, setSetupData] = useState<any>({});
   const { openModal } = useModal();
-  const onSubmit: SubmitHandler<EmailBroadcastSchema> = (formValues) => {
+  const onSubmit: SubmitHandler<SmsBroadcastSchema> = (formValues) => {
     //   const payload: IPayloadCreateUpdateCoupon = {
     //     id: data?.id,
     //     name: formValues.name,
@@ -69,25 +71,23 @@ const CreateEditEmailBroadcast = () => {
 
   const showPreviewEmail = () => {
     openModal({
-      view: <PreviewEmail data={{}} />,
+      view: <PreviewSms data={{}} />,
       customSize: '600px',
     });
   };
 
   return (
-    <Form<EmailBroadcastSchema>
-      validationSchema={emailBroadcastsSchema}
+    <Form<SmsBroadcastSchema>
+      validationSchema={smsBroadcastsSchema}
       onSubmit={onSubmit}
       className="@container"
       useFormProps={{
         mode: 'onChange',
         defaultValues: {
           recipient_group: '',
-          sender_name: '',
-          email_subject: '',
+          sender_id: '',
           template: '',
-          email_body: '',
-          attachment: '',
+          message_content: '',
           schedule_send: '',
         },
       }}
@@ -104,7 +104,7 @@ const CreateEditEmailBroadcast = () => {
           <div className="flex flex-col gap-6">
             <FormGroup
               title="Recipient Information"
-              description="Choose recipients and sender name."
+              description="Select who will receive the SMS."
               className="pt-7"
             />
             <div className="flex flex-col gap-6">
@@ -129,12 +129,12 @@ const CreateEditEmailBroadcast = () => {
               </div>
               <div className="flex">
                 <label className="w-5/12 font-medium">
-                  Sender Name (Optional)
+                  Sender ID (Optional)
                 </label>
                 <div className="w-7/12">
                   <Input
-                    {...register('sender_name')}
-                    placeholder="Enter sender name"
+                    {...register('sender_id')}
+                    placeholder="Enter sender id"
                     className="w-full"
                   />
                 </div>
@@ -143,21 +143,11 @@ const CreateEditEmailBroadcast = () => {
             </div>
 
             <FormGroup
-              title="Email Content"
+              title="Message Content"
               description="Write and personalize your message."
               className="pt-4"
             />
             <div className="flex flex-col gap-6">
-              <div className="flex">
-                <label className="w-5/12 font-medium">Email Subject</label>
-                <div className="w-7/12">
-                  <Input
-                    {...register('email_subject')}
-                    placeholder="Enter email subject"
-                    className="w-full"
-                  />
-                </div>
-              </div>
               <div className="flex">
                 <label className="w-5/12 font-medium">Template</label>
                 <div className="w-7/12">
@@ -178,25 +168,12 @@ const CreateEditEmailBroadcast = () => {
                 </div>
               </div>
               <div className="flex">
-                <label className="w-5/12 font-medium">Email Body</label>
+                <label className="w-5/12 font-medium">Message Content</label>
                 <div className="w-7/12">
                   <Textarea
                     className="col-span-full"
                     placeholder="Write your message here"
-                    {...register('email_body')}
-                  />
-                </div>
-              </div>
-              <div className="flex">
-                <label className="w-5/12 font-medium">
-                  Attachment (Optional)
-                </label>
-                <div className="w-7/12">
-                  <AvatarUpload
-                    name="attachment"
-                    setValue={setValue}
-                    getValues={getValues}
-                    path_name="attachment"
+                    {...register('message_content')}
                   />
                 </div>
               </div>
@@ -206,7 +183,7 @@ const CreateEditEmailBroadcast = () => {
             <FormGroup
               title="Schedule & Delivery"
               description="Set your scheduled send."
-              className="pt-7"
+              className="pt-4"
             />
             <div className="flex flex-col gap-6">
               <div className="flex">
@@ -254,4 +231,4 @@ const CreateEditEmailBroadcast = () => {
   );
 };
 
-export default CreateEditEmailBroadcast;
+export default CreateEditSmsBroadcast;

@@ -22,7 +22,7 @@ import { HiOutlineDotsVertical } from 'react-icons/hi';
 import TrashIcon from '@/core/components/icons/trash';
 import DeleteModal from '../../ui/delete-modal';
 import { Dispatch, SetStateAction } from 'react';
-import EmailBroadcastDetails from '../modal/email-broadcast-details';
+import SmsBroadcastDetails from '../modal/sms-broadcast-detail';
 import { useModal } from '../../modal-views/use-modal';
 
 type Columns = {
@@ -97,10 +97,10 @@ export const getColumns = ({
     render: (value: string) => value,
   },
   {
-    title: <HeaderCell title="Subject" />,
+    title: <HeaderCell title="Message Preview" />,
     dataIndex: 'code',
     key: 'code',
-    width: 100,
+    width: 200,
     render: (value: string) => value,
   },
   {
@@ -165,7 +165,7 @@ export const getColumns = ({
                 variant="outline"
                 onClick={() =>
                   openModal({
-                    view: <EmailBroadcastDetails data={{}} />,
+                    view: <SmsBroadcastDetails data={{}} />,
                     customSize: '600px',
                   })
                 }
