@@ -32,6 +32,9 @@ export const useChat = (channelId: string) => {
 
     socket.on("newMessage", handleNewMessage);
     socket.on("error", handleError);
+    socket.on("historyMessage", (messages: Message[]) => {
+      setMessages(messages);
+    })
 
     return () => {
       socket.off("newMessage", handleNewMessage);
