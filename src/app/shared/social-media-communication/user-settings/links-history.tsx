@@ -71,7 +71,7 @@ const CallHistoryLayout = ({
                 <BsLink45Deg className="text-2xl text-[#787878]" />
               </div>
               <div>
-                <Text className="text-wrap">{file.link}</Text>
+                <Text className="text-ellipsis">{file.link}</Text>
                 <Text className="text-gray-400">
                   {file.date} {file.time}
                 </Text>

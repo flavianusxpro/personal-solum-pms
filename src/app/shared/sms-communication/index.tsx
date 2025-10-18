@@ -533,7 +533,7 @@ const SmsCommunication = () => {
       if (response && response.length > 0) {
         // Avoid resetting the channel if one is already selected
         if (!selectedChannel) {
-          setSelectedChannel(response[0].channelId);
+          setSelectedChannel(response[0].name);
         }
       }
     } catch (error) {
@@ -595,8 +595,6 @@ const SmsCommunication = () => {
     setVisibleMessages(messages.slice(-end));
     setIsLoading(false);
   }, [page, messages]);
-
-  console.log(visibleMessages, messages.slice(-10));
 
   return (
     <div className="flex h-[100vh] w-full rounded-2xl border">
@@ -743,12 +741,12 @@ const SmsCommunication = () => {
                         className="cursor-pointer py-2"
                         key={channel.channelId}
                         onClick={() => {
-                          setSelectedChannel(channel.channelId.toString());
+                          setSelectedChannel(channel.name);
                           setSelectedUser({} as IPersonType);
                         }}
                       >
                         <span
-                          className={`${channel.channelId.toString() === selectedChannel && 'rounded-md bg-[#3872F91A] font-semibold text-[#3872F9]'} px-2 py-1`}
+                          className={`${channel.name === selectedChannel && 'rounded-md bg-[#3872F91A] font-semibold text-[#3872F9]'} px-2 py-1`}
                         >
                           #{channel.name}
                         </span>
@@ -791,12 +789,14 @@ const SmsCommunication = () => {
                             </span>
                           </div>
                         </div>
-                        <Button
-                          as="span"
-                          className="flex h-6 w-6 items-center justify-center rounded-md text-xs text-white"
-                        >
-                          {item.read_message}
-                        </Button>
+                        {item.read_message > 0 && (
+                          <Button
+                            as="span"
+                            className="flex h-6 w-6 items-center justify-center rounded-md text-xs text-white"
+                          >
+                            {item.read_message}
+                          </Button>
+                        )}
                       </li>
                     ))}
                   </ul>
@@ -858,7 +858,8 @@ const SmsCommunication = () => {
               </div>
             </Flex>
           ) : (
-            tabActive == 'channel' && (
+            tabActive == 'channels' &&
+            selectedChannel && (
               <Text className="font-medium text-black">
                 {selectedChannel ? `#${selectedChannel}` : ''}
               </Text>
@@ -907,7 +908,7 @@ const SmsCommunication = () => {
               </>
             )} */}
 
-            {tabActive == 'channel' ? (
+            {tabActive == 'channels' ? (
               <>
                 <Tooltip content="Invite People">
                   <ActionIcon

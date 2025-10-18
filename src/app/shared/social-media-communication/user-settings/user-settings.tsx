@@ -185,8 +185,8 @@ const UserSettingsLayout = ({
             <div className="flex w-full items-start gap-2">
               <BsLink45Deg className="h-5 w-5 text-[#787878]" />
               <div className="flex w-full flex-col">
-                <span className="text-sm text-black">
-                  https://example.com/files/alicia-cbc-2025...
+                <span className="truncate text-sm text-black">
+                  https://example.com/files/alicia-cbc-2025
                 </span>
                 <span className="text-[#787878]">13 October, 2025 9:42 AM</span>
               </div>
