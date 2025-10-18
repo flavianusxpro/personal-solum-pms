@@ -25,6 +25,7 @@ import {
   Text,
   Title,
   Tooltip,
+  Loader,
 } from 'rizzui';
 import { DividerWithText } from '../ui/divider';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -484,6 +485,17 @@ const chatWithPatient = [
   },
 ];
 
+// helper dummy data
+function generateDummyMessages(count: number, page = 1) {
+  return Array.from({ length: count }, (_, i) => ({
+    id: page * 1000 + i,
+    text: `Message #${page * 1000 + i}`,
+    isMe: Math.random() > 0.5,
+  }));
+}
+
+const MESSAGES_PER_PAGE = 10;
+
 const SmsCommunication = () => {
   const { openModal } = useModal();
   const [selectedChannel, setSelectedChannel] = useState('');
@@ -506,9 +518,12 @@ const SmsCommunication = () => {
   const [newMessage, setNewMessage] = useState('');
   const [apiChannels, setApiChannels] = useState<Channel[]>([]);
   const { messages, sendMessage, error } = useChat(selectedChannel);
-  const ref = useChatScroll(messages);
+  // const ref = useChatScroll(messages);
   const { status } = useSession();
   const { data: dataProfile } = useProfile(status == 'authenticated');
+  const [page, setPage] = useState(1);
+  const [visibleMessages, setVisibleMessages] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchChannels = useCallback(async () => {
     try {
@@ -560,6 +575,28 @@ const SmsCommunication = () => {
       return person.read_message > 0;
     } else return person;
   });
+
+  const hasMore = visibleMessages.length < messages.length;
+
+  const ref = useChatScroll({
+    dep: visibleMessages, // triggers scroll to bottom when messages update
+    onLoadMore: () => {
+      if (!isLoading) {
+        setIsLoading(true);
+        setTimeout(() => setPage((prev) => prev + 1), 300); // simulate load delay
+      }
+    },
+    hasMore, // prevents calling when no more
+  });
+
+  useEffect(() => {
+    // For example: you load from `chatMessages` or API
+    const end = page * MESSAGES_PER_PAGE;
+    setVisibleMessages(messages.slice(-end));
+    setIsLoading(false);
+  }, [page, messages]);
+
+  console.log(visibleMessages, messages.slice(-10));
 
   return (
     <div className="flex h-[100vh] w-full rounded-2xl border">
@@ -951,8 +988,13 @@ const SmsCommunication = () => {
             <div className="flex flex-col items-start gap-3">
               <DividerWithText text="OCTOBER 14, 2025" />
               {selectedChannel && (
-                <div className="flex flex-col gap-6">
-                  {messages.map((msg) => (
+                <div className="flex w-full flex-col gap-6">
+                  {isLoading && (
+                    <div className="flex items-center justify-center">
+                      <Loader />
+                    </div>
+                  )}
+                  {visibleMessages.map((msg) => (
                     <RepliesMessage
                       key={msg.id}
                       name={msg.name} // TODO: Implement a function to resolve user ID to a name

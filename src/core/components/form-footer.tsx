@@ -9,6 +9,8 @@ interface FormFooterProps {
   handleAltBtn?: () => void;
   handleExportBtn?: () => void;
   showExportBtn?: boolean;
+  showPreviewBtn?: boolean;
+  handlePreviewBtn?: () => void;
   handleCreateBtn?: () => void;
   isSticky?: boolean;
 }
@@ -23,6 +25,8 @@ export default function FormFooter({
   handleAltBtn,
   handleExportBtn,
   handleCreateBtn,
+  handlePreviewBtn,
+  showPreviewBtn,
   showExportBtn,
   isSticky = true,
 }: FormFooterProps) {
@@ -34,6 +38,15 @@ export default function FormFooter({
         isSticky && 'sticky'
       )}
     >
+      {showPreviewBtn && (
+        <Button
+          variant="outline"
+          className="w-full @xl:w-auto"
+          onClick={handlePreviewBtn}
+        >
+          Preview
+        </Button>
+      )}
       {showExportBtn && (
         <Button
           variant="outline"
