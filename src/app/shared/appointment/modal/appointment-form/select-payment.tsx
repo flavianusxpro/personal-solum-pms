@@ -480,17 +480,19 @@ const Link = () => {
       <RadioGroup
         value={viaClicked}
         setValue={setViaClicked}
-        className="col-span-full grid grid-cols-3 gap-4 @2xl:grid-cols-3 @4xl:gap-6"
+        className="col-span-full grid grid-cols-3 gap-3 @2xl:grid-cols-3 @4xl:gap-6"
       >
         {sendVia.map((via: any, index: number) => {
           return (
             <AdvancedRadio
               key={index}
               value={via.value}
-              contentClassName="px-4 py-6 flex items-center justify-between"
+              contentClassName="px-4 py-6 flex items-center justify-between w-full"
               inputClassName="[&~span]:border-0 [&~span]:ring-1 [&~span]:ring-gray-200 [&~span:hover]:ring-primary [&:checked~span:hover]:ring-primary [&:checked~span]:border-1 [&:checked~.rizzui-advanced-checkbox]:ring-2 [&~span>.icon]:opacity-0 [&:checked~span>.icon]:opacity-100"
             >
-              <span>{via.label}</span>
+              <span className="flex w-full items-center justify-center">
+                {via.label}
+              </span>
               <PiCheckCircleFill className="icon h-5 min-w-[1.25rem] text-primary" />
             </AdvancedRadio>
           );

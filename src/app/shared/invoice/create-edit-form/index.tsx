@@ -369,6 +369,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
                         {...register('address')}
                         error={errors.note?.message}
                         disabled
+                        labelClassName="text-gray-600"
                       />
                     </div>
                   </Grid>

@@ -39,7 +39,7 @@ export default function AppointmentListTable() {
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const [filterStateValue, setFilterStateValue] = useState(filterState);
-  const [isFilter, setIsFilter] = useState<boolean>(false)
+  const [isFilter, setIsFilter] = useState<boolean>(false);
   const [_, setCheckedItems] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [idAppointment, setIdAppointment] = useState<string | number>('');
@@ -71,12 +71,14 @@ export default function AppointmentListTable() {
     by_reschedule: filterStateValue?.by_reschedule || undefined,
     clinicId: dataProfile?.clinics[0].id || 0,
     timezone_client: localTimezone,
-    inactive_patients_months: Number(filterStateValue?.inactive_patients_months)
+    inactive_patients_months: Number(
+      filterStateValue?.inactive_patients_months
+    ),
   });
 
   const { mutate } = useDeleteAppointment();
 
-  const isMediumScreen = useMedia('(max-width: 1860px)', false);
+  const isMediumScreen = useMedia('(max-width: 6000px)', false);
 
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
@@ -88,7 +90,7 @@ export default function AppointmentListTable() {
     (ids: number[]) => {
       mutate(ids, {
         onSuccess: () => {
-          setIsOpen(false)
+          setIsOpen(false);
           toast.success('Appointment deleted successfully');
           refetch();
         },
@@ -165,7 +167,7 @@ export default function AppointmentListTable() {
         idAppointment,
         setIdAppointment,
         isOpen,
-        setIsOpen
+        setIsOpen,
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -175,7 +177,7 @@ export default function AppointmentListTable() {
       onDeleteItem,
       onChecked,
       isOpen,
-      idAppointment
+      idAppointment,
     ]
   );
 
@@ -210,8 +212,8 @@ export default function AppointmentListTable() {
           current: isFilter ? 1 : currentPage,
           onChange: (page: number) => {
             handlePaginate(page);
-            setParams({ ...params, page }); 
-            setIsFilter(false); 
+            setParams({ ...params, page });
+            setIsFilter(false);
           },
         }}
         filterOptions={{
@@ -246,8 +248,7 @@ export default function AppointmentListTable() {
               setSelectedRowKeys([]);
               onDeleteItem(ids.map((id) => parseInt(id)));
             }}
-          >
-          </TableFooter>
+          ></TableFooter>
         }
       />
     </div>

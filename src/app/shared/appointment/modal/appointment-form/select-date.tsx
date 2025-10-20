@@ -9,7 +9,7 @@ import {
   useForm,
   UseFormSetValue,
 } from 'react-hook-form';
-import { FieldError, Flex, Input, Loader, Text } from 'rizzui';
+import { Avatar, FieldError, Flex, Input, Loader, Text } from 'rizzui';
 import Calendar from 'react-calendar';
 import {
   formDataAtom,
@@ -183,7 +183,8 @@ export default function DateTime() {
 
             {dataDoctor?.map((doctor, index: number) => {
               if (!doctor.id) return null;
-
+              const name = `${doctor?.first_name} ${doctor?.first_name}`;
+              console.log(doctor);
               return (
                 <div
                   key={`${doctor.id}-${formData.date}-${index}`}
@@ -191,9 +192,10 @@ export default function DateTime() {
                 >
                   <div className="flex items-center justify-between space-x-4 p-6">
                     <div className="flex items-center space-x-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-300">
-                        🏥
-                      </div>
+                      <Avatar
+                        src={doctor?.photo ? doctor.photo : ''}
+                        name={name}
+                      />
                       {/* )} */}
                       <h3 className="cursor-pointer text-base font-bold hover:underline">
                         Dr. {doctor.first_name} {doctor.last_name}
