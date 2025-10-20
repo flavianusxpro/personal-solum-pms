@@ -518,6 +518,7 @@ const SmsCommunication = () => {
   const [newMessage, setNewMessage] = useState('');
   const [apiChannels, setApiChannels] = useState<Channel[]>([]);
   const { messages, sendMessage, error } = useChat(selectedChannel);
+  const [channelName, setChannelName] = useState('');
   // const ref = useChatScroll(messages);
   const { status } = useSession();
   const { data: dataProfile } = useProfile(status == 'authenticated');
@@ -533,7 +534,7 @@ const SmsCommunication = () => {
       if (response && response.length > 0) {
         // Avoid resetting the channel if one is already selected
         if (!selectedChannel) {
-          setSelectedChannel(response[0].name);
+          setSelectedChannel(response[0].channelId.toString());
         }
       }
     } catch (error) {
@@ -741,12 +742,13 @@ const SmsCommunication = () => {
                         className="cursor-pointer py-2"
                         key={channel.channelId}
                         onClick={() => {
-                          setSelectedChannel(channel.name);
+                          setChannelName(channel.name);
+                          setSelectedChannel(channel.channelId.toString());
                           setSelectedUser({} as IPersonType);
                         }}
                       >
                         <span
-                          className={`${channel.name === selectedChannel && 'rounded-md bg-[#3872F91A] font-semibold text-[#3872F9]'} px-2 py-1`}
+                          className={`${channel.channelId.toString() === selectedChannel && 'rounded-md bg-[#3872F91A] font-semibold text-[#3872F9]'} px-2 py-1`}
                         >
                           #{channel.name}
                         </span>
@@ -859,9 +861,10 @@ const SmsCommunication = () => {
             </Flex>
           ) : (
             tabActive == 'channels' &&
-            selectedChannel && (
+            selectedChannel &&
+            channelName && (
               <Text className="font-medium text-black">
-                {selectedChannel ? `#${selectedChannel}` : ''}
+                {selectedChannel && channelName ? `#${channelName}` : ''}
               </Text>
             )
           )}
