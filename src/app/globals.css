@@ -1620,3 +1620,7 @@ div[style='z-index: 1000001;'],
   border-radius: 999px;
   margin: 0;
 }
+
+.rbc-button-link .rbc-show-more {
+  margin-left: 1rem;
+}
