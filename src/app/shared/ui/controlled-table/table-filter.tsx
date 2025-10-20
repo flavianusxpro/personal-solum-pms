@@ -92,12 +92,12 @@ export default function TableFilter({
   menu,
   children,
 }: TableFilterProps) {
-  const isMediumScreen = useMedia('(max-width: 1860px)', false);
+  const isMediumScreen = useMedia('(max-width: 6000px)', false);
   const [showFilters, setShowFilters] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
 
   return (
-    <div className="table-filter mb-4 flex items-center justify-between">
+    <div className="mb-4 flex items-center justify-between">
       <div className="flex flex-wrap items-center gap-4">
         {!showSearchOnTheRight ? (
           <Input

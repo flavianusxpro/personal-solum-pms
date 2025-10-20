@@ -111,12 +111,14 @@ export const getColumns = ({
   },
   {
     // Need to avoid this issue -> <td> elements in a large <table> do not have table headers.
-    title: <HeaderCell title="Actions" className="opacity-0" />,
+    title: (
+      <HeaderCell title="Actions" className="flex items-center justify-start" />
+    ),
     dataIndex: 'action',
     key: 'action',
     width: 130,
     render: (_: string, row: Row) => (
-      <div className="flex items-center justify-end gap-3 pe-4">
+      <div className="flex items-center justify-start gap-3">
         <Tooltip size="sm" content={'Edit Role'} placement="top" color="invert">
           <ActionIcon
             size="sm"

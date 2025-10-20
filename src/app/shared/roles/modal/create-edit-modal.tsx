@@ -125,7 +125,7 @@ export default function CreateEditRoleModal({
             <Input
               label="Role Name"
               {...register('name')}
-              placeholder="Role Name"
+              placeholder="Input role name"
               className="w-full"
               error={errors.name?.message}
               disabled={isView}

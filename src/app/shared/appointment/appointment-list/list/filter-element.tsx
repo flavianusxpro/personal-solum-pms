@@ -43,7 +43,7 @@ export default function FilterElement({
   handleReset,
   setIsFilter,
 }: FilterElementProps) {
-  const isMediumScreen = useMedia('(max-width: 1860px)', false);
+  const isMediumScreen = useMedia('(max-width: 6000px)', false);
   return (
     <div
       className={cn(
@@ -58,7 +58,7 @@ export default function FilterElement({
         isClearable
         onClear={() => {
           updateFilter('createdAt', [null, null]);
-          setIsFilter(true)
+          setIsFilter(true);
         }}
         selected={getDateRangeStateValues(filters?.['createdAt']?.[0])}
         startDate={getDateRangeStateValues(filters?.['createdAt']?.[0]) as Date}
@@ -86,7 +86,7 @@ export default function FilterElement({
         clearable
         onChange={(value: string) => {
           updateFilter('status', value);
-          setIsFilter(true)
+          setIsFilter(true);
         }}
         {...(isMediumScreen && {
           label: 'Appointment Status',
@@ -106,7 +106,7 @@ export default function FilterElement({
         value={filters['payment_status']}
         onChange={(value: string) => {
           updateFilter('payment_status', value);
-          setIsFilter(true)
+          setIsFilter(true);
         }}
         {...(isMediumScreen && {
           label: 'Payment Status',
@@ -136,7 +136,7 @@ export default function FilterElement({
         value={filters['by_reschedule']}
         onChange={(value: string) => {
           updateFilter('by_reschedule', value);
-          setIsFilter(true)
+          setIsFilter(true);
         }}
         {...(isMediumScreen && {
           label: 'By Reschedule',
@@ -145,25 +145,25 @@ export default function FilterElement({
       />
 
       <CSelect
-        placeholder="Select Inactive Patient Month"
+        placeholder="Select inactive patient month"
         dropdownClassName="!z-10 h-auto"
         className="w-full @[35rem]:w-auto"
         options={Array.from({ length: 12 }, (_, index) => ({
           label: `${index + 1} Month`,
-          value: (index + 1),
+          value: index + 1,
         }))}
         onClear={() => {
           updateFilter('inactive_patients_months', '');
         }}
         clearable
-        value={filters["inactive_patients_months"]}
+        value={filters['inactive_patients_months']}
         onChange={(value: string) => {
-          updateFilter("inactive_patients_months", value);
-          setIsFilter(true)
+          updateFilter('inactive_patients_months', value);
+          setIsFilter(true);
         }}
         {...(isMediumScreen && {
-          label: "Inactive Patient Month",
-          labelClassName: "font-medium text-gray-700",
+          label: 'Inactive Patient Month',
+          labelClassName: 'font-medium text-gray-700',
         })}
       />
 

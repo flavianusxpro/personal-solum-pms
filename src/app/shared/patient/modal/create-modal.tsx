@@ -229,6 +229,66 @@ export default function CreatePatienModal() {
               <div className="mb-10 flex flex-col gap-7">
                 <FormGroup title="Address" className="grid-cols-12" />
 
+                {/* <div className="flex flex-col gap-2"> */}
+                <FormGroup title="Address Line 1" isLabel className="flex-1">
+                  <Input
+                    placeholder="Address Line 1"
+                    {...register('address_line_1')}
+                    error={errors.address_line_1?.message}
+                    className="flex-grow"
+                  />
+                </FormGroup>
+                <FormGroup title="Address Line 2" isLabel className="flex-1">
+                  <Input
+                    placeholder="Address Line 2"
+                    {...register('address_line_2')}
+                    error={errors.address_line_2?.message}
+                    className="flex-grow"
+                  />
+                </FormGroup>
+                {/* </div> */}
+
+                <div className="flex flex-row gap-2">
+                  <FormGroup title="Street" isLabel className="flex-1">
+                    <Input
+                      placeholder="Street"
+                      {...register('street_name')}
+                      error={errors.street_name?.message}
+                      className="flex-grow"
+                    />
+                  </FormGroup>
+                </div>
+
+                <div className="mt-0.5 grid grid-cols-3 gap-2">
+                  <FormGroup title="Suburb" isLabel className="flex-1">
+                    <Input
+                      placeholder="Suburb"
+                      {...register('suburb')}
+                      error={errors.suburb?.message}
+                      className="flex-grow"
+                    />
+                  </FormGroup>
+                  <Controller
+                    name="state"
+                    control={control}
+                    render={({ field }) => (
+                      <CSelect
+                        {...field}
+                        label="State"
+                        placeholder="State"
+                        options={stateOption}
+                        error={errors.state?.message as string}
+                      />
+                    )}
+                  />
+                  <Input
+                    label="Post Code"
+                    placeholder="Post Code"
+                    {...register('post_code')}
+                    error={errors.post_code?.message}
+                    className="flex-grow"
+                  />
+                </div>
                 <div className="flex flex-row gap-2">
                   <FormGroup title="Country" isLabel className="flex-1">
                     <Input
@@ -247,73 +307,6 @@ export default function CreatePatienModal() {
                     />
                   </FormGroup>
                 </div>
-
-                <div className="flex flex-row gap-2">
-                  <FormGroup title="Address Line 1" isLabel className="flex-1">
-                    <Input
-                      placeholder="Address Line 1"
-                      {...register('address_line_1')}
-                      error={errors.address_line_1?.message}
-                      className="flex-grow"
-                    />
-                  </FormGroup>
-                  <FormGroup title="Address Line 2" isLabel className="flex-1">
-                    <Input
-                      placeholder="Address Line 2"
-                      {...register('address_line_2')}
-                      error={errors.address_line_2?.message}
-                      className="flex-grow"
-                    />
-                  </FormGroup>
-                </div>
-
-                <div className="flex flex-row gap-2">
-                  <FormGroup title="Street" isLabel className="flex-1">
-                    <Input
-                      placeholder="Street"
-                      {...register('street_name')}
-                      error={errors.street_name?.message}
-                      className="flex-grow"
-                    />
-                  </FormGroup>
-                  <FormGroup title="Suburb" isLabel className="flex-1">
-                    <Input
-                      placeholder="Suburb"
-                      {...register('suburb')}
-                      error={errors.suburb?.message}
-                      className="flex-grow"
-                    />
-                  </FormGroup>
-                </div>
-
-                <Flex
-                  justify="between"
-                  className="mt-0.5"
-                  align="center"
-                  gap="4"
-                >
-                  <Controller
-                    name="state"
-                    control={control}
-                    render={({ field }) => (
-                      <CSelect
-                        {...field}
-                        label="State"
-                        placeholder="State"
-                        className="group relative z-0"
-                        options={stateOption}
-                        error={errors.state?.message as string}
-                      />
-                    )}
-                  />
-                  <Input
-                    label="Post Code"
-                    placeholder="Post Code"
-                    {...register('post_code')}
-                    error={errors.post_code?.message}
-                    className="flex-grow"
-                  />
-                </Flex>
                 <FormGroup title="Password" isLabel>
                   <Input
                     placeholder="Password"

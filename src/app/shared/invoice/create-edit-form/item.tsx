@@ -139,6 +139,7 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
         placeholder="select item"
         className="w-1/2"
         disabled
+        labelClassName="text-gray-600"
       />
 
       <Controller
@@ -163,6 +164,7 @@ const InvoiceItem: React.FC<InvoiceItemProps> = ({
         placeholder="select item"
         className="w-1/2"
         disabled
+        labelClassName="text-gray-600"
       />
       <ActionIcon
         className="mt-6"

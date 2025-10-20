@@ -88,7 +88,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
           <div className="flex flex-col gap-6 px-6 pt-6">
             <Flex justify="between" align="center" gap="4">
               <Title className="text-lg">
-                {isView ? 'View' : data ? 'Update' : 'Create'} Add Type
+                {isView ? 'View' : data ? 'Update' : 'Create'} Type
               </Title>
               <ActionIcon variant="text" onClick={closeModal} className="">
                 <PiX className="h-6 w-6" />
@@ -97,7 +97,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
             <Input
               label="Category Name"
               {...register('name')}
-              placeholder="Category Name"
+              placeholder="Category name"
               className="w-full"
               error={errors.name?.message?.toString()}
               disabled={isView}
@@ -109,7 +109,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
                 <Textarea
                   {...field}
                   label="Description"
-                  placeholder="description"
+                  placeholder="Description"
                 />
               )}
             />
