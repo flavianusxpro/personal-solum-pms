@@ -15,6 +15,8 @@ import toast from 'react-hot-toast';
 import dayjs from 'dayjs';
 import TableFooter from '../../ui/table-footer';
 import { useProfile } from '@/hooks/useProfile';
+import TableHeader from '../../ui/table-header';
+import { StatusSelect } from '../../invoice/invoice-list/columns';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/patient/table/filter-element'),
@@ -232,6 +234,11 @@ export default function PatientTable() {
             updateFilter={updateFilter}
             handleReset={handleReset}
           />
+        }
+        tableHeader={
+          <TableHeader checkedItems={selectedRowKeys}>
+            <StatusSelect />
+          </TableHeader>
         }
         tableFooter={
           <TableFooter

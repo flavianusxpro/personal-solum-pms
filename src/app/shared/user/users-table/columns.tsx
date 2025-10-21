@@ -50,16 +50,18 @@ export const getColumns = ({
     dataIndex: 'checked',
     key: 'checked',
     width: 30,
-    render: (_: any, row: User) => (
-      <div className="inline-flex ps-3">
-        <Checkbox
-          className="cursor-pointer"
-          checked={checkedItems.includes(row.id.toString())}
-          {...(onChecked && { onChange: () => onChecked(row.id.toString()) })}
-          label={`#${row.id}`}
-        />
-      </div>
-    ),
+    render: (_: any, row: any) => {
+      return (
+        <div className="inline-flex ps-3">
+          <Checkbox
+            className="cursor-pointer"
+            checked={checkedItems.includes(row.id)}
+            {...(onChecked && { onChange: () => onChecked(row.id) })}
+            label={`#${row.id}`}
+          />
+        </div>
+      );
+    },
   },
   {
     title: <HeaderCell title="Name" />,

@@ -95,13 +95,13 @@ export const GetColumns = ({
       dataIndex: 'checked',
       key: 'checked',
       width: 30,
-      render: (_: any, row: IGetAppointmentListResponse['data'][number]) => (
+      render: (_: any, row: any) => (
         <div className="inline-flex ps-3.5">
           <Checkbox
             aria-label={'ID'}
             className="cursor-pointer"
-            checked={checkedItems.includes(row.id.toString())}
-            {...(onChecked && { onChange: () => onChecked(row.id.toString()) })}
+            checked={checkedItems.includes(row.id)}
+            {...(onChecked && { onChange: () => onChecked(row.id) })}
           />
         </div>
       ),

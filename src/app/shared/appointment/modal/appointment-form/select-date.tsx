@@ -357,8 +357,9 @@ function DoctorTime({
                   key={idx}
                   type="button"
                   className={cn(
-                    'w-[80px] rounded-md px-2 py-2 text-sm hover:bg-green-300',
-                    formData.doctorTime === sydneyValueTime
+                    'w-auto rounded-md px-2 py-2 text-sm hover:bg-green-300',
+                    formData.doctorId == doctor.id &&
+                      formData.doctorTime === sydneyValueTime
                       ? 'bg-green-300'
                       : 'bg-green-200/50'
                   )}
