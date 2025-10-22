@@ -77,7 +77,7 @@ function ModalAppointmentDetails({ data }: { data: any }) {
             </span>
           </li>
           <li className="flex gap-2">
-            <span>Appointment Type::</span>
+            <span>Appointment Type:</span>
             <span className="font-medium text-gray-1000">{details.type}</span>
           </li>
 

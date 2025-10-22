@@ -68,12 +68,12 @@ export const getColumns = ({
     dataIndex: 'checked',
     key: 'checked',
     width: 30,
-    render: (_: any, row: Row) => (
+    render: (_: any, row: any) => (
       <div className="inline-flex ps-2">
         <Checkbox
           className="cursor-pointer"
-          checked={checkedItems.includes(row.id.toString())}
-          {...(onChecked && { onChange: () => onChecked(row.id.toString()) })}
+          checked={checkedItems.includes(row.id)}
+          {...(onChecked && { onChange: () => onChecked(row.id) })}
         />
       </div>
     ),
@@ -279,7 +279,7 @@ function RenderAction({
               >
                 <div className="flex gap-3">
                   <PencilIcon className="h-4 w-4" />
-                  <span>Edit Patient</span>
+                  <span>Edit</span>
                 </div>
               </Button>
             </Link>
@@ -296,7 +296,7 @@ function RenderAction({
               >
                 <div className="flex gap-3">
                   <EyeIcon className="h-4 w-4" />
-                  <span>View Patient</span>
+                  <span>View</span>
                 </div>
               </Button>
             </Link>

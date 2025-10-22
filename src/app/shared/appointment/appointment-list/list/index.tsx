@@ -17,6 +17,8 @@ import toast from 'react-hot-toast';
 import debounce from 'lodash/debounce';
 import dayjs from 'dayjs';
 import { useProfile } from '@/hooks/useProfile';
+import TableHeader from '@/app/shared/ui/table-header';
+import { StatusSelect } from '@/app/shared/invoice/invoice-list/columns';
 
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
@@ -240,6 +242,11 @@ export default function AppointmentListTable() {
             handleReset={handleReset}
             setIsFilter={setIsFilter}
           />
+        }
+        tableHeader={
+          <TableHeader checkedItems={selectedRowKeys}>
+            <StatusSelect />
+          </TableHeader>
         }
         tableFooter={
           <TableFooter

@@ -389,22 +389,22 @@ export default function AppointmentPayment() {
                     );
                   })}
                 </div>
-                {couponValue !== '-' && (
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Enter Cupon Code"
-                      className="flex-1"
-                      onChange={(e) => setInputCouponCode(e.target.value)}
-                      value={inputCouponCode}
-                    />
-                    <Button
-                      className="rounded-[6px] bg-[#3666AA] px-[16px] py-[12px] text-[14px] font-semibold text-white"
-                      onClick={() => couponValidation(inputCouponCode)}
-                    >
-                      Apply
-                    </Button>
-                  </div>
-                )}
+                {/* {couponValue !== '-' && ( */}
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Enter Cupon Code"
+                    className="flex-1"
+                    onChange={(e) => setInputCouponCode(e.target.value)}
+                    value={inputCouponCode}
+                  />
+                  <Button
+                    className="rounded-[6px] bg-[#3666AA] px-[16px] py-[12px] text-[14px] font-semibold text-white"
+                    onClick={() => couponValidation(inputCouponCode)}
+                  >
+                    Apply
+                  </Button>
+                </div>
+                {/* )} */}
 
                 <div className="mt-2 w-full border-[1px] border-t border-[#00000026]/15"></div>
                 <div className="flex items-center justify-between">

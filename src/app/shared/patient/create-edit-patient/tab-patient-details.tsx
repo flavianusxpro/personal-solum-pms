@@ -316,6 +316,7 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                       label: 'Medicare Expiry Date',
                     }}
                     selected={watch('medicare_expiry')}
+                    placeholderText="Medicare Expiry Date"
                     onChange={(date) => {
                       if (!date) return;
                       setValue('medicare_expiry', date);
@@ -325,6 +326,7 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                     minDate={new Date()}
                     dateFormat="MM/YY"
                     error={errors.medicare_expiry?.message}
+                    disabled={isView}
                   />
                 </Flex>
               </FormGroup>
@@ -508,6 +510,7 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                   minDate={new Date()}
                   dateFormat="MM/YY"
                   error={errors.concession_card_expiry?.message}
+                  disabled={isView}
                 />
               </FormGroup>
             </div>

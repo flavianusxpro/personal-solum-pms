@@ -10,6 +10,8 @@ import { useDeleteUserById, useGetUsers } from '@/hooks/useUser';
 import toast from 'react-hot-toast';
 import debounce from 'lodash/debounce';
 import { useProfile } from '@/hooks/useProfile';
+import TableHeader from '../../ui/table-header';
+import { StatusSelect } from '../../invoice/invoice-list/columns';
 
 const FilterElement = dynamic(() => import('./filter-element'), { ssr: false });
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
@@ -192,6 +194,11 @@ export default function UsersTable() {
             updateFilter={updateFilter}
             handleReset={handleReset}
           />
+        }
+        tableHeader={
+          <TableHeader checkedItems={selectedRowKeys}>
+            <StatusSelect />
+          </TableHeader>
         }
         tableFooter={
           <TableFooter

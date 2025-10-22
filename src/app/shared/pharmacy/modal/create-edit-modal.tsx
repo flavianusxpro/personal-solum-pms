@@ -219,6 +219,10 @@ export default function CreateEditModal({ data, isView }: IProps) {
                     preferredCountries={['au']}
                     placeholder="Phone Number"
                     error={errors.phone?.message}
+                    disabled={isView}
+                    labelClassName={
+                      isView ? 'text-muted-foreground font-medium' : ''
+                    }
                   />
                 )}
               />
@@ -242,7 +246,7 @@ export default function CreateEditModal({ data, isView }: IProps) {
                 label="Address Line 1"
                 {...register('address_line_1')}
                 placeholder="Address Line 1"
-                className="w-full"
+                className="col-span-full w-full"
                 error={errors.address_line_1?.message}
                 disabled={isView}
               />
@@ -250,42 +254,45 @@ export default function CreateEditModal({ data, isView }: IProps) {
                 label="Address Line 2"
                 {...register('address_line_2')}
                 placeholder="Address Line 2"
-                className="w-full"
+                className="col-span-full w-full"
                 error={errors.address_line_2?.message}
                 disabled={isView}
               />
-              <Input
-                label="City"
-                {...register('city')}
-                placeholder="City"
-                className="w-full"
-                error={errors.city?.message}
-                disabled={isView}
-              />
-              <Controller
-                name="state"
-                control={control}
-                render={({ field }) => (
-                  <CSelect
-                    {...field}
-                    label="State"
-                    placeholder="State"
-                    className="group relative z-0"
-                    options={stateOption}
-                    error={errors.state?.message as string}
-                  />
-                )}
-              />
+              <div className="col-span-full grid grid-cols-3 gap-4">
+                <Input
+                  label="City"
+                  {...register('city')}
+                  placeholder="City"
+                  className="w-full"
+                  error={errors.city?.message}
+                  disabled={isView}
+                />
+                <Controller
+                  name="state"
+                  control={control}
+                  render={({ field }) => (
+                    <CSelect
+                      {...field}
+                      label="State"
+                      placeholder="State"
+                      className="group relative z-0"
+                      options={stateOption}
+                      error={errors.state?.message as string}
+                      disabled={isView}
+                    />
+                  )}
+                />
 
-              <Input
-                type="number"
-                label="Postcode"
-                {...register('postcode')}
-                placeholder="Postcode"
-                className="w-full"
-                error={errors.postcode?.message}
-                disabled={isView}
-              />
+                <Input
+                  type="number"
+                  label="Postcode"
+                  {...register('postcode')}
+                  placeholder="Postcode"
+                  className="w-full"
+                  error={errors.postcode?.message}
+                  disabled={isView}
+                />
+              </div>
             </Grid>
 
             {isView ? null : (
