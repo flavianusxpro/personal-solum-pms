@@ -313,7 +313,7 @@ function RenderAction({
             >
               <div className="flex items-center gap-3">
                 <TrashIcon className="h-4 w-4" />
-                <span>Delete Patient</span>{' '}
+                <span>Delete</span>{' '}
               </div>
             </Button>
           </Dropdown.Item>

@@ -41,7 +41,7 @@ export default function FilterElement({
   updateFilter,
   handleReset,
 }: FilterElementProps) {
-  const isMediumScreen = useMedia('(max-width: 1860px)', false);
+  const isMediumScreen = useMedia('(max-width: 6000px)', false);
   return (
     <>
       <PriceField

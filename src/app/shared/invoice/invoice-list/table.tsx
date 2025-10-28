@@ -186,7 +186,7 @@ export default function InvoiceTableList() {
     }
   }, [params.page, params.pageSize, params.search, refetch]);
 
-  const isMediumScreen = useMedia('(max-width: 1860px)', false);
+  const isMediumScreen = useMedia('(max-width: 6000px)', false);
 
   return (
     <>

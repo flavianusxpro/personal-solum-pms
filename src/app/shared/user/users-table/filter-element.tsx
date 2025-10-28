@@ -35,7 +35,7 @@ export default function FilterElement({
   filters,
   updateFilter,
 }: FilterElementProps) {
-  const isMediumScreen = useMedia('(max-width: 1860px)', false);
+  const isMediumScreen = useMedia('(max-width: 6000px)', false);
 
   const { data: dataRoles } = useGetRoles({
     page: 1,
