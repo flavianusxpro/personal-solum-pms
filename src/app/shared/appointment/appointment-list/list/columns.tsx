@@ -396,7 +396,7 @@ function RenderAction({
               }
             >
               <EyeIcon className="h-4 w-4" />
-              <span>View Appointment</span>{' '}
+              <span>View</span>{' '}
             </Button>
           </Dropdown.Item>
 
@@ -410,7 +410,7 @@ function RenderAction({
               }}
             >
               <TrashIcon className="h-4 w-4" />
-              <span>Delete Appointment</span>{' '}
+              <span>Delete</span>{' '}
             </Button>
           </Dropdown.Item>
         </Dropdown.Menu>

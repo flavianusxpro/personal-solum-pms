@@ -36,7 +36,6 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 export function useGetAllDoctors(params: IParamGetAllDoctor) {
-  console.log(params.clinicId);
   return useQuery({
     queryKey: ['doctors' + params],
     queryFn: async () => getDoctorList(params),
