@@ -23,7 +23,13 @@ const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
 });
 
-export default function ListTable({ className }: { className?: string }) {
+export default function ListTable({
+  className,
+  isView,
+}: {
+  className?: string;
+  isView?: boolean;
+}) {
   const id = useParams().id as string;
   const { openModal } = useModal();
   const [params, setParams] = useState({
@@ -89,6 +95,7 @@ export default function ListTable({ className }: { className?: string }) {
         onChecked: handleRowSelect,
         handleSelectAll,
         openModal,
+        isView,
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -110,11 +117,18 @@ export default function ListTable({ className }: { className?: string }) {
       <FormGroup title="Notes & Flags" className="mb-5" />
       <div className="flex flex-col gap-3">
         <div className="flex justify-end gap-2">
-          <ModalButton view={<FlagForm modalType="flag" />} label="Add Flag" />
-          <ModalButton
-            view={<FlagForm modalType="notes" />}
-            label="Add Notes"
-          />
+          {!isView && (
+            <>
+              <ModalButton
+                view={<FlagForm modalType="flag" />}
+                label="Add Flag"
+              />
+              <ModalButton
+                view={<FlagForm modalType="notes" />}
+                label="Add Notes"
+              />
+            </>
+          )}
         </div>
         <ControlledTable
           isLoading={isLoading}

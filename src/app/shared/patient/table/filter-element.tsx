@@ -15,7 +15,7 @@ const statusOptions = [
   },
   {
     value: '0',
-    label: 'InActive',
+    label: 'Inactive',
   },
   {
     value: '2',
@@ -63,7 +63,7 @@ export default function FilterElement({
       />
 
       <CSelect
-        className="w-fit"
+        className="w-full"
         options={statusOptions}
         placeholder="Select status"
         value={filters['status']}

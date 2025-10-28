@@ -9,7 +9,7 @@ export default function TabNotesFlags({
 }) {
   return (
     <div className="grid">
-      <ListTable />
+      <ListTable isView={isView} />
     </div>
   );
 }

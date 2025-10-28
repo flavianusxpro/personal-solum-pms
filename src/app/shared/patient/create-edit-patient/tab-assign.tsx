@@ -80,6 +80,12 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
     }));
   }, [dataDoctor]);
 
+  console.log(
+    dataClinic?.clinics?.[0]?.id
+      ? JSON.stringify({ clinic_ids: [dataClinic?.clinics?.[0]?.id] })
+      : undefined
+  );
+
   const onSubmit: SubmitHandler<AssignTypes> = (data) => {
     const doctor_ids = data.doctor.map((doctor) => parseInt(doctor));
     mutate(
@@ -135,6 +141,7 @@ export default function TabAssign({ isView = false }: { isView?: boolean }) {
     >
       {({ register, control, watch, formState: { errors } }) => {
         const { clinic } = watch();
+        console.log(dataPatient?.doctors, doctorOptions);
         return (
           <>
             <Flex direction="col" className="" gap="7">

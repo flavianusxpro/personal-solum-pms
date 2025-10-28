@@ -42,7 +42,11 @@ export const getColumns = ({
       <div className="ps-2">
         <Checkbox
           className="cursor-pointer"
-          checked={checkedItems.length === data.length}
+          checked={
+            checkedItems?.length > 0 &&
+            data?.length > 0 &&
+            checkedItems?.length === data?.length
+          }
           onChange={handleSelectAll}
         />
       </div>
