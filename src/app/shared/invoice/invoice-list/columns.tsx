@@ -335,19 +335,21 @@ function RenderAction({
             </Button>
           </Dropdown.Item>
 
-          <Dropdown.Item>
-            <Link href="#" className="w-full">
-              <Button
-                className="w-full hover:border-gray-700 hover:text-gray-700"
-                variant="outline"
-              >
-                <div className="flex items-center gap-3">
-                  <PiWalletLight className="h-4 w-4" />
-                  <span>Pay Now</span>
-                </div>
-              </Button>
-            </Link>
-          </Dropdown.Item>
+          {row.status !== 3 && (
+            <Dropdown.Item>
+              <Link href="#" className="w-full">
+                <Button
+                  className="w-full hover:border-gray-700 hover:text-gray-700"
+                  variant="outline"
+                >
+                  <div className="flex items-center gap-3">
+                    <PiWalletLight className="h-4 w-4" />
+                    <span>Pay Now</span>
+                  </div>
+                </Button>
+              </Link>
+            </Dropdown.Item>
+          )}
 
           {statusAvailToRefund.includes(row.status) && (
             <Dropdown.Item>
