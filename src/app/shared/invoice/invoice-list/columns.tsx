@@ -21,7 +21,11 @@ import TableAvatar from '@core/ui/avatar-card';
 import { IGetInvoiceListResponse } from '@/types/ApiResponse';
 import CSelect from '../../ui/select';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { usePutUpdateInvoice, useResendInvoice } from '@/hooks/useInvoice';
+import {
+  usePutUpdateInvoice,
+  useResendInvoice,
+  useUpdatePaymentStatusInvoice,
+} from '@/hooks/useInvoice';
 import { useModal } from '../../modal-views/use-modal';
 import { FaRegNoteSticky } from 'react-icons/fa6';
 import { GrSchedules } from 'react-icons/gr';
@@ -466,25 +470,25 @@ function StatusSelectUpdate({
     (option) => option.value === selectItem
   )?.value;
   const [value, setValue] = useState(selectItemValue);
-  const { mutate, isPending } = usePutUpdateInvoice();
+  const { mutate, isPending } = useUpdatePaymentStatusInvoice();
 
   const handleSubmitStatus = (value: number) => {
     setValue(value);
-    // mutate(
-    //   { id, status: value },
-    //   {
-    //     onSuccess: () => {
-    //       toast.success('Status updated successfully');
-    //       closeModal();
-    //     },
-    //     onError: (error: any) => {
-    //       toast.error(
-    //         error?.response?.data?.message || 'Error updating status'
-    //       );
-    //       closeModal();
-    //     },
-    //   }
-    // );
+    mutate(
+      { id, status: value },
+      {
+        onSuccess: () => {
+          toast.success('Status updated successfully');
+          closeModal();
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || 'Error updating status'
+          );
+          closeModal();
+        },
+      }
+    );
   };
 
   const handleChange = (value: number) => {

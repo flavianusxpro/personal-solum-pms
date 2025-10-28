@@ -1624,3 +1624,8 @@ div[style='z-index: 1000001;'],
 .rbc-button-link .rbc-show-more {
   margin-left: 1rem;
 }
+
+.react-datepicker__close-icon {
+  top: 20% !important;
+  right: 10% !important;
+}

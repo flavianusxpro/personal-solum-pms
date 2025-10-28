@@ -1,4 +1,4 @@
-import { del, get, post, put } from '@/config/base-api';
+import { del, get, patch, post, put } from '@/config/base-api';
 import {
   IGetInvoiceByIdResponse,
   IGetInvoiceListResponse,
@@ -39,4 +39,8 @@ export async function postRefundInvoice(id: number) {
 
 export async function postResendInvoice(id: number) {
   return await post(`/admin/invoice/${id}/resend`, {});
+}
+
+export async function patchStatus(payload: { id?: number; status?: number }) {
+  return await patch<any>(`/admin/invoice/${payload.id}/status`, payload);
 }

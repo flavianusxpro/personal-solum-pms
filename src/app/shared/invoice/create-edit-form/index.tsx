@@ -113,7 +113,7 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
           due_date: dayjs(data.due_date).format('YYYY-MM-DD'),
           items: (data.items || []).map((item: any) => ({
             ...item,
-            code: item.item.split(' - ')[0],
+            code: item.item.split(' - ')[0].toUpperCase(),
             name: item.item.split(' - ')[1],
             amount: Number(item.amount),
             qty: Number(item.qty),
@@ -146,14 +146,16 @@ export default function CreateEditInvoice({ id }: { id?: string }) {
         clinicId: dataProfile?.clinics[0].id,
         invoice_date: dayjs(data.invoice_date).format('YYYY-MM-DD'),
         due_date: dayjs(data.due_date).format('YYYY-MM-DD'),
-        items: (data.items || []).map((item: any) => ({
-          ...item,
-          code: item.item.split(' - ')[0],
-          name: item.item.split(' - ')[1],
-          amount: Number(item.amount),
-          qty: Number(item.qty),
-          total_amount: Number(item.amount) * Number(item.qty),
-        })),
+        items: (data.items || []).map((item: any) => {
+          return {
+            ...item,
+            code: item.item.split(' - ')[0]?.toUpperCase(),
+            name: item.item.split(' - ')[1],
+            amount: Number(item.amount),
+            qty: Number(item.qty),
+            total_amount: Number(item.amount) * Number(item.qty),
+          };
+        }),
         amount: totalItemAmount,
         tax_fee: totalTax,
         total_amount: totalAmount,

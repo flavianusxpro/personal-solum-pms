@@ -2,13 +2,14 @@ import {
   deleteInvoice,
   getInvoiceById,
   getInvoiceList,
+  patchStatus,
   postCreateInvoice,
   postRefundInvoice,
   postResendInvoice,
   putCreateInvoice,
 } from '@/service/invoice';
 import { IParamGetAppointments } from '@/types/paramTypes';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export function useGetInvoices(params: IParamGetAppointments) {
   return useQuery({
@@ -53,5 +54,16 @@ export function useResendInvoice() {
 export function useRefundInvoice() {
   return useMutation({
     mutationFn: postRefundInvoice,
+  });
+}
+
+export function useUpdatePaymentStatusInvoice() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: patchStatus,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['getInvoices'] });
+    },
   });
 }
