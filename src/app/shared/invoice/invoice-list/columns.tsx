@@ -21,7 +21,11 @@ import TableAvatar from '@core/ui/avatar-card';
 import { IGetInvoiceListResponse } from '@/types/ApiResponse';
 import CSelect from '../../ui/select';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { usePutUpdateInvoice, useResendInvoice } from '@/hooks/useInvoice';
+import {
+  usePutUpdateInvoice,
+  useResendInvoice,
+  useUpdatePaymentStatusInvoice,
+} from '@/hooks/useInvoice';
 import { useModal } from '../../modal-views/use-modal';
 import { FaRegNoteSticky } from 'react-icons/fa6';
 import { GrSchedules } from 'react-icons/gr';
@@ -331,19 +335,21 @@ function RenderAction({
             </Button>
           </Dropdown.Item>
 
-          <Dropdown.Item>
-            <Link href="#" className="w-full">
-              <Button
-                className="w-full hover:border-gray-700 hover:text-gray-700"
-                variant="outline"
-              >
-                <div className="flex items-center gap-3">
-                  <PiWalletLight className="h-4 w-4" />
-                  <span>Pay Now</span>
-                </div>
-              </Button>
-            </Link>
-          </Dropdown.Item>
+          {row.status !== 3 && (
+            <Dropdown.Item>
+              <Link href="#" className="w-full">
+                <Button
+                  className="w-full hover:border-gray-700 hover:text-gray-700"
+                  variant="outline"
+                >
+                  <div className="flex items-center gap-3">
+                    <PiWalletLight className="h-4 w-4" />
+                    <span>Pay Now</span>
+                  </div>
+                </Button>
+              </Link>
+            </Dropdown.Item>
+          )}
 
           {statusAvailToRefund.includes(row.status) && (
             <Dropdown.Item>
@@ -466,25 +472,25 @@ function StatusSelectUpdate({
     (option) => option.value === selectItem
   )?.value;
   const [value, setValue] = useState(selectItemValue);
-  const { mutate, isPending } = usePutUpdateInvoice();
+  const { mutate, isPending } = useUpdatePaymentStatusInvoice();
 
   const handleSubmitStatus = (value: number) => {
     setValue(value);
-    // mutate(
-    //   { id, status: value },
-    //   {
-    //     onSuccess: () => {
-    //       toast.success('Status updated successfully');
-    //       closeModal();
-    //     },
-    //     onError: (error: any) => {
-    //       toast.error(
-    //         error?.response?.data?.message || 'Error updating status'
-    //       );
-    //       closeModal();
-    //     },
-    //   }
-    // );
+    mutate(
+      { id, status: value },
+      {
+        onSuccess: () => {
+          toast.success('Status updated successfully');
+          closeModal();
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || 'Error updating status'
+          );
+          closeModal();
+        },
+      }
+    );
   };
 
   const handleChange = (value: number) => {

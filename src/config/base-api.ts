@@ -115,6 +115,16 @@ export async function put<T>(
     .then((response: any) => response.data);
 }
 
+export async function patch<T>(
+  url: string,
+  data: any,
+  config: AxiosRequestConfig = {}
+): Promise<T> {
+  return await axiosApi
+    .patch<T>(url, data, config)
+    .then((response: any) => response.data);
+}
+
 export async function postFormData<T>(
   url: string,
   data: FormData,

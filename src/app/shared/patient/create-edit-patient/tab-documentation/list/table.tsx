@@ -86,7 +86,7 @@ export default function ListTable({ className }: { className?: string }) {
   const columns = useMemo(
     () =>
       getColumns({
-        data: dataDocuments?.data ?? [],
+        data: dataDocuments?.data || [],
         sortConfig,
         checkedItems: selectedRowKeys,
         onHeaderCellClick,

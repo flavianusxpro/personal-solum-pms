@@ -120,7 +120,7 @@ const PriceEstimationCost = ({
             </Flex>
             <Flex justify="between" align="center">
               <Text>Merchant Fee:</Text>
-              <Text>{currencyData.active.symbol}-</Text>
+              <Text>{currencyData.active.symbol}0</Text>
             </Flex>
             <Flex justify="between" align="center">
               <Text>Coupon:</Text>

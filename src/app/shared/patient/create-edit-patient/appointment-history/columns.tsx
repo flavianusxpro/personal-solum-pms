@@ -40,7 +40,12 @@ export const getColumns = ({
         <Checkbox
           title={'Select All'}
           onChange={handleSelectAll}
-          checked={checkedItems?.length === data?.length}
+          checked={
+            checkedItems?.length > 0 &&
+            data &&
+            data?.length > 0 &&
+            checkedItems?.length === data?.length
+          }
           className="cursor-pointer"
         />
       </div>
