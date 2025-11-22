@@ -17,7 +17,7 @@ export async function getDashboardAdminSummary(params: { timezone: string }) {
     '/admin/summary/appointment',
     {
       headers: {
-        timezone_client: params.timezone,
+        "timezone-client": params.timezone,
       },
     }
   ).then((res) => {

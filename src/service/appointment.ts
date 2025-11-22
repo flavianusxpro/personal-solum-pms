@@ -15,7 +15,7 @@ export async function getAppointmentList(params: IParamGetAppointments) {
   return await get<IGetAppointmentListResponse>('/admin/appointment', {
     params,
     headers: {
-      timezone_client: params.timezone_client,
+      "timezone-client": params.timezone_client,
     },
   });
 }
