@@ -16,18 +16,18 @@ export default function ShowConfirm({
   const { closeModal } = useModal();
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex justify-center items-center flex-col gap-6 p-6 h-[350px]">
       <div className="flex justify-center">
         <Image src={ConfirmInfoBlueIcon} alt="info-icon" />
       </div>
-      <div className="flex flex-col items-center">
-        <span className="text-2xl font-bold">Change Status to {status}?</span>
-        <span className="max-w-xs text-center text-lg">
+      <div className="flex flex-col items-center gap-[16px]">
+        <span className="text-[24px] font-bold">Change Status to {status}?</span>
+        <span className="max-w-xs text-center text-[16px]">
           Are you sure you want to change the appointment status to {''}
           <span className="text-center font-bold text-gray-400">{status}</span>?
         </span>
       </div>
-      <div className="flex justify-center gap-4">
+      <div className="flex justify-center gap-[16px]">
         <Button
           className="border border-black bg-white text-black hover:bg-white hover:text-black"
           onClick={closeModal}

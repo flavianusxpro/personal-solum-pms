@@ -39,7 +39,6 @@ const filterState = {
 export default function AppointmentListTable() {
   const { isOpen: open } = useModal();
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
   const [filterStateValue, setFilterStateValue] = useState(filterState);
   const [isFilter, setIsFilter] = useState<boolean>(false);
   const [_, setCheckedItems] = useState<string[]>([]);
