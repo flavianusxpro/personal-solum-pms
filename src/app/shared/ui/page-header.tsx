@@ -1,10 +1,10 @@
 import { Title } from 'rizzui';
 import cn from '@core/utils/class-names';
 import Breadcrumb from '@core/ui/breadcrumb';
-import { memo } from 'react';
+import React, { memo, ReactNode } from 'react';
 
 export type PageHeaderTypes = {
-  title: string;
+  title: ReactNode;
   breadcrumb: { name: string; href?: string }[];
   className?: string;
 };

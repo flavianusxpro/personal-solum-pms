@@ -27,7 +27,7 @@ import CreateUpdateAppointmentForm from '../../modal/appointment-form';
 import { FaRegNoteSticky } from 'react-icons/fa6';
 import { GrSchedules } from 'react-icons/gr';
 import { RxCountdownTimer } from 'react-icons/rx';
-import { MdNotes, MdOutlineFreeCancellation } from 'react-icons/md';
+import { MdInfoOutline, MdNotes, MdOutlineFreeCancellation, MdOutlineInfo, MdOutlineVisibility, MdVisibility } from 'react-icons/md';
 import AddNotesForm from '../../modal/add-notes';
 import CancelForm from '../../modal/cancel-form';
 import RescheduleAppointmentForm from '../../modal/reschedule';
@@ -38,6 +38,10 @@ import { HiOutlineDotsVertical } from 'react-icons/hi';
 import DeleteModal from '@/app/shared/ui/delete-modal';
 import TrashIcon from '@/core/components/icons/trash';
 import ShowConfirm from '../../modal/confirm-modal';
+import Link from 'next/link';
+import { routes } from '@/config/routes';
+import ModalProfilePatient from '../../modal/profile-patient';
+import ModalProfileDoctor from '../../modal/profile-doctor';
 dayjs.extend(timezonePlugin);
 const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -80,6 +84,7 @@ export const GetColumns = ({
   idAppointment,
   setIdAppointment,
 }: Columns) => {
+  const { openModal, closeModal } = useModal();
   return [
     {
       title: (
@@ -107,37 +112,31 @@ export const GetColumns = ({
       ),
     },
     {
-      title: <HeaderCell title="ID" />,
-      onHeaderCell: () => onHeaderCellClick('id'),
-      dataIndex: 'id',
-      key: 'id',
-      width: 130,
-      render: (id: string) => <Text>#{id}</Text>,
-    },
-    {
       title: <HeaderCell title="PATIENT NAME" />,
-      // onHeaderCell: () => onHeaderCellClick('patient.name'),
       dataIndex: 'patient',
       key: 'patient',
       width: 320,
-      render: (_: any, row: RowValue) => (
-        <AvatarCard
-          src={row?.patient?.photo ?? ''}
-          name={`${row?.patient?.first_name} ${row?.patient?.last_name}`}
-          description={row?.patient?.email}
-          number={row?.patient?.mobile_number}
-        />
-      ),
-    },
-    {
-      title: <HeaderCell title="Local Time" />,
-      dataIndex: 'local_date',
-      key: 'local_date',
-      width: 250,
-      render: (date: string) => (
-        <div>
-          {date}
-          <div>{localTimezone}</div>
+      render: (_: any, row: RowValue) =>
+      (
+        <div className='flex items-center gap-2'>
+          <Link
+            className='font-bold'
+            href={routes.patient.patientDetail(row?.patient?.patient_id.toString())}
+          >
+            {row?.patient?.first_name} {row?.patient?.last_name}
+          </Link>
+          <span
+            className='text-[16px] cursor-pointer font-bold'
+            onClick={() => {
+              closeModal(),
+                openModal({
+                  view: <ModalProfilePatient data={row} />,
+                  customSize: '650px',
+                });
+            }}
+          >
+            <MdOutlineInfo />
+          </span>
         </div>
       ),
     },
@@ -148,7 +147,28 @@ export const GetColumns = ({
       width: 250,
       render: (date: Date, row: RowValue) => (
         <div>
-          {dayjs(date).utc().format('DD/MM/YYYY hh:mm A')}
+          {dayjs(date).utc().format('DD MMM YYYY')}
+        </div>
+      ),
+    },
+    {
+      title: <HeaderCell title="Time" />,
+      dataIndex: 'date',
+      key: 'date',
+      width: 250,
+      render: (date: Date, row: RowValue) => (
+        <div>
+          {dayjs(date).utc().format('hh:mm A')}
+        </div>
+      ),
+    },
+    {
+      title: <HeaderCell title="Location" />,
+      dataIndex: 'date',
+      key: 'date',
+      width: 250,
+      render: (date: Date, row: RowValue) => (
+        <div>
           <div>{row.doctor.timezone}</div>
         </div>
       ),
@@ -159,12 +179,26 @@ export const GetColumns = ({
       key: 'doctor',
       width: 320,
       render: (doctorId: string, row: RowValue) => (
-        <AvatarCard
-          number={row.doctor.mobile_number}
-          src={row.doctor.photo ?? ''}
-          name={`Dr. ${row.doctor.first_name} ${row.doctor.last_name}`}
-          description={row.doctor.email}
-        />
+        <div className='flex items-center gap-2'>
+          <Link
+            className='font-bold cursor-pointer'
+            href={routes.doctor.doctorDetail(row?.doctor?.id?.toString())}
+          >
+            Dr. {row.doctor.first_name} {row.doctor.last_name}
+          </Link>
+          <span
+            className='text-[16px] cursor-pointer font-bold'
+            onClick={() => {
+              closeModal(),
+                openModal({
+                  view: <ModalProfileDoctor data={row} />,
+                  customSize: '600px',
+                });
+            }}
+          >
+            <MdOutlineInfo />
+          </span>
+        </div>
       ),
     },
     {
@@ -184,9 +218,17 @@ export const GetColumns = ({
       render: (type: Type) => (
         <>
           <p className="whitespace-nowrap font-medium text-gray-900">{type}</p>
-          <p className="whitespace-nowrap font-medium text-gray-500">
-            Reminder Sent
-          </p>
+          <div className='flex items-center gap-2'>
+            <p className="whitespace-nowrap font-medium text-gray-500">
+              Reminder Sent
+            </p>
+            <span
+              className='text-[16px] cursor-pointer font-bold'
+              onClick={() => { }}
+            >
+              <MdOutlineVisibility />
+            </span>
+          </div>
         </>
       ),
     },
@@ -225,7 +267,7 @@ export const GetColumns = ({
         getPaymentStatusBadge(row?.payment?.status ?? 0),
     },
     {
-      title: <HeaderCell title="Actions" />,
+      title: <HeaderCell title="Action" />,
       dataIndex: 'action',
       key: 'action',
       width: 120,
@@ -316,11 +358,63 @@ function RenderAction({
     <div className="flex items-center justify-end gap-3 pe-3">
       <Dropdown placement="bottom-end">
         <Dropdown.Trigger>
-          <ActionIcon variant="outline" rounded="full">
-            <HiOutlineDotsVertical className="h-5 w-5" />
-          </ActionIcon>
+          <Button as="span" variant="outline">
+            Action
+          </Button>
         </Dropdown.Trigger>
         <Dropdown.Menu>
+          {isShowCancel && (
+            <Dropdown.Item onClick={() => cancelModal(row)}>
+              <MdOutlineFreeCancellation className="mr-2 h-4 w-4" />
+              Cancel
+            </Dropdown.Item>
+          )}
+
+          {isShowReschedule && (
+            <Dropdown.Item onClick={() => rescheduleModal(row)}>
+              <GrSchedules className="mr-2 h-4 w-4" />
+              Reschedule
+            </Dropdown.Item>
+          )}
+
+          <Dropdown.Item onClick={() => revertModal(row)}>
+            <RxCountdownTimer className="mr-2 h-4 w-4" />
+            Revert Back
+          </Dropdown.Item>
+
+          {isHasNote && (
+            <Dropdown.Item onClick={showNoteModal}>
+              <MdNotes className="mr-2 h-4 w-4" />
+              Show Note
+            </Dropdown.Item>
+          )}
+
+          <Dropdown.Item onClick={addNotesModal}>
+            <FaRegNoteSticky className="mr-2 h-4 w-4" />
+            Add Note
+          </Dropdown.Item>
+
+          <Dropdown.Item onClick={() =>
+            openModal({
+              view: (
+                <AppointmentDetails data={row} onEdit={handleCreateModal} />
+              ),
+              customSize: '900px',
+            })
+          }>
+            <EyeIcon className="mr-2 h-4 w-4" />
+            View
+          </Dropdown.Item>
+
+          <Dropdown.Item onClick={() => {
+            setIdAppointment(row.id);
+            setIsOpen(true);
+          }}>
+            <TrashIcon className="mr-2 h-4 w-4" />
+            Delete
+          </Dropdown.Item>
+        </Dropdown.Menu>
+        {/* <Dropdown.Menu>
           {isShowCancel && (
             <Dropdown.Item>
               <Button
@@ -413,7 +507,7 @@ function RenderAction({
               <span>Delete</span>{' '}
             </Button>
           </Dropdown.Item>
-        </Dropdown.Menu>
+        </Dropdown.Menu> */}
       </Dropdown>
       <DeleteModal
         isOpen={isOpen}
@@ -545,7 +639,7 @@ function StatusSelect({ selectItem, id }: { selectItem: number; id: number }) {
     closeModal(),
       openModal({
         view: <ShowConfirm onClick={onClick} status={status} id={id} />,
-        customSize: '600px',
+        customSize: '550px',
       });
   };
   const selectItemValue = aptStatusOptions.find(

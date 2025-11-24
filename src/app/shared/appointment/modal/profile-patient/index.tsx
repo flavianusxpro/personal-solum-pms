@@ -1,0 +1,170 @@
+import { useModal } from "@/app/shared/modal-views/use-modal";
+import { IGetAppointmentListResponse } from "@/types/ApiResponse";
+import { Avatar } from 'rizzui';
+import { PiX, PiMapPin, PiCake, PiIdentificationCard, PiCalendarBlank } from 'react-icons/pi';
+import { MdVerified } from "react-icons/md";
+import dayjs from 'dayjs';
+
+type DataTableType = IGetAppointmentListResponse['data'][number];
+
+const ModalProfilePatient = (data: any) => {
+    const { closeModal } = useModal();
+
+    const VerifiedBadge = ({ isVerified = true }: { isVerified?: boolean }) => {
+        if (isVerified) {
+            return (
+                <span className="flex items-center text-[#3872F9] gap-[4px]">
+                    <MdVerified className="text-[16px] " />
+                    <span className="font-medium text-[14px] ">Verified</span>
+                </span>
+            );
+        }
+
+        return (
+            <span className="flex items-center text-[#DC2626] gap-[4px]">
+                <svg
+                    className="h-[16px]"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                >
+                    <path d="M12 2L9.19 4.81L5.63 4.39L4.39 7.95L0.83 9.19L2 12L0.83 14.81L4.39 16.05L5.63 19.61L9.19 19.19L12 22L14.81 19.19L18.37 19.61L19.61 16.05L23.17 14.81L22 12L23.17 9.19L19.61 7.95L18.37 4.39L14.81 4.81L12 2ZM15.54 9.88L13.41 12L15.54 14.12L14.12 15.54L12 13.41L9.88 15.54L8.46 14.12L10.59 12L8.46 9.88L9.88 8.46L12 10.59L14.12 8.46L15.54 9.88Z" />
+                </svg>
+                <span className="font-medium text-[14px]">Not Verified</span>
+            </span>
+        );
+    };
+
+    return (
+        <div className="w-full rounded-[24px] bg-white p-6">
+            {/* Close Button */}
+            <button
+                onClick={closeModal}
+                className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900"
+            >
+                <PiX className="h-5 w-5" />
+            </button>
+
+            {/* Header */}
+            <div className="mb-6 flex items-center gap-4">
+                <Avatar
+                    name={`${data?.data?.patient
+                        ?.first_name} ${data?.data?.patient
+                            ?.last_name}`}
+                    src={data?.patient?.photo || `${data?.data?.patient
+                        ?.first_name} ${data?.data?.patient
+                            ?.last_name}`}
+                    className="!h-[80px] !w-[80px]"
+                />
+                <div>
+                    <div className="flex items-center gap-[8px]">
+                        <h2 className="text-[18px] font-semibold">
+                            {data?.data?.patient
+                        ?.first_name} {data?.data?.patient
+                        ?.last_name}
+                        </h2>
+                        <VerifiedBadge
+                            isVerified={data?.data?.patient?.verification_status}
+                        />
+
+                    </div>
+                    <p className="text-sm text-[#525252]">
+                        {data?.data?.patient?.gender ? (data?.data?.patient?.gender).charAt(0).toUpperCase() + (data?.data?.patient?.gender).substr(1).toLowerCase() : '-'}
+                    </p>
+                </div>
+            </div>
+
+            {/* Content Grid */}
+            <div className="grid gap-2 md:grid-cols-2">
+                {/* Personal Info */}
+                <div className="rounded-lg border border-[#E4E4E4] p-4">
+                    <h3 className="mb-4 font-semibold text-sm text-[#525252]">
+                        Personal Info
+                    </h3>
+                    <div className="flex flex-col gap-[8px]">
+                        <div className="flex items-center gap-3">
+                            <PiCake className="text-[18px]" />
+                            <div className="flex items-center gap-2">
+                                <p className="text-[#525252] text-sm">
+                                     {data?.data?.patient?.date_of_birth ? dayjs(data?.data?.patient?.date_of_birth).format("DD MMMM YYYY") : '-'}
+                                </p>
+                                <span className="text-[#787878] text-[12px] border border-[#E4E4E4] py-[4px] px-[8px] rounded-[4px] flex items-center justify-center">
+                                    {data?.data?.patient?.age ?? '-'} y.o.
+                                </span>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                            <PiMapPin className="text-[18px]" />
+                            <p className="text-sm text-[#525252]">
+                                {data?.data?.patient?.address_line_1 ?? '-'}, {data?.data?.patient?.state ?? '-'}, {data?.data?.patient?.country ?? '-'}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Medicare Info */}
+                <div className="rounded-lg border border-[#E4E4E4] p-4">
+                    <h3 className="mb-4 font-semibold text-sm text-[#525252]">
+                        Medicare Info
+                    </h3>
+                    <div className="flex flex-col gap-[8px]">
+                        <div className="flex items-start gap-3">
+                            <PiIdentificationCard className="text-[18px]" />
+                            <p className="text-[#525252] text-sm">
+                                {data?.data?.patient?.medicare_card_number ?? '-'}
+                            </p>
+                        </div>
+                        <div className="flex items-start gap-3">
+                            <PiCalendarBlank className="text-[18px]" />
+                            <p className="text-[#525252] text-sm">
+                                {data?.data?.patient?.medicare_expired_date ? dayjs(data?.data?.patient?.medicare_expired_date).format('MM/YYYY') : '-'}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Contact Info */}
+            <div className="mt-2 rounded-lg border border-[#E4E4E4] p-4">
+                <h3 className="mb-4 font-semibold text-sm text-[#525252]">
+                    Contact Info
+                </h3>
+                <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                        <p className="text-sm font-medium text-[#525252]">
+                            Email
+                        </p>
+                        <p className="text-sm text-[#525252]">
+                            {data?.data?.patient?.email ?? '-'}
+                        </p>
+                    </div>
+                    <div>
+                        <p className="text-sm font-medium text-[#525252]">
+                            Work
+                        </p>
+                        <p className="text-sm text-[#525252]">
+                            {data?.data?.patient?.phone_work_number ?? '-'}
+                        </p>
+                    </div>
+                    <div>
+                        <p className="text-sm font-medium text-[#525252]">
+                            Home
+                        </p>
+                        <p className="text-sm text-[#525252]">
+                           {data?.data?.patient?.phone_home_number ?? '-'}
+                        </p>
+                    </div>
+                    <div>
+                        <p className="text-sm font-medium text-[#525252]">
+                            Mobile
+                        </p>
+                        <p className="text-sm text-[#525252]">
+                            {data?.data?.patient?.mobile_number ?? '-'}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default ModalProfilePatient;
