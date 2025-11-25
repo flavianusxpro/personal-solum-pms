@@ -19,6 +19,7 @@ import dayjs from 'dayjs';
 import { useProfile } from '@/hooks/useProfile';
 import TableHeader from '@/app/shared/ui/table-header';
 import { StatusSelect } from '@/app/shared/invoice/invoice-list/columns';
+import AppointmentDetails from './appointment-details';
 
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
@@ -36,7 +37,7 @@ const filterState = {
   inactive_patients_months: null,
 };
 
-export default function AppointmentListTable() {
+export default function AppointmentListTable({ range }: { range: string | null }) {
   const { isOpen: open } = useModal();
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const [filterStateValue, setFilterStateValue] = useState(filterState);
@@ -56,6 +57,7 @@ export default function AppointmentListTable() {
     isLoading: isLoadingGetAppointments,
     refetch,
   } = useGetAppointments({
+    range: range ? range : undefined,
     page: isFilter ? 1 : params.page,
     perPage: params.perPage,
     q: JSON.stringify({
@@ -189,6 +191,8 @@ export default function AppointmentListTable() {
     refetch();
   }, [open, refetch, filterStateValue, params]);
 
+  const { openModal } = useModal();
+
   return (
     <div
       className={cn(
@@ -204,6 +208,17 @@ export default function AppointmentListTable() {
         scroll={{
           x: 1560,
         }}
+        onRow={(record, index) => ({
+          onClick: () => {
+            openModal({
+              view: (
+                <AppointmentDetails data={record} />
+              ),
+              customSize: '1100px',
+            })
+          },
+        })}
+
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{

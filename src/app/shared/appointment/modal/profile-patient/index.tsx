@@ -1,15 +1,16 @@
 import { useModal } from "@/app/shared/modal-views/use-modal";
 import { IGetAppointmentListResponse } from "@/types/ApiResponse";
-import { Avatar } from 'rizzui';
+import { Avatar, Button } from 'rizzui';
 import { PiX, PiMapPin, PiCake, PiIdentificationCard, PiCalendarBlank } from 'react-icons/pi';
 import { MdVerified } from "react-icons/md";
 import dayjs from 'dayjs';
+import { routes } from "@/config/routes";
+import Link from "next/link";
 
 type DataTableType = IGetAppointmentListResponse['data'][number];
 
 const ModalProfilePatient = (data: any) => {
     const { closeModal } = useModal();
-
     const VerifiedBadge = ({ isVerified = true }: { isVerified?: boolean }) => {
         if (isVerified) {
             return (
@@ -23,7 +24,7 @@ const ModalProfilePatient = (data: any) => {
         return (
             <span className="flex items-center text-[#DC2626] gap-[4px]">
                 <svg
-                    className="h-[16px]"
+                    className="h-[16px] w-[16px]"
                     viewBox="0 0 24 24"
                     fill="currentColor"
                 >
@@ -35,7 +36,7 @@ const ModalProfilePatient = (data: any) => {
     };
 
     return (
-        <div className="w-full rounded-[24px] bg-white p-6">
+        <div className="relative w-full rounded-[24px] bg-white p-6">
             {/* Close Button */}
             <button
                 onClick={closeModal}
@@ -45,36 +46,44 @@ const ModalProfilePatient = (data: any) => {
             </button>
 
             {/* Header */}
-            <div className="mb-6 flex items-center gap-4">
-                <Avatar
-                    name={`${data?.data?.patient
-                        ?.first_name} ${data?.data?.patient
-                            ?.last_name}`}
-                    src={data?.patient?.photo || `${data?.data?.patient
-                        ?.first_name} ${data?.data?.patient
-                            ?.last_name}`}
-                    className="!h-[80px] !w-[80px]"
-                />
-                <div>
-                    <div className="flex items-center gap-[8px]">
-                        <h2 className="text-[18px] font-semibold">
-                            {data?.data?.patient
-                        ?.first_name} {data?.data?.patient
-                        ?.last_name}
-                        </h2>
-                        <VerifiedBadge
-                            isVerified={data?.data?.patient?.verification_status}
-                        />
+            <div className="flex items-center justify-between my-6 gap-4">
+                <div className="flex items-center gap-4">
+                    <Avatar
+                        name={`${data?.data?.patient?.first_name} ${data?.data?.patient?.last_name}`}
+                        src={data?.patient?.photo || `${data?.data?.patient?.first_name} ${data?.data?.patient?.last_name}`}
+                        className="!h-[80px] !w-[80px]"
+                    />
+                    <div>
+                        <div className="flex items-center gap-[8px]">
+                            <h2 className="text-[18px] font-semibold">
+                                {data?.data?.patient
+                                    ?.first_name} {data?.data?.patient
+                                        ?.last_name}
+                            </h2>
+                            <VerifiedBadge
+                                isVerified={data?.data?.patient?.verification_status}
+                            />
 
+                        </div>
+                        <p className="text-sm text-[#525252]">
+                            {data?.data?.patient?.gender ? (data?.data?.patient?.gender).charAt(0).toUpperCase() + (data?.data?.patient?.gender).substr(1).toLowerCase() : '-'}
+                        </p>
                     </div>
-                    <p className="text-sm text-[#525252]">
-                        {data?.data?.patient?.gender ? (data?.data?.patient?.gender).charAt(0).toUpperCase() + (data?.data?.patient?.gender).substr(1).toLowerCase() : '-'}
-                    </p>
                 </div>
+
+                <Link 
+                    href={routes.patient.patientDetail(data?.data?.patient?.patient_id.toString())}
+                >
+                    <Button 
+                        className="!bg-[#3872F9] text-[16px] font-semibold"
+                    >
+                        Go to Profile
+                    </Button>
+                </Link>
             </div>
 
             {/* Content Grid */}
-            <div className="grid gap-2 md:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-2 mb-4">
                 {/* Personal Info */}
                 <div className="rounded-lg border border-[#E4E4E4] p-4">
                     <h3 className="mb-4 font-semibold text-sm text-[#525252]">
@@ -85,7 +94,7 @@ const ModalProfilePatient = (data: any) => {
                             <PiCake className="text-[18px]" />
                             <div className="flex items-center gap-2">
                                 <p className="text-[#525252] text-sm">
-                                     {data?.data?.patient?.date_of_birth ? dayjs(data?.data?.patient?.date_of_birth).format("DD MMMM YYYY") : '-'}
+                                    {data?.data?.patient?.date_of_birth ? dayjs(data?.data?.patient?.date_of_birth).format("DD MMMM YYYY") : '-'}
                                 </p>
                                 <span className="text-[#787878] text-[12px] border border-[#E4E4E4] py-[4px] px-[8px] rounded-[4px] flex items-center justify-center">
                                     {data?.data?.patient?.age ?? '-'} y.o.
@@ -124,7 +133,7 @@ const ModalProfilePatient = (data: any) => {
             </div>
 
             {/* Contact Info */}
-            <div className="mt-2 rounded-lg border border-[#E4E4E4] p-4">
+            <div className="rounded-lg border border-[#E4E4E4] p-4">
                 <h3 className="mb-4 font-semibold text-sm text-[#525252]">
                     Contact Info
                 </h3>
@@ -150,7 +159,7 @@ const ModalProfilePatient = (data: any) => {
                             Home
                         </p>
                         <p className="text-sm text-[#525252]">
-                           {data?.data?.patient?.phone_home_number ?? '-'}
+                            {data?.data?.patient?.phone_home_number ?? '-'}
                         </p>
                     </div>
                     <div>

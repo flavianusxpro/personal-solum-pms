@@ -14,11 +14,13 @@ import {
   PiArrowDownRight,
   PiArrowUpRight,
 } from 'react-icons/pi';
-import { useMemo } from 'react';
+import { SetStateAction, useMemo } from 'react';
 import { useGetSummaryAppointments } from '@/hooks/useAppointment';
 
 type AppointmentStatsType = {
   className?: string;
+  setRange: React.Dispatch<SetStateAction<string | null>>
+  range: string | null
 };
 
 export type StatType = {
@@ -30,24 +32,36 @@ export type StatType = {
   iconWrapperFill?: string;
   className?: string;
   yesterday?: boolean;
+  keyRange: string;
 };
 
 export type StatCardProps = {
   className?: string;
   transaction: StatType;
+  range: string | null;
+  setRange: React.Dispatch<SetStateAction<string | null>>
 };
 
-function StatCard({ className, transaction }: StatCardProps) {
+function StatCard({ className, transaction, range, setRange }: StatCardProps) {
   const { icon, title, amount, increased, percentage, iconWrapperFill, yesterday } =
     transaction;
   const Icon = icon;
+  const isActive = range === transaction.keyRange
 
   return (
     <div
       className={cn(
-        'w-full rounded-[14px] border border-gray-300 p-6 @container',
+        'w-full rounded-[14px] border border-[#E4E4E4] cursor-pointer p-6 @container',
+        isActive
+          ? 'bg-gray-50'
+          : 'text-gray-900',
         className
       )}
+      onClick={() =>
+        setRange((prev) =>
+          prev === transaction.keyRange ? null : transaction.keyRange
+        )
+      }
     >
       <div className="mb-4 flex items-center gap-5">
         <span
@@ -92,14 +106,14 @@ function StatCard({ className, transaction }: StatCardProps) {
           </span>
         </div>
         <span className="truncate leading-none text-gray-500">
-          {increased ? 'Increased' : 'Decreased'}&nbsp; {yesterday ? 'yesterday' : 'last month' }
+          {increased ? 'Increased' : 'Decreased'}&nbsp; {yesterday ? 'yesterday' : 'last month'}
         </span>
       </div>
     </div>
   );
 }
 
-export function StatGrid({ data }: { data: StatType[] }) {
+export function StatGrid({ data, range, setRange }: { data: StatType[], range: string | null, setRange: React.Dispatch<SetStateAction<string | null>> }) {
   return (
     <>
       {data.map((stat: StatType, index: number) => {
@@ -108,6 +122,8 @@ export function StatGrid({ data }: { data: StatType[] }) {
             key={'stat-card-' + index}
             transaction={stat}
             className="min-w-[300px]"
+            range={range}
+            setRange={setRange}
           />
         );
       })}
@@ -117,6 +133,8 @@ export function StatGrid({ data }: { data: StatType[] }) {
 
 export default function AppointmentListStats({
   className,
+  range,
+  setRange,
 }: AppointmentStatsType) {
   const {
     sliderEl,
@@ -127,12 +145,12 @@ export default function AppointmentListStats({
   } = useScrollableSlider();
 
   const { data, isLoading } = useGetSummaryAppointments();
-
   const statData: StatType[] = useMemo(
     () => [
       {
         title: 'Upcoming Appointment',
         increased: true,
+        keyRange: 'upcoming',
         amount: data?.upcoming_appointment.toString() || '0',
         icon: PiCalendarCheck,
         iconWrapperFill: '#F5A623',
@@ -141,6 +159,7 @@ export default function AppointmentListStats({
       {
         title: 'Today Appointment',
         increased: true,
+        keyRange: 'today',
         amount: data?.today_appointment.toString() || '0',
         icon: PiCheckCircle,
         percentage: data?.today_appointment_increased_yesterday.toString() || '0',
@@ -150,6 +169,7 @@ export default function AppointmentListStats({
       {
         title: 'Finished Appointment',
         increased: false,
+        keyRange: 'finished',
         amount: data?.finished_appointment.toString() || '0',
         icon: PiClock,
         percentage: data?.finished_appointment_increased_last_month.toString() || '0',
@@ -158,6 +178,7 @@ export default function AppointmentListStats({
       {
         title: 'Cancelled Appointment',
         increased: true,
+        keyRange: 'cancelled',
         amount: data?.cancelled_appointment.toString() || '0',
         icon: PiPhoneSlash,
         percentage: data?.cancelled_appointment_increased_last_month.toString() || '0',
@@ -197,7 +218,7 @@ export default function AppointmentListStats({
           ref={sliderEl}
           className="custom-scrollbar-x grid grid-flow-col gap-5 overflow-x-auto scroll-smooth 2xl:gap-6"
         >
-          {isLoading ? <Loader className="" /> : <StatGrid data={statData} />}
+          {isLoading ? <Loader className="" /> : <StatGrid data={statData} range={range} setRange={setRange} />}
         </div>
       </div>
       <Button

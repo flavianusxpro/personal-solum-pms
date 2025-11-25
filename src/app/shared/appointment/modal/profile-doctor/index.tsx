@@ -1,8 +1,10 @@
 import { useModal } from "@/app/shared/modal-views/use-modal";
 import { IGetAppointmentListResponse } from "@/types/ApiResponse";
-import { Avatar } from 'rizzui';
+import { Avatar, Button } from 'rizzui';
 import { PiX, PiMapPin, PiEnvelope, PiPhone, PiTranslate, PiBriefcase } from 'react-icons/pi';
 import dayjs from 'dayjs';
+import Link from "next/link";
+import { routes } from "@/config/routes";
 
 type DataTableType = IGetAppointmentListResponse['data'][number];
 
@@ -28,7 +30,7 @@ const ModalProfileDoctor = (data: any) => {
     })();
 
     return (
-        <div className="relative w-full  max-w-3xl rounded-[24px] bg-white p-6">
+        <div className="relative w-full rounded-[24px] p-6">
             {/* Close Button */}
             <button
                 onClick={closeModal}
@@ -38,31 +40,43 @@ const ModalProfileDoctor = (data: any) => {
             </button>
 
             {/* Header */}
-            <div className="mb-6 flex items-start gap-4">
-                <Avatar
-                    name={`${data?.data?.doctor?.first_name} ${data?.data?.doctor?.last_name}`}
-                    src={data?.doctor?.photo || `${data?.data?.doctor?.first_name} ${data?.data?.doctor?.last_name}`}
-                    className="!h-[80px] !w-[80px]"
-                />
-                <div className="flex-1 flex flex-col gap-[6px]">
-                    <div className="flex items-center gap-4">
-                        <h2 className="text-[18px] font-semibold">
-                            Dr. {`${data?.data?.doctor?.first_name} ${data?.data?.doctor?.last_name}`}
-                        </h2>
-                        <span className="rounded-[4px] border border-[#E4E4E4] px-[8px] py-[4px] text-xs text-[#999999]">
-                            {data?.data?.doctor?.specialists?.[0].name ?? '-'}
-                        </span>
-                    </div>
-                    <p className="text-sm text-[#444444]">
-                        {"MBChB - Bachelor of Medicine and Bachelor of Surgery."}
-                    </p>
-                    <div className="flex items-start">
-                        <PiMapPin className="text-[18px]" />
-                        <p className="text-sm text-[#525252]">
-                            {data?.data?.doctor?.country ?? '-'}, {data?.data?.doctor?.state ?? '-'}
+            <div className="flex justify-between items-center gap-4 my-6">
+                <div className="mb-6 flex items-center gap-4">
+                    <Avatar
+                        name={`${data?.data?.doctor?.first_name} ${data?.data?.doctor?.last_name}`}
+                        src={data?.doctor?.photo || `${data?.data?.doctor?.first_name} ${data?.data?.doctor?.last_name}`}
+                        className="!h-[80px] !w-[80px]"
+                    />
+                    <div className="flex-1 flex flex-col gap-[6px]">
+                        <div className="flex items-center gap-4">
+                            <h2 className="text-[18px] font-semibold">
+                                Dr. {`${data?.data?.doctor?.first_name} ${data?.data?.doctor?.last_name}`}
+                            </h2>
+                            <span className="rounded-[4px] border border-[#E4E4E4] px-[8px] py-[4px] text-xs text-[#999999]">
+                                {data?.data?.doctor?.specialists?.[0].name ?? '-'}
+                            </span>
+                        </div>
+                        <p className="text-sm text-[#444444]">
+                            {"MBChB - Bachelor of Medicine and Bachelor of Surgery."}
                         </p>
+                        <div className="flex items-start">
+                            <PiMapPin className="text-[18px]" />
+                            <p className="text-sm text-[#525252]">
+                                {data?.data?.doctor?.country ?? '-'}, {data?.data?.doctor?.state ?? '-'}
+                            </p>
+                        </div>
                     </div>
                 </div>
+
+                <Link 
+                    href={routes.doctor.doctorDetail(data?.data?.doctor?.id?.toString())}
+                >
+                    <Button 
+                        className="!bg-[#3872F9] text-[16px] font-semibold"
+                    >
+                        Go to Profile
+                    </Button>
+                </Link>
             </div>
 
             {/* Doctor Details */}
@@ -85,7 +99,6 @@ const ModalProfileDoctor = (data: any) => {
                             <p className="text-[#525252] text-sm">
                                 {languages.join(", ")}
                             </p>
-
                         </div>
                     </div>
                     <div className="flex items-start gap-3">
