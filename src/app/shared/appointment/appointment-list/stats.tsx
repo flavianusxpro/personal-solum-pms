@@ -19,8 +19,8 @@ import { useGetSummaryAppointments } from '@/hooks/useAppointment';
 
 type AppointmentStatsType = {
   className?: string;
-  setRange: React.Dispatch<SetStateAction<string | null>>
-  range: string | null
+  setRange?: React.Dispatch<SetStateAction<string | null | undefined>>;
+  range?: string | null
 };
 
 export type StatType = {
@@ -38,8 +38,8 @@ export type StatType = {
 export type StatCardProps = {
   className?: string;
   transaction: StatType;
-  range: string | null;
-  setRange: React.Dispatch<SetStateAction<string | null>>
+  range?: string | null;
+  setRange?: React.Dispatch<SetStateAction<string | null | undefined>>;
 };
 
 function StatCard({ className, transaction, range, setRange }: StatCardProps) {
@@ -58,7 +58,7 @@ function StatCard({ className, transaction, range, setRange }: StatCardProps) {
         className
       )}
       onClick={() =>
-        setRange((prev) =>
+        setRange?.((prev) =>
           prev === transaction.keyRange ? null : transaction.keyRange
         )
       }
@@ -113,7 +113,9 @@ function StatCard({ className, transaction, range, setRange }: StatCardProps) {
   );
 }
 
-export function StatGrid({ data, range, setRange }: { data: StatType[], range: string | null, setRange: React.Dispatch<SetStateAction<string | null>> }) {
+export function StatGrid({ data, range, setRange }: {
+  data: StatType[], range?: string | null | undefined, setRange?: React.Dispatch<SetStateAction<string | null | undefined>>;
+}) {
   return (
     <>
       {data.map((stat: StatType, index: number) => {

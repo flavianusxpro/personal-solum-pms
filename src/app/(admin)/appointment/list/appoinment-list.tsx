@@ -5,7 +5,7 @@ import AppointmentListStats from '@/app/shared/appointment/appointment-list/stat
 import { useState } from 'react';
 
 export default function AppointmentList() {
-  const [range, setRange] = useState<string | null>(null);
+  const [range, setRange] = useState<string | null | undefined>(null);
   return (
     <div className="flex flex-col gap-10 @container">
       <AppointmentListStats
