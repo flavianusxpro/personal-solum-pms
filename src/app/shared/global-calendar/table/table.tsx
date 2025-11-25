@@ -520,7 +520,7 @@ export default function GlobalCalendarTable({}: {}) {
                     }}
                     options={[
                       { label: 'Daily', value: 'daily' },
-                      // { label: 'Weekly', value: 'weekly' },
+                      { label: 'Weekly', value: 'weekly' },
                       { label: 'Monthly', value: 'monthly' },
                     ]}
                     prefix={<PiCalendar size={16} />}

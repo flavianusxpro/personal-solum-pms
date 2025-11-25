@@ -193,6 +193,7 @@ export interface IParamGetAppointments extends IParamGetDataWithPagination {
   q?: string;
   clinicId?: number;
   timezone_client?: string;
+  range?: string | null | undefined
 }
 export interface IParamGetInvoices extends IParamGetDataWithPagination {
   doctorId?: number;
