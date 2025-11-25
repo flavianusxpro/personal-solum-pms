@@ -2,7 +2,7 @@ import { useModal } from "@/app/shared/modal-views/use-modal";
 import { IGetAppointmentListResponse } from "@/types/ApiResponse";
 import { Avatar, Button } from 'rizzui';
 import { PiX, PiMapPin, PiCake, PiIdentificationCard, PiCalendarBlank } from 'react-icons/pi';
-import { MdVerified } from "react-icons/md";
+import { MdCancel, MdVerified } from "react-icons/md";
 import dayjs from 'dayjs';
 import { routes } from "@/config/routes";
 import Link from "next/link";
@@ -23,13 +23,7 @@ const ModalProfilePatient = (data: any) => {
 
         return (
             <span className="flex items-center text-[#DC2626] gap-[4px]">
-                <svg
-                    className="h-[16px] w-[16px]"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                >
-                    <path d="M12 2L9.19 4.81L5.63 4.39L4.39 7.95L0.83 9.19L2 12L0.83 14.81L4.39 16.05L5.63 19.61L9.19 19.19L12 22L14.81 19.19L18.37 19.61L19.61 16.05L23.17 14.81L22 12L23.17 9.19L19.61 7.95L18.37 4.39L14.81 4.81L12 2ZM15.54 9.88L13.41 12L15.54 14.12L14.12 15.54L12 13.41L9.88 15.54L8.46 14.12L10.59 12L8.46 9.88L9.88 8.46L12 10.59L14.12 8.46L15.54 9.88Z" />
-                </svg>
+                <MdCancel className="text-[16px]" />
                 <span className="font-medium text-[14px]">Not Verified</span>
             </span>
         );

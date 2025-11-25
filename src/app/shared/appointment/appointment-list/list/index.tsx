@@ -37,7 +37,7 @@ const filterState = {
   inactive_patients_months: null,
 };
 
-export default function AppointmentListTable({ range }: { range: string | null }) {
+export default function AppointmentListTable({ range }: { range: string | null | undefined }) {
   const { isOpen: open } = useModal();
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const [filterStateValue, setFilterStateValue] = useState(filterState);
