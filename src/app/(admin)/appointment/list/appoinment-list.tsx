@@ -14,6 +14,7 @@ export default function AppointmentList() {
       />
       <AppointmentListTable
         range={range}
+        setRange={setRange}
       />
     </div>
   );

@@ -13,6 +13,8 @@ import {
   PiPhoneSlash,
   PiArrowDownRight,
   PiArrowUpRight,
+  PiBookBookmark,
+  PiCheckBold,
 } from 'react-icons/pi';
 import { SetStateAction, useMemo } from 'react';
 import { useGetSummaryAppointments } from '@/hooks/useAppointment';
@@ -51,9 +53,9 @@ function StatCard({ className, transaction, range, setRange }: StatCardProps) {
   return (
     <div
       className={cn(
-        'w-full rounded-[14px] border border-[#E4E4E4] cursor-pointer p-6 @container',
+        'w-full rounded-[14px] border border-[#E4E4E4] cursor-pointer p-4 @container',
         isActive
-          ? 'bg-gray-50'
+          ? 'bg-[#3872F9]'
           : 'text-gray-900',
         className
       )}
@@ -63,18 +65,25 @@ function StatCard({ className, transaction, range, setRange }: StatCardProps) {
         )
       }
     >
-      <div className="mb-4 flex items-center gap-5">
+      {/* {isActive && (
+        <span className="absolute top-3 right-3 flex items-center justify-center w-6 h-6 rounded-full bg-white shadow-md">
+          <PiCheckBold className="text-[#3872F9] w-3 h-3" />
+        </span>
+      )} */}
+
+      <div className="mb-4 gap-2 flex items-center">
         <span
           style={{ backgroundColor: iconWrapperFill }}
           className={cn(
-            'flex rounded-[14px] p-2.5 text-gray-0 dark:text-gray-900'
+            'flex rounded-[14px] p-3',
+            isActive ? '!bg-white text-[#3872F9]' : 'text-gray-0 dark:text-gray-900'
           )}
         >
-          <Icon className="h-auto w-[30px]" />
+          <Icon className="h-auto w-[25px]" />
         </span>
-        <div className="space-y-1">
-          <p className="font-medium text-gray-500">{title}</p>
-          <p className="text-lg font-bold text-gray-900 dark:text-gray-700 2xl:text-[20px] 3xl:text-3xl">
+        <div className="flex flex-col">
+          <p className={cn('font-medium text-[16px] text-wrap', isActive ? 'text-white' : 'text-[#787878]')}>{title}</p>
+          <p className={cn("text-lg font-bold 2xl:text-[20px] 3xl:text-3xl", isActive ? 'text-white' : 'dark:text-gray-700')}>
             {amount}
           </p>
         </div>
@@ -88,25 +97,27 @@ function StatCard({ className, transaction, range, setRange }: StatCardProps) {
         >
           <span
             className={cn(
-              'flex rounded-full px-2.5 py-1.5',
-              increased
-                ? 'bg-green-lighter/70 dark:bg-green-dark/30'
-                : 'bg-red-lighter/70 dark:bg-red-dark/30'
+              "flex items-center justify-center w-8 h-8 rounded-full",
+              isActive
+                ? "text-[#3872F9] bg-white"
+                : increased
+                  ? "bg-green-lighter/70 dark:bg-green-dark/30"
+                  : "bg-red-lighter/70 dark:bg-red-dark/30"
             )}
           >
             {increased ? (
-              <PiArrowUpRight className="h-auto w-4" />
+              <PiArrowUpRight className="h-4 w-4" />
             ) : (
-              <PiArrowDownRight className="h-auto w-4" />
+              <PiArrowDownRight className="h-4 w-4" />
             )}
           </span>
-          <span className="font-semibold leading-none">
+          <span className={cn("font-semibold leading-none", isActive && 'text-white')}>
             {increased ? '+' : '-'}
             {percentage}%
           </span>
         </div>
-        <span className="truncate leading-none text-gray-500">
-          {increased ? 'Increased' : 'Decreased'}&nbsp; {yesterday ? 'yesterday' : 'last month'}
+        <span className={cn("truncate leading-none", isActive ? 'text-white' : 'text-gray-500')}>
+          {increased ? 'Increased' : 'Decreased'} {yesterday ? 'yesterday' : 'last month'}
         </span>
       </div>
     </div>
@@ -123,7 +134,7 @@ export function StatGrid({ data, range, setRange }: {
           <StatCard
             key={'stat-card-' + index}
             transaction={stat}
-            className="min-w-[300px]"
+            className="min-w-[200px]"
             range={range}
             setRange={setRange}
           />
@@ -150,40 +161,49 @@ export default function AppointmentListStats({
   const statData: StatType[] = useMemo(
     () => [
       {
+        title: 'Draft Appointment',
+        increased: data?.draft_appointment_increased_last_month?.status === 'increase' ? true : false,
+        keyRange: 'draft',
+        amount: data?.draft_appointment.toString() || '0',
+        icon: PiBookBookmark,
+        percentage: data?.draft_appointment_increased_last_month?.percentage.toString() || '0',
+        iconWrapperFill: '#787878',
+      },
+      {
         title: 'Upcoming Appointment',
-        increased: true,
+        increased: data?.upcoming_appointment_increased_last_month?.status === "increase" ? true : false,
         keyRange: 'upcoming',
         amount: data?.upcoming_appointment.toString() || '0',
         icon: PiCalendarCheck,
         iconWrapperFill: '#F5A623',
-        percentage: data?.upcoming_appointment_increased_last_month.toString() || '0',
+        percentage: data?.upcoming_appointment_increased_last_month?.percentage.toString() || '0',
       },
       {
         title: 'Today Appointment',
-        increased: true,
+        increased: data?.today_appointment_increased_yesterday?.status === 'increase' ? true : false,
         keyRange: 'today',
         amount: data?.today_appointment.toString() || '0',
         icon: PiCheckCircle,
-        percentage: data?.today_appointment_increased_yesterday.toString() || '0',
+        percentage: data?.today_appointment_increased_yesterday?.percentage.toString() || '0',
         iconWrapperFill: '#11843C',
         yesterday: true
       },
       {
         title: 'Finished Appointment',
-        increased: false,
+        increased: data?.finished_appointment_increased_last_month?.status === 'increase' ? true : false,
         keyRange: 'finished',
         amount: data?.finished_appointment.toString() || '0',
         icon: PiClock,
-        percentage: data?.finished_appointment_increased_last_month.toString() || '0',
+        percentage: data?.finished_appointment_increased_last_month?.percentage.toString() || '0',
         iconWrapperFill: '#8A63D2',
       },
       {
         title: 'Cancelled Appointment',
-        increased: true,
+        increased: data?.cancelled_appointment_increased_last_month?.status === 'increase' ? true : false,
         keyRange: 'cancelled',
         amount: data?.cancelled_appointment.toString() || '0',
         icon: PiPhoneSlash,
-        percentage: data?.cancelled_appointment_increased_last_month.toString() || '0',
+        percentage: data?.cancelled_appointment_increased_last_month?.percentage.toString() || '0',
         iconWrapperFill: '#C50000',
       },
     ],
@@ -196,6 +216,8 @@ export default function AppointmentListStats({
       data?.finished_appointment_increased_last_month,
       data?.today_appointment_increased_yesterday,
       data?.upcoming_appointment_increased_last_month,
+      data?.draft_appointment,
+      data?.draft_appointment_increased_last_month,
     ]
   );
 

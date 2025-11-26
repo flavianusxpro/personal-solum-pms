@@ -27,8 +27,7 @@ export const patientDetailsFormSchema = z.object({
   post_code: z.string().max(4, {
     message: messages.postCodeMaxLength,
   }),
-  ihi_number: z.string().max(13, { message: messages.maxLength }).optional(),
-
+  ihi_number: z.string().max(16, { message: messages.maxLength }).optional(),
   concession_card_type: z.string().optional(),
   concession_card_number: z.string().optional(),
   concession_card_expiry: z.date().optional(),
@@ -41,7 +40,7 @@ export const patientDetailsFormSchema = z.object({
         'Medicare card must be between 10 and 13 characters when provided',
     }),
   medicare_expiry: z.date().optional(),
-  position_of_card: z
+  position_on_card: z
     .string()
     .max(2, { message: messages.maxLength })
     .optional(),

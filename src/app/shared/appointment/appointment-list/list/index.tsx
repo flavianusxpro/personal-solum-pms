@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
 import { GetColumns } from '@/app/shared/appointment/appointment-list/list/columns';
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { useMedia } from '@core/hooks/use-media';
@@ -37,7 +37,7 @@ const filterState = {
   inactive_patients_months: null,
 };
 
-export default function AppointmentListTable({ range }: { range: string | null | undefined }) {
+export default function AppointmentListTable({ range, setRange }: { range: string | null | undefined, setRange?: React.Dispatch<SetStateAction<string | null | undefined>>; }) {
   const { isOpen: open } = useModal();
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const [filterStateValue, setFilterStateValue] = useState(filterState);
@@ -125,6 +125,27 @@ export default function AppointmentListTable({ range }: { range: string | null |
       setCheckedItems((prevItems) => prevItems.filter((item) => item !== id));
     }
   };
+
+  const [isResetting, setIsResetting] = useState(false);
+
+  useEffect(() => {
+    if (!isResetting) {
+      setRange?.(null);
+    }
+  }, [filterStateValue.createdAt]);
+
+  useEffect(() => {
+    if (range !== null && !isResetting) {
+      setIsResetting(true);
+
+      setFilterStateValue((prev) => ({
+        ...prev,
+        createdAt: [null, null],
+      }));
+
+      setTimeout(() => setIsResetting(false), 0);
+    }
+  }, [range]);
 
   const updateFilter = useCallback(
     (columnId: string, filterValue: string | number | any[] | null) => {

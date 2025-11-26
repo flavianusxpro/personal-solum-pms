@@ -66,10 +66,10 @@ export default function FilterElement({
         onChange={(date: any) => {
           updateFilter('createdAt', date);
         }}
-        placeholderText="Select created date"
+        placeholderText="Select appointment date"
         {...(isMediumScreen && {
           inputProps: {
-            label: 'Created Date',
+            label: 'Appointment Date',
             labelClassName: 'font-medium text-gray-700',
           },
         })}
