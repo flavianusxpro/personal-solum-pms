@@ -343,8 +343,11 @@ function RenderAction({
   return (
     <div className="flex items-center justify-end gap-3 pe-3">
       <Dropdown placement="bottom-end">
-        <Dropdown.Trigger>
-          <Button as="span" variant="outline">
+        <Dropdown.Trigger onClick={(e) => e.stopPropagation()} >
+          <Button
+            as="span"
+            variant="outline"
+          >
             Action
           </Button>
         </Dropdown.Trigger>
@@ -588,18 +591,20 @@ export function StatusSelect({ selectItem, id, statusValue }: { selectItem: numb
   };
 
   return (
-    <CSelect
-      className={'min-w-[140px]'}
-      dropdownClassName="h-auto"
-      placeholder="Select Status"
-      options={aptStatusOptions}
-      value={value}
-      onChange={handleChange}
-      isLoading={isPending}
-      displayValue={(option: { value: number }) =>
-        getAptStatusBadge(option.value)
-      }
-    />
+    <div onClick={(e) => e.stopPropagation()}>
+      <CSelect
+        className="min-w-[140px]"
+        dropdownClassName="h-auto"
+        placeholder="Select Status"
+        options={aptStatusOptions}
+        value={value}
+        onChange={handleChange}
+        isLoading={isPending}
+        displayValue={(option: { value: number }) =>
+          getAptStatusBadge(option.value)
+        }
+      />
+    </div>
   );
 }
 

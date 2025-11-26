@@ -29,6 +29,11 @@ const ModalProfileDoctor = (data: any) => {
         }
     })();
 
+    function stripHtml(htmlString: string) {
+        const doc = new DOMParser().parseFromString(htmlString, "text/html");
+        return doc.body.textContent || "";
+    }
+
     return (
         <div className="relative w-full rounded-[24px] p-6">
             {/* Close Button */}
@@ -68,10 +73,10 @@ const ModalProfileDoctor = (data: any) => {
                     </div>
                 </div>
 
-                <Link 
+                <Link
                     href={routes.doctor.doctorDetail(data?.data?.doctor?.id?.toString())}
                 >
-                    <Button 
+                    <Button
                         className="!bg-[#3872F9] text-[16px] font-semibold"
                     >
                         Go to Profile
@@ -126,7 +131,7 @@ const ModalProfileDoctor = (data: any) => {
                     Doctor Bio
                 </h3>
                 <p className="mb-4 text-sm leading-relaxed text-[#444444]">
-                    {data?.data?.doctor?.description ?? '-'}
+                   {stripHtml(data?.data?.doctor?.description ?? '-')}
                 </p>
                 <div>
                     <p className="text-sm text-[#444444]">

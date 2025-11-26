@@ -118,9 +118,7 @@ export default function AppointmentDetails({
                       </p>
                       <PiCopy
                         onClick={() =>
-                          handleCopy(
-                            `${data?.doctor?.first_name} ${data?.doctor?.last_name}`
-                          )
+                          handleCopy(data?.doctor?.email)
                         }
                         className="cursor-pointer active:scale-[0.99]"
                       />
