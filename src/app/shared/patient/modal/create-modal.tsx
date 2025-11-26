@@ -52,7 +52,7 @@ export default function CreatePatienModal() {
       postcode: data.post_code,
       state: data.state,
       country: data.country,
-      position_of_card: data.position_of_card,
+      position_on_card: data.position_on_card,
       patient_type: 'New Patient',
       clinicId: dataProfile?.clinics[0].id,
     };
@@ -201,8 +201,8 @@ export default function CreatePatienModal() {
                     type="number"
                     label="Position of Card"
                     placeholder="Position of Card"
-                    {...register('position_of_card')}
-                    error={errors.position_of_card?.message}
+                    {...register('position_on_card')}
+                    error={errors.position_on_card?.message}
                     className="flex-1 flex-grow"
                   />
 
