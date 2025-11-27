@@ -75,6 +75,7 @@ export type TableFilterProps = {
   showSearchOnTheRight?: boolean;
   enableDrawerFilter?: boolean;
   menu?: React.ReactNode;
+  otherButton?: any[];
 };
 
 export default function TableFilter({
@@ -91,6 +92,7 @@ export default function TableFilter({
   showSearchOnTheRight = false,
   menu,
   children,
+  otherButton = [],
 }: TableFilterProps) {
   const isMediumScreen = useMedia('(max-width: 6000px)', false);
   const [showFilters, setShowFilters] = useState(false);
@@ -148,6 +150,13 @@ export default function TableFilter({
             className="me-2.5"
           />
         ) : null}
+
+        {
+          Array.isArray(otherButton) && otherButton.length > 0 &&
+          otherButton.map((Button: any, index: number) =>
+            typeof Button === "function" ? <span key={index}>{Button()}</span> : <span key={index}>{Button}</span>
+          )
+        }
 
         {children ? (
           <Button

@@ -6,7 +6,7 @@ import { useTable } from '@core/hooks/use-table';
 import { useColumn } from '@core/hooks/use-column';
 import { PiCaretDownBold, PiCaretUpBold } from 'react-icons/pi';
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
-import { ActionIcon } from 'rizzui';
+import { ActionIcon, Button } from 'rizzui';
 import ExpandedOrderRow from '@/app/shared/patient/table/expanded-row';
 import { getColumns } from './columns';
 import { useDeletePatient, useGetAllPatients } from '@/hooks/usePatient';
@@ -17,6 +17,7 @@ import TableFooter from '../../ui/table-footer';
 import { useProfile } from '@/hooks/useProfile';
 import TableHeader from '../../ui/table-header';
 import { StatusSelect } from '../../invoice/invoice-list/columns';
+import { FiSend } from 'react-icons/fi';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/patient/table/filter-element'),
@@ -80,6 +81,8 @@ export default function PatientTable() {
     clinicId: dataProfile?.clinics?.[0]?.id || 0,
   });
 
+  console.log("data patients ==============>>>", data);
+
   const { mutate: mutateDeletePatient } = useDeletePatient();
 
   const onHeaderCellClick = (value: string) => ({
@@ -99,8 +102,8 @@ export default function PatientTable() {
         onError: (error: any) => {
           toast.error(
             error?.response?.data?.message ||
-              error?.message ||
-              'Something went wrong'
+            error?.message ||
+            'Something went wrong'
           );
         },
       });
@@ -226,6 +229,21 @@ export default function PatientTable() {
           columns,
           checkedColumns,
           setCheckedColumns,
+          otherButton: [
+            () => (
+              <Button 
+                size='sm'
+                className='me-2.5 h-9 pe-3 ps-2.5'
+                onClick={() => {
+                  // integrate to api send bulk consent form
+                  console.log("checkedColumns ========>>>", checkedColumns)
+                }}
+              >
+                <FiSend className="me-1.5 h-[18px] w-[18px]" strokeWidth={1.7} />
+                Send Consent Form
+              </Button>
+            ),
+          ]
         }}
         filterElement={
           <FilterElement
