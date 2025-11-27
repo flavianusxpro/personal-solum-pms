@@ -88,6 +88,9 @@ export const getColumns = ({
     dataIndex: 'checked',
     key: 'checked',
     width: 30,
+    onCell: () => ({
+    onClick: (e: any) => e.stopPropagation(), 
+  }),
     render: (_: any, row: any) => (
       <div className="inline-flex ps-2">
         <Checkbox
@@ -137,14 +140,20 @@ export const getColumns = ({
         <p className="flex items-center gap-2 font-medium text-gray-700">
           {row.email || '-'}
           <PiCopy
-            onClick={() => handleCopy(row.email)}
+            onClick={(e) => {
+              e.stopPropagation()
+              handleCopy(row.email)
+            }}
             className="cursor-pointer active:scale-[0.99]"
           />
         </p>
         <p className="flex items-center gap-2 font-medium text-slate-400">
           {row.mobile_number || '-'}
           <PiCopy
-            onClick={() => handleCopy(row.mobile_number)}
+            onClick={(e) => { 
+              e.stopPropagation()
+              handleCopy(row.mobile_number)
+            }}
             className="cursor-pointer active:scale-[0.99]"
           />
         </p>
@@ -165,7 +174,10 @@ export const getColumns = ({
     key: 'action',
     width: 130,
     render: (_: string, row: any) => (
-      <div className="flex items-center justify-end gap-3 pe-4">
+      <div 
+        className="flex items-center justify-end gap-3 pe-4"
+        onClick={(e) => e.stopPropagation()}
+      >
         {isPermissionWriteDoctor && (
           <Tooltip
             size="sm"

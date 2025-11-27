@@ -7,6 +7,9 @@ import Link from "next/link";
 import { routes } from "@/config/routes";
 
 type DataTableType = IGetAppointmentListResponse['data'][number];
+interface HtmlBlockProps {
+    html: string;
+}
 
 const ModalProfileDoctor = (data: any) => {
     const { closeModal } = useModal();
@@ -29,9 +32,10 @@ const ModalProfileDoctor = (data: any) => {
         }
     })();
 
-    function stripHtml(htmlString: string) {
-        const doc = new DOMParser().parseFromString(htmlString, "text/html");
-        return doc.body.textContent || "";
+    function HtmlBlock({ html }: HtmlBlockProps) {
+        return (
+            <div dangerouslySetInnerHTML={{ __html: html }} />
+        );
     }
 
     return (
@@ -131,7 +135,7 @@ const ModalProfileDoctor = (data: any) => {
                     Doctor Bio
                 </h3>
                 <p className="mb-4 text-sm leading-relaxed text-[#444444]">
-                   {stripHtml(data?.data?.doctor?.description ?? '-')}
+                     <HtmlBlock html={data?.data?.doctor?.description} />
                 </p>
                 <div>
                     <p className="text-sm text-[#444444]">

@@ -9,11 +9,14 @@ import { useMedia } from '@core/hooks/use-media';
 import cn from '@/core/utils/class-names';
 import { appointmentTypes } from '@/data/appointment-data';
 import CSelect from '@/app/shared/ui/select';
+import { useGetAllDoctors } from '@/hooks/useDoctor';
+import { useProfile } from '@/hooks/useProfile';
+import { useGetAllPatients } from '@/hooks/usePatient';
 
 type FilterElementProps = {
   isFiltered: boolean;
   filters: { [key: string]: any };
-  updateFilter: (columnId: string, filterValue: string | any[]) => void;
+  updateFilter: (columnId: string, filterValue: string | any[] | null) => void;
   handleReset: () => void;
   setIsFilter: Dispatch<SetStateAction<boolean>>;
 };
@@ -43,6 +46,39 @@ export default function FilterElement({
   handleReset,
   setIsFilter,
 }: FilterElementProps) {
+  const { data: dataProfile, isLoading: isLoadingProfile } = useProfile(true);
+  const { data: doctorDatas, isLoading: isLoadingDoctor } = useGetAllDoctors({
+    page: 1,
+    perPage: 1000,
+    clinicId: dataProfile?.clinics[0]?.id,
+  });
+
+  const optionDoctors = React.useMemo(() => {
+    if (!doctorDatas?.data) return [];
+    return doctorDatas?.data?.map((doctor) => {
+      return ({
+        label: `Dr. ${doctor.first_name} ${doctor.last_name}`,
+        value: doctor.id,
+      });
+    });
+  }, [doctorDatas]);
+
+  // const { data: patientDatas, isLoading: isLoadingPatient } = useGetAllPatients({
+  //   page: 1,
+  //   perPage: 1000,
+  //   clinicId: dataProfile?.clinics?.[0]?.id || 0,
+  // });
+
+  // const optionPatients = React.useMemo(() => {
+  //   if (!patientDatas?.data) return [];
+  //   return patientDatas?.data?.map((patient) => {
+  //     return ({
+  //       label: `${patient.first_name} ${patient.last_name}`,
+  //       value: patient.id,
+  //     });
+  //   });
+  // }, [patientDatas]);
+
   const isMediumScreen = useMedia('(max-width: 6000px)', false);
   return (
     <div
@@ -51,6 +87,28 @@ export default function FilterElement({
         isMediumScreen ? 'flex-col gap-6' : 'flex-row items-center gap-3'
       )}
     >
+      <CSelect
+        placeholder="Select doctor"
+        dropdownClassName="!z-10 h-auto"
+        className="w-full @[35rem]:w-auto"
+        options={optionDoctors}
+        onClear={() => {
+          updateFilter('doctor', null);
+        }}
+        // isLoading={isLoadingDoctor || isLoadingProfile}
+        
+        clearable
+        value={filters['doctor']}
+        onChange={(value: string) => {
+          updateFilter('doctor', value);
+          setIsFilter(true);
+        }}
+        {...(isMediumScreen && {
+          label: 'Doctor',
+          labelClassName: 'font-medium text-gray-700',
+        })}
+      />
+
       <DateFiled
         selectsRange
         dateFormat="dd MMM yyyy"
@@ -145,7 +203,7 @@ export default function FilterElement({
       />
 
       <CSelect
-        placeholder="Select inactive patient month"
+        placeholder="Select last consult"
         dropdownClassName="!z-10 h-auto"
         className="w-full @[35rem]:w-auto"
         options={Array.from({ length: 12 }, (_, index) => ({
@@ -162,10 +220,31 @@ export default function FilterElement({
           setIsFilter(true);
         }}
         {...(isMediumScreen && {
-          label: 'Inactive Patient Month',
+          label: 'Last Consult',
           labelClassName: 'font-medium text-gray-700',
         })}
       />
+
+      {/* <CSelect
+        placeholder="Select patient"
+        dropdownClassName="!z-10 h-auto"
+        className="w-full @[35rem]:w-auto"
+        options={optionPatients}
+        onClear={() => {
+          updateFilter('patient', null);
+        }}
+        isLoading={isLoadingPatient || isLoadingProfile}
+        clearable
+        value={filters['patient']}
+        onChange={(value: string) => {
+          updateFilter('patient', value);
+          setIsFilter(true);
+        }}
+        {...(isMediumScreen && {
+          label: 'Patient',
+          labelClassName: 'font-medium text-gray-700',
+        })}
+      /> */}
 
       {isFiltered ? (
         <Button
