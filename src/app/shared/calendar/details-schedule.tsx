@@ -1,14 +1,15 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { PiCoffee, PiXBold } from 'react-icons/pi';
-import { ActionIcon, Button, Text, Title } from 'rizzui';
+import { ActionIcon, Button, Empty, Text, Title } from 'rizzui';
 import cn from '@core/utils/class-names';
-import { MdOutlineCalendarMonth } from 'react-icons/md';
+import { MdOutlineCalendarMonth, MdOutlineKeyboardArrowRight } from 'react-icons/md';
 import toast from 'react-hot-toast';
 import { useGetDoctorById } from '@/hooks/useDoctor';
 import { DoctorSchedule } from '@/types/ApiResponse';
 import { useDeleteSchedule, useGetListSchedule } from '@/hooks/useSchedule';
 import dayjs from 'dayjs';
 import EditScheduleForm from './edit-schedule-form';
+import AppointmentDetails from '../appointment/appointment-list/list/appointment-details';
 
 interface DetailsScheduleProps {
   event: DoctorSchedule;
@@ -18,7 +19,6 @@ interface DetailsScheduleProps {
 
 function DetailsSchedule({ event, doctorId, isView }: DetailsScheduleProps) {
   const { closeModal, openModal } = useModal();
-
   const { refetch } = useGetListSchedule({
     doctorId: doctorId as string,
     page: 1,
@@ -72,20 +72,8 @@ function DetailsSchedule({ event, doctorId, isView }: DetailsScheduleProps) {
         </ActionIcon>
       </div>
 
-      <div>
+      {/* <div>
         <ul className="mt-7 flex flex-col gap-[18px] text-gray-600">
-          {/* <li className="flex gap-2">
-            <FaUserDoctor className="h-5 w-5" />
-            <span>Doctor:</span>
-            <span className="font-medium text-gray-1000">{`${dataDoctor?.first_name} ${dataDoctor?.last_name}`}</span>
-          </li> */}
-          {/* <li className="flex gap-2">
-            <FaPencil className="h-5 w-5" />
-            <span>Description:</span>
-            <span className="font-medium text-gray-1000">
-              {event.description}
-            </span>
-          </li> */}
           <li className="flex gap-2">
             <MdOutlineCalendarMonth className="h-5 w-5" />
             <span>Event:</span>
@@ -123,7 +111,61 @@ function DetailsSchedule({ event, doctorId, isView }: DetailsScheduleProps) {
             <Button onClick={handleEditModal}>Edit</Button>
           </div>
         )}
-      </div>
+      </div> */}
+
+      {event?.appointment?.length === 0 ? (
+        <div className='w-full'>
+          <Empty text="No Data" textClassName="mt-2" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-2">
+          {event?.appointment?.map((data: any, index: number) => {
+            const isLast = index === event.appointment.length - 1;
+            const isOdd = event.appointment.length % 2 === 1;
+
+            return (
+              <div
+                key={index}
+                className={cn(
+                  "flex gap-2 items-center p-4 rounded-lg border border-[#E4E4E4]",
+                  isLast && isOdd ? "col-span-2" : ""
+                )}
+              >
+                <div className="flex flex-col flex-1">
+                  <h1 className="text-sm font-medium">
+                    {data?.patient?.first_name} {data?.patient?.last_name}
+                  </h1>
+
+                  <p className="text-sm text-[#525252]">
+                    {data?.date
+                      ? `${dayjs(data?.date).utc().format("DD MMM YYYY")}, ${dayjs(data?.date)
+                        .utc()
+                        .format("hh:mm A")}`
+                      : "-"}
+                    <span className="mx-2">|</span>
+                    {data?.type ?? "-"}
+                  </p>
+                </div>
+
+                <ActionIcon
+                  onClick={() => {
+                    openModal({
+                      view: (
+                        <AppointmentDetails data={data} />
+                      ),
+                      customSize: '1100px',
+                    })
+                  }}
+                  variant="text"
+                >
+                  <MdOutlineKeyboardArrowRight className="size-5" />
+                </ActionIcon>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
     </div>
   );
 }

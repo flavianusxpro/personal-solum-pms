@@ -9,22 +9,19 @@ import {
   View,
 } from 'react-big-calendar';
 import dayjs from 'dayjs';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useModal } from '../../modal-views/use-modal';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import { useParams } from 'next/navigation';
 import ModalButton from '../../ui/modal/modal-button';
 import CreateScheduleForm from '../../calendar/create-schedule-form';
-import { Button, Flex, Loader, Text } from 'rizzui';
-import { DoctorSchedule } from '@/types/ApiResponse';
+import { Flex, Text } from 'rizzui';
+import { DoctorSchedule, IGetDoctorByIdResponse } from '@/types/ApiResponse';
 import DetailsSchedule from '../../calendar/details-schedule';
 import {
   useGetListSchedule,
-  useGetScheduleSharingDoctorFromMainClinic,
 } from '@/hooks/useSchedule';
-import { useGetDoctorById } from '@/hooks/useDoctor';
 import { formatTime } from '@/core/utils/format-date';
-import { PiPlus } from 'react-icons/pi';
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -37,9 +34,11 @@ const rtcEventClassName =
 export default function TabCalendar({
   className,
   isView,
+  dataDoctor
 }: {
   className?: string;
   isView?: boolean;
+  dataDoctor?: any
 }) {
   const id = useParams<{ id: string }>().id;
   const { openModal } = useModal();
@@ -50,30 +49,51 @@ export default function TabCalendar({
     to: dayjs().endOf('month').toDate(),
   });
 
-  const { data: dataDoctor } = useGetDoctorById(id);
-
   const { data: dataEvent } = useGetListSchedule({
     doctorId: id,
     page: 1,
     perPage: 100,
-    enabled: process.env.NEXT_PUBLIC_CLINIC_TYPE === 'MAIN',
+    // enabled: process.env.NEXT_PUBLIC_CLINIC_TYPE === 'MAIN',
   });
 
-  const { data: dataScheduleSharingDoctor } =
-    useGetScheduleSharingDoctorFromMainClinic({
-      sharingDoctorId: dataDoctor?.sharing_doctor_id ?? undefined,
-    });
+  // const { data: dataScheduleSharingDoctor } =
+  //   useGetScheduleSharingDoctorFromMainClinic({
+  //     sharingDoctorId: dataDoctor?.sharing_doctor_id ?? undefined,
+  //   });
 
   const data = useMemo(() => {
-    if (process.env.NEXT_PUBLIC_CLINIC_TYPE === 'MAIN') {
-      return dataEvent;
-    } else {
-      return dataScheduleSharingDoctor?.data ?? [];
-    }
-  }, [dataEvent, dataScheduleSharingDoctor]);
+    return dataEvent;
+    // if (process.env.NEXT_PUBLIC_CLINIC_TYPE === 'MAIN') {
+    // } else {
+    //   return dataScheduleSharingDoctor?.data ?? [];
+    // }
+  },
+    [
+      dataEvent,
+      // dataScheduleSharingDoctor
+    ]
+  );
+
+  // const events = useMemo(() => {
+  //   if (!data) return [];
+  //   return data.map((event) => ({
+  //     title: event.title,
+  //     id: Number(event.id),
+  //     start_date: new Date(event.start_date),
+  //     end_date: new Date(event.end_date),
+  //     allDay: false,
+  //     description: event.description,
+  //     break_times: event.break_times,
+  //     created_at: event.created_at,
+  //     updated_at: event.updated_at,
+  //     appointment: event.appointments,
+  //     doctor: dataDoctor,
+  //   }));
+  // }, [data]);
 
   const events = useMemo(() => {
     if (!data) return [];
+
     return data.map((event) => ({
       title: event.title,
       id: Number(event.id),
@@ -84,8 +104,13 @@ export default function TabCalendar({
       break_times: event.break_times,
       created_at: event.created_at,
       updated_at: event.updated_at,
+      appointment: event.appointments?.map((appt: any) => ({
+        ...appt,
+        doctor: dataDoctor,
+      })),
+      doctor: dataDoctor,
     }));
-  }, [data]);
+  }, [data, dataDoctor]);
 
   const { views, scrollToTime, formats } = useMemo(
     () => ({
@@ -112,7 +137,7 @@ export default function TabCalendar({
     (event: DoctorSchedule) => {
       openModal({
         view: <DetailsSchedule isView={isView} doctorId={id} event={event} />,
-        customSize: '500px',
+        customSize: '900px',
       });
     },
     [id, isView, openModal]
@@ -212,8 +237,7 @@ export default function TabCalendar({
         scrollToTime={scrollToTime}
         className={cn(
           'h-[650px] md:h-[1000px]',
-          calendarToolbarClassName,
-          colorPresetName === 'black' && rtcEventClassName
+          calendarToolbarClassName, colorPresetName === 'black' && rtcEventClassName
         )}
         components={{
           toolbar: CustomToolbar,

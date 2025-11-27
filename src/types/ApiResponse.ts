@@ -138,6 +138,7 @@ export interface DoctorSchedule {
   break_times: BreakTime[];
   created_at: string;
   updated_at: string;
+  appointment?: any
 }
 
 interface BreakTime {
@@ -680,6 +681,12 @@ export interface IUpdateDoctorAssignResponse extends ApiResponse {
   message: string;
 }
 
+export interface AppointmentData {
+  id: number;
+  patient: Patient;
+  date: string;
+}
+
 export interface IGetListScheduleResponse extends ApiResponseWithPagination {
   data: {
     id: number;
@@ -691,6 +698,7 @@ export interface IGetListScheduleResponse extends ApiResponseWithPagination {
     break_times: BreakTime[];
     created_at: string;
     updated_at: string;
+    appointments: AppointmentData[]
   }[];
 }
 

@@ -35,6 +35,8 @@ const filterState = {
   status: null,
   by_reschedule: null,
   inactive_patients_months: null,
+  doctor: null,
+  patient: null,
 };
 
 export default function AppointmentListTable({ range, setRange }: { range: string | null | undefined, setRange?: React.Dispatch<SetStateAction<string | null | undefined>>; }) {
@@ -61,28 +63,28 @@ export default function AppointmentListTable({ range, setRange }: { range: strin
     page: isFilter ? 1 : params.page,
     perPage: params.perPage,
     q: JSON.stringify({
-      patientName: params.search,
-    }),
-    from: filterStateValue?.createdAt?.[0]
+      patientName: params.search === "" ? params.search : undefined,
+      status: filterStateValue?.status || undefined,
+      doctorId: filterStateValue?.doctor ? filterStateValue?.doctor : undefined,
+      patientId: filterStateValue?.patient ? filterStateValue?.patient : undefined,
+      inactive_patients_months: filterStateValue?.inactive_patients_months ? Number(
+        filterStateValue?.inactive_patients_months,
+      ) : undefined,
+      payment_status: filterStateValue?.payment_status || undefined,
+      by_reschedule: filterStateValue?.by_reschedule || undefined,
+      clinicId: dataProfile?.clinics[0].id || 0,
+      from: filterStateValue?.createdAt?.[0]
       ? dayjs(filterStateValue?.createdAt?.[0]).format('YYYY-MM-DD')
       : undefined,
     to: filterStateValue?.createdAt?.[1]
       ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
       : undefined,
-    status: filterStateValue?.status || undefined,
-    payment_status: filterStateValue?.payment_status || undefined,
-    by_reschedule: filterStateValue?.by_reschedule || undefined,
-    clinicId: dataProfile?.clinics[0].id || 0,
+    }),
     timezone_client: localTimezone,
-    inactive_patients_months: Number(
-      filterStateValue?.inactive_patients_months
-    ),
   });
 
   const { mutate } = useDeleteAppointment();
-
   const isMediumScreen = useMedia('(max-width: 6000px)', false);
-
   const onHeaderCellClick = (value: string) => ({
     onClick: () => {
       handleSort(value);
@@ -153,8 +155,7 @@ export default function AppointmentListTable({ range, setRange }: { range: strin
         ...prevState,
         [columnId]: filterValue,
       }));
-    },
-    []
+    }, []
   );
 
   const {
@@ -162,7 +163,7 @@ export default function AppointmentListTable({ range, setRange }: { range: strin
     isFiltered,
     tableData,
     currentPage,
-    totalItems,
+    // totalItems,
     handlePaginate,
     filters,
     // updateFilter,

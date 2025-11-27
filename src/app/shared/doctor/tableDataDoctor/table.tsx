@@ -19,6 +19,8 @@ import dayjs from 'dayjs';
 import TableFooter from '../../ui/table-footer';
 import useAcl from '@/core/hooks/use-acl';
 import { useProfile } from '@/hooks/useProfile';
+import { routes } from '@/config/routes';
+import { useRouter } from 'next/navigation';
 
 // dynamic import
 const FilterElement = dynamic(
@@ -30,11 +32,11 @@ const filterState = {
   createdAt: [null, null],
 };
 
-export default function DoctorTable({}: {}) {
+export default function DoctorTable({ }: {}) {
   const { isOpen } = useModal();
   const [filterStateValue, setFilterStateValue] = useState(filterState);
   const [_, copyToClipboard] = useCopyToClipboard();
-
+  const { push } = useRouter();
   const [params, setParams] = useState({
     page: 1,
     perPage: 10,
@@ -185,6 +187,11 @@ export default function DoctorTable({}: {}) {
         data={tableData ?? []}
         // @ts-ignore
         columns={visibleColumns}
+        onRow={(record, index) => ({
+          onClick: () => {
+            push(routes.doctor.doctorDetail(record.id));
+          }
+        })}
         paginatorOptions={{
           pageSize: params.perPage,
           setPageSize: (pageSize: number) => {

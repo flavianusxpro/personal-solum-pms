@@ -49,22 +49,6 @@ export default function DoctorPage() {
               Pick Doctor
             </Button>
           </Button>
-          {/* {process.env.NEXT_PUBLIC_CLINIC_TYPE === 'MAIN' && (
-            <Button
-              onClick={() => {
-                openModal({
-                  view: <CreateDoctorModal />,
-                  customSize: '600px',
-                });
-              }}
-              className="w-full @lg:w-auto"
-            >
-              <Button as="span" className="w-full @lg:w-auto">
-                <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
-                Add Doctor
-              </Button>
-            </Button>
-          )} */}
         </div>
       </PageHeader>
 

@@ -127,7 +127,7 @@ export default function CreateEditDoctor({
             {tab === 'emergency' && <TabEmergencyContact isView={true} />}
             {tab === 'billing' && <TabBillingAppointments isView={isView} />}
             {/* {tab === 'compliance' && <TabCompliance isView={true} />} */}
-            {tab === 'calendar' && <TabCalendar isView={true} />}
+            {tab === 'calendar' && <TabCalendar isView={true} dataDoctor={dataDoctor} />}
             {tab === 'assign' && <TabAssign isView={isView} />}
             {tab === 'settings' && <TabSettings isView={isView} />}
           </>

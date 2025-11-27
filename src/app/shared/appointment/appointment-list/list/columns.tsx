@@ -102,6 +102,9 @@ export const GetColumns = ({
       dataIndex: 'checked',
       key: 'checked',
       width: 30,
+      onCell: () => ({
+        onClick: (e: any) => e.stopPropagation(),
+      }),
       render: (_: any, row: any) => (
         <div className="inline-flex ps-3.5">
           <Checkbox

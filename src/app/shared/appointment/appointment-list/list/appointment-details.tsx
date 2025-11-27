@@ -22,6 +22,8 @@ export default function AppointmentDetails({
   const handleCopy = (text: string | number) => {
     copyToClipboard(String(text));
   };
+  // console.log('zzz data props', data);
+  
   const getPaymentStatusBadge = (status: number | string | undefined) => {
     switch (status) {
       case 2:

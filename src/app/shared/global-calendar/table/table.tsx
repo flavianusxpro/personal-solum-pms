@@ -29,6 +29,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import toast from 'react-hot-toast';
 import ConfirmationView from '../reschedule/ConfirmationView';
+import AppointmentDetails from '../../appointment/appointment-list/list/appointment-details';
 
 const DnDCalendar = withDragAndDrop<any, any>(Calendar);
 
@@ -430,7 +431,6 @@ export default function GlobalCalendarTable({ }: {}) {
   //     resourceId: item.doctor?.id,
   //     raw: item,
   //   }));
-
   const events = useMemo(() => {
     if (!data?.data) return [];
 
@@ -446,13 +446,14 @@ export default function GlobalCalendarTable({ }: {}) {
       end: new Date(new Date(item.date).getTime() + 60 * 60 * 1000),
       resourceId: item.doctor?.id,
       raw: item,
+      appointment: item
     }));
   }, [data?.data]);
 
   const openModalDetail = (data: any) => {
     openModal({
-      view: <ModalAppointmentDetails data={data} />,
-      customSize: '700px',
+      view:  <AppointmentDetails data={data?.appointment} />,
+      customSize: '1100px',
     });
   };
 
@@ -602,6 +603,8 @@ export default function GlobalCalendarTable({ }: {}) {
                       },
                       ...optionDoctors,
                     ]}
+                    searchable
+                    className=" [&_.rizzui-select-input]:items-center "
                     prefix={<PiUser size={16} />}
                     displayValue={(value: number) => {
                       const item = optionDoctors.find((item) => {
