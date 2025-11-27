@@ -9,6 +9,8 @@ import { appointmentData } from '@/data/appointment-data';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import CreateUpdateAppointmentForm from '@/app/shared/appointment/modal/appointment-form';
 
+const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
 const pageHeader = {
   title: 'Appointment List',
   breadcrumb: [
@@ -36,7 +38,14 @@ export default function AppointmentListPageHeader({ className }: HeaderProps) {
       });
   }
   return (
-    <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
+    <PageHeader
+      title={
+        <>
+          {pageHeader.title} <span className="text-sm font-normal">{localTimezone}</span>
+        </>
+      }
+      breadcrumb={pageHeader.breadcrumb}
+    >
       <div className="mt-4 flex flex-col items-center gap-3 @sm:flex-row @lg:mt-0">
         <ExportButton
           data={appointmentData}

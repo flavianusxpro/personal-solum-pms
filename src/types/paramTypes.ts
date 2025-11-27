@@ -64,7 +64,7 @@ export interface IPayloadCreateEditPatient {
   mobile_number?: string;
   status?: number;
   title?: string;
-  position_of_card?: string;
+  position_on_card?: string;
   country?: string;
   unit_number?: string;
   street_name?: string;
@@ -193,6 +193,7 @@ export interface IParamGetAppointments extends IParamGetDataWithPagination {
   q?: string;
   clinicId?: number;
   timezone_client?: string;
+  range?: string | null | undefined
 }
 export interface IParamGetInvoices extends IParamGetDataWithPagination {
   doctorId?: number;

@@ -17,7 +17,7 @@ export const routes = {
     setting: '/patient/setting',
     create: '/patient/create',
     edit: (id: string) => `/patient/edit/${id}`,
-    patientDetail: (id: string) => `/patient/${id}`,
+    patientDetail: (id: string | undefined) => `/patient/${id}`,
   },
   management: {
     dashboard: '/management',

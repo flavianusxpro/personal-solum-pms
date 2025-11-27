@@ -221,7 +221,7 @@ export interface IGetPatientByIdResponse extends ApiResponse {
     mobile_number: string;
     status: number;
     title: null;
-    potition_on_card: null;
+    position_on_card: null;
     photo: null;
     country: null;
     unit_number: null;
@@ -545,16 +545,23 @@ interface Item {
   updated_at: string;
 }
 
+type TIncreased = {
+  percentage: number;
+  status: string
+};
+
 export interface IGetAppointmentSummaryResponse extends ApiResponse {
   data: {
     upcoming_appointment: number;
-    upcoming_appointment_increased_last_month: number;
+    upcoming_appointment_increased_last_month: TIncreased;
     today_appointment: number;
-    today_appointment_increased_yesterday: number;
+    today_appointment_increased_yesterday: TIncreased;
     finished_appointment: number;
-    finished_appointment_increased_last_month: number;
+    finished_appointment_increased_last_month: TIncreased;
     cancelled_appointment: number;
-    cancelled_appointment_increased_last_month: number;
+    cancelled_appointment_increased_last_month: TIncreased;
+    draft_appointment: number;
+    draft_appointment_increased_last_month: TIncreased;
   };
 }
 

@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
 import { GetColumns } from '@/app/shared/appointment/appointment-list/list/columns';
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { useMedia } from '@core/hooks/use-media';
@@ -19,6 +19,7 @@ import dayjs from 'dayjs';
 import { useProfile } from '@/hooks/useProfile';
 import TableHeader from '@/app/shared/ui/table-header';
 import { StatusSelect } from '@/app/shared/invoice/invoice-list/columns';
+import AppointmentDetails from './appointment-details';
 
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
@@ -36,10 +37,9 @@ const filterState = {
   inactive_patients_months: null,
 };
 
-export default function AppointmentListTable() {
+export default function AppointmentListTable({ range, setRange }: { range: string | null | undefined, setRange?: React.Dispatch<SetStateAction<string | null | undefined>>; }) {
   const { isOpen: open } = useModal();
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
   const [filterStateValue, setFilterStateValue] = useState(filterState);
   const [isFilter, setIsFilter] = useState<boolean>(false);
   const [_, setCheckedItems] = useState<string[]>([]);
@@ -57,6 +57,7 @@ export default function AppointmentListTable() {
     isLoading: isLoadingGetAppointments,
     refetch,
   } = useGetAppointments({
+    range: range ? range : undefined,
     page: isFilter ? 1 : params.page,
     perPage: params.perPage,
     q: JSON.stringify({
@@ -125,6 +126,27 @@ export default function AppointmentListTable() {
     }
   };
 
+  const [isResetting, setIsResetting] = useState(false);
+
+  useEffect(() => {
+    if (!isResetting) {
+      setRange?.(null);
+    }
+  }, [filterStateValue.createdAt]);
+
+  useEffect(() => {
+    if (range !== null && !isResetting) {
+      setIsResetting(true);
+
+      setFilterStateValue((prev) => ({
+        ...prev,
+        createdAt: [null, null],
+      }));
+
+      setTimeout(() => setIsResetting(false), 0);
+    }
+  }, [range]);
+
   const updateFilter = useCallback(
     (columnId: string, filterValue: string | number | any[] | null) => {
       setFilterStateValue((prevState) => ({
@@ -190,6 +212,8 @@ export default function AppointmentListTable() {
     refetch();
   }, [open, refetch, filterStateValue, params]);
 
+  const { openModal } = useModal();
+
   return (
     <div
       className={cn(
@@ -205,6 +229,17 @@ export default function AppointmentListTable() {
         scroll={{
           x: 1560,
         }}
+        onRow={(record, index) => ({
+          onClick: () => {
+            openModal({
+              view: (
+                <AppointmentDetails data={record} />
+              ),
+              customSize: '1100px',
+            })
+          },
+        })}
+
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{

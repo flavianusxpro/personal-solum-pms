@@ -66,9 +66,9 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
         dataPatient.patient_problem === ''
         ? []
         : (dataPatient.patient_problem as string)
-            .slice(1, -1)
-            .split('","')
-            .map((s) => s.replace(/^"|"$/g, ''))
+          .slice(1, -1)
+          .split('","')
+          .map((s) => s.replace(/^"|"$/g, ''))
       : Array.isArray(dataPatient?.patient_problem)
         ? dataPatient.patient_problem
         : [];
@@ -109,7 +109,7 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
       status: 1,
       timezone: data.timezone ?? 'Australia/Sydney',
       country: data.country,
-      position_of_card: data.position_of_card,
+      position_on_card: data.position_on_card,
       patient_problem: data.patient_problem,
       patient_type: data.patient_type,
       street_name: data.street_name,
@@ -160,14 +160,20 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
           email: dataPatient?.email ?? '',
           gender: dataPatient?.gender ?? '',
           mobile_number: dataPatient?.mobile_number?.replace('+', '') ?? '',
-          date_of_birth: dataPatient?.date_of_birth ?? '',
+          date_of_birth:
+            dataPatient?.date_of_birth &&
+              dayjs(dataPatient.date_of_birth).isValid()
+              ? dataPatient.date_of_birth
+              : '',
           medicare_card: dataPatient?.medicare_card_number ?? '',
-          medicare_expiry: dataPatient?.medicare_expired_date
-            ? dayjs(dataPatient.medicare_expired_date, 'DD MM YYYY').toDate()
-            : undefined,
+          medicare_expiry:
+            dataPatient?.medicare_expired_date &&
+              dayjs(dataPatient.medicare_expired_date, 'DD MM YYYY').isValid()
+              ? dayjs(dataPatient.medicare_expired_date, 'DD MM YYYY').toDate()
+              : undefined,
           patient_problem: parsedPatientProblem,
           patient_type: dataPatient?.patient_type || undefined,
-          position_of_card: dataPatient?.position_of_card ?? '',
+          position_on_card: dataPatient?.position_on_card ?? '',
           country: dataPatient?.country ?? '',
           unit_number: dataPatient?.unit_number ?? '',
           street_name: dataPatient?.street_name ?? '',
@@ -176,9 +182,11 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
           post_code: dataPatient?.postcode ?? '',
           avatar: dataPatient?.photo || undefined,
           ihi_number: dataPatient?.ihi_number ?? '',
-          concession_card_expiry: dataPatient?.concession_card_type
-            ? dayjs(dataPatient.concession_card_expire_date).toDate()
-            : undefined,
+          concession_card_expiry:
+            dataPatient?.concession_card_type &&
+              dayjs(dataPatient.concession_card_expire_date, 'DD MM YYYY').isValid()
+              ? dayjs(dataPatient.concession_card_expire_date, 'DD MM YYYY').toDate()
+              : undefined,
           concession_card_number: dataPatient?.concession_card_number ?? '',
           concession_card_type: dataPatient?.concession_card_type ?? '',
           address_line_1: dataPatient?.address_line_1 ?? '',
@@ -304,10 +312,10 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
               <FormGroup title="Medicare Information" isLabel>
                 <Flex gap="4" justify="between" align="center">
                   <Input
-                    label="Position of Card"
-                    placeholder="Position of Card"
-                    {...register('position_of_card')}
-                    error={errors.position_of_card?.message}
+                    label="Position on Card"
+                    placeholder="Position on Card"
+                    {...register('position_on_card')}
+                    error={errors.position_on_card?.message}
                     disabled={isView}
                     className="flex-grow"
                   />

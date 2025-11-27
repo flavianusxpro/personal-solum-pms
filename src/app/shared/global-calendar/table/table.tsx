@@ -14,9 +14,8 @@ import { Flex, Input, Loader, Text, Select } from 'rizzui';
 import { PiArrowLeft, PiArrowRight, PiCalendar, PiUser } from 'react-icons/pi';
 import dayjs from '@/config/dayjs';
 import ActionButton from '../../ui/action-tooltip-button';
-import { useProfile } from '@/hooks/useProfile';
-import { useColorPresetName } from '@/layouts/settings/use-theme-color';
-import { Calendar, dayjsLocalizer } from 'react-big-calendar';
+import { useProfile } from '@/hooks/useProfile';;
+import { Calendar, dayjsLocalizer, View } from 'react-big-calendar';
 import cn from '@/core/utils/class-names';
 import ModalAppointmentDetails from '../modal/ModalAppointmentDetail';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
@@ -114,12 +113,13 @@ const EventCardByPatient = ({ event }: any) => {
     </div>
   );
 };
-export default function GlobalCalendarTable({}: {}) {
+export default function GlobalCalendarTable({ }: {}) {
   const { openModal, closeModal } = useModal();
   const [pageSize] = useState(100);
   const [viewType, setViewType] = useState<'daily' | 'weekly' | 'monthly'>(
     'monthly'
   );
+
   const [selectedDate, setSelectedDate] = useState(
     viewType === 'monthly'
       ? dayjs().locale('en').format('YYYY-MM')
@@ -132,12 +132,13 @@ export default function GlobalCalendarTable({}: {}) {
   const shortMonth = dayjs(selectedDate).format('MMM').toUpperCase();
   const year = dayjs(selectedDate).format('YYYY');
 
+  const startOfWeek = dayjs(selectedDate).startOf('week').format('D MMMM');
+  const endOfWeek = dayjs(selectedDate).endOf('week').format('D MMMM');
+
   const [selectedDoctor, setSelectedDoctor] = useState<string | number>(0);
-  const { colorPresetName } = useColorPresetName();
-  const [formData, setFormData] = useAtom(formRescheduleDataAtom);
   const { data: dataProfile } = useProfile(true);
-  const { mutate: mutateRescheduleByDate } =
-    usePostRescheduleAppointmentByDate();
+  const { mutate: mutateRescheduleByDate } = usePostRescheduleAppointmentByDate();
+  
   const {
     data,
     isLoading: isLoadingGetAppointments,
@@ -150,14 +151,14 @@ export default function GlobalCalendarTable({}: {}) {
       viewType === 'monthly'
         ? dayjs(selectedDate).startOf('month').format('YYYY-MM-DD')
         : viewType === 'weekly'
-        ? dayjs(selectedDate).startOf('week').format('YYYY-MM-DD')
-        : selectedDate,
+          ? dayjs(selectedDate).startOf('week').format('YYYY-MM-DD')
+          : selectedDate,
     to:
       viewType === 'monthly'
         ? dayjs(selectedDate).endOf('month').format('YYYY-MM-DD')
         : viewType === 'weekly'
-        ? dayjs(selectedDate).endOf('week').format('YYYY-MM-DD')
-        : selectedDate,
+          ? dayjs(selectedDate).endOf('week').format('YYYY-MM-DD')
+          : selectedDate,
     clinicId: dataProfile?.clinics[0]?.id || 0,
     doctorId: selectedDoctor ? Number(selectedDoctor) : undefined,
   });
@@ -181,28 +182,38 @@ export default function GlobalCalendarTable({}: {}) {
   function previousDate() {
     setSelectedDate((prevDate) => {
       const prevDateObj = dayjs(prevDate);
-      if (!prevDateObj.isValid())
+      if (!prevDateObj.isValid()) {
         return viewType === 'monthly'
           ? dayjs().subtract(1, 'month').format('YYYY-MM')
           : dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+      }
 
-      return viewType === 'monthly'
-        ? prevDateObj.subtract(1, 'month').format('YYYY-MM')
-        : prevDateObj.subtract(1, 'day').format('YYYY-MM-DD');
+      if (viewType === 'monthly') {
+        return prevDateObj.subtract(1, 'month').format('YYYY-MM');
+      } else if (viewType === 'weekly') {
+        return prevDateObj.subtract(1, 'week').format('YYYY-MM-DD');
+      } else {
+        return prevDateObj.subtract(1, 'day').format('YYYY-MM-DD');
+      }
     });
   }
 
   function nextDate() {
     setSelectedDate((prevDate) => {
       const prevDateObj = dayjs(prevDate);
-      if (!prevDateObj.isValid())
+      if (!prevDateObj.isValid()) {
         return viewType === 'monthly'
           ? dayjs().add(1, 'month').format('YYYY-MM')
           : dayjs().add(1, 'day').format('YYYY-MM-DD');
+      }
 
-      return viewType === 'monthly'
-        ? prevDateObj.add(1, 'month').format('YYYY-MM')
-        : prevDateObj.add(1, 'day').format('YYYY-MM-DD');
+      if (viewType === 'monthly') {
+        return prevDateObj.add(1, 'month').format('YYYY-MM');
+      } else if (viewType === 'weekly') {
+        return prevDateObj.add(1, 'week').format('YYYY-MM-DD');
+      } else {
+        return prevDateObj.add(1, 'day').format('YYYY-MM-DD');
+      }
     });
   }
 
@@ -351,7 +362,7 @@ export default function GlobalCalendarTable({}: {}) {
             onError: (error: any) => {
               toast.error(
                 error?.response?.data?.message ||
-                  'Error rescheduling appointment'
+                'Error rescheduling appointment'
               );
               console.error('Error rescheduling appointment:', error);
               closeModal();
@@ -404,9 +415,26 @@ export default function GlobalCalendarTable({}: {}) {
     [openModal, tableData, handleDrop]
   );
 
-  const events =
-    data &&
-    data.data?.map((item) => ({
+  // const events =
+  //   data &&
+  //   data.data?.map((item) => ({
+  //     title: `Dr. ${item.doctor?.first_name} ${item.doctor?.last_name}`,
+  //     doctor: `${item.doctor?.first_name} ${item.doctor?.last_name}`,
+  //     patient: `${item.patient?.first_name} ${item.patient?.last_name}`,
+  //     time: new Date(item.date).toLocaleTimeString([], {
+  //       hour: '2-digit',
+  //       minute: '2-digit',
+  //     }),
+  //     start: new Date(item.date),
+  //     end: new Date(new Date(item.date).getTime() + 60 * 60 * 1000),
+  //     resourceId: item.doctor?.id,
+  //     raw: item,
+  //   }));
+
+  const events = useMemo(() => {
+    if (!data?.data) return [];
+
+    return data.data.map((item) => ({
       title: `Dr. ${item.doctor?.first_name} ${item.doctor?.last_name}`,
       doctor: `${item.doctor?.first_name} ${item.doctor?.last_name}`,
       patient: `${item.patient?.first_name} ${item.patient?.last_name}`,
@@ -419,8 +447,7 @@ export default function GlobalCalendarTable({}: {}) {
       resourceId: item.doctor?.id,
       raw: item,
     }));
-
-  console.log(events);
+  }, [data?.data]);
 
   const openModalDetail = (data: any) => {
     openModal({
@@ -434,16 +461,36 @@ export default function GlobalCalendarTable({}: {}) {
   }, [selectedDate, refetch]);
 
   useEffect(() => {
-    setSelectedDate((prev) =>
-      viewType === 'monthly'
-        ? dayjs(prev).locale('en').format('YYYY-MM')
-        : dayjs(prev).format('YYYY-MM-DD')
-    );
+    setSelectedDate((prev) => {
+      if (viewType === 'monthly') {
+        return dayjs(prev).format('YYYY-MM');
+      } else {
+        const prevDate = dayjs(prev);
+        if (prevDate.isValid() && prev.length === 7) {
+          return dayjs(prev + '-01').format('YYYY-MM-DD');
+        }
+        return prevDate.isValid() ? prevDate.format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD');
+      }
+    });
   }, [viewType]);
 
   const doctorName = optionDoctors.find((item: any) => {
     return item.value == selectedDoctor;
   });
+
+  const isoWeekToDate = (isoWeek: string): string => {
+    const [year, week] = isoWeek.split('-W');
+    const date = dayjs()
+      .year(parseInt(year))
+      .isoWeek(parseInt(week))
+      .startOf('isoWeek');
+    return date.format('YYYY-MM-DD');
+  };
+
+  const dateToIsoWeek = (date: string): string => {
+    const d = dayjs(date);
+    return `${d.year()}-W${d.isoWeek().toString().padStart(2, '0')}`;
+  };
 
   return (
     <div>
@@ -468,7 +515,10 @@ export default function GlobalCalendarTable({}: {}) {
                 <div>
                   <Text className="text-md font-semibold">{monthLabel}</Text>
                   <Text className="text-sm text-muted-foreground">
-                    {`${startOfMonth} - ${endOfMonth}`}
+                    {viewType === 'weekly'
+                      ? `${startOfWeek} - ${endOfWeek}`
+                      : `${startOfMonth} - ${endOfMonth}`
+                    }
                   </Text>
                 </div>
               </Flex>
@@ -492,6 +542,16 @@ export default function GlobalCalendarTable({}: {}) {
                       value={selectedDate}
                       min={dayjs().locale('en').format('YYYY-MM')}
                       onChange={(event) => setSelectedDate(event.target.value)}
+                      size="sm"
+                    />
+                  ) : viewType === 'weekly' ? (
+                    <Input
+                      type="week"
+                      value={dateToIsoWeek(selectedDate)}
+                      onChange={(event) => {
+                        const normalDate = isoWeekToDate(event.target.value);
+                        setSelectedDate(normalDate);
+                      }}
                       size="sm"
                     />
                   ) : (
@@ -520,7 +580,7 @@ export default function GlobalCalendarTable({}: {}) {
                     }}
                     options={[
                       { label: 'Daily', value: 'daily' },
-                      // { label: 'Weekly', value: 'weekly' },
+                      { label: 'Weekly', value: 'weekly' },
                       { label: 'Monthly', value: 'monthly' },
                     ]}
                     prefix={<PiCalendar size={16} />}
@@ -565,30 +625,37 @@ export default function GlobalCalendarTable({}: {}) {
                 variant="bordered"
               />
             </DndProvider>
+          ) : viewType === 'weekly' ? (
+            <DnDCalendar
+              localizer={localizer}
+              events={events}
+              startAccessor="start"
+              endAccessor="end"
+              toolbar={false}
+              view='week'
+              defaultDate={new Date()}
+              components={{
+                event: (props) => (
+                  <EventCard {...props} selectedDoctor={selectedDoctor} />
+                ),
+              }}
+              popup
+              eventPropGetter={() => ({
+                style: {
+                  backgroundColor: 'transparent',
+                  padding: 0,
+                  marginBottom: '4px',
+                  border: 'none',
+                  boxShadow: 'none',
+                },
+              })}
+              onSelectEvent={openModalDetail}
+              onEventDrop={({ event, start, end, allDay }: any) => {
+                rescheduleModal(event.raw, dayjs(start).format('YYYY-MM-DD'));
+              }}
+              draggableAccessor={(event) => true}
+            />
           ) : (
-            // <Calendar
-            //   localizer={localizer}
-            //   startAccessor="start"
-            //   endAccessor="end"
-            //   events={events}
-            //   defaultView="day"
-            //   views={['day']}
-            //   resources={tableData || []} // array of doctors
-            //   resourceIdAccessor="id"
-            //   resourceTitleAccessor="name"
-            //   step={15} // interval per 15 menit
-            //   timeslots={1}
-            //   style={{ height: 800 }}
-            //   components={{
-            //     event: EventCard,
-            //   }}
-            //   toolbar={false}
-            //   draggableAccessor={() => true}
-            //   onEventDrop={({ event, start, end, resourceId }: any) => {
-            //     console.log('Dipindah ke:', start, 'dokter:', resourceId);
-            //     rescheduleModal(event, dayjs(start).format('YYYY-MM-DD'));
-            //   }}
-            // />
             <DnDCalendar
               localizer={localizer}
               events={events}

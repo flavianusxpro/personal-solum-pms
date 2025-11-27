@@ -33,6 +33,7 @@ type ControlledTableProps = {
   tableHeader?: React.ReactNode;
   className?: string;
   paginatorClassName?: string;
+  onRow?: (record: any, index: number) => React.HTMLAttributes<any>;
 } & TableProps;
 
 export default function ControlledTable({

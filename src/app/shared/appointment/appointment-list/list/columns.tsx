@@ -4,40 +4,40 @@ import { HeaderCell } from '@/app/shared/ui/table';
 import {
   Text,
   Checkbox,
-  ActionIcon,
-  Tooltip,
   Badge,
   Flex,
   Dropdown,
   Button,
 } from 'rizzui';
 import EyeIcon from '@core/components/icons/eye';
-import DeletePopover from '@/app/shared/ui/delete-popover';
 import { Type } from '@/data/appointment-data';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import AppointmentDetails from './appointment-details';
-import AvatarCard from '@core/ui/avatar-card';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 import dayjs from '@/config/dayjs';
 import CSelect from '@/app/shared/ui/select';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useUpdateAppointment } from '@/hooks/useAppointment';
 import toast from 'react-hot-toast';
 import CreateUpdateAppointmentForm from '../../modal/appointment-form';
 import { FaRegNoteSticky } from 'react-icons/fa6';
 import { GrSchedules } from 'react-icons/gr';
 import { RxCountdownTimer } from 'react-icons/rx';
-import { MdNotes, MdOutlineFreeCancellation } from 'react-icons/md';
+import { MdNotes, MdOutlineFreeCancellation, MdOutlineVisibility } from 'react-icons/md';
 import AddNotesForm from '../../modal/add-notes';
 import CancelForm from '../../modal/cancel-form';
 import RescheduleAppointmentForm from '../../modal/reschedule';
 import RevertForm from '../../modal/revert-form';
 import ShowNote from '../../modal/show-notes';
 import timezonePlugin from 'dayjs/plugin/timezone';
-import { HiOutlineDotsVertical } from 'react-icons/hi';
 import DeleteModal from '@/app/shared/ui/delete-modal';
 import TrashIcon from '@/core/components/icons/trash';
 import ShowConfirm from '../../modal/confirm-modal';
+import ModalProfilePatient from '../../modal/profile-patient';
+import ModalProfileDoctor from '../../modal/profile-doctor';
+import ModalReminder from '../../modal/reminder-detail';
+import StatusColumnCell from './StatusColumnCell';
+import { BsArrowRepeat } from 'react-icons/bs';
 dayjs.extend(timezonePlugin);
 const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -66,6 +66,12 @@ type Columns = {
   idAppointment: number | string;
   setIdAppointment: Dispatch<SetStateAction<number | string>>;
 };
+interface StatusCellProps {
+  id: number;
+  status: number;
+  date: string | null | undefined;
+  setStatusValue: (value: number) => void;
+}
 
 export const GetColumns = ({
   handleSelectAll,
@@ -80,6 +86,7 @@ export const GetColumns = ({
   idAppointment,
   setIdAppointment,
 }: Columns) => {
+  const { openModal, closeModal } = useModal();
   return [
     {
       title: (
@@ -107,37 +114,26 @@ export const GetColumns = ({
       ),
     },
     {
-      title: <HeaderCell title="ID" />,
-      onHeaderCell: () => onHeaderCellClick('id'),
-      dataIndex: 'id',
-      key: 'id',
-      width: 130,
-      render: (id: string) => <Text>#{id}</Text>,
-    },
-    {
       title: <HeaderCell title="PATIENT NAME" />,
-      // onHeaderCell: () => onHeaderCellClick('patient.name'),
       dataIndex: 'patient',
       key: 'patient',
       width: 320,
-      render: (_: any, row: RowValue) => (
-        <AvatarCard
-          src={row?.patient?.photo ?? ''}
-          name={`${row?.patient?.first_name} ${row?.patient?.last_name}`}
-          description={row?.patient?.email}
-          number={row?.patient?.mobile_number}
-        />
-      ),
-    },
-    {
-      title: <HeaderCell title="Local Time" />,
-      dataIndex: 'local_date',
-      key: 'local_date',
-      width: 250,
-      render: (date: string) => (
-        <div>
-          {date}
-          <div>{localTimezone}</div>
+      render: (_: any, row: RowValue) =>
+      (
+        <div className='flex items-center gap-2'>
+          <span
+            className='font-bold cursor-pointer'
+            onClick={(e) => {
+              e.stopPropagation();
+              closeModal(),
+                openModal({
+                  view: <ModalProfilePatient data={row} />,
+                  customSize: '600px',
+                });
+            }}
+          >
+            {row?.patient?.first_name} {row?.patient?.last_name}
+          </span>
         </div>
       ),
     },
@@ -148,8 +144,23 @@ export const GetColumns = ({
       width: 250,
       render: (date: Date, row: RowValue) => (
         <div>
-          {dayjs(date).utc().format('DD/MM/YYYY hh:mm A')}
-          <div>{row.doctor.timezone}</div>
+          {dayjs(date).utc().format('DD MMM YYYY')}
+        </div>
+      ),
+    },
+    {
+      title: <HeaderCell title="Time" />,
+      dataIndex: 'date',
+      key: 'date',
+      width: 250,
+      render: (date: Date, row: RowValue) => (
+        <div className='flex flex-col'>
+          <span>
+            {dayjs(date).utc().format('hh:mm A')}
+          </span>
+          <span>
+            {row.doctor.timezone}
+          </span>
         </div>
       ),
     },
@@ -159,12 +170,21 @@ export const GetColumns = ({
       key: 'doctor',
       width: 320,
       render: (doctorId: string, row: RowValue) => (
-        <AvatarCard
-          number={row.doctor.mobile_number}
-          src={row.doctor.photo ?? ''}
-          name={`Dr. ${row.doctor.first_name} ${row.doctor.last_name}`}
-          description={row.doctor.email}
-        />
+        <div className='flex items-center gap-2'>
+          <span
+            className='font-bold cursor-pointer'
+            onClick={(e) => {
+              e.stopPropagation();
+              closeModal(),
+                openModal({
+                  view: <ModalProfileDoctor data={row} />,
+                  customSize: '1100px',
+                });
+            }}
+          >
+            Dr. {row.doctor.first_name} {row.doctor.last_name}
+          </span>
+        </div>
       ),
     },
     {
@@ -181,12 +201,27 @@ export const GetColumns = ({
       key: 'patient_type',
       width: 180,
       onHeaderCell: () => onHeaderCellClick('patient_type'),
-      render: (type: Type) => (
+      render: (type: Type, row: RowValue) => (
         <>
           <p className="whitespace-nowrap font-medium text-gray-900">{type}</p>
-          <p className="whitespace-nowrap font-medium text-gray-500">
-            Reminder Sent
-          </p>
+          <div className='flex items-center gap-2'>
+            <p className="whitespace-nowrap font-medium text-gray-500">
+              Reminder Sent
+            </p>
+            <span
+              className='text-[16px] cursor-pointer font-bold'
+              onClick={(e) => {
+                e.stopPropagation();
+                closeModal(),
+                  openModal({
+                    view: <ModalReminder data={row} />,
+                    customSize: '900px',
+                  });
+              }}
+            >
+              <MdOutlineVisibility />
+            </span>
+          </div>
         </>
       ),
     },
@@ -197,14 +232,7 @@ export const GetColumns = ({
       key: 'status',
       width: 260,
       render: (value: number, row: RowValue) => (
-        <>
-          <StatusSelect id={row.id} selectItem={row.status} />
-          {row.is_reschedule && (
-            <Text className="text-xs font-medium text-gray-400">
-              (Rescheduled)
-            </Text>
-          )}
-        </>
+        <StatusColumnCell row={row} />
       ),
     },
     {
@@ -225,7 +253,7 @@ export const GetColumns = ({
         getPaymentStatusBadge(row?.payment?.status ?? 0),
     },
     {
-      title: <HeaderCell title="Actions" />,
+      title: <HeaderCell title="Action" />,
       dataIndex: 'action',
       key: 'action',
       width: 120,
@@ -315,103 +343,64 @@ function RenderAction({
   return (
     <div className="flex items-center justify-end gap-3 pe-3">
       <Dropdown placement="bottom-end">
-        <Dropdown.Trigger>
-          <ActionIcon variant="outline" rounded="full">
-            <HiOutlineDotsVertical className="h-5 w-5" />
-          </ActionIcon>
+        <Dropdown.Trigger onClick={(e) => e.stopPropagation()} >
+          <Button
+            as="span"
+            variant="outline"
+          >
+            Action
+          </Button>
         </Dropdown.Trigger>
         <Dropdown.Menu>
           {isShowCancel && (
-            <Dropdown.Item>
-              <Button
-                className="flex w-full gap-3 hover:border-gray-700 hover:text-gray-700"
-                variant="outline"
-                onClick={() => cancelModal(row)}
-              >
-                <MdOutlineFreeCancellation className="h-4 w-4" />
-                <span>Cancel</span>{' '}
-              </Button>
+            <Dropdown.Item onClick={() => cancelModal(row)}>
+              <MdOutlineFreeCancellation className="mr-2 h-4 w-4" />
+              Cancel
             </Dropdown.Item>
           )}
 
           {isShowReschedule && (
-            <Dropdown.Item>
-              <Button
-                className="flex w-full gap-3 hover:border-gray-700 hover:text-gray-700"
-                variant="outline"
-                onClick={() => rescheduleModal(row)}
-              >
-                <GrSchedules className="h-4 w-4" />
-                <span>Reschedule</span>{' '}
-              </Button>
+            <Dropdown.Item onClick={() => rescheduleModal(row)}>
+              <GrSchedules className="mr-2 h-4 w-4" />
+              Reschedule
             </Dropdown.Item>
           )}
 
-          <Dropdown.Item>
-            <Button
-              className="flex w-full gap-3 hover:border-gray-700 hover:text-gray-700"
-              variant="outline"
-              onClick={() => revertModal(row)}
-            >
-              <RxCountdownTimer className="h-4 w-4" />
-              <span>Revert Back</span>{' '}
-            </Button>
+          <Dropdown.Item onClick={() => revertModal(row)}>
+            <RxCountdownTimer className="mr-2 h-4 w-4" />
+            Revert Back
           </Dropdown.Item>
 
           {isHasNote && (
-            <Dropdown.Item>
-              <Button
-                className="flex w-full gap-3 hover:border-gray-700 hover:text-gray-700"
-                variant="outline"
-                onClick={showNoteModal}
-              >
-                <MdNotes className="h-4 w-4" />
-                <span>Show Note</span>{' '}
-              </Button>
+            <Dropdown.Item onClick={showNoteModal}>
+              <MdNotes className="mr-2 h-4 w-4" />
+              Show Note
             </Dropdown.Item>
           )}
 
-          <Dropdown.Item>
-            <Button
-              className="flex w-full gap-3 hover:border-gray-700 hover:text-gray-700"
-              variant="outline"
-              onClick={addNotesModal}
-            >
-              <FaRegNoteSticky className="h-4 w-4" />
-              <span>Add Note</span>{' '}
-            </Button>
+          <Dropdown.Item onClick={addNotesModal}>
+            <FaRegNoteSticky className="mr-2 h-4 w-4" />
+            Add Note
           </Dropdown.Item>
 
-          <Dropdown.Item>
-            <Button
-              className="flex w-full gap-3 hover:border-gray-700 hover:text-gray-700"
-              variant="outline"
-              onClick={() =>
-                openModal({
-                  view: (
-                    <AppointmentDetails data={row} onEdit={handleCreateModal} />
-                  ),
-                  customSize: '900px',
-                })
-              }
-            >
-              <EyeIcon className="h-4 w-4" />
-              <span>View</span>{' '}
-            </Button>
+          <Dropdown.Item onClick={() =>
+            openModal({
+              view: (
+                <AppointmentDetails data={row} onEdit={handleCreateModal} />
+              ),
+              customSize: '900px',
+            })
+          }>
+            <EyeIcon className="mr-2 h-4 w-4" />
+            View
           </Dropdown.Item>
 
-          <Dropdown.Item>
-            <Button
-              className="flex w-full gap-3 hover:border-gray-700 hover:text-gray-700"
-              variant="outline"
-              onClick={() => {
-                setIdAppointment(row.id);
-                setIsOpen(true);
-              }}
-            >
-              <TrashIcon className="h-4 w-4" />
-              <span>Delete</span>{' '}
-            </Button>
+          <Dropdown.Item onClick={() => {
+            setIdAppointment(row.id);
+            setIsOpen(true);
+          }}>
+            <TrashIcon className="mr-2 h-4 w-4" />
+            Delete
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
@@ -534,8 +523,14 @@ export function getAptStatusBadge(status: number | string) {
   }
 }
 
-function StatusSelect({ selectItem, id }: { selectItem: number; id: number }) {
+export function StatusSelect({ selectItem, id, statusValue }: { selectItem: number; id: number, statusValue: number | null }) {
   const { openModal, closeModal } = useModal();
+
+  useEffect(() => {
+    if (statusValue !== null) {
+      setValue(statusValue);
+    }
+  }, [statusValue]);
 
   const showConfirmModal = (
     id: number,
@@ -545,9 +540,10 @@ function StatusSelect({ selectItem, id }: { selectItem: number; id: number }) {
     closeModal(),
       openModal({
         view: <ShowConfirm onClick={onClick} status={status} id={id} />,
-        customSize: '600px',
+        customSize: '550px',
       });
   };
+
   const selectItemValue = aptStatusOptions.find(
     (option) => option.value === selectItem
   )?.value;
@@ -595,17 +591,121 @@ function StatusSelect({ selectItem, id }: { selectItem: number; id: number }) {
   };
 
   return (
-    <CSelect
-      className={'min-w-[140px]'}
-      dropdownClassName="h-auto"
-      placeholder="Select Status"
-      options={aptStatusOptions}
-      value={value}
-      onChange={handleChange}
-      isLoading={isPending}
-      displayValue={(option: { value: number }) =>
-        getAptStatusBadge(option.value)
-      }
-    />
+    <div onClick={(e) => e.stopPropagation()}>
+      <CSelect
+        className="min-w-[140px]"
+        dropdownClassName="h-auto"
+        placeholder="Select Status"
+        options={aptStatusOptions}
+        value={value}
+        onChange={handleChange}
+        isLoading={isPending}
+        displayValue={(option: { value: number }) =>
+          getAptStatusBadge(option.value)
+        }
+      />
+    </div>
   );
 }
+
+export function StatusCell({
+  id,
+  status,
+  date,
+  setStatusValue,
+}: StatusCellProps) {
+  const { openModal, closeModal } = useModal();
+  const { mutate, isPending } = useUpdateAppointment();
+
+  if (!date) {
+    return null;
+  }
+
+  const appointmentDate = new Date(date);
+
+  if (isNaN(appointmentDate.getTime())) {
+    return null;
+  }
+
+  const currentDate = new Date();
+  const timeDiffMinutes = (appointmentDate.getTime() - currentDate.getTime()) / (1000 * 60);
+
+  const isWithin30Minutes = timeDiffMinutes > 0 && timeDiffMinutes <= 30;
+
+  const isPastAppointment = appointmentDate < currentDate;
+
+  const showConfirmModal = (statusValue: number, statusLabel: string) => {
+    openModal({
+      view: (
+        <ShowConfirm
+          onClick={() => handleSubmitStatus(statusValue)}
+          status={statusLabel}
+          id={id}
+        />
+      ),
+      customSize: '550px',
+    });
+  };
+
+  const handleSubmitStatus = (statusValue: number) => {
+    mutate(
+      { id, status: statusValue },
+      {
+        onSuccess: () => {
+          toast.success('Status updated successfully');
+          closeModal();
+          setStatusValue(statusValue)
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || 'Error updating status'
+          );
+          closeModal();
+        },
+      }
+    );
+  };
+
+  if (!isWithin30Minutes && !isPastAppointment) {
+    return null;
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      {isWithin30Minutes && status !== 3 && status !== 4 && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            showConfirmModal(3, 'Check In')
+          }}
+          className="flex items-center gap-[4px] text-sm text-[#3872F9] font-semibold"
+          disabled={isPending}
+        >
+          <span>
+            <BsArrowRepeat />
+          </span>
+          <span>
+            Change to Check In
+          </span>
+        </button>
+      )}
+
+      {isPastAppointment && status !== 4 && status !== 5 && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            showConfirmModal(4, 'Finished')
+          }}
+          className="flex items-center gap-[4px] text-sm text-[#3872F9] font-semibold"
+          disabled={isPending}
+        >
+          <span className='text-lg'>
+            <BsArrowRepeat />
+          </span>
+          Change to Finished
+        </button>
+      )}
+    </div>
+  );
+}
+
