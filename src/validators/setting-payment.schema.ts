@@ -3,10 +3,10 @@ import { z } from 'zod';
 // form zod validation schema
 export const settingPaymentFormSchema = z.object({
   // payment
-  card_payment_status: z.boolean().optional(),
-  payment_method: z.array(z.string()).optional(),
-  eftpos_status: z.boolean().optional(),
-  cash_status: z.boolean().optional(),
+  production_mode: z.boolean().optional(),
+  public_key: z.string().optional(),
+  secret_key: z.string().optional(),
+  is_active: z.boolean().optional(),
 });
 
 // generate form types from zod validation schema
