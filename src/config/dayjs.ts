@@ -10,4 +10,9 @@ dayjs.extend(timezone);
 dayjs.extend(customParseFormat);
 dayjs.extend(isoWeek);
 
+dayjs.locale('en', {
+  ...dayjs.Ls.en,
+  weekStart: 1 
+});
+
 export default dayjs;

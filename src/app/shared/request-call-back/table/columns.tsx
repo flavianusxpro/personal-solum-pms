@@ -70,7 +70,7 @@ export const getColumns = ({
     title: <HeaderCell title="ID" />,
     dataIndex: 'id',
     key: 'id',
-    width: 100,
+    width: 50,
     render: (value: number) => value,
   },
   {
@@ -88,7 +88,14 @@ export const getColumns = ({
     ),
   },
   {
-    title: <HeaderCell title="DATE" />,
+    title: <HeaderCell title="SUBMITED DATE" />,
+    dataIndex: 'created_at',
+    key: 'created_at',
+    width: 100,
+    render: (value: Date) => <DateCell clock date={value} />,
+  },
+  {
+    title: <HeaderCell title="PREFERED TO CALL" />,
     dataIndex: 'patient_preferred_time',
     key: 'patient_preferred_time',
     width: 100,
@@ -120,7 +127,7 @@ export const getColumns = ({
     title: <HeaderCell title="Actions" className="opacity-0" />,
     dataIndex: 'action',
     key: 'action',
-    width: 130,
+    width: 50,
     render: (_: string, row: Row) => (
       <div className="flex items-center justify-end gap-3 pe-4">
         <Tooltip
