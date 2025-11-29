@@ -12,7 +12,9 @@ import {
   settingPaymentFormSchema,
   SettingPaymentFormTypes,
 } from '@/validators/setting-payment.schema';
-import { useGetAllPaymentConfigurations } from '@/hooks/usePayment';
+import { useGetAllPaymentConfigurations, useUpdatePaymentConfiguration } from '@/hooks/usePayment';
+import { IPayloadPostPaymentConfiguration } from '@/types/paramTypes';
+import CustomSwitch from '@/core/components/switch';
 
 // Data currency dari gambar Figma
 const defaultCurrencyOptions = [
@@ -55,13 +57,18 @@ function PaymentModal({
   isOpen,
   onClose,
   paymentData,
+  onSave,
+  isSaving = false
 }: {
   isOpen: boolean;
   onClose: () => void;
-  paymentData?: any;
+  paymentData?: IPayloadPostPaymentConfiguration;
+  onSave: (data: IPayloadPostPaymentConfiguration) => void;
+  isSaving?: boolean;
 }) {
   const [formData, setFormData] = useState<any>({});
   const [isActive, setIsActive] = useState(false);
+  const [productionMode, setProductionMode] = useState(false);
 
   useEffect(() => {
     if (paymentData) {
@@ -69,47 +76,44 @@ function PaymentModal({
         production_mode: paymentData.production_mode || false,
         public_key: paymentData.public_key || '',
         secret_key: paymentData.secret_key || '',
-        client_id: paymentData.client_id || '',
-        client_secret: paymentData.client_secret || '',
-        merchant_id: paymentData.merchant_id || '',
-        api_key: paymentData.api_key || '',
-        environment: paymentData.environment || 'sandbox',
       });
       setIsActive(paymentData.is_active || false);
+      setProductionMode(paymentData.production_mode || false);
     }
   }, [paymentData]);
 
   const handleSave = () => {
-    console.log(`Saving ${paymentData?.paymentMethod?.name} data:`, {
-      ...formData,
-      is_active: isActive
-    });
-    toast.success(<Text as="b">{paymentData?.paymentMethod?.name} settings updated!</Text>);
-    onClose();
+    if (!paymentData) return;
+
+    const updatedData: IPayloadPostPaymentConfiguration = {
+      name: paymentData.name,
+      payment_method_id: paymentData.payment_method_id,
+      clinic_id: paymentData.clinic_id,
+      production_mode: productionMode,
+      public_key: formData.public_key || '',
+      secret_key: formData.secret_key || '',
+      is_active: isActive,
+    };
+
+    onSave(updatedData);
+  };
+
+  const handleProductionModeToggle = (checked: boolean) => {
+    setProductionMode(checked);
+    setFormData((prev: any) => ({ ...prev, production_mode: checked }));
+  };
+
+  const handleActiveToggle = (checked: boolean) => {
+    setIsActive(checked);
   };
 
   const renderFormFields = () => {
-    const paymentName = paymentData?.paymentMethod?.name?.toLowerCase() || '';
+    const paymentName = paymentData?.name?.toLowerCase() || '';
 
     switch (paymentName) {
       case 'stripe':
         return (
           <div className="space-y-6">
-            <div>
-              <label className="mb-2 block text-sm font-medium">Mode</label>
-              <select
-                className="form-input mt-1 w-full rounded-lg"
-                value={formData.production_mode ? 'live' : 'test'}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  production_mode: e.target.value === 'live'
-                })}
-              >
-                <option value="test">Test Mode</option>
-                <option value="live">Live Mode</option>
-              </select>
-            </div>
-
             <div>
               <label className="mb-2 block text-sm font-medium">Public Key</label>
               <Input
@@ -131,118 +135,16 @@ function PaymentModal({
           </div>
         );
 
-      case 'paypal':
-      case 'paypal payment':
-        return (
-          <div className="space-y-6">
-            <div>
-              <label className="mb-2 block text-sm font-medium">Environment</label>
-              <select
-                className="form-input mt-1 w-full rounded-lg"
-                value={formData.environment || 'sandbox'}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  environment: e.target.value
-                })}
-              >
-                <option value="sandbox">Sandbox</option>
-                <option value="live">Live</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium">Client ID</label>
-              <Input
-                placeholder="Enter client ID"
-                value={formData.client_id || ''}
-                onChange={(e) => setFormData({ ...formData, client_id: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium">Client Secret</label>
-              <Input
-                placeholder="Enter client secret"
-                value={formData.client_secret || ''}
-                onChange={(e) => setFormData({ ...formData, client_secret: e.target.value })}
-                type="text"
-              />
-            </div>
-          </div>
-        );
-
-      case 'apple payment':
-        return (
-          <div className="space-y-6">
-            <div>
-              <label className="mb-2 block text-sm font-medium">Merchant ID</label>
-              <Input
-                placeholder="Enter merchant ID"
-                value={formData.merchant_id || ''}
-                onChange={(e) => setFormData({ ...formData, merchant_id: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium">API Key</label>
-              <Input
-                placeholder="Enter API key"
-                value={formData.api_key || ''}
-                onChange={(e) => setFormData({ ...formData, api_key: e.target.value })}
-                type="text"
-              />
-            </div>
-          </div>
-        );
-
-      case 'google payment':
-        return (
-          <div className="space-y-6">
-            <div>
-              <label className="mb-2 block text-sm font-medium">Environment</label>
-              <select
-                className="form-input mt-1 w-full rounded-lg"
-                value={formData.environment || 'test'}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  environment: e.target.value
-                })}
-              >
-                <option value="test">Test Environment</option>
-                <option value="production">Production</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium">Merchant ID</label>
-              <Input
-                placeholder="Enter merchant ID"
-                value={formData.merchant_id || ''}
-                onChange={(e) => setFormData({ ...formData, merchant_id: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium">API Key</label>
-              <Input
-                placeholder="Enter API key"
-                value={formData.api_key || ''}
-                onChange={(e) => setFormData({ ...formData, api_key: e.target.value })}
-                type="text"
-              />
-            </div>
-          </div>
-        );
-
       default:
         return (
           <div className="space-y-6">
             <div>
-              <label className="mb-2 block text-sm font-medium">Configuration</label>
+              <label className="mb-2 block text-sm font-medium">public Key</label>
               <Input
-                placeholder={`Enter ${paymentData?.paymentMethod?.name} configuration`}
-                value={formData.api_key || ''}
-                onChange={(e) => setFormData({ ...formData, api_key: e.target.value })}
+                placeholder="Enter secret key"
+                value={formData.secret_key || ''}
+                onChange={(e) => setFormData({ ...formData, secret_key: e.target.value })}
+                type="text"
               />
             </div>
 
@@ -265,30 +167,35 @@ function PaymentModal({
       <div className="m-auto px-7 pt-6 pb-8">
         <div className="mb-7 flex items-center justify-between">
           <Title as="h4" className="flex items-center">
-            {paymentData?.paymentMethod?.name || 'Payment Configuration'}
+            {paymentData?.name || 'Payment Configuration'}
           </Title>
+
+          <div className="flex items-center gap-4">
+            <CustomSwitch
+              label={productionMode ? "Live" : "Sandbox"}
+              checked={productionMode}
+              onChange={handleProductionModeToggle}
+              onColor="#0A3353" // red
+              offColor="#6b7280" // gray
+              labelPlacement='left'
+            />
+          </div>
         </div>
 
         {renderFormFields()}
 
-        <div className="flex items-center gap-2 mt-6">
-          <input
-            type="checkbox"
-            id="is_active"
-            checked={isActive}
-            onChange={(e) => setIsActive(e.target.checked)}
-            className="rounded border-gray-300"
-          />
-          <label htmlFor="is_active" className="text-sm font-medium">
-            Activate {paymentData?.paymentMethod?.name}
-          </label>
-        </div>
-
         <div className="flex justify-end gap-3 mt-8">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" className='hover:border-[#0A3353] border-[#0A3353] rounded-3xl' onClick={onClose} disabled={isSaving}>
             Cancel
           </Button>
-          <Button onClick={handleSave}>Save Changes</Button>
+          <Button
+            onClick={handleSave}
+            disabled={isSaving}
+            isLoading={isSaving}
+            className='bg-[#0A3353] hover:bg-[#0A3353] rounded-3xl'
+          >
+            {isSaving ? 'Saving...' : 'Save Changes'}
+          </Button>
         </div>
       </div>
     </Modal>
@@ -299,14 +206,20 @@ function PaymentModal({
 /*                          PAYMENT GATEWAY FORM                              */
 /* -------------------------------------------------------------------------- */
 
-function PaymentGatewayForm({ listPayment, openModal, handleTogglePayment }: {
+function PaymentGatewayForm({
+  listPayment,
+  openModal,
+  handleTogglePayment,
+  isUpdating
+}: {
   listPayment: any[];
   openModal: (item: any) => void;
   handleTogglePayment: (item: any, checked: boolean) => void;
+  isUpdating?: boolean;
 }) {
+
   const onSubmit: SubmitHandler<SettingPaymentFormTypes> = (data) => {
     toast.success(<b>Payment gateway settings saved!</b>);
-    console.log('Payment gateway settings:', data);
   };
 
   return (
@@ -361,12 +274,14 @@ function PaymentGatewayForm({ listPayment, openModal, handleTogglePayment }: {
                     Edit
                   </Button>
 
-                  <Switch
-                    label={item.is_active ? "enabled" : "disabled"} 
+                  <CustomSwitch
+                    label={item.is_active ? "Enabled" : "Disabled"}
                     checked={item.is_active || false}
-                    onChange={(e) => handleTogglePayment(item, e.target.checked)}
+                    onChange={(checked) => handleTogglePayment(item, checked)}
                     labelPlacement="right"
-                    size='lg'
+                    onColor="#0A3353" // red untuk enabled
+                    offColor="#d1d5db" // gray untuk disabled
+                    disabled={isUpdating}
                   />
                 </div>
               </div>
@@ -391,7 +306,6 @@ function PaymentGatewayForm({ listPayment, openModal, handleTogglePayment }: {
 function CurrencySettingsForm() {
   const onSubmit: SubmitHandler<CurrencySettingsTypes> = (data) => {
     toast.success(<b>Currency settings saved!</b>);
-    console.log('Currency settings:', data);
   };
 
   return (
@@ -417,7 +331,7 @@ function CurrencySettingsForm() {
                 <Select
                   options={defaultCurrencyOptions}
                   value={defaultCurrency}
-                  onChange={(value:any) => setValue('default_currency', value)}
+                  onChange={(value: any) => setValue('default_currency', value)}
                   placeholder="Select default currency"
                 />
                 {errors.default_currency && (
@@ -434,7 +348,7 @@ function CurrencySettingsForm() {
                 <Select
                   options={supportedCurrencyOptions}
                   value={supportedCurrencies}
-                  onChange={(value) => setValue('supported_currencies', value)}
+                  onChange={(value: string) => setValue('supported_currencies', value)}
                   placeholder="Select supported currencies"
                 />
                 {errors.supported_currencies && (
@@ -457,34 +371,96 @@ function CurrencySettingsForm() {
 
 export default function Payment() {
   const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [selectedPayment, setSelectedPayment] = useState<any>(null);
 
-  const { data, isLoading, error } = useGetAllPaymentConfigurations({});
+  // Tambahkan refetch di sini
+  const { data, isLoading, error, refetch } = useGetAllPaymentConfigurations({});
   const [listPayment, setListPayment] = useState<any[]>([]);
+  const { mutate, isPending } = useUpdatePaymentConfiguration();
+
+  const [selectedPayment, setSelectedPayment] = useState<IPayloadPostPaymentConfiguration>({
+    name: null,
+    payment_method_id: null,
+    clinic_id: null,
+    production_mode: null,
+    public_key: null,
+    secret_key: null,
+    is_active: null,
+  });
 
   // Load API data
   useEffect(() => {
     if (data?.success && Array.isArray(data.data)) {
-
-      console.log("paymentData =====>", data?.data)
-      console.log("paymentData =====>", JSON.stringify(data?.data))
       setListPayment(data.data);
     }
   }, [data]);
 
+  const handleUpdatePaymentConfiguration = (newPaymentConfig: IPayloadPostPaymentConfiguration) => {
+
+    mutate({
+      ...newPaymentConfig
+    }, {
+      onSuccess: () => {
+        // Refetch data setelah berhasil update
+        refetch();
+        toast.success("Payment configuration updated successfully!");
+        // Tutup modal setelah berhasil save
+        if (activeModal) {
+          setActiveModal(null);
+        }
+      },
+      onError: (error: any) => {
+        // Refetch juga saat error untuk sync data terbaru
+        refetch();
+        toast.error("Failed to update payment configuration");
+        if (activeModal) {
+          setActiveModal(null);
+        }
+      },
+    });
+  };
+
+  const handleModalSave = (updatedData: IPayloadPostPaymentConfiguration) => {
+    handleUpdatePaymentConfiguration(updatedData);
+  };
+
   const openModal = (item: any) => {
-    setSelectedPayment(item);
+    setSelectedPayment({
+      name: item?.paymentMethod?.name,
+      payment_method_id: item?.payment_method_id,
+      clinic_id: item?.clinicId,
+      production_mode: item?.production_mode,
+      public_key: item?.public_key,
+      secret_key: item?.secret_key,
+      is_active: item?.is_active,
+    });
     setActiveModal(item.paymentMethod?.name || item.id);
   };
 
   const closeModal = () => {
     setActiveModal(null);
-    setSelectedPayment(null);
+    setSelectedPayment({
+      name: null,
+      payment_method_id: null,
+      clinic_id: null,
+      production_mode: null,
+      public_key: null,
+      secret_key: null,
+      is_active: null,
+    });
   };
 
-  const handleTogglePayment = (item: any, checked: boolean) => {
-    console.log(`Toggle ${item.paymentMethod?.name}:`, checked);
-    toast.success(<Text as="b">{item.paymentMethod?.name} {checked ? 'activated' : 'deactivated'}!</Text>);
+  const handleTogglePayment = async (item: any, checked: boolean) => {
+    const newPaymentConfig = {
+      name: item.paymentMethod?.name,
+      payment_method_id: item?.payment_method_id,
+      clinic_id: item?.clinicId,
+      production_mode: item?.production_mode,
+      public_key: item?.public_key,
+      secret_key: item?.secret_key,
+      is_active: checked,
+    };
+
+    handleUpdatePaymentConfiguration(newPaymentConfig);
   };
 
   if (isLoading) {
@@ -513,6 +489,7 @@ export default function Payment() {
         listPayment={listPayment}
         openModal={openModal}
         handleTogglePayment={handleTogglePayment}
+        isUpdating={isPending}
       />
 
       {/* Dynamic Modal */}
@@ -520,15 +497,9 @@ export default function Payment() {
         isOpen={activeModal !== null}
         onClose={closeModal}
         paymentData={selectedPayment}
+        onSave={handleModalSave}
+        isSaving={isPending}
       />
-
-      <Button
-        size="sm"
-        variant="text"
-        className="flex items-center gap-2 text-white bg-[#0A3353] "
-      >
-        Save Changes
-      </Button>
     </div>
   );
 }

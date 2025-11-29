@@ -54,6 +54,16 @@ export interface IPayloadPostPaymentMethod {
   amount: number;
 }
 
+export interface IPayloadPostPaymentConfiguration {
+  payment_method_id: number | null;
+  name: string | null;
+  clinic_id: number | null;
+  production_mode: boolean | null;
+  public_key: string | null;
+  secret_key: string | null| null;
+  is_active: boolean| null;
+}
+
 export interface IPayloadCreateEditPatient {
   clinicId?: number;
   patient_id?: string;

@@ -1,4 +1,5 @@
 import { getPaymentConfiguration, putPaymentConfiguration } from "@/service/payment";
+import { IPayloadPostPaymentConfiguration } from "@/types/paramTypes";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export function useGetAllPaymentConfigurations(params: any) {
@@ -12,7 +13,7 @@ export function useGetAllPaymentConfigurations(params: any) {
 
 export function useUpdatePaymentConfiguration() {
     return useMutation({
-        mutationFn: async (payload: any) => {
+      mutationFn: async (payload: IPayloadPostPaymentConfiguration) => {
             return await putPaymentConfiguration(payload);
         },
     });
