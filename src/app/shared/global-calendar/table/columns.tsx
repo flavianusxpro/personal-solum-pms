@@ -14,6 +14,7 @@ import {
 import dayjs from 'dayjs';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import { useDrag, useDrop } from 'react-dnd';
+import AppointmentDetails from '../../appointment/appointment-list/list/appointment-details';
 
 // tipe unik untuk item yang di-drag
 const localizer = dayjsLocalizer(dayjs);
@@ -146,6 +147,82 @@ function getRowAppointment(
   return <DropCell row={row} doctor={doctor} onDrop={onDrop} />;
 }
 
+// export function AppointmentCell({
+//   value,
+//   type,
+//   openModal,
+//   row,
+//   doctor,
+//   onDrop,
+// }: any) {
+//   const ITEM_TYPE = 'APPOINTMENT';
+
+//   console.log('zzz row nih nih', value);
+  
+
+//   let bgColor = '';
+//   if (type?.toLowerCase().includes('initial')) bgColor = 'bg-green-600';
+//   else if (type?.toLowerCase().includes('follow')) bgColor = 'bg-blue-600';
+//   else if (type?.toLowerCase().includes('script')) bgColor = 'bg-yellow-600';
+//   else if (type?.toLowerCase().includes('rescheduled'))
+//     bgColor = 'bg-pink-600';
+//   else bgColor = 'bg-gray-600';
+
+//   if (!value) return null;
+
+//   const [{ isDragging }, dragRef] = useDrag(() => ({
+//     type: ITEM_TYPE,
+//     item: { appointment: value },
+//     collect: (monitor) => ({
+//       isDragging: monitor.isDragging(),
+//     }),
+//   }));
+
+//   const [{ isOver }, dropRef] = useDrop(() => ({
+//     accept: ITEM_TYPE,
+//     drop: (item: any) => {
+//       // Prevent dropping on itself
+//       if (item.appointment.id === value.id) return;
+//       console.log(
+//         `✅ Dropped ${item.appointment.id} to ${doctor} at ${row.time}`
+//       );
+//       onDrop?.(item.appointment, doctor, row.time);
+//     },
+//     collect: (monitor) => ({
+//       isOver: monitor.isOver(),
+//     }),
+//   }));
+
+//   const handleOpenModal = () => {
+//     openModal({
+//       view: <AppointmentDetails data={value} />,
+//       customSize: '1100px',
+//     });
+//   };
+
+//   return (
+//     <div
+//       ref={(instance) => {
+//         dragRef(instance);
+//         dropRef(instance);
+//       }}
+//       onClick={handleOpenModal}
+//       className={cn(
+//         'relative w-fit cursor-pointer rounded-md p-2 transition-opacity',
+//         bgColor,
+//         isDragging && 'opacity-50'
+//       )}
+//     >
+//       {isOver && <div className="absolute inset-0 rounded-md bg-black/60" />}
+//       <Text className="font-medium text-white">
+//         {`${value.patient?.first_name ?? ''} ${
+//           value.patient?.last_name ?? ''
+//         }`.trim() || '-'}
+//       </Text>
+//     </div>
+//   );
+// }
+
 export function AppointmentCell({
   value,
   type,
@@ -155,14 +232,21 @@ export function AppointmentCell({
   onDrop,
 }: any) {
   const ITEM_TYPE = 'APPOINTMENT';
-
+  
   let bgColor = '';
-  if (type?.toLowerCase().includes('initial')) bgColor = 'bg-green-600';
-  else if (type?.toLowerCase().includes('follow')) bgColor = 'bg-blue-600';
-  else if (type?.toLowerCase().includes('script')) bgColor = 'bg-yellow-600';
-  else if (type?.toLowerCase().includes('rescheduled'))
-    bgColor = 'bg-pink-600';
-  else bgColor = 'bg-gray-600';
+  const appointmentType = value?.type?.toLowerCase() || '';
+  
+  if (appointmentType.includes('initial')) {
+    bgColor = '#1FA551'; 
+  } else if (appointmentType.includes('follow')) {
+    bgColor = '#0078D7'; 
+  } else if (appointmentType.includes('transfer')) {
+    bgColor = '#F4A523'; 
+  } else if (appointmentType.includes('reschedule')) {
+    bgColor = '#E84757'; 
+  } else {
+    bgColor = '#6B7280'; 
+  }
 
   if (!value) return null;
 
@@ -177,11 +261,7 @@ export function AppointmentCell({
   const [{ isOver }, dropRef] = useDrop(() => ({
     accept: ITEM_TYPE,
     drop: (item: any) => {
-      // Prevent dropping on itself
       if (item.appointment.id === value.id) return;
-      console.log(
-        `✅ Dropped ${item.appointment.id} to ${doctor} at ${row.time}`
-      );
       onDrop?.(item.appointment, doctor, row.time);
     },
     collect: (monitor) => ({
@@ -191,8 +271,8 @@ export function AppointmentCell({
 
   const handleOpenModal = () => {
     openModal({
-      view: <ModalAppointmentDetails data={value} />,
-      customSize: '700px',
+      view: <AppointmentDetails data={value} />,
+      customSize: '1100px',
     });
   };
 
@@ -205,9 +285,9 @@ export function AppointmentCell({
       onClick={handleOpenModal}
       className={cn(
         'relative w-fit cursor-pointer rounded-md p-2 transition-opacity',
-        bgColor,
         isDragging && 'opacity-50'
       )}
+      style={{ backgroundColor: bgColor }}
     >
       {isOver && <div className="absolute inset-0 rounded-md bg-black/60" />}
       <Text className="font-medium text-white">

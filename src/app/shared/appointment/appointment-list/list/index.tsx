@@ -74,11 +74,11 @@ export default function AppointmentListTable({ range, setRange }: { range: strin
       by_reschedule: filterStateValue?.by_reschedule || undefined,
       clinicId: dataProfile?.clinics[0].id || 0,
       from: filterStateValue?.createdAt?.[0]
-      ? dayjs(filterStateValue?.createdAt?.[0]).format('YYYY-MM-DD')
-      : undefined,
-    to: filterStateValue?.createdAt?.[1]
-      ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
-      : undefined,
+        ? dayjs(filterStateValue?.createdAt?.[0]).format('YYYY-MM-DD')
+        : undefined,
+      to: filterStateValue?.createdAt?.[1]
+        ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
+        : undefined,
     }),
     timezone_client: localTimezone,
   });
@@ -179,6 +179,14 @@ export default function AppointmentListTable({ range, setRange }: { range: strin
     selectedRowKeys,
   } = useTable(dataAppointments?.data ?? [], params.perPage, filterStateValue);
 
+  const sortedTableData = useMemo(() => {
+    return [...tableData].sort((a, b) => {
+      if (a.status === 4 && b.status !== 4) return 1;
+      if (a.status !== 4 && b.status === 4) return -1;
+      return 0;
+    });
+  }, [tableData]);
+
   const columns = useMemo(
     () =>
       GetColumns({
@@ -226,7 +234,7 @@ export default function AppointmentListTable({ range, setRange }: { range: strin
         variant="modern"
         isLoading={isLoading || isLoadingGetAppointments}
         showLoadingText={true}
-        data={tableData ?? []}
+        data={sortedTableData ?? []}
         scroll={{
           x: 1560,
         }}
