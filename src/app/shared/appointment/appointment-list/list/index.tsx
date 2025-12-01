@@ -87,7 +87,7 @@ export default function AppointmentListTable({
     page: params.page,
     perPage: params.perPage,
     q: JSON.stringify({
-      patientName: params.search === '' ? params.search : undefined,
+      patient_search: params.search ? params.search : undefined,
       status: filterStateValue?.status || undefined,
       doctorId: filterStateValue?.doctor ? filterStateValue?.doctor : undefined,
       patientId: filterStateValue?.patient
@@ -136,12 +136,16 @@ export default function AppointmentListTable({
     [mutate, refetch]
   );
 
-  const handlerSearch = debounce((value: string) => {
-    setParams((prevState) => ({
-      ...prevState,
-      search: value,
-    }));
-  }, 1000);
+  const handlerSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setParams((prevState) => ({
+          ...prevState,
+          search: value,
+        }));
+      }, 2000),
+    []
+  );
 
   const onChecked = (
     event: React.ChangeEvent<HTMLInputElement>,
