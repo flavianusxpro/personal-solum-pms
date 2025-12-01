@@ -144,8 +144,8 @@ export default function PatientTable() {
     handleSort,
     selectedRowKeys,
     setSelectedRowKeys,
-    handleRowSelect,
-    handleSelectAll,
+    handleSelectRow,
+    handleSelectAllRow,
   } = useTable(data?.data ?? [], params.perPage, filterStateValue);
 
   const columns = React.useMemo(
@@ -156,8 +156,8 @@ export default function PatientTable() {
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
         onDeleteItem,
-        onChecked: handleRowSelect,
-        handleSelectAll,
+        onChecked: handleSelectRow,
+        handleSelectAllRow,
         isOpen,
         setIsOpen,
         idPatient,
@@ -170,11 +170,13 @@ export default function PatientTable() {
       sortConfig.key,
       sortConfig.direction,
       onDeleteItem,
-      handleRowSelect,
-      handleSelectAll,
+      handleSelectRow,
+      handleSelectAllRow,
       isOpen,
     ]
   );
+
+  console.log('zzz selected tow', selectedRowKeys);
 
   const { visibleColumns, checkedColumns, setCheckedColumns } =
     useColumn(columns);
@@ -230,19 +232,26 @@ export default function PatientTable() {
           checkedColumns,
           setCheckedColumns,
           otherButton: [
-            () => (
-              <Button 
-                size='sm'
-                className='me-2.5 h-9 pe-3 ps-2.5'
-                onClick={() => {
-                  // integrate to api send bulk consent form
-                  console.log("checkedColumns ========>>>", checkedColumns)
-                }}
-              >
-                <FiSend className="me-1.5 h-[18px] w-[18px]" strokeWidth={1.7} />
-                Send Consent Form
-              </Button>
-            ),
+            () => {
+              const hasFilledConsentForm =
+                selectedRowKeys.length > 0 &&
+                selectedRowKeys.every((data) => data.has_filled_consent_form === true);
+
+              return (
+                hasFilledConsentForm && (
+                  <Button
+                    size="sm"
+                    className="me-2.5 h-9 pe-3 ps-2.5"
+                    onClick={() => {
+                      console.log("checkedColumns ========>>>", checkedColumns);
+                    }}
+                  >
+                    <FiSend className="me-1.5 h-[18px] w-[18px]" strokeWidth={1.7} />
+                    Send Consent Form
+                  </Button>
+                )
+              );
+            },
           ]
         }}
         filterElement={
