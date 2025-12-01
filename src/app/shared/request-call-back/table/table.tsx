@@ -9,12 +9,13 @@ import { useModal } from '../../modal-views/use-modal';
 import { useDeleteClinic, useGetAllClinics } from '@/hooks/useClinic';
 import { useGetRequestCallback } from '@/hooks/useRequestCallback';
 import FilterElement from './filter-element';
+import { Button } from 'rizzui';
 
 const filterState = {
   // createdAt: [null, null],
   status: null,
 };
-export default function RequestCallBackTable({}: {}) {
+export default function RequestCallBackTable({ }: {}) {
   const { openModal } = useModal();
   const [pageSize, setPageSize] = useState(10);
   const [filterStateValue, setFilterStateValue] = useState(filterState);

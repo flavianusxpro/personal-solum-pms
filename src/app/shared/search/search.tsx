@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Modal } from 'rizzui';
 import SearchTrigger from './search-trigger';
 import SearchList from './search-list';
+import CSelect from '../ui/select';
 
 export default function SearchWidget({
   className,
@@ -36,12 +37,24 @@ export default function SearchWidget({
 
   return (
     <>
-      <SearchTrigger
-        icon={icon}
-        className={className}
-        onClick={() => setOpen(true)}
-        placeholderClassName={placeholderClassName}
-      />
+      <div className='flex gap-2 w-[500px]'>
+        <SearchTrigger
+          icon={icon}
+          className={className}
+          onClick={() => setOpen(true)}
+          placeholderClassName={placeholderClassName}
+        />
+
+        <CSelect
+          placeholder="Timezone"
+          dropdownClassName="!z-10 h-auto"
+          className="w-full @[35rem]:w-auto"
+          options={[]}
+          onClear={() => { }}
+          clearable
+          value=""
+        />
+      </div>
 
       <Modal
         isOpen={open}

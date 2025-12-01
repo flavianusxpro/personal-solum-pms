@@ -29,6 +29,8 @@ const ModalProfilePatient = (data: any) => {
         );
     };
 
+    console.log('zzz data yama', data);
+
     return (
         <div className="relative w-full rounded-[24px] bg-white p-6">
             {/* Close Button */}
@@ -65,10 +67,10 @@ const ModalProfilePatient = (data: any) => {
                     </div>
                 </div>
 
-                <Link 
+                <Link
                     href={routes.patient.patientDetail(data?.data?.patient?.patient_id.toString())}
                 >
-                    <Button 
+                    <Button
                         className="!bg-[#3872F9] text-[16px] font-semibold"
                     >
                         Go to Profile
@@ -77,92 +79,108 @@ const ModalProfilePatient = (data: any) => {
             </div>
 
             {/* Content Grid */}
-            <div className="grid gap-4 md:grid-cols-2 mb-4">
+            <div className="flex gap-4 mb-4">
                 {/* Personal Info */}
-                <div className="rounded-lg border border-[#E4E4E4] p-4">
+                <div className="rounded-lg basis-[40%] border border-[#E4E4E4] p-4">
                     <h3 className="mb-4 font-semibold text-sm text-[#525252]">
                         Personal Info
                     </h3>
                     <div className="flex flex-col gap-[8px]">
-                        <div className="flex items-center gap-3">
-                            <PiCake className="text-[18px]" />
-                            <div className="flex items-center gap-2">
-                                <p className="text-[#525252] text-sm">
-                                    {data?.data?.patient?.date_of_birth ? dayjs(data?.data?.patient?.date_of_birth).format("DD MMMM YYYY") : '-'}
-                                </p>
-                                <span className="text-[#787878] text-[12px] border border-[#E4E4E4] py-[4px] px-[8px] rounded-[4px] flex items-center justify-center">
-                                    {data?.data?.patient?.age ?? '-'} y.o.
-                                </span>
-                            </div>
+                        <div className="flex">
+                            <p className="text-sm text-[#525252] basis-[20%]">Age:</p>
+                            <p className="text-sm text-[#111111]">{data?.data?.patient?.age ?? '-'}</p>
                         </div>
-                        <div className="flex items-start gap-3">
-                            <PiMapPin className="text-[18px]" />
-                            <p className="text-sm text-[#525252]">
-                                {data?.data?.patient?.address_line_1 ?? '-'}, {data?.data?.patient?.state ?? '-'}, {data?.data?.patient?.country ?? '-'}
+
+                        <div className="flex">
+                            <p className="text-sm text-[#525252] basis-[20%]">DOB:</p>
+                            <p className="text-sm text-[#111111]">{data?.data?.patient?.date_of_birth
+                                ? dayjs(data.data.patient.date_of_birth, ['DD-MM-YYYY', 'DD/MM/YYYY', 'YYYY-MM-DD']).format('D MMMM YYYY')
+                                : '-'}
+                            </p>
+                        </div>
+
+                        <div className="flex">
+                            <p className="text-sm text-[#525252] basis-[20%]">Address:</p>
+                            <p className="text-sm text-[#111111]">
+                                {data?.data?.patient?.address_line_1 ?? '-'}, {data?.data?.patient?.suburb ?? '-'},
+                                {data?.data?.patient?.address_line_1 ?? '-'}, {data?.data?.patient?.country ?? '-'}
                             </p>
                         </div>
                     </div>
                 </div>
 
-                {/* Medicare Info */}
-                <div className="rounded-lg border border-[#E4E4E4] p-4">
+                {/* Contact Info */}
+                <div className="rounded-lg basis-[60%] border border-[#E4E4E4] p-4">
                     <h3 className="mb-4 font-semibold text-sm text-[#525252]">
-                        Medicare Info
+                        Contact Info
                     </h3>
-                    <div className="flex flex-col gap-[8px]">
-                        <div className="flex items-start gap-3">
-                            <PiIdentificationCard className="text-[18px]" />
-                            <p className="text-[#525252] text-sm">
-                                {data?.data?.patient?.medicare_card_number ?? '-'}
-                            </p>
+                    <div className="flex gap-[8px]">
+                        <div className="flex flex-1 flex-col gap-2">
+                            <div className="flex">
+                                <p className="text-sm text-[#525252] basis-[20%]">Email:</p>
+                                <p className="text-sm text-[#111111]">{data?.data?.patient?.email ?? '-'}</p>
+                            </div>
+
+                            <div className="flex">
+                                <p className="text-sm text-[#525252] basis-[20%]">Home:</p>
+                                <p className="text-sm text-[#111111]">{data?.data?.patient?.phone_home_number ?? '-'}</p>
+                            </div>
                         </div>
-                        <div className="flex items-start gap-3">
-                            <PiCalendarBlank className="text-[18px]" />
-                            <p className="text-[#525252] text-sm">
-                                {data?.data?.patient?.medicare_expired_date ? dayjs(data?.data?.patient?.medicare_expired_date).format('MM/YYYY') : '-'}
-                            </p>
+                        <div className="flex flex-1 flex-col gap-2">
+                            <div className="flex">
+                                <p className="text-sm text-[#525252] basis-[20%]">Work:</p>
+                                <p className="text-sm text-[#111111]">{data?.data?.patient?.phone_work_number ?? '-'}</p>
+                            </div>
+
+                            <div className="flex">
+                                <p className="text-sm text-[#525252] basis-[20%]">Mobile:</p>
+                                <p className="text-sm text-[#111111]">{data?.data?.patient?.mobile_number ?? '-'}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Contact Info */}
             <div className="rounded-lg border border-[#E4E4E4] p-4">
                 <h3 className="mb-4 font-semibold text-sm text-[#525252]">
-                    Contact Info
+                    Healthcare Info
                 </h3>
-                <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                        <p className="text-sm font-medium text-[#525252]">
-                            Email
-                        </p>
-                        <p className="text-sm text-[#525252]">
-                            {data?.data?.patient?.email ?? '-'}
-                        </p>
+                <div className="flex gap-[8px]">
+                    <div className="flex flex-1 flex-col gap-2">
+                        <div className="flex">
+                            <p className="text-sm text-[#525252] basis-[40%]">Medicare Number:</p>
+                            <p className="text-sm text-[#111111]">{data?.data?.patient?.medicare_card_number ?? '-'}</p>
+                        </div>
+
+                        <div className="flex">
+                            <p className="text-sm text-[#525252] basis-[40%]">Position:</p>
+                            <p className="text-sm text-[#111111]">{data?.data?.patient?.position_on_card ?? '-'}</p>
+                        </div>
+                        <div className="flex">
+                            <p className="text-sm text-[#525252] basis-[40%]">Expiry Date:</p>
+                            <p className="text-sm text-[#111111]">
+                                {data?.data?.patient?.medicare_expired_date
+                                    ? dayjs(data.data.patient.medicare_expired_date, 'DD MM YYYY').format('MM/YYYY')
+                                    : '-'}
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <p className="text-sm font-medium text-[#525252]">
-                            Work
-                        </p>
-                        <p className="text-sm text-[#525252]">
-                            {data?.data?.patient?.phone_work_number ?? '-'}
-                        </p>
+                    <div className="flex flex-1 flex-col gap-2">
+                        <div className="flex">
+                            <p className="text-sm text-[#525252] basis-[40%]">DVA Number:</p>
+                            <p className="text-sm text-[#111111]">{data?.data?.patient?.concession_card_number ?? '-'}</p>
+                        </div>
+
+                        <div className="flex">
+                            <p className="text-sm text-[#525252] basis-[40%]">DVA Type:</p>
+                            <p className="text-sm text-[#111111]">{data?.data?.patient?.concession_card_type ?? '-'}</p>
+                        </div>
                     </div>
-                    <div>
-                        <p className="text-sm font-medium text-[#525252]">
-                            Home
-                        </p>
-                        <p className="text-sm text-[#525252]">
-                            {data?.data?.patient?.phone_home_number ?? '-'}
-                        </p>
-                    </div>
-                    <div>
-                        <p className="text-sm font-medium text-[#525252]">
-                            Mobile
-                        </p>
-                        <p className="text-sm text-[#525252]">
-                            {data?.data?.patient?.mobile_number ?? '-'}
-                        </p>
+                    <div className="flex flex-1 flex-col gap-2">
+                        <div className="flex">
+                            <p className="text-sm text-[#525252] basis-[40%]">IHI Number:</p>
+                            <p className="text-sm text-[#111111]">{data?.data?.patient?.ihi_number ?? '-'}</p>
+                        </div>
                     </div>
                 </div>
             </div>

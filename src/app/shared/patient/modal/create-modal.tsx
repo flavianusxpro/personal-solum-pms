@@ -317,6 +317,7 @@ export default function CreatePatienModal() {
                 </FormGroup>
               </div>
             </div>
+            
             <FormFooter
               className="rounded-b-xl"
               isLoading={isPending}
