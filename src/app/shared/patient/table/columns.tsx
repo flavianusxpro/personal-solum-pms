@@ -34,7 +34,7 @@ type Row = IGetAllPatientsResponse['data'][number];
 type Columns = {
   data: IGetAllPatientsResponse['data'];
   sortConfig?: any;
-  handleSelectAll: any;
+  handleSelectAllRow: any;
   checkedItems: string[];
   onDeleteItem: (id: number[]) => void;
   onHeaderCellClick: (value: string) => void;
@@ -51,7 +51,7 @@ export const getColumns = ({
   checkedItems,
   onDeleteItem,
   onHeaderCellClick,
-  handleSelectAll,
+  handleSelectAllRow,
   onChecked,
   isOpen,
   setIsOpen,
@@ -63,7 +63,7 @@ export const getColumns = ({
         <div className="ps-2">
           <Checkbox
             title={'Select All'}
-            onChange={handleSelectAll}
+            onChange={handleSelectAllRow}
             checked={checkedItems?.length === data?.length}
             className="cursor-pointer"
           />
@@ -76,8 +76,8 @@ export const getColumns = ({
         <div className="inline-flex ps-2">
           <Checkbox
             className="cursor-pointer"
-            checked={checkedItems.includes(row.id)}
-            {...(onChecked && { onChange: () => onChecked(row.id) })}
+            checked={checkedItems.some((item: any) => item.id === row.id)}
+            {...(onChecked && { onChange: () => onChecked(row) })}
           />
         </div>
       ),
