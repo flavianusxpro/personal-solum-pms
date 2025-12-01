@@ -23,7 +23,7 @@ export function useTable<T extends AnyObject>(
   /*
    * Handle row selection
    */
-  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
 
   // ✅ Gunakan useCallback untuk mencegah function dibuat ulang
   const handleRowSelect = useCallback((recordKey: string) => {
@@ -36,15 +36,39 @@ export function useTable<T extends AnyObject>(
     });
   }, []);
 
-  const handleSelectAll = useCallback(() => {
-    setSelectedRowKeys((prev) => {
-      if (prev.length === data.length) {
-        return [];
+  const handleSelectAll = useCallback(
+    (record: any) => {
+      setSelectedRowKeys((prev) => {
+        if (prev.length === data.length) {
+          return [];
+        } else {
+          return data.map((record) => record.id);
+        }
+      });
+    },
+    [data.length]
+  );
+
+  const handleSelectRow = useCallback((record: any) => {
+    setSelectedRowKeys((prev: any) => {
+      const isExist = prev.some((item: any) => item.id === record.id);
+      if (isExist) {
+        return prev.filter((item: any) => item.id !== record.id);
       } else {
-        return data.map((record) => record.id);
+        return [...prev, record];
       }
     });
-  }, [data.length]);
+  }, []);
+
+  const handleSelectAllRow = useCallback(() => {
+    setSelectedRowKeys((prev) => {
+      if (prev.length === data.length) {
+        return []; 
+      } else {
+        return [...data]; 
+      }
+    });
+  }, [data]);
 
   /*
    * Handle sorting
@@ -326,5 +350,7 @@ export function useTable<T extends AnyObject>(
     applyFilters,
     handleDelete,
     handleReset,
+    handleSelectRow,
+    handleSelectAllRow
   };
 }

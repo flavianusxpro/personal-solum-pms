@@ -56,8 +56,8 @@ type RowValue = IGetAppointmentListResponse['data'][number];
 type Columns = {
   data?: IGetAppointmentListResponse['data'];
   sortConfig?: any;
-  handleSelectAll: any;
-  checkedItems: string[];
+  handleSelectAllRow: any;
+  checkedItems: any;
   onDeleteItem: (id: number[]) => void;
   onHeaderCellClick: (value: string) => void;
   onChecked?: (id: string) => void;
@@ -74,7 +74,7 @@ interface StatusCellProps {
 }
 
 export const GetColumns = ({
-  handleSelectAll,
+  handleSelectAllRow,
   sortConfig,
   onDeleteItem,
   onHeaderCellClick,
@@ -93,7 +93,7 @@ export const GetColumns = ({
         <div className="ps-2">
           <Checkbox
             title={'Select All'}
-            onChange={handleSelectAll}
+            onChange={handleSelectAllRow}
             checked={checkedItems?.length === data?.length}
             className="cursor-pointer"
           />
@@ -110,8 +110,8 @@ export const GetColumns = ({
           <Checkbox
             aria-label={'ID'}
             className="cursor-pointer"
-            checked={checkedItems.includes(row.id)}
-            {...(onChecked && { onChange: () => onChecked(row.id) })}
+            checked={checkedItems.some((item: any) => item.id === row.id)}
+            {...(onChecked && { onChange: () => onChecked(row) })}
           />
         </div>
       ),
@@ -131,7 +131,7 @@ export const GetColumns = ({
               closeModal(),
                 openModal({
                   view: <ModalProfilePatient data={row} />,
-                  customSize: '600px',
+                  customSize: '1100px',
                 });
             }}
           >

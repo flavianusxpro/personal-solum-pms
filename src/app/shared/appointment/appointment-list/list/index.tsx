@@ -1,7 +1,13 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { GetColumns } from '@/app/shared/appointment/appointment-list/list/columns';
 import ControlledTable from '@/app/shared/ui/controlled-table/index';
 import { useMedia } from '@core/hooks/use-media';
@@ -20,6 +26,10 @@ import { useProfile } from '@/hooks/useProfile';
 import TableHeader from '@/app/shared/ui/table-header';
 import { StatusSelect } from '@/app/shared/invoice/invoice-list/columns';
 import AppointmentDetails from './appointment-details';
+import { Button } from 'rizzui';
+import { BsArrowRepeat } from 'react-icons/bs';
+import ShowConfirm from '../../modal/confirm-modal';
+import CSelect from '@/core/ui/select';
 
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
@@ -39,8 +49,14 @@ const filterState = {
   patient: null,
 };
 
-export default function AppointmentListTable({ range, setRange }: { range: string | null | undefined, setRange?: React.Dispatch<SetStateAction<string | null | undefined>>; }) {
-  const { isOpen: open } = useModal();
+export default function AppointmentListTable({
+  range,
+  setRange,
+}: {
+  range: string | null | undefined;
+  setRange?: React.Dispatch<SetStateAction<string | null | undefined>>;
+}) {
+  const { isOpen: open, closeModal } = useModal();
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const [filterStateValue, setFilterStateValue] = useState(filterState);
   const [isFilter, setIsFilter] = useState<boolean>(false);
@@ -52,7 +68,15 @@ export default function AppointmentListTable({ range, setRange }: { range: strin
     perPage: 10,
     search: '',
   });
-
+  const aptStatusOptions = [
+    { label: 'Draft', value: 1 },
+    { label: 'Scheduled', value: 2 },
+    { label: 'Checked In', value: 3 },
+    { label: 'Finished', value: 4 },
+    { label: 'Cancelled', value: 5 },
+    { label: 'On Going', value: 6 },
+    { label: 'No Show', value: 7 },
+  ];
   const { data: dataProfile } = useProfile(true);
   const {
     data: dataAppointments,
@@ -60,16 +84,18 @@ export default function AppointmentListTable({ range, setRange }: { range: strin
     refetch,
   } = useGetAppointments({
     range: range ? range : undefined,
-    page: isFilter ? 1 : params.page,
+    page: params.page,
     perPage: params.perPage,
     q: JSON.stringify({
-      patientName: params.search === "" ? params.search : undefined,
+      patientName: params.search === '' ? params.search : undefined,
       status: filterStateValue?.status || undefined,
       doctorId: filterStateValue?.doctor ? filterStateValue?.doctor : undefined,
-      patientId: filterStateValue?.patient ? filterStateValue?.patient : undefined,
-      inactive_patients_months: filterStateValue?.inactive_patients_months ? Number(
-        filterStateValue?.inactive_patients_months,
-      ) : undefined,
+      patientId: filterStateValue?.patient
+        ? filterStateValue?.patient
+        : undefined,
+      inactive_patients_months: filterStateValue?.inactive_patients_months
+        ? Number(filterStateValue?.inactive_patients_months)
+        : undefined,
       payment_status: filterStateValue?.payment_status || undefined,
       by_reschedule: filterStateValue?.by_reschedule || undefined,
       clinicId: dataProfile?.clinics[0].id || 0,
@@ -155,8 +181,21 @@ export default function AppointmentListTable({ range, setRange }: { range: strin
         ...prevState,
         [columnId]: filterValue,
       }));
-    }, []
+    },
+    []
   );
+
+  const showConfirmModal = (
+    id: number,
+    onClick: (value: number) => void,
+    status: string
+  ) => {
+    closeModal(),
+      openModal({
+        view: <ShowConfirm onClick={onClick} status={status} id={id} />,
+        customSize: '550px',
+      });
+  };
 
   const {
     isLoading,
@@ -171,13 +210,17 @@ export default function AppointmentListTable({ range, setRange }: { range: strin
     handleSearch,
     sortConfig,
     handleSort,
-    handleDelete,
+    // handleDelete,
     handleReset,
-    handleSelectAll,
-    handleRowSelect,
+    handleSelectAllRow,
+    // handleRowSelect,
+    handleSelectRow,
     setSelectedRowKeys,
     selectedRowKeys,
   } = useTable(dataAppointments?.data ?? [], params.perPage, filterStateValue);
+
+  console.log('zzz mantap mantap', selectedRowKeys);
+  
 
   const sortedTableData = useMemo(() => {
     return [...tableData].sort((a, b) => {
@@ -195,8 +238,8 @@ export default function AppointmentListTable({ range, setRange }: { range: strin
         checkedItems: selectedRowKeys,
         onHeaderCellClick,
         onDeleteItem,
-        onChecked: handleRowSelect,
-        handleSelectAll,
+        onChecked: handleSelectRow,
+        handleSelectAllRow,
         idAppointment,
         setIdAppointment,
         isOpen,
@@ -222,6 +265,53 @@ export default function AppointmentListTable({ range, setRange }: { range: strin
   }, [open, refetch, filterStateValue, params]);
 
   const { openModal } = useModal();
+  const hasNonCompletedStatus = selectedRowKeys.some(
+    (item: any) => item.payment?.status !== 2
+  );
+
+  function getStatusButtonType(record: any) {
+    const { date, status } = record;
+    if (!date) return null;
+
+    const appointmentDate = new Date(date);
+    if (isNaN(appointmentDate.getTime())) return null;
+
+    const currentDate = new Date();
+    const diffMinutes =
+      (appointmentDate.getTime() - currentDate.getTime()) / (1000 * 60);
+
+    const isWithin30Minutes = diffMinutes > 0 && diffMinutes <= 30;
+    const isPastAppointment = appointmentDate < currentDate;
+
+    if (isPastAppointment && status !== 4) return 'FINISHED';
+    if (isWithin30Minutes && ![3, 4, 5].includes(status)) return 'CHECKIN';
+
+    return null;
+  }
+
+  const buttonTypes = selectedRowKeys.map((item) => getStatusButtonType(item));
+
+  const isAllSame = buttonTypes.every(
+    (type) => type === buttonTypes[0] && type !== null
+  );
+
+  const buttonType = isAllSame ? buttonTypes[0] : null;
+
+  useEffect(() => {
+    setParams(prev => ({ ...prev, page: 1 }));
+  }, [
+    range,
+    params.search,
+    filterStateValue?.status,
+    filterStateValue?.doctor,
+    filterStateValue?.patient,
+    filterStateValue?.inactive_patients_months,
+    filterStateValue?.payment_status,
+    filterStateValue?.by_reschedule,
+    dataProfile?.clinics?.[0]?.id,
+    filterStateValue?.createdAt,
+  ]);
+
 
   return (
     <div
@@ -241,14 +331,11 @@ export default function AppointmentListTable({ range, setRange }: { range: strin
         onRow={(record, index) => ({
           onClick: () => {
             openModal({
-              view: (
-                <AppointmentDetails data={record} />
-              ),
+              view: <AppointmentDetails data={record} />,
               customSize: '1100px',
-            })
+            });
           },
         })}
-
         // @ts-ignore
         columns={visibleColumns}
         paginatorOptions={{
@@ -276,6 +363,20 @@ export default function AppointmentListTable({ range, setRange }: { range: strin
           columns,
           checkedColumns,
           setCheckedColumns,
+          otherButton: [
+            <Button
+              key="create"
+              className="flex items-center gap-[4px] me-2.5 h-9 pe-3 ps-2.5"
+              onClick={() => { }}
+            >
+              <span>
+                <BsArrowRepeat className='text-lg' />
+              </span>
+              <span>
+                Required
+              </span>
+            </Button>,
+          ],
         }}
         className="rounded-md border border-muted text-sm shadow-sm [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:h-60 [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:justify-center [&_.rc-table-row:last-child_td.rc-table-cell]:border-b-0 [&_thead.rc-table-thead]:border-t-0"
         filterElement={
@@ -289,7 +390,24 @@ export default function AppointmentListTable({ range, setRange }: { range: strin
         }
         tableHeader={
           <TableHeader checkedItems={selectedRowKeys}>
-            <StatusSelect />
+            {hasNonCompletedStatus && <StatusSelect />}
+            {buttonType && (
+              <div>
+                <CSelect
+                className="min-w-[140px]"
+                dropdownClassName="h-auto"
+                placeholder="Select Status"
+                options={aptStatusOptions}
+                value=""
+                onChange={() => {}}
+                // onChange={handleChange}
+                // isLoading={isPending}
+                // displayValue={(option: { value: number }) =>
+                //   getAptStatusBadge(option.value)
+                // }
+              />
+              </div>
+            )}
           </TableHeader>
         }
         tableFooter={
