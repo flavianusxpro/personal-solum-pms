@@ -579,6 +579,7 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                 <Controller
                   name="is_australian_resident"
                   control={control}
+                  disabled={isView}
                   render={({ field }) => (
                     <CSelect
                       {...field}
