@@ -157,9 +157,6 @@ function getRowAppointment(
 // }: any) {
 //   const ITEM_TYPE = 'APPOINTMENT';
 
-//   console.log('zzz row nih nih', value);
-  
-
 //   let bgColor = '';
 //   if (type?.toLowerCase().includes('initial')) bgColor = 'bg-green-600';
 //   else if (type?.toLowerCase().includes('follow')) bgColor = 'bg-blue-600';

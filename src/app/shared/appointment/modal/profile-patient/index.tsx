@@ -29,8 +29,6 @@ const ModalProfilePatient = (data: any) => {
         );
     };
 
-    console.log('zzz data yama', data);
-
     return (
         <div className="relative w-full rounded-[24px] bg-white p-10">
             {/* Close Button */}

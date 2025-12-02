@@ -409,6 +409,14 @@ export default function AppointmentListTable({
               />
               </div>
             )}
+             {/* <CSelect
+                className="min-w-[140px]"
+                dropdownClassName="h-auto"
+                placeholder="Select Status"
+                options={aptStatusOptions}
+                value=""
+                onChange={() => {}}
+              /> */}
           </TableHeader>
         }
         tableFooter={

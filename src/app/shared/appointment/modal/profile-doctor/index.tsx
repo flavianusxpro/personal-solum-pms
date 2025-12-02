@@ -38,9 +38,6 @@ const ModalProfileDoctor = (data: any) => {
         );
     }
 
-    console.log('zzz data doctor', data?.data);
-    
-
     return (
         <div className="relative w-full rounded-[24px] p-10">
             {/* Close Button */}
