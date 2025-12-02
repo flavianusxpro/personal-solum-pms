@@ -7,17 +7,17 @@ import { ActionIcon, AdvancedRadio, RadioGroup, Select, Text, Title } from "rizz
 
 const ExportAppointment = () => {
     const [value, setValue] = useState("csv");
-    const [type, setType] = useState("csv")
     const { closeModal } = useModal();
     const [showColumns, setShowColumns] = useState(false);
     const [selectedColumns, setSelectedColumns] = useState([
-        'patient_first_name', 'patient_last_name', 'date', 'doctor_first_name', 'doctor_last_name', 'patient_type', 'apt_status', 'payment_status', 'time'
+        'patientName', 
+        'doctorName', 
+        'paymentStatus', 
+        'appointmentDate', 
+        'appointmentType', 
+        'appointmentTime', 
+        'appointmentStatus'
     ])
-    useEffect(() => {
-        if (selectedColumns.length > 0 && type === undefined) {
-            setType('Spesific')
-        }
-    }, [selectedColumns])
 
     const options = [
         {
@@ -31,21 +31,20 @@ const ExportAppointment = () => {
     ]
 
     const columnOptions = [
-        { value: 'patient_first_name', label: 'Patient First Name' },
-        { value: 'patient_last_name', label: 'Patient Last Name' },
-        { value: 'date', label: 'Appointment Date' },
-        { value: 'time', label: 'Appointment Time' },
-        { value: 'doctor_first_name', label: 'Doctor First Name' },
-        { value: 'doctor_last_name', label: 'Doctor Last Name' },
-        { value: 'apt_status', label: 'Appointment Status' },
-        { value: 'payment_status', label: 'Payment Status' },
+        { value: 'patientName', label: 'Patient Name' },
+        { value: 'doctorName', label: 'Doctor Name' },
+        { value: 'paymentStatus', label: 'Payment Status' },
+        { value: 'appointmentDate', label: 'Appointment Date' },
+        { value: 'appointmentType', label: 'Appointment Type' },
+        { value: 'appointmentTime', label: 'Appointment Time' },
+        { value: 'appointmentStatus', label: 'Appointment Status' },
     ];
 
     const allSelected = selectedColumns.length === columnOptions.length;
 
     const handleSelectAll = () => {
         if (allSelected) {
-            setSelectedColumns([]); 
+            setSelectedColumns([]);
         } else {
             setSelectedColumns(columnOptions.map((col) => col.value));
         }
@@ -97,43 +96,38 @@ const ExportAppointment = () => {
                         </AdvancedRadio>
                     ))}
                 </RadioGroup>
-                {/* <Select
-                    label="Select column"
-                    options={[]}
-                    disabled={value === 'pdf'}
-                    value={value}
-                    onChange={setValue}
-                /> */}
+
                 {showColumns && (
-                    <div className="border rounded-lg p-4 space-y-2">
+                    <div className="flex flex-col gap-2">
                         <Text as="b">Column Name</Text>
+                        <div className="border rounded-lg p-4 space-y-2">
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    checked={allSelected}
+                                    onChange={handleSelectAll}
+                                />
+                                <span>Select All</span>
+                            </label>
 
-                        <label className="flex items-center gap-2">
-                            <input
-                                type="checkbox"
-                                checked={allSelected}
-                                onChange={handleSelectAll}
-                            />
-                            <span>Select All</span>
-                        </label>
-
-                        <div className="grid grid-cols-2 gap-2 mt-2">
-                            {columnOptions.map((item) => (
-                                <label key={item.value} className="flex items-center gap-2">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedColumns.includes(item.value)}
-                                        onChange={() => {
-                                            if (selectedColumns.includes(item.value)) {
-                                                setSelectedColumns(selectedColumns.filter((x) => x !== item.value));
-                                            } else {
-                                                setSelectedColumns([...selectedColumns, item.value]);
-                                            }
-                                        }}
-                                    />
-                                    <span>{item.label}</span>
-                                </label>
-                            ))}
+                            <div className="grid grid-cols-2 gap-2 mt-2">
+                                {columnOptions.map((item) => (
+                                    <label key={item.value} className="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedColumns.includes(item.value)}
+                                            onChange={() => {
+                                                if (selectedColumns.includes(item.value)) {
+                                                    setSelectedColumns(selectedColumns.filter((x) => x !== item.value));
+                                                } else {
+                                                    setSelectedColumns([...selectedColumns, item.value]);
+                                                }
+                                            }}
+                                        />
+                                        <span>{item.label}</span>
+                                    </label>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 )}

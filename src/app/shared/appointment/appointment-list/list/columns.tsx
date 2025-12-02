@@ -356,49 +356,67 @@ function RenderAction({
         </Dropdown.Trigger>
         <Dropdown.Menu>
           {isShowCancel && (
-            <Dropdown.Item onClick={() => cancelModal(row)}>
+            <Dropdown.Item onClick={(e) => {
+              e.stopPropagation()
+              cancelModal(row)
+            }}
+            >
               <MdOutlineFreeCancellation className="mr-2 h-4 w-4" />
               Cancel
             </Dropdown.Item>
           )}
 
           {isShowReschedule && (
-            <Dropdown.Item onClick={() => rescheduleModal(row)}>
+            <Dropdown.Item onClick={(e) => {
+              e.stopPropagation();
+              rescheduleModal(row)
+            }}>
               <GrSchedules className="mr-2 h-4 w-4" />
               Reschedule
             </Dropdown.Item>
           )}
 
-          <Dropdown.Item onClick={() => revertModal(row)}>
+          <Dropdown.Item onClick={(e) => {
+            e.stopPropagation();
+            revertModal(row)
+          }}>
             <RxCountdownTimer className="mr-2 h-4 w-4" />
             Revert Back
           </Dropdown.Item>
 
           {isHasNote && (
-            <Dropdown.Item onClick={showNoteModal}>
+            <Dropdown.Item onClick={(e) => {
+              e.stopPropagation();
+              showNoteModal()
+            }}>
               <MdNotes className="mr-2 h-4 w-4" />
               Show Note
             </Dropdown.Item>
           )}
 
-          <Dropdown.Item onClick={addNotesModal}>
+          <Dropdown.Item onClick={(e) => {
+            e.stopPropagation();
+            addNotesModal()
+          }}>
             <FaRegNoteSticky className="mr-2 h-4 w-4" />
             Add Note
           </Dropdown.Item>
 
-          <Dropdown.Item onClick={() =>
+          <Dropdown.Item onClick={(e) => {
+            e.stopPropagation();
             openModal({
               view: (
                 <AppointmentDetails data={row} onEdit={handleCreateModal} />
               ),
-              customSize: '900px',
+              customSize: '1100px',
             })
-          }>
+          }}>
             <EyeIcon className="mr-2 h-4 w-4" />
             View
           </Dropdown.Item>
 
-          <Dropdown.Item onClick={() => {
+          <Dropdown.Item onClick={(e) => {
+            e.stopPropagation();
             setIdAppointment(row.id);
             setIsOpen(true);
           }}>

@@ -85,13 +85,13 @@ export default function AppointmentPatientDoctor() {
             placeholder="Select Doctor"
             error={errors.doctorId?.message}
           />
-          <Input
+          {/* <Input
             label="Doctor Time"
             placeholder="Select Time"
             value={watchDoctorTime}
             disabled
             error={errors.doctorTime?.message}
-          />
+          /> */}
         </Flex>
         <div className="mx-auto max-h-80 max-w-4xl divide-y divide-gray-200 overflow-auto">
           {isLoading && <Loader variant="spinner" size="xl" />}
@@ -150,6 +150,7 @@ export default function AppointmentPatientDoctor() {
                   setValue={setValue}
                   currentOpen={currentOpen}
                   doctor={doctor}
+                  selectedTime={watchDoctorTime}
                 />
               </div>
             );
@@ -165,6 +166,7 @@ function DoctorTime({
   doctor,
   currentOpen,
   setValue,
+  selectedTime,
 }: {
   doctor: IGetDoctorByClinicResponse['data'][number];
   currentOpen: number | null;
@@ -173,6 +175,7 @@ function DoctorTime({
     doctorTime: string;
     fee?: string;
   }>;
+  selectedTime?: string;
 }) {
   const [formData] = useAtom(formRescheduleDataAtom);
 
@@ -199,8 +202,8 @@ function DoctorTime({
     if (!dataAvailability?.data) return [];
     return dataAvailability.data.reduce((acc, item) => {
       if (item.available) {
-        const availTime = dayjs(item.time, 'HH:mm:ss').format('h:mm A');
-        acc.push(`${availTime}`);
+        const availTime = dayjs(item.time, 'YYYY-MM-DD HH:mm').format('h:mm A');
+        acc.push(availTime);
       }
       return acc;
     }, [] as string[]);
@@ -215,15 +218,20 @@ function DoctorTime({
       {timeList.length > 0 ? (
         <div className="relative">
           <div
-            className={`mt-4 grid transition-all delay-200 duration-1000 ease-in-out ${
-              currentOpen === doctor.id ? 'max-h-[500px]' : 'max-h-20'
-            } grid-cols-5 gap-2 overflow-hidden`}
+            className={`mt-4 grid transition-all delay-200 duration-1000 ease-in-out ${currentOpen === doctor.id ? 'max-h-[500px]' : 'max-h-20'
+              } grid-cols-5 gap-2 overflow-hidden`}
           >
             {timeList.map((time, idx) => (
               <button
                 key={idx}
                 type="button"
-                className="rounded-md bg-green-200/50 px-3 py-2 text-sm hover:bg-green-300"
+                // className="rounded-md bg-green-200/50 px-3 py-2 text-sm hover:bg-green-300"
+                className={cn(
+                  "rounded-md px-3 py-2 text-sm transition-colors",
+                  selectedTime === time
+                    ? "bg-green-600 text-white"
+                    : "bg-green-200/50 hover:bg-green-300"
+                )}
                 onClick={() => {
                   setValue('doctorTime', time);
                   setValue('doctorId', doctor.id as number);

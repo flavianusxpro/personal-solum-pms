@@ -29,10 +29,8 @@ const ModalProfilePatient = (data: any) => {
         );
     };
 
-    console.log('zzz data yama', data);
-
     return (
-        <div className="relative w-full rounded-[24px] bg-white p-6">
+        <div className="relative w-full rounded-[24px] bg-white p-10">
             {/* Close Button */}
             <button
                 onClick={closeModal}
@@ -88,12 +86,12 @@ const ModalProfilePatient = (data: any) => {
                     <div className="flex flex-col gap-[8px]">
                         <div className="flex">
                             <p className="text-sm text-[#525252] basis-[20%]">Age:</p>
-                            <p className="text-sm text-[#111111]">{data?.data?.patient?.age ?? '-'}</p>
+                            <p className="text-sm text-[#111111] basis-[80%]">{data?.data?.patient?.age ?? '-'}</p>
                         </div>
 
                         <div className="flex">
                             <p className="text-sm text-[#525252] basis-[20%]">DOB:</p>
-                            <p className="text-sm text-[#111111]">{data?.data?.patient?.date_of_birth
+                            <p className="text-sm text-[#111111] basis-[80%]">{data?.data?.patient?.date_of_birth
                                 ? dayjs(data.data.patient.date_of_birth, ['DD-MM-YYYY', 'DD/MM/YYYY', 'YYYY-MM-DD']).format('D MMMM YYYY')
                                 : '-'}
                             </p>
@@ -101,7 +99,7 @@ const ModalProfilePatient = (data: any) => {
 
                         <div className="flex">
                             <p className="text-sm text-[#525252] basis-[20%]">Address:</p>
-                            <p className="text-sm text-[#111111]">
+                            <p className="text-sm text-[#111111] basis-[80%]">
                                 {data?.data?.patient?.address_line_1 ?? '-'}, {data?.data?.patient?.suburb ?? '-'},
                                 {data?.data?.patient?.address_line_1 ?? '-'}, {data?.data?.patient?.country ?? '-'}
                             </p>
@@ -118,29 +116,30 @@ const ModalProfilePatient = (data: any) => {
                         <div className="flex flex-1 flex-col gap-2">
                             <div className="flex">
                                 <p className="text-sm text-[#525252] basis-[20%]">Email:</p>
-                                <p className="text-sm text-[#111111]">{data?.data?.patient?.email ?? '-'}</p>
+                                <p className="text-sm text-[#111111] basis-[80%]">{data?.data?.patient?.email ?? '-'}</p>
                             </div>
 
                             <div className="flex">
                                 <p className="text-sm text-[#525252] basis-[20%]">Home:</p>
-                                <p className="text-sm text-[#111111]">{data?.data?.patient?.phone_home_number ?? '-'}</p>
+                                <p className="text-sm text-[#111111] basis-[80%]">{data?.data?.patient?.phone_home_number ?? '-'}</p>
                             </div>
                         </div>
                         <div className="flex flex-1 flex-col gap-2">
                             <div className="flex">
                                 <p className="text-sm text-[#525252] basis-[20%]">Work:</p>
-                                <p className="text-sm text-[#111111]">{data?.data?.patient?.phone_work_number ?? '-'}</p>
+                                <p className="text-sm text-[#111111] basis-[80%]">{data?.data?.patient?.phone_work_number ?? '-'}</p>
                             </div>
 
                             <div className="flex">
                                 <p className="text-sm text-[#525252] basis-[20%]">Mobile:</p>
-                                <p className="text-sm text-[#111111]">{data?.data?.patient?.mobile_number ?? '-'}</p>
+                                <p className="text-sm text-[#111111] basis-[80%]">{data?.data?.patient?.mobile_number ?? '-'}</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            {/* Healthcare Info */}
             <div className="rounded-lg border border-[#E4E4E4] p-4">
                 <h3 className="mb-4 font-semibold text-sm text-[#525252]">
                     Healthcare Info
@@ -149,16 +148,16 @@ const ModalProfilePatient = (data: any) => {
                     <div className="flex flex-1 flex-col gap-2">
                         <div className="flex">
                             <p className="text-sm text-[#525252] basis-[40%]">Medicare Number:</p>
-                            <p className="text-sm text-[#111111]">{data?.data?.patient?.medicare_card_number ?? '-'}</p>
+                            <p className="text-sm text-[#111111] basis-[60%]">{data?.data?.patient?.medicare_card_number ?? '-'}</p>
                         </div>
 
                         <div className="flex">
                             <p className="text-sm text-[#525252] basis-[40%]">Position:</p>
-                            <p className="text-sm text-[#111111]">{data?.data?.patient?.position_on_card ?? '-'}</p>
+                            <p className="text-sm text-[#111111] basis-[60%]">{data?.data?.patient?.position_on_card ?? '-'}</p>
                         </div>
                         <div className="flex">
                             <p className="text-sm text-[#525252] basis-[40%]">Expiry Date:</p>
-                            <p className="text-sm text-[#111111]">
+                            <p className="text-sm text-[#111111] basis-[60%]">
                                 {data?.data?.patient?.medicare_expired_date
                                     ? dayjs(data.data.patient.medicare_expired_date, 'DD MM YYYY').format('MM/YYYY')
                                     : '-'}
@@ -168,18 +167,18 @@ const ModalProfilePatient = (data: any) => {
                     <div className="flex flex-1 flex-col gap-2">
                         <div className="flex">
                             <p className="text-sm text-[#525252] basis-[40%]">DVA Number:</p>
-                            <p className="text-sm text-[#111111]">{data?.data?.patient?.concession_card_number ?? '-'}</p>
+                            <p className="text-sm text-[#111111] basis-[60%]">{data?.data?.patient?.concession_card_number ?? '-'}</p>
                         </div>
 
                         <div className="flex">
                             <p className="text-sm text-[#525252] basis-[40%]">DVA Type:</p>
-                            <p className="text-sm text-[#111111]">{data?.data?.patient?.concession_card_type ?? '-'}</p>
+                            <p className="text-sm text-[#111111] basis-[60%]">{data?.data?.patient?.concession_card_type ?? '-'}</p>
                         </div>
                     </div>
                     <div className="flex flex-1 flex-col gap-2">
                         <div className="flex">
                             <p className="text-sm text-[#525252] basis-[40%]">IHI Number:</p>
-                            <p className="text-sm text-[#111111]">{data?.data?.patient?.ihi_number ?? '-'}</p>
+                            <p className="text-sm text-[#111111] basis-[60%]">{data?.data?.patient?.ihi_number ?? '-'}</p>
                         </div>
                     </div>
                 </div>

@@ -38,12 +38,11 @@ export function useGetDoctorByClinic(params: IParamGetDoctorByClinic) {
     queryKey: [
       'clinic-by-clinic-for-patient',
       params.id,
-      params.date,
       params.treatment_type,
       params.problem_type,
     ],
     queryFn: async () => getDoctorByClinic(params),
-    enabled: !!params.id && !!params.date,
+    enabled: !!params.id,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     staleTime: 0, // Data selalu dianggap stale, force refetch

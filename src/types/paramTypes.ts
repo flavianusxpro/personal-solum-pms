@@ -1,5 +1,6 @@
 import { RegisterSchema } from '@/validators/register.schema';
 import { RoleType } from './constansTypes';
+import { Dayjs } from 'dayjs';
 interface IParamGetDataWithPagination {
   page: number;
   perPage: number;
@@ -364,7 +365,7 @@ export interface IPayloadPostCancelAppoinment {
 
 export interface IPayloadPostRescheduleByDate {
   id: number;
-  date: string;
+  date: string | Dayjs;
   doctorId?: number;
   note?: string;
 }

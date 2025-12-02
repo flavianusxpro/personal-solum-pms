@@ -39,7 +39,7 @@ const ModalProfileDoctor = (data: any) => {
     }
 
     return (
-        <div className="relative w-full rounded-[24px] p-6">
+        <div className="relative w-full rounded-[24px] p-10">
             {/* Close Button */}
             <button
                 onClick={closeModal}
@@ -137,12 +137,18 @@ const ModalProfileDoctor = (data: any) => {
                 <p className="mb-4 text-sm leading-relaxed text-[#444444]">
                      <HtmlBlock html={data?.data?.doctor?.description} />
                 </p>
-                <div>
-                    <p className="text-sm text-[#444444]">
-                        <span className="font-semibold">Areas of Interest:</span>{" "}
-                        <span className="text-gray-700">
+                <div className="flex gap-4">
+                    <p className="text-sm flex-col text-[#444444]">
+                        <p className="font-semibold">Areas of Interest</p>
+                        <p className="text-gray-700">
                             {data?.data?.doctor?.medical_interest ?? '-'}
-                        </span>
+                        </p>
+                    </p>
+                    <p className="text-sm flex-col text-[#444444]">
+                        <p className="font-semibold">Education</p>
+                        <p className="text-gray-700">
+                            {data?.data?.doctor?.medical_interest ?? '-'}
+                        </p>
                     </p>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { PiX } from 'react-icons/pi';
-import { ActionIcon, Button, Flex } from 'rizzui';
+import { ActionIcon, Button, Checkbox, Flex } from 'rizzui';
 import Image from 'next/image';
 import ConfirmInfoBlueIcon from '@public/ConfirmInfoBlueIcon.svg';
 
@@ -26,6 +26,12 @@ export default function ShowConfirm({
           Are you sure you want to change the appointment status to {''}
           <span className="text-center font-bold text-gray-400">{status}</span>?
         </span>
+        <Checkbox 
+          label={
+            <span className='ml-1'>Notify patient about this update</span>
+          } 
+          size="sm" 
+        />
       </div>
       <div className="flex justify-center gap-[16px]">
         <Button

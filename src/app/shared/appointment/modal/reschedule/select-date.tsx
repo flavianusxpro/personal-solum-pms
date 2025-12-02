@@ -46,15 +46,21 @@ export default function DateTime() {
   }, [dataCalendarSchedule]);
 
   const onSubmit: SubmitHandler<FormSchemaType> = (data) => {
-    if (data.date < new Date())
-      return toast.error('Selected date cannot be in the past.');
+    const selectedDate = dayjs(data.date).startOf("day");
+    const today = dayjs().startOf("day");
+
+    if (selectedDate.isBefore(today)) {
+      return toast.error("Selected date cannot be in the past.");
+    }
+
     setFormData((prev) => ({
       ...prev,
-      date: dayjs(data.date).format('YYYY-MM-DD'),
+      date: selectedDate.format("YYYY-MM-DD"),
     }));
 
     gotoStep(2);
   };
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
