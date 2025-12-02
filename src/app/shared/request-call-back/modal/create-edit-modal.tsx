@@ -152,20 +152,18 @@ export default function CreateEditModal({ data, isView }: IProps) {
 
               <Input
                 type="number"
-                label={
-                  <div className='flex gap-2 items-center'>
-                    <span>Mobile Number</span>
-                    <PiCopy
-                      onClick={() => handleCopy(data?.patient_phone ?? '')}
-                      className="cursor-pointer active:scale-[0.99]"
-                    />
-                  </div>
-                }
+                label="Mobile Number"
                 {...register('mobile_number')}
                 placeholder="Mobile Number"
                 className="w-full"
                 error={errors.mobile_number?.message}
                 disabled={isView}
+                suffix={
+                   <PiCopy
+                      onClick={() => handleCopy(data?.patient_phone ?? '')}
+                      className="cursor-pointer active:scale-[0.99]"
+                    />
+                }
               />
 
               <Controller
