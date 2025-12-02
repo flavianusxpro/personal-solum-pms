@@ -37,7 +37,7 @@ export default function SearchWidget({
 
   return (
     <>
-      <div className='flex gap-2 w-[500px]'>
+      <div className='flex gap-2 w-full'>
         <SearchTrigger
           icon={icon}
           className={className}
