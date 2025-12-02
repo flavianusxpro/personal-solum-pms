@@ -223,9 +223,6 @@ export default function AppointmentListTable({
     selectedRowKeys,
   } = useTable(dataAppointments?.data ?? [], params.perPage, filterStateValue);
 
-  console.log('zzz mantap mantap', selectedRowKeys);
-  
-
   const sortedTableData = useMemo(() => {
     return [...tableData].sort((a, b) => {
       if (a.status === 4 && b.status !== 4) return 1;

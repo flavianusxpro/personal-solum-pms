@@ -73,7 +73,7 @@ export default function AppointmentDetails({
   return (
     <div className="flex w-full flex-col bg-white rounded-[24px]">
       {/* Header */}
-      <div className="flex items-center justify-between border-b p-6">
+      <div className="flex items-center justify-between border-b p-10">
         <Title as="h3" className="text-lg font-semibold">
           Appointment Details
         </Title>
@@ -86,7 +86,7 @@ export default function AppointmentDetails({
         </ActionIcon>
       </div>
 
-      <div className="p-6">
+      <div className="p-10">
         <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
           {/* Doctor Info */}
           <div>

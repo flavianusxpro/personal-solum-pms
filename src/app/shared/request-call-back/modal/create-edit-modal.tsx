@@ -5,7 +5,7 @@ import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
 import { ActionIcon, Flex, Grid, Input, Loader, Textarea, Title } from 'rizzui';
 import { useModal } from '../../modal-views/use-modal';
-import { PiX } from 'react-icons/pi';
+import { PiCopy, PiX } from 'react-icons/pi';
 import { IGetRequestCallbackResponse } from '@/types/ApiResponse';
 
 import {
@@ -19,6 +19,9 @@ import {
   CreateRequestCallbackForm,
   createRequestCallbackSchema,
 } from '@/validators/create-request-callback.schema';
+import { useCopyToClipboard } from 'react-use';
+import { useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 interface IProps {
   data?: IGetRequestCallbackResponse['data'][number];
@@ -39,6 +42,20 @@ export default function CreateEditModal({ data, isView }: IProps) {
     usePostCreateClinic();
   const { mutate: mutateUpdate, isPending: isPendingUpdate } =
     usePutUpdateClinic();
+
+  const [state, copyToClipboard] = useCopyToClipboard();
+
+  const handleCopy = (text: string | number) => {
+    copyToClipboard(String(text));
+  };
+
+  useEffect(() => {
+    if (state.error) {
+      console.error('Failed to copy: ', state.error);
+    } else if (state.value) {
+      toast.success('Copied to clipboard');
+    }
+  }, [state]);
 
   const onSubmit: SubmitHandler<CreateRequestCallbackForm> = (formValues) => {
     // const payload: IPayloadCreateUpdateClinic = {
@@ -141,6 +158,12 @@ export default function CreateEditModal({ data, isView }: IProps) {
                 className="w-full"
                 error={errors.mobile_number?.message}
                 disabled={isView}
+                suffix={
+                   <PiCopy
+                      onClick={() => handleCopy(data?.patient_phone ?? '')}
+                      className="cursor-pointer active:scale-[0.99]"
+                    />
+                }
               />
 
               <Controller

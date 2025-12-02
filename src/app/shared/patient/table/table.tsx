@@ -176,8 +176,6 @@ export default function PatientTable() {
     ]
   );
 
-  console.log('zzz selected tow', selectedRowKeys);
-
   const { visibleColumns, checkedColumns, setCheckedColumns } =
     useColumn(columns);
 
