@@ -408,7 +408,7 @@ function RenderAction({
               view: (
                 <AppointmentDetails data={row} onEdit={handleCreateModal} />
               ),
-              customSize: '900px',
+              customSize: '1100px',
             })
           }}>
             <EyeIcon className="mr-2 h-4 w-4" />

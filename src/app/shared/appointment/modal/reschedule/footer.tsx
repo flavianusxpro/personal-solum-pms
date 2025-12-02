@@ -26,16 +26,21 @@ export default function Footer({
   const { closeModal } = useModal();
 
   const [formData] = useAtom(formRescheduleDataAtom);
-
-  const { mutate: mutateRescheduleByDate } =
+  const { mutate: mutateRescheduleByDate, isPending: isPendingReschedule } =
     usePostRescheduleAppointmentByDate();
 
   function submitRescheduleAppointment() {
+    const local = dayjs(
+      `${formData.date} ${formData.doctorTime}`,
+      "YYYY-MM-DD hh:mm A"
+    );
+    const result = dayjs.utc(local.format("YYYY-MM-DD HH:mm:ss")).format();
     mutateRescheduleByDate(
       {
         id: formData.id as number,
         doctorId: formData.doctorId,
-        date: `${dayjs(formData.date).format('YYYY-MM-DD')} ${formData.doctorTime}`,
+        // date: `${dayjs(formData.date).format('YYYY-MM-DD')} ${formData.doctorTime}`,
+        date: result,
         note: formData.reason,
       },
       {
@@ -85,6 +90,8 @@ export default function Footer({
           className="!w-auto"
           variant="outline"
           rounded="lg"
+          disabled={isPendingReschedule}
+          isLoading={isPendingReschedule}
           onClick={submitRescheduleAppointment}
         >
           Submit

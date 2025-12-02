@@ -61,5 +61,7 @@ export async function postCancelAppointment(
 export async function postRescheduleAppointmentByDate(
   payload: IPayloadPostRescheduleByDate
 ) {
-  return await post(`/admin/appointment/${payload.id}/reschedule`, payload);
+  const { id, ...body } = payload;
+  return await post(`/admin/appointment/${id}/reschedule`, body);
 }
+
