@@ -4,51 +4,90 @@ import { fileSchema, validateEmail } from './common-rules';
 
 // form zod validation schema
 export const patientDetailsFormSchema = z.object({
-  title: z.string({ required_error: messages.titleRequired }),
+  title: z.string().min(1, { message: messages.titleRequired }),
   first_name: z.string().min(1, { message: messages.firstNameRequired }),
-  last_name: z.string().optional(),
+  middle_name: z.string().optional(),
+  last_name: z.string().min(1, { message: messages.lastNameRequired }),
   gender: z.string().min(1, {
     message: messages.genderIsRequired,
   }),
   email: validateEmail,
-  mobile_number: z.string({ required_error: messages.phoneNumberIsRequired }),
+  mobile_number: z.string().min(1, { message: messages.phoneNumberIsRequired }),
   status: z.number().optional(),
   address: z.string().optional(),
   date_of_birth: z.string().min(1, {
     message: messages.dateOfBirthRequired,
   }),
-  state: z.string().optional(),
-  country: z.string().optional(),
+  state: z.string().min(1, { message: 'State is required' }),
+  country: z.string().min(1, { message: 'Country is required' }),
   unit_number: z.string().optional(),
   address_line_1: z.string().optional(),
   address_line_2: z.string().optional(),
-  suburb: z.string().optional(),
-  street_name: z.string().optional(),
-  post_code: z.string().max(4, {
-    message: messages.postCodeMaxLength,
-  }),
-  ihi_number: z.string().max(16, { message: messages.maxLength }).optional(),
+  suburb: z.string().min(1, { message: 'City is required' }),
+  street_name: z.string().min(1, { message: 'Street Address is required' }),
+  post_code: z.string().min(1, { message: 'Post Code is required' }),
+  address_type: z.string().min(1, { message: 'Address Type is required' }),
+  is_australian_resident: z.boolean().optional(),
+  ihi_number: z.string().regex(/^\d*$/, { message: "IHI number must contain only numbers" }).optional(),
   concession_card_type: z.string().optional(),
   concession_card_number: z.string().optional(),
   concession_card_expiry: z.date().optional(),
 
-  medicare_card: z
-    .string()
-    .optional()
-    .refine((val) => !val || (val.length >= 10 && val.length <= 13), {
-      message:
-        'Medicare card must be between 10 and 13 characters when provided',
-    }),
+  medicare_card: z.string().optional(),
   medicare_expiry: z.date().optional(),
-  position_on_card: z
-    .string()
-    .max(2, { message: messages.maxLength })
-    .optional(),
+  position_on_card: z.string().optional(),
   avatar: z.string().optional(),
   password: z.string().optional(),
   timezone: z.string().optional(),
   patient_type: z.string().optional(),
   patient_problem: z.array(z.string()).optional(),
+  dva_card_number: z.string().optional(),
+  dva_card_type: z.string().optional(),
+}).superRefine((data, ctx) => {
+  // If Australian resident, medicare fields are required
+  if (data.is_australian_resident === true) {
+    if (!data.medicare_card || data.medicare_card.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Medicare card is required for Australian residents",
+        path: ["medicare_card"],
+      });
+    }
+    if (!data.position_on_card || data.position_on_card.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Position on card is required for Australian residents",
+        path: ["position_on_card"],
+      });
+    }
+    if (!data.medicare_expiry) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Medicare expiry date is required for Australian residents",
+        path: ["medicare_expiry"],
+      });
+    }
+  }
+
+  // If NOT Australian resident, IHI number is required
+  if (data.is_australian_resident === false) {
+    if (!data.ihi_number || data.ihi_number.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "IHI number is required for non-Australian residents",
+        path: ["ihi_number"],
+      });
+    }
+  }
+
+  // Validate medicare card length if provided
+  if (data.medicare_card && (data.medicare_card.length < 10 || data.medicare_card.length > 13)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Medicare card must be between 10 and 13 characters",
+      path: ["medicare_card"],
+    });
+  }
 });
 
 // generate form types from zod validation schema

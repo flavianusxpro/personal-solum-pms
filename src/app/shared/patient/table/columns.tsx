@@ -109,7 +109,7 @@ export const getColumns = ({
         return (
           <AvatarCardNew
             src={row.photo || ''}
-            name={`${row.first_name} ${row.last_name}`}
+            name={`${row.first_name} ${row.middle_name ? row.middle_name : ''} ${row.last_name}`}
             // number={row.mobile_number}
             // description={row.email?.toLowerCase()}
             otherIcon={
