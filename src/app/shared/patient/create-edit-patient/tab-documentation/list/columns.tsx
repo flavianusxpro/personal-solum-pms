@@ -133,7 +133,11 @@ export const getColumns = ({
             tooltipContent="Download"
             variant="outline"
           >
-            <PiCloudArrowDown className="h-4 w-4" />
+            {/* <PiCloudArrowDown className="h-4 w-4" /> */}
+            <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11.0625 10.5H13.7344C15.668 10.5 17.25 9.75434 17.25 7.84219C17.25 5.93004 15.3867 5.25926 13.875 5.18438C13.5625 2.19398 11.3789 0.375 8.8125 0.375C6.38672 0.375 4.82438 1.9848 4.3125 3.58125C2.20312 3.78164 0.375 4.84266 0.375 7.04063C0.375 9.23859 2.27344 10.5 4.59375 10.5H6.5625M6.5625 12.7535L8.8125 15L11.0625 12.7535M8.8125 6.5625V14.4386" stroke="black" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+
           </ActionTooltipButton>
 
           {/* Action Dropdown */}
