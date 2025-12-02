@@ -18,6 +18,8 @@ import { useProfile } from '@/hooks/useProfile';
 import TableHeader from '../../ui/table-header';
 import { StatusSelect } from '../../invoice/invoice-list/columns';
 import { FiSend } from 'react-icons/fi';
+import PatientDetailModal from './patient-detail-modal';
+import { IGetAllPatientsResponse } from '@/types/ApiResponse';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/patient/table/filter-element'),
@@ -54,6 +56,8 @@ export default function PatientTable() {
   const [filterStateValue, setFilterStateValue] = useState(filterState);
   const [isOpen, setIsOpen] = useState(false);
   const [idPatient, setIdPatient] = useState<string | number>('');
+  const [selectedPatient, setSelectedPatient] = useState<IGetAllPatientsResponse['data'][number] | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [params, setParams] = useState({
     page: 1,
     perPage: 10,
@@ -81,7 +85,7 @@ export default function PatientTable() {
     clinicId: dataProfile?.clinics?.[0]?.id || 0,
   });
 
-  console.log("data patients ==============>>>", data);
+  // console.log("data patients ==============>>>", data);
 
   const { mutate: mutateDeletePatient } = useDeletePatient();
 
@@ -194,12 +198,12 @@ export default function PatientTable() {
         showLoadingText={true}
         // @ts-ignore
         columns={visibleColumns}
-        // expandable={{
-        //   expandIcon: CustomExpandIcon,
-        //   expandedRowRender: (record: any) => (
-        //     <ExpandedOrderRow data={record} />
-        //   ),
-        // }}
+        onRow={(record) => ({
+          onClick: () => {
+            setSelectedPatient(record);
+            setIsDetailModalOpen(true);
+          },
+        })}
         paginatorOptions={{
           pageSize: params.perPage,
           setPageSize: (pageSize: number) =>
@@ -280,6 +284,13 @@ export default function PatientTable() {
           'rounded-md border border-muted text-sm shadow-sm [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:h-60 [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:justify-center [&_.rc-table-row:last-child_td.rc-table-cell]:border-b-0 [&_thead.rc-table-thead]:border-t-0'
         }
       />
+      {selectedPatient && (
+        <PatientDetailModal
+          isOpen={isDetailModalOpen}
+          onClose={() => setIsDetailModalOpen(false)}
+          data={selectedPatient}
+        />
+      )}
     </div>
   );
 }

@@ -15,18 +15,22 @@ export default function DeletePopover({
   description,
   onDelete,
   isCustom,
-  buttonText
-}: DeletePopoverProps) {
+  buttonText,
+  triggerClassName,
+  triggerVariant = 'outline'
+}: DeletePopoverProps & {
+  triggerClassName?: string;
+  triggerVariant?: 'outline' | 'text' | 'flat' | 'solid';
+}) {
   return (
     <Popover placement="left">
       <Popover.Trigger>
         {isCustom ? (
           <Button
-            className="hover:border-gray-700 w-full hover:text-gray-700"
-            variant='outline'
+            className={triggerClassName || "hover:border-gray-700 w-full hover:text-gray-700"}
+            variant={triggerVariant}
             aria-label='Delete Item'
           >
-            <TrashIcon className="h-4 w-4" />
             <span>{buttonText}</span>{" "}
           </Button>
         ) : (
