@@ -21,9 +21,9 @@ export interface IParamGetDoctorByClinic extends IParamGetDataWithPagination {
   date?: string;
 }
 
-export interface IParamsGetApiConnection extends IParamGetDataWithPagination {}
+export interface IParamsGetApiConnection extends IParamGetDataWithPagination { }
 
-export interface IPayloadRegisterForPatient extends RegisterSchema {}
+export interface IPayloadRegisterForPatient extends RegisterSchema { }
 
 export interface IPayloadCheckout {
   amount: number;
@@ -60,14 +60,15 @@ export interface IPayloadPostPaymentConfiguration {
   clinic_id: number | null;
   production_mode: boolean | null;
   public_key: string | null;
-  secret_key: string | null| null;
-  is_active: boolean| null;
+  secret_key: string | null | null;
+  is_active: boolean | null;
 }
 
 export interface IPayloadCreateEditPatient {
   clinicId?: number;
   patient_id?: string;
   first_name?: string;
+  middle_name?: string;
   last_name?: string;
   email?: string;
   password?: string;
@@ -100,6 +101,10 @@ export interface IPayloadCreateEditPatient {
   concession_card_expire_date?: string;
   address_line_1?: string;
   address_line_2?: string;
+  is_australian_resident?: boolean;
+  dva_card_number?: string;
+  dva_card_type?: string;
+  address_type?: string;
 }
 
 export interface IPayloadCreateEditDoctor {
@@ -171,22 +176,22 @@ export interface IParamGetScheduleSharingDoctorForMainClinic {
   sharingDoctorId?: number;
 }
 export interface IParamGetAllEmailTemplates
-  extends IParamGetDataWithPagination {}
-export interface IParamGetAllSmsTemplates extends IParamGetDataWithPagination {}
-export interface IParamGetSpecialists extends IParamGetDataWithPagination {}
-export interface IParamGetTypes extends IParamGetDataWithPagination {}
+  extends IParamGetDataWithPagination { }
+export interface IParamGetAllSmsTemplates extends IParamGetDataWithPagination { }
+export interface IParamGetSpecialists extends IParamGetDataWithPagination { }
+export interface IParamGetTypes extends IParamGetDataWithPagination { }
 export interface IParamGetTreatments extends IParamGetDataWithPagination {
   doctorId?: number;
 }
-export interface IParamGetRoles extends IParamGetDataWithPagination {}
-export interface IParamGetPermissions extends IParamGetDataWithPagination {}
+export interface IParamGetRoles extends IParamGetDataWithPagination { }
+export interface IParamGetPermissions extends IParamGetDataWithPagination { }
 export interface IParamGetUsers extends IParamGetDataWithPagination {
   clinicId?: number;
 }
-export interface IParamGetTaxes extends IParamGetDataWithPagination {}
-export interface IParamsGetItems extends IParamGetDataWithPagination {}
-export interface IParamsGetPharmachies extends IParamGetDataWithPagination {}
-export interface IParamsPatientNotes extends IParamGetDataWithPagination {}
+export interface IParamGetTaxes extends IParamGetDataWithPagination { }
+export interface IParamsGetItems extends IParamGetDataWithPagination { }
+export interface IParamsGetPharmachies extends IParamGetDataWithPagination { }
+export interface IParamsPatientNotes extends IParamGetDataWithPagination { }
 export interface IParamsPatientFlags extends IParamGetDataWithPagination {
   patientId: number;
 }
@@ -690,7 +695,7 @@ export interface IPayloadCreateEditApiConnection {
 }
 
 export interface IParamsGetRequestCallback
-  extends IParamGetDataWithPagination {}
+  extends IParamGetDataWithPagination { }
 
 export interface IPayloadType {
   id?: number;
