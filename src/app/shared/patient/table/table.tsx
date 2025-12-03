@@ -198,9 +198,14 @@ export default function PatientTable() {
         // @ts-ignore
         columns={visibleColumns}
         onRow={(record) => ({
-          onClick: () => {
-            setSelectedPatient(record);
-            setIsDetailModalOpen(true);
+          onClick: (e) => {
+            const target = e.target as HTMLElement;
+            const isExcludedCell = target.closest('.no-row-click');
+
+            if (!isExcludedCell) {
+              setSelectedPatient(record);
+              setIsDetailModalOpen(true);
+            }
           },
         })}
         paginatorOptions={{

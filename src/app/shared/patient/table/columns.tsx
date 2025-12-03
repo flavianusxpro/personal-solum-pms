@@ -233,6 +233,7 @@ export const getColumns = ({
       title: <HeaderCell title="Status" />,
       dataIndex: 'status',
       key: 'status',
+      className: 'no-row-click',
       width: 110,
       render: (value: number, row: Row) => (
         <div className="flex flex-col gap-2">
@@ -244,6 +245,7 @@ export const getColumns = ({
       title: <HeaderCell title="Actions" />,
       dataIndex: 'action',
       key: 'action',
+      className: 'no-row-click',
       width: 130,
       render: (_: any, row: Row) => (
         <div className="flex items-center justify-center gap-3 pe-4">
