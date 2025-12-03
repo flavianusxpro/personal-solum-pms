@@ -102,24 +102,31 @@ export const getColumns = ({
           <AvatarCardNew
             src={row.photo || ''}
             name={`${row.first_name} ${row.middle_name ? row.middle_name : ''} ${row.last_name}`}
-            otherIcon={[
-              () => (
-                <MdVerified
-                  className={`cursor-pointer ${row.verification_status === true ? 'text-blue-600' : 'text-gray-400'}`}
-                  title={row.verification_status === true ? "Verified" : "Not Verified"}
-                  key="verified"
-                />
-              ),
-              () => {
-                return missingFields.length > 0 ? (
-                  <CiWarning
-                    key="warning"
-                    className="text-yellow-700 cursor-pointer"
-                    title={`Missing: ${missingFields.map(f => requiredFieldsMap[f]).join(", ")}`}
-                  />
-                ) : null
-              },
-            ]}
+            // number={row.mobile_number}
+            // description={row.email?.toLowerCase()}
+            otherIcon={
+              [
+                () => {
+                  const isVerified = row.has_filled_consent_form === true && row.ihi_number && row.ihi_number !== '';
+                  return (
+                    <MdVerified
+                      className={`cursor-pointer ${isVerified ? 'text-blue-600' : 'text-gray-400'}`}
+                      title={isVerified ? "Verified" : "Not Verified"}
+                      key="verified"
+                    />
+                  );
+                },
+                () => {
+                  return missingFields.length > 0 ? (
+                    <CiWarning
+                      key="warning"
+                      className="text-yellow-700 cursor-pointer"
+                      title={`Missing: ${missingFields.map(f => requiredFieldsMap[f]).join(", ")}`}
+                    />
+                  ) : null
+                },
+              ]
+            }
           />
         );
       },

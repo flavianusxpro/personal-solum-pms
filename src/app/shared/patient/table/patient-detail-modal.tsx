@@ -52,7 +52,8 @@ export default function PatientDetailModal({
                                 <Title as="h4" className="text-lg font-bold">
                                     {data.first_name} {data.last_name}
                                 </Title>
-                                {data.verification_status && (
+                                {/* @ts-ignore */}
+                                {data.has_filled_consent_form === true && data.ihi_number && data.ihi_number !== '' && (
                                     <div className="flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600">
                                         <MdVerified className="h-3.5 w-3.5" />
                                         Verified
