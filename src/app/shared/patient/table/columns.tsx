@@ -114,13 +114,16 @@ export const getColumns = ({
             // description={row.email?.toLowerCase()}
             otherIcon={
               [
-                () => (
-                  <MdVerified
-                    className={`cursor-pointer ${row.verification_status === true ? 'text-blue-600' : 'text-gray-400'}`}
-                    title={row.verification_status === true ? "Verified" : "Not Verified"}
-                    key="verified"
-                  />
-                ),
+                () => {
+                  const isVerified = row.has_filled_consent_form === true && row.ihi_number && row.ihi_number !== '';
+                  return (
+                    <MdVerified
+                      className={`cursor-pointer ${isVerified ? 'text-blue-600' : 'text-gray-400'}`}
+                      title={isVerified ? "Verified" : "Not Verified"}
+                      key="verified"
+                    />
+                  );
+                },
                 () => {
                   return missingFields.length > 0 ? (
                     <CiWarning
