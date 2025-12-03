@@ -71,6 +71,7 @@ export const getColumns = ({
       ),
       dataIndex: 'checked',
       key: 'checked',
+      className: 'no-row-click',
       width: 30,
       render: (_: any, row: any) => (
         <div className="inline-flex ps-2">
