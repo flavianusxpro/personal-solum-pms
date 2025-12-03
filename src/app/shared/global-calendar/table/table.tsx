@@ -29,6 +29,9 @@ import toast from 'react-hot-toast';
 import ConfirmationView from '../reschedule/ConfirmationView';
 import AppointmentDetails from '../../appointment/appointment-list/list/appointment-details';
 import { LuCalendarX2 } from 'react-icons/lu';
+import { MdOutlineInfo } from 'react-icons/md';
+import WeeklyTable from './CalendarTypes/Weekly/WeeklyTable';
+import WeeklyModalReschedule from './CalendarTypes/Weekly/WeeklyModalReschedule';
 
 const DnDCalendar = withDragAndDrop<any, any>(Calendar);
 
@@ -96,11 +99,11 @@ const EventCard = ({ event, selectedDoctor }: any) => {
   );
 };
 
-export default function GlobalCalendarTable({}: {}) {
+export default function GlobalCalendarTable({ }: {}) {
   const { openModal, closeModal } = useModal();
   const [pageSize] = useState(100);
   const [viewType, setViewType] = useState<'daily' | 'weekly' | 'monthly'>(
-    'monthly'
+    'weekly'
   );
 
   const [selectedDate, setSelectedDate] = useState(
@@ -109,6 +112,7 @@ export default function GlobalCalendarTable({}: {}) {
       : dayjs().format('YYYY-MM-DD')
   );
 
+  const [showTooltip, setShowTooltip] = useState(false);
   const startOfMonth = dayjs(selectedDate).startOf('month').format('D MMMM');
   const endOfMonth = dayjs(selectedDate).endOf('month').format('D MMMM');
   const monthLabel = dayjs(selectedDate).locale('en').format('MMMM YYYY');
@@ -120,7 +124,7 @@ export default function GlobalCalendarTable({}: {}) {
 
   const [selectedDoctor, setSelectedDoctor] = useState<string | number>(0);
   const { data: dataProfile } = useProfile(true);
-  const { mutate: mutateRescheduleByDate } =
+  const { mutate: mutateRescheduleByDate, isPending: isPendingReschedule } =
     usePostRescheduleAppointmentByDate();
 
   const {
@@ -306,21 +310,25 @@ export default function GlobalCalendarTable({}: {}) {
   const rescheduleModal = useCallback(
     (row: any, newDate: string, newDoctorName?: string, newTime?: string) => {
       closeModal();
-
       if (viewType === 'daily' && newDoctorName && newTime) {
-        const doctorId = optionDoctors.find(
-          (doc) => doc.label === `Dr. ${newDoctorName}`
-        )?.value;
+        const doctorId = optionDoctors.find(doc => {
+          const docNameWithoutTitle = doc.label.replace(/^Dr\.\s*/, "").toLowerCase();
+          return docNameWithoutTitle.startsWith(newDoctorName.toLowerCase());
+        })?.value;
 
         const displayTime = dayjs(newTime, 'HH:mm').format('h:mm A');
         const confirmationText = `Are you sure you want to reschedule to Dr. ${newDoctorName} at ${displayTime}?`;
+
+        const converted = dayjs(newTime, "HH:mm").format("hh:mm A");
+        const result = dayjs.utc(`${newDate} ${converted}`, "YYYY-MM-DD hh:mm A")
 
         const handleConfirm = () => {
           const payload = {
             id: row.id as number,
             doctorId: doctorId,
-            date: `${dayjs(newDate).format('YYYY-MM-DD')} ${newTime}`,
+            date: result,
             note: 'Rescheduled from calendar drag and drop',
+            // date: `${dayjs(newDate).format('YYYY-MM-DD')} ${newTime}`,
           };
 
           mutateRescheduleByDate(payload, {
@@ -332,7 +340,7 @@ export default function GlobalCalendarTable({}: {}) {
             onError: (error: any) => {
               toast.error(
                 error?.response?.data?.message ||
-                  'Error rescheduling appointment'
+                'Error rescheduling appointment'
               );
               console.error('Error rescheduling appointment:', error);
               closeModal();
@@ -350,6 +358,53 @@ export default function GlobalCalendarTable({}: {}) {
           ),
           customSize: '400px',
         });
+      } else if (viewType === 'weekly' && newDoctorName && newTime ) {
+        const doctorId = optionDoctors.find(doc => {
+          const docNameWithoutTitle = doc.label.replace(/^Dr\.\s*/, "").toLowerCase();
+          return docNameWithoutTitle.startsWith(newDoctorName.toLowerCase());
+        })?.value;
+
+        const converted = dayjs(newTime, "HH:mm").format("hh:mm A");
+        const result = dayjs.utc(`${newDate} ${converted}`, "YYYY-MM-DD hh:mm A")
+
+        const handleConfirm = () => {
+          const payload = {
+            id: row.id as number,
+            doctorId: doctorId,
+            date: result,
+            note: 'Rescheduled from calendar drag and drop',
+          };
+
+          mutateRescheduleByDate(payload, {
+            onSuccess: () => {
+              toast.success('Appointment rescheduled successfully');
+              refetch();
+              closeModal();
+            },
+            onError: (error: any) => {
+              toast.error(
+                error?.response?.data?.message || 'Error rescheduling appointment'
+              );
+              console.error('Error rescheduling appointment:', error);
+              closeModal();
+            },
+          });
+        };
+
+        openModal({
+          view: (
+            <WeeklyModalReschedule 
+              data={row} 
+              newDate={newDate}
+              newTime={newTime}
+              newDoctorName={newDoctorName}
+              onConfirm={handleConfirm}
+              onCancel={() => closeModal()}
+              isPendingReschedule={isPendingReschedule}
+            />
+          ),
+          customSize: '600px',
+        });
       } else {
         openModal({
           view: <RescheduleAppointmentForm data={row} newDate={newDate} />,
@@ -364,6 +419,7 @@ export default function GlobalCalendarTable({}: {}) {
       mutateRescheduleByDate,
       refetch,
       openModal,
+      isPendingReschedule
     ]
   );
 
@@ -374,15 +430,29 @@ export default function GlobalCalendarTable({}: {}) {
     [rescheduleModal, selectedDate]
   );
 
+  const handleDropWeekly = useCallback(
+    (appointment: any, newDayKey: string, newTime: string) => {
+      const dayIndex = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].indexOf(newDayKey);
+      const weekDates = getWeekDates(selectedDate);
+      const newDate = weekDates[dayIndex];
+
+      const doctorName = `${appointment.doctor?.first_name || ''} ${appointment.doctor?.last_name || ''}`.trim();
+
+      rescheduleModal(appointment, newDate, doctorName, newTime);
+    },
+    [rescheduleModal, selectedDate]
+  );
+
   const columns = React.useMemo(
     () =>
       getColumns({
         data: tableData,
         openModal,
         handleDrop,
+        closeModal
       }),
 
-    [openModal, tableData, handleDrop]
+    [openModal, tableData, handleDrop, closeModal]
   );
 
   const events = useMemo(() => {
@@ -515,42 +585,21 @@ export default function GlobalCalendarTable({}: {}) {
     );
   };
 
-  <DnDCalendar
-    localizer={localizer}
-    events={events}
-    selectable
-    startAccessor="start"
-    endAccessor="end"
-    className={cn('h-[650px] md:h-[1000px]')}
-    toolbar={false}
-    components={{
-      event: (props) => (
-        <EventCard {...props} selectedDoctor={selectedDoctor} />
-      ),
-      dateCellWrapper: (props) => <CustomDateCell {...props} />,
-    }}
-    date={new Date(selectedDate)}
-    onNavigate={handleNavigate}
-    onSelectSlot={(slotInfo: any) => {
-      const clickedDate = dayjs(slotInfo.start).format('YYYY-MM-DD');
-      setSelectedDate(clickedDate);
-      setViewType('daily');
-    }}
-    eventPropGetter={() => ({
-      style: {
-        backgroundColor: 'transparent',
-        padding: 0,
-        marginBottom: '4px',
-        border: 'none',
-        boxShadow: 'none',
-      },
-    })}
-    onSelectEvent={openModalDetail}
-    onEventDrop={({ event, start, end, allDay }: any) => {
-      rescheduleModal(event.raw, dayjs(start).format('YYYY-MM-DD'));
-    }}
-    draggableAccessor={(event) => true}
-  />;
+  const getWeekDates = (selectedDate: string) => {
+    let d = dayjs(selectedDate);
+    if (!d.isValid()) {
+      d = dayjs();
+    }
+
+    const monday = d.startOf('isoWeek');
+
+    const weekDates = [];
+    for (let i = 0; i < 7; i++) {
+      weekDates.push(monday.add(i, 'day').format('YYYY-MM-DD'));
+    }
+
+    return weekDates;
+  };
 
   return (
     <div>
@@ -574,11 +623,47 @@ export default function GlobalCalendarTable({}: {}) {
 
                 <div>
                   <Text className="text-md font-semibold">{monthLabel}</Text>
-                  <Text className="text-sm text-muted-foreground">
-                    {viewType === 'weekly'
-                      ? `${startOfWeek} - ${endOfWeek}`
-                      : `${startOfMonth} - ${endOfMonth}`}
-                  </Text>
+                  <div className='flex items-center gap-2'>
+                    <Text className="text-sm text-muted-foreground">
+                      {viewType === 'weekly'
+                        ? `${startOfWeek} - ${endOfWeek}`
+                        : `${startOfMonth} - ${endOfMonth}`}
+                    </Text>
+                    <div className="relative">
+                      <MdOutlineInfo
+                        className='text-xl cursor-pointer'
+                        onMouseEnter={() => setShowTooltip(true)}
+                        onMouseLeave={() => setShowTooltip(false)}
+                      />
+
+                      {showTooltip && (
+                        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 z-50 animate-in fade-in duration-200">
+                          <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-3 whitespace-nowrap">
+                            <div className="flex items-center gap-4">
+                              <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-[#1FA551]"></div>
+                                <span className="text-sm">Initial Consult</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-[#0078D7]"></div>
+                                <span className="text-sm">Follow Up</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-[#F4A523]"></div>
+                                <span className="text-sm">Transfer</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-[#E84757]"></div>
+                                <span className="text-sm">Reschedule</span>
+                              </div>
+                            </div>
+                          </div>
+                          {/* Arrow */}
+                          <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-white"></div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </Flex>
               {doctorName && (
@@ -675,6 +760,7 @@ export default function GlobalCalendarTable({}: {}) {
               </Flex>
             </div>
           </TableHeader>
+
           {viewType == 'daily' ? (
             <DndProvider backend={HTML5Backend}>
               {isLoadingGetAppointments ? (
@@ -706,51 +792,10 @@ export default function GlobalCalendarTable({}: {}) {
               )}
             </DndProvider>
           ) : viewType === 'weekly' ? (
-            <DnDCalendar
-              localizer={localizer}
-              events={events}
-              startAccessor="start"
-              endAccessor="end"
-              toolbar={false}
-              view="week"
-              views={['week']}
-              min={new Date(0, 0, 0, 0, 0, 0)}
-              max={new Date(0, 0, 0, 23, 59, 59)}
-              step={15}
-              timeslots={1}
-              date={new Date(selectedDate)}
-              onNavigate={handleNavigate}
-              className={cn(
-                'h-[650px] md:h-[1000px]',
-                '[&_.rbc-time-content]:overflow-y-auto',
-                '[&_.rbc-time-content]:scrollbar-width-none',
-                '[&_.rbc-time-content::-webkit-scrollbar]:hidden'
-              )}
-              components={{
-                event: (props) => (
-                  <EventCard {...props} selectedDoctor={selectedDoctor} />
-                ),
-              }}
-              popup={true}
-              eventPropGetter={() => ({
-                style: {
-                  backgroundColor: 'transparent',
-                  padding: 0,
-                  marginBottom: '4px',
-                  border: 'none',
-                  height: '42px',
-                  boxShadow: 'none',
-                },
-              })}
-              formats={{
-                eventTimeRangeFormat: () => '',
-                timeGutterFormat: 'h:mm A',
-              }}
-              onSelectEvent={openModalDetail}
-              draggableAccessor={(event) => true}
-              onEventDrop={({ event, start, end, allDay }: any) => {
-                rescheduleModal(event.raw, dayjs(start).format('YYYY-MM-DD'));
-              }}
+            <WeeklyTable
+              data={data?.data}
+              handleDrop={handleDropWeekly}
+              weekDates={getWeekDates(selectedDate)}
             />
           ) : (
             <DnDCalendar

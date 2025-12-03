@@ -2,8 +2,8 @@
 
 import { HeaderCell } from '@/app/shared/ui/table';
 import cn from '@/core/utils/class-names';
-import { Text } from 'rizzui';
-import ModalAppointmentDetails from '../modal/ModalAppointmentDetail';
+import { Badge, Flex, Text } from 'rizzui';
+import ModalAppointmentDetails, { getPaymentStatusBadge } from '../modal/ModalAppointmentDetail';
 import {
   Calendar,
   dayjsLocalizer,
@@ -15,6 +15,12 @@ import dayjs from 'dayjs';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import { useDrag, useDrop } from 'react-dnd';
 import AppointmentDetails from '../../appointment/appointment-list/list/appointment-details';
+import CSelect from '../../ui/select';
+import { getAptStatusBadge } from '../../appointment/appointment-list/list/columns';
+import ShowConfirm from '../../appointment/modal/confirm-modal';
+import toast from 'react-hot-toast';
+import { useUpdateAppointment } from '@/hooks/useAppointment';
+import AppointmentDetailsCalendar from './AppointmentDetailsCalendar';
 
 // tipe unik untuk item yang di-drag
 const localizer = dayjsLocalizer(dayjs);
@@ -29,6 +35,7 @@ type Columns = {
   data: any[];
   openModal: (props: any) => void;
   handleDrop?: any;
+  closeModal?: (props: any) => void
 };
 
 type Row = {
@@ -37,7 +44,7 @@ type Row = {
   type: string;
 };
 
-export const getColumns = ({ data, openModal, handleDrop }: Columns) => {
+export const getColumns = ({ data, openModal, handleDrop, closeModal }: Columns) => {
   const doctorNames = Object.keys(data[0]).filter(
     (key) => key !== 'time' && key !== 'type'
   );
@@ -56,73 +63,11 @@ export const getColumns = ({ data, openModal, handleDrop }: Columns) => {
     dataIndex: name,
     key: name,
     render: (value: any, row: Row) =>
-      // getRowAppointment(value, row.type, openModal),
-      getRowAppointment(value, row.type, openModal, row, name, handleDrop),
+      getRowAppointment(value, row.type, openModal, row, name, handleDrop, closeModal),
   }));
 
   return [baseColumn, ...doctorColumns];
 };
-
-// function getRowAppointment(
-//   value: any,
-//   type: string,
-//   openModal: (props: any) => void
-// ) {
-//   const ITEM_TYPE = 'APPOINTMENT';
-//   let bgColor = '';
-//   if (type?.toLowerCase().includes('initial')) {
-//     bgColor = 'bg-green-600';
-//   } else if (type?.toLowerCase().includes('follow')) {
-//     bgColor = 'bg-blue-600';
-//   } else if (type?.toLowerCase().includes('script')) {
-//     bgColor = 'bg-yellow-600';
-//   } else if (type?.toLowerCase().includes('rescheduled')) {
-//     bgColor = 'bg-pink-600';
-//   } else {
-//     bgColor = 'bg-gray-600';
-//   }
-
-//   if (!value) return null;
-//   const patientName =
-//     `${value.patient?.first_name ?? ''} ${value.patient?.last_name ?? ''}`.trim();
-
-//   // 🎯 Setup drag
-//   const [{ isDragging }, dragRef] = useDrag({
-//     type: ITEM_TYPE,
-//     item: { appointment: value },
-//     collect: (monitor) => ({
-//       isDragging: monitor.isDragging(),
-//     }),
-//   });
-
-//   // 🎯 Setup drop
-//   const [, dropRef] = useDrop({
-//     accept: ITEM_TYPE,
-//     drop: (item: any) => {
-//       console.log('📦 Dipindah ke:', value, '➡️ dari:', item.appointment);
-//       // TODO: update state atau panggil API untuk ubah dokter/jam
-//     },
-//   });
-
-//   const handleOpenModal = () => {
-//     openModal({
-//       view: <ModalAppointmentDetails data={value} />,
-//       customSize: '700px',
-//     });
-//   };
-
-//   return (
-//     <div
-//       ref={(node) => {
-//         dragRef(dropRef(node));
-//       }}
-//       onClick={handleOpenModal}
-//       className={cn('w-fit cursor-pointer rounded-md p-2', bgColor)}
-//     >
-//       <Text className="font-medium text-white">{patientName || '-'}</Text>
-//     </div>
-//   );
-// }
 
 function getRowAppointment(
   value: any,
@@ -130,7 +75,8 @@ function getRowAppointment(
   openModal: any,
   row?: any,
   doctor?: string,
-  onDrop?: any
+  onDrop?: any,
+  closeModal?: any,
 ) {
   if (value) {
     return (
@@ -141,84 +87,12 @@ function getRowAppointment(
         row={row}
         doctor={doctor}
         onDrop={onDrop}
+        closeModal={closeModal}
       />
     );
   }
   return <DropCell row={row} doctor={doctor} onDrop={onDrop} />;
 }
-
-// export function AppointmentCell({
-//   value,
-//   type,
-//   openModal,
-//   row,
-//   doctor,
-//   onDrop,
-// }: any) {
-//   const ITEM_TYPE = 'APPOINTMENT';
-
-//   let bgColor = '';
-//   if (type?.toLowerCase().includes('initial')) bgColor = 'bg-green-600';
-//   else if (type?.toLowerCase().includes('follow')) bgColor = 'bg-blue-600';
-//   else if (type?.toLowerCase().includes('script')) bgColor = 'bg-yellow-600';
-//   else if (type?.toLowerCase().includes('rescheduled'))
-//     bgColor = 'bg-pink-600';
-//   else bgColor = 'bg-gray-600';
-
-//   if (!value) return null;
-
-//   const [{ isDragging }, dragRef] = useDrag(() => ({
-//     type: ITEM_TYPE,
-//     item: { appointment: value },
-//     collect: (monitor) => ({
-//       isDragging: monitor.isDragging(),
-//     }),
-//   }));
-
-//   const [{ isOver }, dropRef] = useDrop(() => ({
-//     accept: ITEM_TYPE,
-//     drop: (item: any) => {
-//       // Prevent dropping on itself
-//       if (item.appointment.id === value.id) return;
-//       console.log(
-//         `✅ Dropped ${item.appointment.id} to ${doctor} at ${row.time}`
-//       );
-//       onDrop?.(item.appointment, doctor, row.time);
-//     },
-//     collect: (monitor) => ({
-//       isOver: monitor.isOver(),
-//     }),
-//   }));
-
-//   const handleOpenModal = () => {
-//     openModal({
-//       view: <AppointmentDetails data={value} />,
-//       customSize: '1100px',
-//     });
-//   };
-
-//   return (
-//     <div
-//       ref={(instance) => {
-//         dragRef(instance);
-//         dropRef(instance);
-//       }}
-//       onClick={handleOpenModal}
-//       className={cn(
-//         'relative w-fit cursor-pointer rounded-md p-2 transition-opacity',
-//         bgColor,
-//         isDragging && 'opacity-50'
-//       )}
-//     >
-//       {isOver && <div className="absolute inset-0 rounded-md bg-black/60" />}
-//       <Text className="font-medium text-white">
-//         {`${value.patient?.first_name ?? ''} ${
-//           value.patient?.last_name ?? ''
-//         }`.trim() || '-'}
-//       </Text>
-//     </div>
-//   );
-// }
 
 export function AppointmentCell({
   value,
@@ -227,22 +101,22 @@ export function AppointmentCell({
   row,
   doctor,
   onDrop,
+  closeModal,
 }: any) {
   const ITEM_TYPE = 'APPOINTMENT';
-  
   let bgColor = '';
   const appointmentType = value?.type?.toLowerCase() || '';
-  
+
   if (appointmentType.includes('initial')) {
-    bgColor = '#1FA551'; 
+    bgColor = '#1FA551';
   } else if (appointmentType.includes('follow')) {
-    bgColor = '#0078D7'; 
+    bgColor = '#0078D7';
   } else if (appointmentType.includes('transfer')) {
-    bgColor = '#F4A523'; 
+    bgColor = '#F4A523';
   } else if (appointmentType.includes('reschedule')) {
-    bgColor = '#E84757'; 
+    bgColor = '#E84757';
   } else {
-    bgColor = '#6B7280'; 
+    bgColor = '#6B7280';
   }
 
   if (!value) return null;
@@ -268,9 +142,92 @@ export function AppointmentCell({
 
   const handleOpenModal = () => {
     openModal({
-      view: <AppointmentDetails data={value} />,
+      view: <AppointmentDetailsCalendar data={value} />,
       customSize: '1100px',
     });
+  };
+
+  const aptStatusOptions = [
+    { label: 'Draft', value: 1 },
+    { label: 'Scheduled', value: 2 },
+    { label: 'Checked In', value: 3 },
+    { label: 'Finished', value: 4 },
+    { label: 'Cancelled', value: 5 },
+    { label: 'On Going', value: 6 },
+    { label: 'No Show', value: 7 },
+  ]
+
+  const getAptType = (type: string) => {
+    const colorMap: Record<string, string> = {
+      "Initial Consult": "#1FA551",
+      "Follow Up": "#0078D7",
+      "Transfer": "#F4A523",
+      "Reschedule": "#E84757",
+    };
+
+    const text = type || "Unknown";
+    const dotColor = colorMap[type] || "#999999";
+
+    return (
+      <Flex gap="1" align="center">
+        <Badge style={{ backgroundColor: dotColor }} renderAsDot />
+        <Text className="font-medium" style={{ color: dotColor }}>
+          {text}
+        </Text>
+      </Flex>
+    );
+  };
+
+  const { mutate } = useUpdateAppointment();
+  const id = value?.id
+  const handleSubmitStatus = (value: number) => {
+    mutate(
+      { id, status: value },
+      {
+        onSuccess: () => {
+          toast.success('Status updated successfully');
+          closeModal();
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || 'Error updating status'
+          );
+          closeModal();
+        },
+      }
+    );
+  };
+
+  const showConfirmModal = (
+    id: number,
+    onClick: (value: number) => void,
+    status: string,
+  ) => {
+    closeModal(),
+      openModal({
+        view: <ShowConfirm onClick={onClick} status={status} id={id} />,
+        customSize: '550px',
+      });
+  };
+
+  const handleChange = (value: number) => {
+    if (value == 1) {
+      showConfirmModal(value, handleSubmitStatus, 'Draft');
+    } else if (value == 2) {
+      showConfirmModal(value, handleSubmitStatus, 'Scheduled');
+    } else if (value == 3) {
+      showConfirmModal(value, handleSubmitStatus, 'Check In');
+    } else if (value == 4) {
+      showConfirmModal(value, handleSubmitStatus, 'Finished');
+    } else if (value == 5) {
+      showConfirmModal(value, handleSubmitStatus, 'Cancelled');
+    } else if (value == 6) {
+      showConfirmModal(value, handleSubmitStatus, 'On Going');
+    } else if (value == 7) {
+      showConfirmModal(value, handleSubmitStatus, 'No Show');
+    } else {
+      handleSubmitStatus(value);
+    }
   };
 
   return (
@@ -282,16 +239,60 @@ export function AppointmentCell({
       onClick={handleOpenModal}
       className={cn(
         'relative w-fit cursor-pointer rounded-md p-2 transition-opacity',
+        bgColor,
         isDragging && 'opacity-50'
       )}
-      style={{ backgroundColor: bgColor }}
     >
       {isOver && <div className="absolute inset-0 rounded-md bg-black/60" />}
-      <Text className="font-medium text-white">
-        {`${value.patient?.first_name ?? ''} ${
-          value.patient?.last_name ?? ''
-        }`.trim() || '-'}
-      </Text>
+      <div className='flex items-center gap-4'>
+        <div>
+          <Text className="font-medium">
+            {`${value.patient?.first_name ?? ''} ${value.patient?.last_name ?? ''}`.trim() || '-'}
+          </Text>
+        </div>
+
+        <div className="h-4 w-px bg-gray-300" />
+
+        <div onClick={(e) => e.stopPropagation()}>
+          <CSelect
+            className="min-w-[140px]"
+            dropdownClassName="h-auto"
+            placeholder="Select Status"
+            options={aptStatusOptions}
+            size="sm"
+            onChange={handleChange}
+            value={value?.status}
+            displayValue={(option: { value: number }) =>
+              getAptStatusBadge(option.value)
+            }
+          />
+        </div>
+
+        <div className="h-4 w-px bg-gray-300" />
+
+        <div>
+          <p>{getAptType(value?.type)}</p>
+        </div>
+
+        <div className="h-4 w-px bg-gray-300" />
+
+        <div>
+          <p>{getPaymentStatusBadge(value?.payment?.status ?? 0)}</p>
+        </div>
+
+        {value?.type === 'Initial Consult' && (
+          <>
+            <div className="h-4 w-px bg-gray-300" />
+
+            <div className="flex-1 flex items-center gap-2">
+              <p className="text-sm font-medium">Notes:</p>
+              <p className="text-sm font-normal">
+                {value?.note ?? '-'}
+              </p>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
