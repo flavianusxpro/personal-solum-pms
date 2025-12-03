@@ -82,26 +82,17 @@ export const getColumns = ({
         </div>
       ),
     },
-    // {
-    //   title: <HeaderCell title="PATIENT ID" />,
-    //   dataIndex: 'id',
-    //   key: 'id',
-    //   width: 120,
-    //   render: (value: string) => <Text>#{value}</Text>,
-    // },
     {
       title: <HeaderCell title="PATIENT NAME" />,
       dataIndex: 'PATIENT NAME',
       key: 'PATIENT NAME',
       width: 300,
       render: (_: any, row: any) => {
-
         const requiredFieldsMap: Record<string, string> = {
           mobile_number: "Mobile Number",
           email: "Email",
         };
 
-        // cek field yang kosong
         const missingFields = Object.keys(requiredFieldsMap).filter(
           (key: string) => row[String(key)] === null || row[String(key)] === undefined || row[String(key)] === ""
         );
@@ -110,28 +101,24 @@ export const getColumns = ({
           <AvatarCardNew
             src={row.photo || ''}
             name={`${row.first_name} ${row.middle_name ? row.middle_name : ''} ${row.last_name}`}
-            // number={row.mobile_number}
-            // description={row.email?.toLowerCase()}
-            otherIcon={
-              [
-                () => (
-                  <MdVerified
-                    className={`cursor-pointer ${row.verification_status === true ? 'text-blue-600' : 'text-gray-400'}`}
-                    title={row.verification_status === true ? "Verified" : "Not Verified"}
-                    key="verified"
+            otherIcon={[
+              () => (
+                <MdVerified
+                  className={`cursor-pointer ${row.verification_status === true ? 'text-blue-600' : 'text-gray-400'}`}
+                  title={row.verification_status === true ? "Verified" : "Not Verified"}
+                  key="verified"
+                />
+              ),
+              () => {
+                return missingFields.length > 0 ? (
+                  <CiWarning
+                    key="warning"
+                    className="text-yellow-700 cursor-pointer"
+                    title={`Missing: ${missingFields.map(f => requiredFieldsMap[f]).join(", ")}`}
                   />
-                ),
-                () => {
-                  return missingFields.length > 0 ? (
-                    <CiWarning
-                      key="warning"
-                      className="text-yellow-700 cursor-pointer"
-                      title={`Missing: ${missingFields.map(f => requiredFieldsMap[f]).join(", ")}`}
-                    />
-                  ) : null
-                },
-              ]
-            }
+                ) : null
+              },
+            ]}
           />
         );
       },
@@ -141,21 +128,13 @@ export const getColumns = ({
       dataIndex: 'Contact Detail',
       key: 'contact_detail',
       width: 300,
-      render: (_: any, row: any) => {
-
-        // cek field yang kosong
-        return (
-          <AvatarCardNew
-            // src={''}
-            // name={`${row.first_name} ${row.last_name}`}
-            number={row.mobile_number}
-            description={row.email?.toLowerCase()}
-
-          />
-        );
-      },
+      render: (_: any, row: any) => (
+        <AvatarCardNew
+          number={row.mobile_number}
+          description={row.email?.toLowerCase()}
+        />
+      ),
     },
-
     {
       title: <HeaderCell title="GENDER" />,
       dataIndex: 'gender',
@@ -236,7 +215,7 @@ export const getColumns = ({
       className: 'no-row-click',
       width: 110,
       render: (value: number, row: Row) => (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2" onClick={(e) => e.stopPropagation()}>
           <StatusSelect selectItem={value} id={row?.patient_id} />
         </div>
       ),
@@ -280,17 +259,18 @@ function RenderAction({
   const { openModal, closeModal } = useModal();
 
   function handleRedFlagModal(modalType: string) {
-    closeModal(),
-      openModal({
-        view: <RedFlagForm patient_id={row.id} modalType={modalType} />,
-        customSize: '600px',
-      });
+    closeModal();
+    openModal({
+      view: <RedFlagForm patient_id={row.id} modalType={modalType} />,
+      customSize: '600px',
+    });
   }
 
   return (
     <>
       <Dropdown placement="bottom-end">
         <Dropdown.Trigger>
+          {/* HAPUS onClick dari sini */}
           <ActionIcon variant="outline" rounded="full">
             <HiOutlineDotsVertical className="h-5 w-5" />
           </ActionIcon>
@@ -300,7 +280,10 @@ function RenderAction({
             <Button
               className="w-full hover:border-gray-700 hover:text-gray-700"
               variant="outline"
-              onClick={() => handleRedFlagModal('flag')}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRedFlagModal('flag');
+              }}
             >
               <div className="flex gap-3">
                 <PiFlag className="h-4 w-4 text-red-500" />
@@ -313,7 +296,10 @@ function RenderAction({
             <Button
               className="w-full hover:border-gray-700 hover:text-gray-700"
               variant="outline"
-              onClick={() => handleRedFlagModal('notes')}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRedFlagModal('notes');
+              }}
             >
               <div className="flex gap-3">
                 <PiNote className="h-4 w-4" />
@@ -360,14 +346,15 @@ function RenderAction({
             <Button
               className="w-full hover:border-gray-700 hover:text-gray-700"
               variant="outline"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setIdPatient(row.id);
                 setIsOpen(true);
               }}
             >
               <div className="flex items-center gap-3">
                 <TrashIcon className="h-4 w-4" />
-                <span>Delete</span>{' '}
+                <span>Delete</span>
               </div>
             </Button>
           </Dropdown.Item>
@@ -436,18 +423,27 @@ function StatusSelect({ selectItem, id }: { selectItem: number; id: string }) {
     );
   };
 
+  // Handler untuk mencegah event bubbling dari select
+  const handleSelectClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
-    <CSelect
-      className={'min-w-[120px]'}
-      dropdownClassName="h-auto"
-      placeholder="Select Status"
-      options={statusOptions}
-      value={value}
-      onChange={handleChange}
-      isLoading={isPending}
-      displayValue={(option: { label: string; value: number }) =>
-        getStatusBadge(option.value)
-      }
-    />
+    <div onClick={handleSelectClick}>
+      <CSelect
+        className={'min-w-[120px]'}
+        dropdownClassName="h-auto"
+        placeholder="Select Status"
+        options={statusOptions}
+        value={value}
+        onChange={handleChange}
+        isLoading={isPending}
+        displayValue={(option: { label: string; value: number }) =>
+          getStatusBadge(option.value)
+        }
+      // Tambahkan onClick handler untuk trigger select
+      // onDropdownClick={handleSelectClick}
+      />
+    </div>
   );
 }
