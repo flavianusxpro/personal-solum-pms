@@ -375,8 +375,8 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
               <FormGroup title={<>Street Address{!isView && <span className="text-red-500"> *</span>}</>} isLabel>
                 <Input
                   placeholder="Street Address"
-                  {...register('street_name')}
-                  error={errors.street_name?.message}
+                  {...register('address_line_1')}
+                  error={errors.address_line_1?.message}
                   disabled={isView}
                   className="flex-grow"
                 />

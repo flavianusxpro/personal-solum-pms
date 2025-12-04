@@ -25,6 +25,7 @@ export const patientDetailsFormSchema = z.object({
   address_line_2: z.string().optional(),
   suburb: z.string().min(1, { message: 'City is required' }),
   street_name: z.string().min(1, { message: 'Street Address is required' }),
+  address_line1: z.string().min(1, { message: 'Street Address is required' }),
   post_code: z.string().min(1, { message: 'Post Code is required' }),
   address_type: z.string().min(1, { message: 'Address Type is required' }),
   is_australian_resident: z.boolean().optional(),
