@@ -15,95 +15,25 @@ import { PiArrowLeft, PiArrowRight, PiCalendar, PiUser } from 'react-icons/pi';
 import dayjs from '@/config/dayjs';
 import ActionButton from '../../ui/action-tooltip-button';
 import { useProfile } from '@/hooks/useProfile';
-import { Calendar, dayjsLocalizer, View } from 'react-big-calendar';
-import cn from '@/core/utils/class-names';
+import { View } from 'react-big-calendar';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
-import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
-import RescheduleAppointmentForm, {
-  formRescheduleDataAtom,
-} from '../reschedule';
+import RescheduleAppointmentForm from '../reschedule';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import toast from 'react-hot-toast';
 import ConfirmationView from '../reschedule/ConfirmationView';
-import AppointmentDetails from '../../appointment/appointment-list/list/appointment-details';
 import { LuCalendarX2 } from 'react-icons/lu';
 import { MdOutlineInfo } from 'react-icons/md';
 import WeeklyTable from './CalendarTypes/Weekly/WeeklyTable';
 import WeeklyModalReschedule from './CalendarTypes/Weekly/WeeklyModalReschedule';
-
-const DnDCalendar = withDragAndDrop<any, any>(Calendar);
-
-const localizer = dayjsLocalizer(dayjs);
-
-const EventCard = ({ event, selectedDoctor }: any) => {
-  const getColorByType = (type: string) => {
-    const appointmentType = type?.toLowerCase() || '';
-
-    if (appointmentType.includes('initial')) {
-      return {
-        bg: '#E8F5E9',
-        border: '#1FA551',
-        text: '#1FA551',
-      };
-    } else if (appointmentType.includes('follow')) {
-      return {
-        bg: '#E3F2FD',
-        border: '#0078D7',
-        text: '#0078D7',
-      };
-    } else if (appointmentType.includes('transfer')) {
-      return {
-        bg: '#FFF3E0',
-        border: '#F4A523',
-        text: '#F4A523',
-      };
-    } else if (appointmentType.includes('reschedule')) {
-      return {
-        bg: '#FFEBEE',
-        border: '#E84757',
-        text: '#E84757',
-      };
-    } else {
-      return {
-        bg: '#F5F5F5',
-        border: '#6B7280',
-        text: '#6B7280',
-      };
-    }
-  };
-
-  const appointmentType = event?.appointment?.type || '';
-  const colors = getColorByType(appointmentType);
-
-  return (
-    <div
-      className="cursor-pointer rounded px-2 py-1.5 transition-opacity hover:opacity-80"
-      style={{
-        backgroundColor: colors.bg,
-        borderLeft: `4px solid ${colors.border}`,
-      }}
-      title={`${event.time} - Dr. ${event.doctor}\n${event.patient}\nType: ${appointmentType}`}
-    >
-      <div
-        className="truncate text-[11px] font-semibold leading-tight"
-        style={{ color: colors.text }}
-      >
-        {event.time} - Dr. {event.doctor}
-      </div>
-      <div className="mt-0.5 truncate text-[11px] leading-tight text-gray-700">
-        {event.patient}
-      </div>
-    </div>
-  );
-};
+import MounthlyCalendar from './CalendarTypes/Mounthly/MounthlyCalendar';
 
 export default function GlobalCalendarTable({ }: {}) {
   const { openModal, closeModal } = useModal();
   const [pageSize] = useState(100);
   const [viewType, setViewType] = useState<'daily' | 'weekly' | 'monthly'>(
-    'weekly'
+    'monthly'
   );
 
   const [selectedDate, setSelectedDate] = useState(
@@ -205,38 +135,131 @@ export default function GlobalCalendarTable({ }: {}) {
     });
   }
 
-  function getTimeSlots(
-    startTime: string,
-    endTime: string,
-    intervalMinutes: number
-  ) {
-    const slots = [];
-    let current = new Date(`1970-01-01T${startTime}:00`);
-    const end = new Date(`1970-01-01T${endTime}:00`);
+  // function getTimeSlots(
+  //   startTime: string,
+  //   endTime: string,
+  //   intervalMinutes: number
+  // ) {
+  //   const slots = [];
+  //   let current = new Date(`1970-01-01T${startTime}:00`);
+  //   const end = new Date(`1970-01-01T${endTime}:00`);
 
-    while (current <= end) {
-      const timeStr = current.toTimeString().slice(0, 5);
-      slots.push(timeStr);
-      current.setMinutes(current.getMinutes() + intervalMinutes);
+  //   while (current <= end) {
+  //     const timeStr = current.toTimeString().slice(0, 5);
+  //     slots.push(timeStr);
+  //     current.setMinutes(current.getMinutes() + intervalMinutes);
+  //   }
+
+  //   return slots;
+  // }
+
+  // const formatAppointments = useCallback(
+  //   (data: IGetAppointmentListResponse['data']) => {
+  //     const appointmentTimes = data
+  //       .map((item) => {
+  //         const match = item.date.match(/T(\d{2}):(\d{2}):/);
+  //         if (match) return `${match[1]}:${match[2]}`;
+  //         return null;
+  //       })
+  //       .filter(Boolean) as string[];
+
+  //     const startTime =
+  //       appointmentTimes.length > 0 ? appointmentTimes.sort()[0] : '00:00';
+  //     const timeSlots = getTimeSlots(startTime, '23:59', 15);
+
+  //     const doctors = Array.from(
+  //       new Set(
+  //         data.map((item) =>
+  //           `${item.doctor?.first_name || ''} ${item.doctor?.last_name || ''}`.trim()
+  //         )
+  //       )
+  //     );
+
+  //     const result = timeSlots.map((time) => {
+  //       const slot: Record<string, any> = { time };
+  //       doctors.forEach((doc) => {
+  //         slot[doc] = '';
+  //       });
+  //       return slot;
+  //     });
+
+  //     data.forEach((item) => {
+  //       const doctorName =
+  //         `${item.doctor?.first_name || ''} ${item.doctor?.last_name || ''}`.trim();
+
+  //       let timeStr: string;
+  //       const timeMatch = item.date.match(/T(\d{2}):(\d{2}):(\d{2})/);
+  //       if (timeMatch) {
+  //         const hour = timeMatch[1];
+  //         const minute = timeMatch[2];
+  //         timeStr = `${hour}:${minute}`;
+  //       } else {
+  //         if (item.local_date) {
+  //           const localTimeMatch = item.local_date.match(
+  //             /(\d{1,2}):(\d{2})\s*(AM|PM)/
+  //           );
+  //           if (localTimeMatch) {
+  //             let hour = parseInt(localTimeMatch[1]);
+  //             const minute = localTimeMatch[2];
+  //             const period = localTimeMatch[3];
+
+  //             if (period === 'PM' && hour !== 12) {
+  //               hour += 12;
+  //             } else if (period === 'AM' && hour === 12) {
+  //               hour = 0;
+  //             }
+
+  //             timeStr = `${hour.toString().padStart(2, '0')}:${minute}`;
+  //           } else {
+  //             const localDate = new Date(item.local_date);
+  //             timeStr = localDate.toTimeString().slice(0, 5);
+  //           }
+  //         } else {
+  //           const appointmentTime = dayjs.utc(item.date);
+  //           timeStr = appointmentTime.format('HH:mm');
+  //         }
+  //       }
+
+  //       const slot = result.find((r) => r.time === timeStr);
+
+  //       if (slot && item.patient) {
+  //         slot[doctorName] = item;
+  //         slot['type'] = item.type || '';
+  //       }
+  //     });
+
+  //     return result;
+  //   },
+  //   []
+  // );
+
+  const getTimeSlots = () => {
+    const slots = [];
+    const startHour = 0;
+    const endHour = 23;
+
+    for (let hour = startHour; hour <= endHour; hour++) {
+      for (let minute = 0; minute < 60; minute += 15) {
+        const time24 = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+
+        let displayHour = hour % 12;
+        if (displayHour === 0) displayHour = 12;
+        const period = hour < 12 ? 'AM' : 'PM';
+        const time12 = `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
+
+        slots.push({
+          time24,
+          time12  
+        });
+      }
     }
 
     return slots;
-  }
+  };
 
   const formatAppointments = useCallback(
     (data: IGetAppointmentListResponse['data']) => {
-      const appointmentTimes = data
-        .map((item) => {
-          const match = item.date.match(/T(\d{2}):(\d{2}):/);
-          if (match) return `${match[1]}:${match[2]}`;
-          return null;
-        })
-        .filter(Boolean) as string[];
-
-      const startTime =
-        appointmentTimes.length > 0 ? appointmentTimes.sort()[0] : '00:00';
-      const timeSlots = getTimeSlots(startTime, '23:59', 15);
-
+      const timeSlots = getTimeSlots();
       const doctors = Array.from(
         new Set(
           data.map((item) =>
@@ -245,52 +268,37 @@ export default function GlobalCalendarTable({ }: {}) {
         )
       );
 
-      const result = timeSlots.map((time) => {
-        const slot: Record<string, any> = { time };
+      type SlotRow = {
+        time: string;
+        _time24: string;
+        [key: string]: any;
+      };
+
+      const result: SlotRow[] = timeSlots.map((slot) => {
+        const row: SlotRow = {
+          time: slot.time12,
+          _time24: slot.time24
+        };
         doctors.forEach((doc) => {
-          slot[doc] = '';
+          row[doc] = '';
         });
-        return slot;
+        return row;
       });
 
       data.forEach((item) => {
         const doctorName =
           `${item.doctor?.first_name || ''} ${item.doctor?.last_name || ''}`.trim();
 
-        let timeStr: string;
+        let timeStr: string = '';
+
         const timeMatch = item.date.match(/T(\d{2}):(\d{2}):(\d{2})/);
         if (timeMatch) {
           const hour = timeMatch[1];
           const minute = timeMatch[2];
           timeStr = `${hour}:${minute}`;
-        } else {
-          if (item.local_date) {
-            const localTimeMatch = item.local_date.match(
-              /(\d{1,2}):(\d{2})\s*(AM|PM)/
-            );
-            if (localTimeMatch) {
-              let hour = parseInt(localTimeMatch[1]);
-              const minute = localTimeMatch[2];
-              const period = localTimeMatch[3];
-
-              if (period === 'PM' && hour !== 12) {
-                hour += 12;
-              } else if (period === 'AM' && hour === 12) {
-                hour = 0;
-              }
-
-              timeStr = `${hour.toString().padStart(2, '0')}:${minute}`;
-            } else {
-              const localDate = new Date(item.local_date);
-              timeStr = localDate.toTimeString().slice(0, 5);
-            }
-          } else {
-            const appointmentTime = dayjs.utc(item.date);
-            timeStr = appointmentTime.format('HH:mm');
-          }
         }
 
-        const slot = result.find((r) => r.time === timeStr);
+        const slot = result.find((r) => r._time24 === timeStr);
 
         if (slot && item.patient) {
           slot[doctorName] = item;
@@ -298,7 +306,7 @@ export default function GlobalCalendarTable({ }: {}) {
         }
       });
 
-      return result;
+      return result.map(({ _time24, ...rest }) => rest);
     },
     []
   );
@@ -358,7 +366,7 @@ export default function GlobalCalendarTable({ }: {}) {
           ),
           customSize: '400px',
         });
-      } else if (viewType === 'weekly' && newDoctorName && newTime ) {
+      } else if (viewType === 'weekly' && newDoctorName && newTime) {
         const doctorId = optionDoctors.find(doc => {
           const docNameWithoutTitle = doc.label.replace(/^Dr\.\s*/, "").toLowerCase();
           return docNameWithoutTitle.startsWith(newDoctorName.toLowerCase());
@@ -393,8 +401,8 @@ export default function GlobalCalendarTable({ }: {}) {
 
         openModal({
           view: (
-            <WeeklyModalReschedule 
-              data={row} 
+            <WeeklyModalReschedule
+              data={row}
               newDate={newDate}
               newTime={newTime}
               newDoctorName={newDoctorName}
@@ -483,13 +491,6 @@ export default function GlobalCalendarTable({ }: {}) {
     });
   }, [data?.data]);
 
-  const openModalDetail = (data: any) => {
-    openModal({
-      view: <AppointmentDetails data={data?.appointment} />,
-      customSize: '1100px',
-    });
-  };
-
   useEffect(() => {
     refetch();
   }, [selectedDate, refetch]);
@@ -554,37 +555,6 @@ export default function GlobalCalendarTable({ }: {}) {
     []
   );
 
-  const CustomDateCell = ({ value, children }: any) => {
-    const dateStr = dayjs(value).format('YYYY-MM-DD');
-    const hasEvents = events.some(
-      (event) => dayjs(event.start).format('YYYY-MM-DD') === dateStr
-    );
-
-    return (
-      <div className="rbc-day-bg">
-        {children}
-        {!hasEvents && (
-          <div className="flex flex-col items-center justify-center pt-8 text-[#A6A6A6]">
-            <svg
-              className="mb-2 h-8 w-8"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            <span className="text-xs text-[#787878]">No Appointment</span>
-          </div>
-        )}
-      </div>
-    );
-  };
-
   const getWeekDates = (selectedDate: string) => {
     let d = dayjs(selectedDate);
     if (!d.isValid()) {
@@ -605,9 +575,10 @@ export default function GlobalCalendarTable({ }: {}) {
     <div>
       {tableData && columns && tableData?.length > 0 && columns.length > 0 ? (
         <>
+        <div className="relative z-0">
           <TableHeader isCustomHeader checkedItems={[]}>
             <div
-              className={` ${selectedDoctor ? 'grid grid-cols-[repeat(2,1fr)_1.5fr]' : 'flex w-full justify-between'} items-center`}
+              className={` ${selectedDoctor ? 'grid grid-cols-[repeat(2,1fr)_1.5fr]' : 'flex justify-between'} items-center w-full`}
             >
               <Flex align="center" gap="3">
                 <div className="flex w-12 flex-col items-center justify-center rounded-md border border-gray-300">
@@ -667,9 +638,11 @@ export default function GlobalCalendarTable({ }: {}) {
                 </div>
               </Flex>
               {doctorName && (
-                <Text className="text-md font-semibold">
-                  {doctorName?.label || ''}
-                </Text>
+                <Flex>
+                  <Text className="text-md font-semibold">
+                    {doctorName?.label || ''}
+                  </Text>
+                </Flex>
               )}
               <Flex align="center" gap="3">
                 <Flex className="w-fit" align="center">
@@ -760,7 +733,7 @@ export default function GlobalCalendarTable({ }: {}) {
               </Flex>
             </div>
           </TableHeader>
-
+        </div>
           {viewType == 'daily' ? (
             <DndProvider backend={HTML5Backend}>
               {isLoadingGetAppointments ? (
@@ -798,42 +771,13 @@ export default function GlobalCalendarTable({ }: {}) {
               weekDates={getWeekDates(selectedDate)}
             />
           ) : (
-            <DnDCalendar
-              localizer={localizer}
+            <MounthlyCalendar
               events={events}
-              selectable
-              startAccessor="start"
-              endAccessor="end"
-              className={cn('h-[650px] md:h-[1000px]')}
-              toolbar={false}
-              components={{
-                event: (props) => (
-                  <EventCard {...props} selectedDoctor={selectedDoctor} />
-                ),
-                dateCellWrapper: (props) => <CustomDateCell {...props} />,
-              }}
-              date={new Date(selectedDate)}
-              onNavigate={handleNavigate}
-              onSelectSlot={(slotInfo: any) => {
-                const clickedDate = dayjs(slotInfo.start).format('YYYY-MM-DD');
-                setSelectedDate(clickedDate);
-                setViewType('daily');
-              }}
-              popup
-              eventPropGetter={() => ({
-                style: {
-                  backgroundColor: 'transparent',
-                  padding: 0,
-                  marginBottom: '4px',
-                  border: 'none',
-                  boxShadow: 'none',
-                },
-              })}
-              onSelectEvent={openModalDetail}
-              onEventDrop={({ event, start, end, allDay }: any) => {
-                rescheduleModal(event.raw, dayjs(start).format('YYYY-MM-DD'));
-              }}
-              draggableAccessor={(event) => true}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+              handleNavigate={handleNavigate}
+              setViewType={setViewType}
+              rescheduleModal={rescheduleModal}
             />
           )}
         </>

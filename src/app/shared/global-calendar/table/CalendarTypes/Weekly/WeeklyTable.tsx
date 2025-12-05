@@ -50,9 +50,7 @@ const WeeklyTable = (props: PropTypes) => {
   const formatAppointments = useCallback(
     (data: IGetAppointmentListResponse['data'], weekDates: string[]) => {
       const timeSlots = getTimeSlots();
-
       const appointmentsByDateTime: Record<string, Record<string, any>> = {};
-
       weekDates.forEach(date => {
         appointmentsByDateTime[date] = {};
       });
@@ -111,7 +109,7 @@ const WeeklyTable = (props: PropTypes) => {
         const row: Record<string, any> = { time };
 
         weekDates.forEach(date => {
-          const dayKey = dayjs(date).format('ddd').toUpperCase(); // MON, TUE, etc.
+          const dayKey = dayjs(date).format('ddd').toUpperCase();
           row[dayKey] = appointmentsByDateTime[date][time] || [];
         });
 
