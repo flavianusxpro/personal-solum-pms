@@ -34,7 +34,7 @@ export default function RescheduleConfirmation() {
             - {formData.oldData?.doctorTime}
           </Text>
 
-          <Text>Doctor : {getDoctorName(formData.doctorId)}</Text>
+          <Text> Doctor : {getDoctorName(formData.oldData?.doctorId)}</Text>
         </div>
 
         <div className="">
@@ -43,7 +43,7 @@ export default function RescheduleConfirmation() {
             Date & Time : {dayjs(formData?.date).format('MMM DD, YYYY')} -{' '}
             {formData?.doctorTime}
           </Text>
-          <Text> Doctor : {getDoctorName(formData.oldData?.doctorId)}</Text>
+          <Text>Doctor : {getDoctorName(formData.doctorId)}</Text>
         </div>
       </div>
       <Footer isLastStep />

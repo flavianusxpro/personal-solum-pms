@@ -93,14 +93,14 @@ export default function AppointmentPatientDoctor() {
             placeholder="Select Doctor"
             error={errors.doctorId?.message}
           />
-          <Input
+          {/* <Input
             type="time"
             label="Doctor Time"
             placeholder="Select Time"
             value={watchDoctorTime}
             error={errors.doctorTime?.message}
             onChange={(e) => setValue('doctorTime', e.target.value)}
-          />
+          /> */}
         </Flex>
         <div className="mx-auto max-h-80 max-w-4xl divide-y divide-gray-200 overflow-auto">
           {isLoadingDoctorById && <Loader variant="spinner" size="xl" />}
@@ -112,19 +112,9 @@ export default function AppointmentPatientDoctor() {
                 {/* Doctor Header */}
                 <div className="flex items-center justify-between space-x-4 p-6">
                   <div className="flex items-center space-x-4">
-                    {/* {doctor.url_photo ? (
-                      <Image
-                        src={doctor.url_photo}
-                        alt={doctor.first_name}
-                        className="h-12 w-12 rounded-full"
-                        height={48}
-                        width={48}
-                      />
-                    ) : ( */}
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-300">
+                    {/* <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-300">
                       🏥
-                    </div>
-                    {/* )} */}
+                    </div> */}
                     <h3 className="cursor-pointer text-base font-bold hover:underline">
                       Dr. {doctor.first_name} {doctor.last_name}
                     </h3>
@@ -159,6 +149,8 @@ export default function AppointmentPatientDoctor() {
                   setValue={setValue}
                   currentOpen={currentOpen}
                   doctor={doctor}
+                  selectedTime={watchDoctorTime}
+                   selectedDoctorId={watchDoctor}
                 />
               </div>
             );
@@ -174,6 +166,8 @@ function DoctorTime({
   doctor,
   currentOpen,
   setValue,
+  selectedTime,
+  selectedDoctorId,
 }: {
   doctor: IGetDoctorByClinicResponse['data'][number];
   currentOpen: number | null;
@@ -182,6 +176,8 @@ function DoctorTime({
     doctorTime: string;
     fee?: string;
   }>;
+  selectedTime?: string;
+  selectedDoctorId?: number;
 }) {
   const [formData] = useAtom(formRescheduleDataAtom);
 
@@ -208,7 +204,7 @@ function DoctorTime({
     if (!dataAvailability?.data) return [];
     return dataAvailability.data.reduce((acc, item) => {
       if (item.available) {
-        const availTime = dayjs(item.time, 'HH:mm:ss').format('h:mm A');
+        const availTime = dayjs(item.time, 'YYYY-MM-DD HH:mm').format('h:mm A');
         acc.push(`${availTime}`);
       }
       return acc;
@@ -218,6 +214,10 @@ function DoctorTime({
   if (isLoading) {
     return <Loader />;
   }
+
+  const isTimeSelected = (time: string) => {
+    return selectedTime === time && selectedDoctorId === doctor.id;
+  };
 
   return (
     <div className="px-4 pb-4">
@@ -232,7 +232,12 @@ function DoctorTime({
               <button
                 key={idx}
                 type="button"
-                className="rounded-md bg-green-200/50 px-3 py-2 text-sm hover:bg-green-300"
+                className={cn(
+                  'rounded-md px-3 py-2 text-sm transition-colors',
+                  isTimeSelected(time)
+                    ? 'bg-green-600 text-white'
+                    : 'bg-green-200/50 hover:bg-green-300'
+                )}
                 onClick={() => {
                   setValue('doctorTime', time);
                   setValue('doctorId', doctor.id as number);

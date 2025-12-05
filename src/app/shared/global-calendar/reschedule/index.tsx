@@ -182,7 +182,6 @@ export default function CancelAppointmentForm({
   data?: IGetAppointmentListResponse['data'][number];
   newDate?: string;
 }) {
-  console.log(newDate);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { closeModal } = useModal();
@@ -218,7 +217,8 @@ export default function CancelAppointmentForm({
           clinicId: data?.clinicId,
           date: data?.date,
           doctorId: data?.doctor?.id,
-          doctorTime: dayjs(data?.date).format('HH:mm'),
+          // doctorTime: dayjs(data?.date).format('HH:mm'),
+          doctorTime: (dayjs(data?.date).utc()).format('HH:mm A'),
           meeting_preference: '',
           note: data?.note || '',
           patient_id: data?.patientId,

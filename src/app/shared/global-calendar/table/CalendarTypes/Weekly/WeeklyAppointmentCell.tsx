@@ -56,7 +56,7 @@ export function WeeklyAppointmentCell({
                 opacity: isDragging ? 0.5 : 1,
             }}
             onClick={(e) => {
-                e.stopPropagation(); // Prevent parent onClick
+                e.stopPropagation();
                 openModal({
                     view: <AppointmentDetailsCalendar data={apt} />,
                     customSize: "1100px",
