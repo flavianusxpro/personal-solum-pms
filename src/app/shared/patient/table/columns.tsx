@@ -293,7 +293,7 @@ function RenderAction({
                 handleRedFlagModal('flag');
               }}
             >
-              <div className="flex gap-3">
+              <div className="flex gap-3" onClick={(e) => e.stopPropagation()}>
                 <PiFlag className="h-4 w-4 text-red-500" />
                 <span>Add Flag</span>
               </div>
@@ -316,10 +316,11 @@ function RenderAction({
             </Button>
           </Dropdown.Item>
 
-          <Dropdown.Item>
+          <Dropdown.Item >
             <Link
               href={routes.patient.edit(row?.patient_id?.toString())}
               className="w-full"
+              onClick={(e) => e.stopPropagation()}
             >
               <Button
                 className="w-full hover:border-gray-700 hover:text-gray-700"
@@ -337,6 +338,7 @@ function RenderAction({
             <Link
               href={routes.patient.patientDetail(row?.patient_id?.toString())}
               className="w-full"
+              onClick={(e) => e.stopPropagation()}
             >
               <Button
                 className="w-full hover:border-gray-700 hover:text-gray-700"
