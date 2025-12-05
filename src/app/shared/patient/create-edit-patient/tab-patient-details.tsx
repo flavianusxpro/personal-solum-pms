@@ -224,7 +224,7 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
 
         // Log form state for debugging
         // console.log('=== FORM STATE ===');
-        // console.log('Current errors:', errors);
+        console.log('Current errors:', errors);
         // console.log('Has errors:', Object.keys(errors).length > 0);
         // console.log('==================');
 
@@ -317,7 +317,7 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
               </FormGroup>
 
               <FormGroup title={<>Phone Number{!isView && <span className="text-red-500"> *</span>}</>} isLabel>
-                <Controller
+                {/* <Controller
                   name="mobile_number"
                   control={control}
                   render={({ field }) => (
@@ -330,6 +330,13 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                       disabled={isView}
                     />
                   )}
+                /> */}
+                <Input
+                  {...register('mobile_number')}
+                  placeholder="0412345678"
+                  error={errors.mobile_number?.message}
+                  disabled={isView}
+                  className="flex-grow"
                 />
               </FormGroup>
 

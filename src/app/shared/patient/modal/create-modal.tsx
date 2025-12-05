@@ -11,6 +11,8 @@ import { IPayloadCreateEditPatient } from '@/types/paramTypes';
 import toast from 'react-hot-toast';
 import { useModal } from '../../modal-views/use-modal';
 import {
+  patientCreateFormSchema,
+  PatientCreateFormTypes,
   patientDetailsFormSchema,
   PatientDetailsFormTypes,
 } from '@/validators/patient-details.schema';
@@ -32,7 +34,7 @@ export default function CreatePatienModal() {
 
   const { mutate: mutateCreatePatient, isPending } = useCreatePatient();
 
-  const onSubmit: SubmitHandler<PatientDetailsFormTypes> = (data) => {
+  const onSubmit: SubmitHandler<PatientCreateFormTypes> = (data) => {
     const payload: IPayloadCreateEditPatient = {
       title: data.title,
       first_name: data.first_name,
@@ -72,8 +74,8 @@ export default function CreatePatienModal() {
   };
 
   return (
-    <Form<PatientDetailsFormTypes>
-      validationSchema={patientDetailsFormSchema}
+    <Form<PatientCreateFormTypes>
+      validationSchema={patientCreateFormSchema}
       // resetValues={reset}
       onSubmit={onSubmit}
       className="max-h-[60vh] overflow-y-auto rounded-xl bg-white @container"
@@ -160,7 +162,7 @@ export default function CreatePatienModal() {
                     />
                   </FormGroup>
                   <FormGroup title="Phone Number" isLabel className="flex-1">
-                    <Controller
+                    {/* <Controller
                       name="mobile_number"
                       control={control}
                       render={({ field }) => (
@@ -172,6 +174,12 @@ export default function CreatePatienModal() {
                           error={errors.mobile_number?.message}
                         />
                       )}
+                    /> */}
+                    <Input
+                      placeholder="Phone Number"
+                      {...register('mobile_number')}
+                      error={errors.mobile_number?.message}
+                      className="flex-grow"
                     />
                   </FormGroup>
                 </div>
