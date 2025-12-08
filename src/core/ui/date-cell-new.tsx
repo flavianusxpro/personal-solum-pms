@@ -24,14 +24,14 @@ export default function DateCellNew({
     <div className={cn('grid gap-1', className)}>
       <time
         dateTime={formatDate(date, 'YYYY-MM-DD')}
-        className={cn('font-medium text-gray-700', dateClassName)}
+        className={cn('font-medium text-gray-700 align-middle', dateClassName)}
       >
         {formatDate(date, dateFormat)}
       </time>
       {clock ? (
         <time
           dateTime={formatDate(date, 'HH:mm:ss')}
-          className={cn('text-[13px] text-gray-500', timeClassName)}
+          className={cn('text-[13px] text-gray-500 align-middle', timeClassName)}
         >
           {formatDate(date, timeFormat)}
         </time>

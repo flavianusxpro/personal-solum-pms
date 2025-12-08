@@ -131,45 +131,45 @@ export const getColumns = ({
         );
       },
     },
-    {
-      title: <HeaderCell title="Contact Detail" />,
-      dataIndex: 'Contact Detail',
-      key: 'contact_detail',
-      width: 300,
-      render: (_: any, row: any) => (
-        <AvatarCardNew
-          number={row.mobile_number}
-          description={row.email?.toLowerCase()}
-        />
-      ),
-    },
-    {
-      title: <HeaderCell title="GENDER" />,
-      dataIndex: 'gender',
-      key: 'gender',
-      width: 150,
-      render: (value: string) => (
-        <Text className="font-medium capitalize text-gray-700">
-          {value?.toLowerCase() ?? '-'}
-        </Text>
-      ),
-    },
-    {
-      title: (
-        <HeaderCell
-          title="BIRTH DATE"
-          sortable
-          ascending={
-            sortConfig?.direction === 'asc' && sortConfig?.key === 'date_of_birth'
-          }
-        />
-      ),
-      onHeaderCell: () => onHeaderCellClick('date_of_birth'),
-      dataIndex: 'date_of_birth',
-      key: 'date_of_birth',
-      width: 200,
-      render: (value: Date) => (value ? <DateCell date={value} dateFormat="DD/MM/YYYY" /> : ' - '),
-    },
+    // {
+    //   title: <HeaderCell title="Contact Detail" />,
+    //   dataIndex: 'Contact Detail',
+    //   key: 'contact_detail',
+    //   width: 300,
+    //   render: (_: any, row: any) => (
+    //     <AvatarCardNew
+    //       number={row.mobile_number}
+    //       description={row.email?.toLowerCase()}
+    //     />
+    //   ),
+    // },
+    // {
+    //   title: <HeaderCell title="GENDER" />,
+    //   dataIndex: 'gender',
+    //   key: 'gender',
+    //   width: 150,
+    //   render: (value: string) => (
+    //     <Text className="font-medium capitalize text-gray-700">
+    //       {value?.toLowerCase() ?? '-'}
+    //     </Text>
+    //   ),
+    // },
+    // {
+    //   title: (
+    //     <HeaderCell
+    //       title="BIRTH DATE"
+    //       sortable
+    //       ascending={
+    //         sortConfig?.direction === 'asc' && sortConfig?.key === 'date_of_birth'
+    //       }
+    //     />
+    //   ),
+    //   onHeaderCell: () => onHeaderCellClick('date_of_birth'),
+    //   dataIndex: 'date_of_birth',
+    //   key: 'date_of_birth',
+    //   width: 200,
+    //   render: (value: Date) => (value ? <DateCell date={value} dateFormat="DD/MM/YYYY" /> : ' - '),
+    // },
     {
       title: (
         <HeaderCell
@@ -212,7 +212,7 @@ export const getColumns = ({
           clock={true}
           date={value}
           dateFormat="DD/MM/YYYY"
-          className="flex flex-row"
+          className="flex flex-row items-center"
         />
       ),
     },
@@ -223,13 +223,15 @@ export const getColumns = ({
       className: 'no-row-click',
       width: 110,
       render: (value: number, row: Row) => (
-        <div className="flex flex-col gap-2" onClick={(e) => e.stopPropagation()}>
-          <StatusSelect selectItem={value} id={row?.patient_id} />
-        </div>
+        // <div className="flex flex-col gap-2" onClick={(e) => e.stopPropagation()}>
+        //   <StatusSelect selectItem={value} id={row?.patient_id} />
+        // </div>
+        // <span>{getStatusBadge(row.value)}</span>
+        <div>{getStatusBadge(row?.status)}</div>
       ),
     },
     {
-      title: <HeaderCell title="Actions" />,
+      title: <HeaderCell title="Action" />,
       dataIndex: 'action',
       key: 'action',
       className: 'no-row-click',
@@ -275,98 +277,68 @@ function RenderAction({
   }
 
   return (
-    <>
+    <div className='flex items-center justify-end gap-3 pe-3'>
       <Dropdown placement="bottom-end">
         <Dropdown.Trigger>
-          {/* HAPUS onClick dari sini */}
-          <ActionIcon variant="outline" rounded="full">
-            <HiOutlineDotsVertical className="h-5 w-5" />
-          </ActionIcon>
+          <Button
+            as="span"
+            variant="outline"
+          >
+            Action
+          </Button>
         </Dropdown.Trigger>
         <Dropdown.Menu>
-          <Dropdown.Item>
-            <Button
-              className="w-full hover:border-gray-700 hover:text-gray-700"
-              variant="outline"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleRedFlagModal('flag');
-              }}
-            >
-              <div className="flex gap-3" onClick={(e) => e.stopPropagation()}>
-                <PiFlag className="h-4 w-4 text-red-500" />
-                <span>Add Flag</span>
-              </div>
-            </Button>
+          <Dropdown.Item
+            onClick={(e) => {
+              e.stopPropagation();
+              handleRedFlagModal('flag');
+            }}
+          >
+            <PiFlag className="mr-2 h-4 w-4" />
+            Add Flag
+          </Dropdown.Item>
+
+          <Dropdown.Item
+            onClick={(e) => {
+              e.stopPropagation();
+              handleRedFlagModal('notes');
+            }}
+          >
+            <PiNote className="mr-2 h-4 w-4" />
+            Add Notes
           </Dropdown.Item>
 
           <Dropdown.Item>
-            <Button
-              className="w-full hover:border-gray-700 hover:text-gray-700"
-              variant="outline"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleRedFlagModal('notes');
-              }}
-            >
-              <div className="flex gap-3">
-                <PiNote className="h-4 w-4" />
-                <span>Add Notes</span>
-              </div>
-            </Button>
-          </Dropdown.Item>
-
-          <Dropdown.Item >
             <Link
               href={routes.patient.edit(row?.patient_id?.toString())}
-              className="w-full"
+              className="flex items-center w-full"
               onClick={(e) => e.stopPropagation()}
             >
-              <Button
-                className="w-full hover:border-gray-700 hover:text-gray-700"
-                variant="outline"
-              >
-                <div className="flex gap-3">
-                  <PencilIcon className="h-4 w-4" />
-                  <span>Edit</span>
-                </div>
-              </Button>
+              <PencilIcon className="mr-2 h-4 w-4" />
+              <span>Edit</span>
             </Link>
           </Dropdown.Item>
 
           <Dropdown.Item>
             <Link
               href={routes.patient.patientDetail(row?.patient_id?.toString())}
-              className="w-full"
+              className="flex items-center w-full"
               onClick={(e) => e.stopPropagation()}
             >
-              <Button
-                className="w-full hover:border-gray-700 hover:text-gray-700"
-                variant="outline"
-              >
-                <div className="flex gap-3">
-                  <EyeIcon className="h-4 w-4" />
-                  <span>View</span>
-                </div>
-              </Button>
+              <EyeIcon className="mr-2 h-4 w-4" />
+              <span>View</span>
             </Link>
           </Dropdown.Item>
 
-          <Dropdown.Item>
-            <Button
-              className="w-full hover:border-gray-700 hover:text-gray-700"
-              variant="outline"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIdPatient(row.id);
-                setIsOpen(true);
-              }}
-            >
-              <div className="flex items-center gap-3">
-                <TrashIcon className="h-4 w-4" />
-                <span>Delete</span>
-              </div>
-            </Button>
+          <Dropdown.Item
+            onClick={(e) => {
+              e.stopPropagation();
+              setIdPatient(row.id);
+              setIsOpen(true);
+            }}
+          >
+            <TrashIcon className="mr-2 h-4 w-4" />
+            Delete
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
@@ -377,7 +349,7 @@ function RenderAction({
         description={`Are you sure you want to delete this #${idPatient} patient?`}
         onDelete={() => onDeleteItem([Number(idPatient)])}
       />
-    </>
+    </div>
   );
 }
 

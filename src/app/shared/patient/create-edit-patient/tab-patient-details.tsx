@@ -172,7 +172,7 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
           last_name: dataPatient?.last_name ?? '',
           email: dataPatient?.email ?? '',
           gender: dataPatient?.gender ?? '',
-          mobile_number: dataPatient?.mobile_number?.replace('+', '') ?? '',
+          mobile_number: dataPatient?.mobile_number?.replace('+61', '0') ?? '',
           date_of_birth:
             dataPatient?.date_of_birth &&
               dayjs(dataPatient.date_of_birth).isValid()

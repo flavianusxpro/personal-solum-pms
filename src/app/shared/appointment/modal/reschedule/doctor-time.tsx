@@ -200,14 +200,23 @@ function DoctorTime({
 
   const timeList = useMemo(() => {
     if (!dataAvailability?.data) return [];
+
     return dataAvailability.data.reduce((acc, item) => {
       if (item.available) {
-        const availTime = dayjs(item.time, 'YYYY-MM-DD HH:mm').format('h:mm A');
+        const availTime = dayjs
+          .utc(item.time, 'YYYY-MM-DD HH:mm', true)
+          .format('hh:mm A');
+
         acc.push(availTime);
       }
       return acc;
     }, [] as string[]);
   }, [dataAvailability?.data]);
+
+
+  console.log('zzz time list', timeList);
+  console.log('zzz time list availability', dataAvailability?.data);
+
 
   if (isLoading) {
     return <Loader />;
