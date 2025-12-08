@@ -30,14 +30,17 @@ export default function Footer({
     usePostRescheduleAppointmentByDate();
 
   function submitRescheduleAppointment() {
+    console.log("==================== asu ====================")
+    console.log(formData)
+    console.log("==================== asu ====================")
     // Format "YYYY-MM-DD hh:mm A" (e.g., "2025-12-09 02:00 PM")
-    const dateTimeString = `${formData.date} ${formData.doctorTime}`;
+    const dateTimeString = `${formData.date}T${formData.doctorTime}`;
 
     // Parse string tersebut dan format ke ISO "YYYY-MM-DDTHH:mm:ss"
     // Ini mengabaikan zona waktu lokal browser dan hanya mengambil tanggal dan waktu.
     const isoTimeWithoutOffset = dayjs(
-      dateTimeString,
-      'YYYY-MM-DD hh:mm A'
+      `${formData.date} ${formData.doctorTime}`,
+      'YYYY-MM-DD HH:mm'
     ).format('YYYY-MM-DDTHH:mm:ss');
 
     // Tambahkan offset +11:00 secara manual untuk membuat string tanggal-waktu yang sepenuhnya memenuhi standar
@@ -48,7 +51,7 @@ export default function Footer({
       {
         id: formData.id as number,
         doctorId: formData.doctorId,
-        date: finalUTC,
+        date: dateTimeString,
         note: formData.reason,
       },
       {

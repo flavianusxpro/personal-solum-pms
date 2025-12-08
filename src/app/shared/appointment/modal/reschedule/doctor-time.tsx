@@ -206,14 +206,14 @@ function DoctorTime({
 
     return dataAvailability.data.reduce((acc, item) => {
       if (item.available) {
-        const availTime = dayjs
-          .utc(item.time, 'YYYY-MM-DD HH:mm', true)
-          .format('hh:mm A');
-
-        acc.push(availTime);
+        const timeObj = dayjs.utc(item.time, 'YYYY-MM-DD HH:mm', true);
+        acc.push({
+          display: timeObj.format('hh:mm A'), // Format untuk ditampilkan di UI
+          storage: timeObj.format('HH:mm'),   // Format untuk disimpan di state
+        });
       }
       return acc;
-    }, [] as string[]);
+    }, [] as { display: string; storage: string }[]);
   }, [dataAvailability?.data]);
 
   if (isLoading) {
@@ -225,27 +225,27 @@ function DoctorTime({
       {timeList.length > 0 ? (
         <div className="relative">
           <div
-            className={`mt-4 grid transition-all delay-200 duration-1000 ease-in-out ${currentOpen === doctor.id ? 'max-h-[500px]' : 'max-h-20'
-              } grid-cols-5 gap-2 overflow-hidden`}
+            className={`mt-4 grid transition-all delay-200 duration-1000 ease-in-out ${
+              currentOpen === doctor.id ? 'max-h-[500px]' : 'max-h-20'
+            } grid-cols-5 gap-2 overflow-hidden`}
           >
             {timeList.map((time, idx) => (
               <button
                 key={idx}
                 type="button"
-                // className="rounded-md bg-green-200/50 px-3 py-2 text-sm hover:bg-green-300"
                 className={cn(
-                  "rounded-md px-3 py-2 text-sm transition-colors",
-                  selectedTime === time && selectedDoctorId === doctor.id
-                    ? "bg-green-600 text-white"
-                    : "bg-green-200/50 hover:bg-green-300"
+                  'rounded-md px-3 py-2 text-sm transition-colors',
+                  selectedTime === time.storage && selectedDoctorId === doctor.id
+                    ? 'bg-green-600 text-white'
+                    : 'bg-green-200/50 hover:bg-green-300'
                 )}
                 onClick={() => {
-                  setValue('doctorTime', time);
+                  setValue('doctorTime', time.storage);
                   setValue('doctorId', doctor.id as number);
                   setValue('fee', doctor.cost.amount);
                 }}
               >
-                {time}
+                {time.display}
               </button>
             ))}
             <div
