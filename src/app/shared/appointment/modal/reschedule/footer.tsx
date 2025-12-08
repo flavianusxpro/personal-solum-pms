@@ -30,17 +30,19 @@ export default function Footer({
     usePostRescheduleAppointmentByDate();
 
   function submitRescheduleAppointment() {
-    const localDateTime = dayjs(
-      `${formData.date} ${formData.doctorTime}`,
-      "YYYY-MM-DD hh:mm A"
-    );
+    // Format "YYYY-MM-DD hh:mm A" (e.g., "2025-12-09 02:00 PM")
+    const dateTimeString = `${formData.date} ${formData.doctorTime}`;
 
-    // Interpret the time as UTC+11 and then convert to a UTC timestamp string
-    // to be sent to the backend, e.g., "2025-12-09T03:00:00Z".
-    const finalUTC = localDateTime
-      .utcOffset(11 * 60, true)
-      .utc()
-      .format('YYYY-MM-DDTHH:mm:ss[Z]');
+    // Parse string tersebut dan format ke ISO "YYYY-MM-DDTHH:mm:ss"
+    // Ini mengabaikan zona waktu lokal browser dan hanya mengambil tanggal dan waktu.
+    const isoTimeWithoutOffset = dayjs(
+      dateTimeString,
+      'YYYY-MM-DD hh:mm A'
+    ).format('YYYY-MM-DDTHH:mm:ss');
+
+    // Tambahkan offset +11:00 secara manual untuk membuat string tanggal-waktu yang sepenuhnya memenuhi standar
+    // Ini secara eksplisit menyatakan bahwa waktu tersebut berada di zona waktu UTC+11.
+    const finalUTC = `${isoTimeWithoutOffset}+11:00`;
 
     mutateRescheduleByDate(
       {
