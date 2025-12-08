@@ -213,11 +213,6 @@ function DoctorTime({
     }, [] as string[]);
   }, [dataAvailability?.data]);
 
-
-  console.log('zzz time list', timeList);
-  console.log('zzz time list availability', dataAvailability?.data);
-
-
   if (isLoading) {
     return <Loader />;
   }

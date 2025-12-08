@@ -57,7 +57,8 @@ export default function useAcl() {
 
       if (!hasParentPermission) return acc;
 
-      let filteredItem = { ...item };
+      // let filteredItem = { ...item };
+      let filteredItem: Partial<AdminMenuItem> = { ...item };
 
       if (item.dropdownItems?.length) {
         const filteredDropdowns = item.dropdownItems.reduce(
@@ -83,7 +84,9 @@ export default function useAcl() {
           filteredItem.dropdownItems =
             filteredDropdowns as typeof item.dropdownItems;
         } else {
-          delete filteredItem.dropdownItems; // Clean up if empty
+          // delete filteredItem.dropdownItems; // Clean up if empty
+          const { dropdownItems, ...rest } = filteredItem;
+          filteredItem = rest;
         }
       }
 

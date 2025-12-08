@@ -189,9 +189,6 @@ export default function CancelAppointmentForm({
   const Component = MAP_STEP_TO_COMPONENT[step];
   const resetLocation = useResetAtom(stepperAtomCancelAppointment);
 
-  console.log('zzz data data', data);
-  
-
   useEffect(() => {
     resetLocation();
     if (data) {

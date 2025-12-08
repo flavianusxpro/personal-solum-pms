@@ -29,35 +29,6 @@ export default function Footer({
   const { mutate: mutateRescheduleByDate, isPending: isPendingReschedule } =
     usePostRescheduleAppointmentByDate();
 
-  // function submitRescheduleAppointment() {
-  //   const local = dayjs(
-  //     `${formData.date} ${formData.doctorTime}`,
-  //     "YYYY-MM-DD hh:mm A"
-  //   );
-  //   const result = dayjs.utc(local.format("YYYY-MM-DD HH:mm:ss")).format();
-  //   mutateRescheduleByDate(
-  //     {
-  //       id: formData.id as number,
-  //       doctorId: formData.doctorId,
-  //       // date: `${dayjs(formData.date).format('YYYY-MM-DD')} ${formData.doctorTime}`,
-  //       date: result,
-  //       note: formData.reason,
-  //     },
-  //     {
-  //       onSuccess: () => {
-  //         toast.success('Appointment rescheduled successfully');
-  //         closeModal();
-  //       },
-  //       onError: (error: any) => {
-  //         toast.error(
-  //           error?.response?.data?.message || 'Error rescheduling appointment'
-  //         );
-  //         console.error('Error rescheduling appointment:', error);
-  //       },
-  //     }
-  //   );
-  // }
-
   function submitRescheduleAppointment() {
     const localDateTime = dayjs(
       `${formData.date} ${formData.doctorTime}`,
