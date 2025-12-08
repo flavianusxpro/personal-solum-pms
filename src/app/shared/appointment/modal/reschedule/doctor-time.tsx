@@ -151,6 +151,7 @@ export default function AppointmentPatientDoctor() {
                   currentOpen={currentOpen}
                   doctor={doctor}
                   selectedTime={watchDoctorTime}
+                  selectedDoctorId={watchDoctor}
                 />
               </div>
             );
@@ -167,6 +168,7 @@ function DoctorTime({
   currentOpen,
   setValue,
   selectedTime,
+  selectedDoctorId,
 }: {
   doctor: IGetDoctorByClinicResponse['data'][number];
   currentOpen: number | null;
@@ -176,6 +178,7 @@ function DoctorTime({
     fee?: string;
   }>;
   selectedTime?: string;
+  selectedDoctorId?: number
 }) {
   const [formData] = useAtom(formRescheduleDataAtom);
 
@@ -232,7 +235,7 @@ function DoctorTime({
                 // className="rounded-md bg-green-200/50 px-3 py-2 text-sm hover:bg-green-300"
                 className={cn(
                   "rounded-md px-3 py-2 text-sm transition-colors",
-                  selectedTime === time
+                  selectedTime === time && selectedDoctorId === doctor.id
                     ? "bg-green-600 text-white"
                     : "bg-green-200/50 hover:bg-green-300"
                 )}
