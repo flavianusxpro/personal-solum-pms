@@ -38,6 +38,8 @@ import ModalProfileDoctor from '../../modal/profile-doctor';
 import ModalReminder from '../../modal/reminder-detail';
 import StatusColumnCell from './StatusColumnCell';
 import { BsArrowRepeat } from 'react-icons/bs';
+import { routes } from '@/config/routes';
+import Link from 'next/link';
 dayjs.extend(timezonePlugin);
 const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -252,8 +254,21 @@ export const GetColumns = ({
       key: 'status',
       width: 260,
       onHeaderCell: () => onHeaderCellClick('status'),
-      render: (status: number | string, row: RowValue) =>
-        getPaymentStatusBadge(row?.payment?.status ?? 0),
+      render: (status: number | string, row: RowValue) => (
+        <div className='flex flex-col gap-[10px] p-4'>
+          <span>
+            {getPaymentStatusBadge(row?.payment?.status ?? 0)}
+          </span>
+          {/* <Link
+            href={routes.invoice.details(row.id.toString())}
+            className="w-full"
+          >
+            <span className='text-[#525252] font-semibold text-sm'>
+              {row.clinicId}
+            </span>
+          </Link> */}
+        </div>
+      )
     },
     {
       title: <HeaderCell title="Action" />,
