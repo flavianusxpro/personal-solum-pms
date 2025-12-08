@@ -35,8 +35,12 @@ export default function Footer({
       "YYYY-MM-DD hh:mm A"
     );
 
-    const utcPlus11 = localDateTime.utcOffset(11 * 60, true);
-    const finalUTC = utcPlus11.format('YYYY-MM-DDTHH:mm:ssZ');
+    // Interpret the time as UTC+11 and then convert to a UTC timestamp string
+    // to be sent to the backend, e.g., "2025-12-09T03:00:00Z".
+    const finalUTC = localDateTime
+      .utcOffset(11 * 60, true)
+      .utc()
+      .format('YYYY-MM-DDTHH:mm:ss[Z]');
 
     mutateRescheduleByDate(
       {
