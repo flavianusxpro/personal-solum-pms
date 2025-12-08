@@ -36,7 +36,7 @@ export default function Footer({
     );
 
     const utcPlus11 = localDateTime.utcOffset(11 * 60, true);
-    const finalUTC = utcPlus11.format("YYYY-MM-DDTHH:mm:ss[Z]");
+    const finalUTC = utcPlus11.format('YYYY-MM-DDTHH:mm:ssZ');
 
     mutateRescheduleByDate(
       {
