@@ -25,8 +25,6 @@ export default function TableFooter({
         <Text as="strong">{checkedItems.length}</Text> selected{' '}
         <Button
           size="sm"
-          variant="text"
-          className="underline"
           color="danger"
           onClick={() => {
             openModal({
@@ -38,7 +36,7 @@ export default function TableFooter({
             });
           }}
         >
-          Delete Them
+          Delete
         </Button>
       </div>
       {children}

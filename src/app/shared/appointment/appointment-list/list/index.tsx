@@ -30,6 +30,7 @@ import { Button } from 'rizzui';
 import { BsArrowRepeat } from 'react-icons/bs';
 import ShowConfirm from '../../modal/confirm-modal';
 import CSelect from '@/core/ui/select';
+import { RiMailSendLine } from 'react-icons/ri';
 
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
@@ -128,7 +129,7 @@ export default function AppointmentListTable({
       : undefined,
     timezone_client: localTimezone,
   });
-
+  const [showRequiredOnly, setShowRequiredOnly] = useState(false);
   const { mutate } = useDeleteAppointment();
   const isMediumScreen = useMedia('(max-width: 6000px)', false);
   const onHeaderCellClick = (value: string) => ({
@@ -136,6 +137,44 @@ export default function AppointmentListTable({
       handleSort(value);
     },
   });
+
+  const getRequiredAppointments = useCallback((appointments: any) => {
+    if (!appointments || appointments.length === 0) return [];
+
+    const currentDate = new Date();
+
+    return appointments.filter((appointment: any) => {
+      const appointmentDate = new Date(appointment.date);
+
+      if (isNaN(appointmentDate.getTime())) {
+        return false;
+      }
+
+      const timeDiffMinutes = (appointmentDate.getTime() - currentDate.getTime()) / (1000 * 60);
+      const isWithin30Minutes = timeDiffMinutes > 0 && timeDiffMinutes <= 30;
+      const isPastAppointment = appointmentDate < currentDate;
+
+      const condition1 = isWithin30Minutes &&
+        appointment.status !== 3 &&
+        appointment.status !== 4;
+
+      const condition2 = isPastAppointment &&
+        appointment.status !== 4 &&
+        appointment.status !== 5;
+
+      return condition1 || condition2;
+    });
+  }, []);
+
+  const displayData = useMemo(() => {
+    const rawData = dataAppointments?.data ?? [];
+
+    if (showRequiredOnly) {
+      return getRequiredAppointments(rawData);
+    }
+
+    return rawData;
+  }, [dataAppointments?.data, showRequiredOnly, getRequiredAppointments]);
 
   const onDeleteItem = useCallback(
     (ids: number[]) => {
@@ -209,17 +248,17 @@ export default function AppointmentListTable({
     []
   );
 
-  const showConfirmModal = (
-    id: number,
-    onClick: (value: number) => void,
-    status: string
-  ) => {
-    closeModal(),
-      openModal({
-        view: <ShowConfirm onClick={onClick} status={status} id={id} />,
-        customSize: '550px',
-      });
-  };
+  // const showConfirmModal = (
+  //   id: number,
+  //   onClick: (value: number) => void,
+  //   status: string
+  // ) => {
+  //   closeModal(),
+  //     openModal({
+  //       view: <ShowConfirm onClick={onClick} status={status} id={id} />,
+  //       customSize: '550px',
+  //     });
+  // };
 
   const {
     isLoading,
@@ -241,7 +280,7 @@ export default function AppointmentListTable({
     handleSelectRow,
     setSelectedRowKeys,
     selectedRowKeys,
-  } = useTable(dataAppointments?.data ?? [], params.perPage, filterStateValue);
+  } = useTable(displayData ?? [], params.perPage, filterStateValue);
 
   const sortedTableData = useMemo(() => {
     return [...tableData].sort((a, b) => {
@@ -277,14 +316,6 @@ export default function AppointmentListTable({
       idAppointment,
     ]
   );
-
-  const isPastAppointment = dataAppointments?.data?.some((item) => {
-    const appointmentDate = new Date(item?.date);
-    const now = new Date();
-    if (isNaN(appointmentDate.getTime())) return false;
-
-    return item?.status === 2 && appointmentDate < now;
-  });
 
   const { visibleColumns, checkedColumns, setCheckedColumns } =
     useColumn(columns);
@@ -397,20 +428,63 @@ export default function AppointmentListTable({
           checkedColumns,
           setCheckedColumns,
           otherButton: [
-            ...(isPastAppointment
-              ? [
+            <div key="action-buttons" className="flex items-center gap-2">
+              {buttonType && (
+                <CSelect
+                  key="status-select"
+                  className="min-w-[140px] !h-9"
+                  dropdownClassName="h-auto"
+                  placeholder="Select Status"
+                  options={aptStatusOptions}
+                  value=""
+                  onChange={() => { }}
+                />
+              )}
+
+              {selectedRowKeys.length > 0 && (
+                <>
+                  <Button
+                    key="synchronize"
+                    className="flex items-center gap-[4px] h-9 pe-3 ps-2.5 !bg-none"
+                    variant="outline"
+                    onClick={() => { }}
+                  >
+                    <span>
+                      <RiMailSendLine className="text-lg" />
+                    </span>
+                    <span>Send</span>
+                  </Button>
+
+                  <Button
+                    key="synchronize"
+                    className="flex items-center gap-[4px] h-9 pe-3 ps-2.5 !bg-none"
+                    variant="outline"
+                    onClick={() => { }}
+                  >
+                    <span>
+                      <BsArrowRepeat className="text-lg" />
+                    </span>
+                    <span>Synchronize</span>
+                  </Button>
+                </>
+              )}
+
+              {dataAppointments?.is_action_required && (
                 <Button
-                  key="create"
-                  className="flex items-center gap-[4px] me-2.5 h-9 pe-3 ps-2.5"
-                  onClick={() => { }}
+                  key="required"
+                  variant={showRequiredOnly ? 'solid' : 'outline'}
+                  className={`flex items-center gap-[4px] h-9 pe-3 ps-2.5`}
+                  onClick={() => {
+                    setShowRequiredOnly(!showRequiredOnly);
+                  }}
                 >
                   <span>
                     <BsArrowRepeat className="text-lg" />
                   </span>
                   <span>Required</span>
-                </Button>,
-              ]
-              : []),
+                </Button>
+              )}
+            </div>,
           ],
         }}
         className="rounded-md border border-muted text-sm shadow-sm [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:h-60 [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:justify-center [&_.rc-table-row:last-child_td.rc-table-cell]:border-b-0 [&_thead.rc-table-thead]:border-t-0"
@@ -423,42 +497,25 @@ export default function AppointmentListTable({
             setIsFilter={setIsFilter}
           />
         }
-        tableHeader={
-          <TableHeader checkedItems={selectedRowKeys}>
-            <div className='flex gap-1 items-center'>
-              <Button
-                key="create"
-                className="flex items-center gap-[4px] me-2.5 h-10 pe-3 ps-2.5 !bg-none"
-                variant='outline'
-                onClick={() => { }}
-              >
-                <span>
-                  <BsArrowRepeat className="text-lg" />
-                </span>
-                <span>Synchronize</span>
-              </Button>
-
-              {hasNonCompletedStatus && <StatusSelect />}
-              {buttonType && (
-                <div>
-                  <CSelect
-                    className="min-w-[140px]"
-                    dropdownClassName="h-auto"
-                    placeholder="Select Status"
-                    options={aptStatusOptions}
-                    value=""
-                    onChange={() => { }}
-                  // onChange={handleChange}
-                  // isLoading={isPending}
-                  // displayValue={(option: { value: number }) =>
-                  //   getAptStatusBadge(option.value)
-                  // }
-                  />
-                </div>
-              )}
-            </div>
-          </TableHeader>
-        }
+        // tableHeader={
+        //   <TableHeader checkedItems={selectedRowKeys}>
+        //     <div className='flex gap-1 items-center'>
+        //       {hasNonCompletedStatus && <StatusSelect />}
+        //       {buttonType && (
+        //         <div>
+        //           <CSelect
+        //             className="min-w-[140px]"
+        //             dropdownClassName="h-auto"
+        //             placeholder="Select Status"
+        //             options={aptStatusOptions}
+        //             value=""
+        //             onChange={() => { }}
+        //           />
+        //         </div>
+        //       )}
+        //     </div>
+        //   </TableHeader>
+        // }
         tableFooter={
           <TableFooter
             checkedItems={selectedRowKeys}

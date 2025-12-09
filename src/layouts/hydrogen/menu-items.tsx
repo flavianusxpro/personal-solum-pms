@@ -88,6 +88,9 @@ const PiShieldCheck = dynamic(() =>
 const PiUsers = dynamic(() =>
   import('react-icons/pi').then((mod) => mod.PiUsers)
 );
+const PiStack = dynamic(() =>
+  import('react-icons/pi').then((mod) => mod.PiStack)
+);
 
 // Note: do not add href in the label object, it is rendering as label
 export const adminMenuItems = [
@@ -514,6 +517,12 @@ export const adminMenuItems = [
         name: 'Currency',
         href: routes.setting.currency,
         icon: <PiCurrencyDollar />,
+        permissionReadName: ['setting.currency'],
+      },
+      {
+        name: 'Log',
+        href: '#',
+        icon: <PiStack />,
         permissionReadName: ['setting.currency'],
       },
     ]
