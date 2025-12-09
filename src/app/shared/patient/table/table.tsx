@@ -50,6 +50,11 @@ const filterState = {
   createdAt: [null, null],
   status: null,
   condition: null,
+  filter_no_consent_form: null,
+  filter_unverified_email: null,
+  filter_no_ihi: null,
+  filter_incomplete_address: null,
+  filter_invalid_mobile: null,
 };
 
 export default function PatientTable() {
@@ -83,9 +88,22 @@ export default function PatientTable() {
       status: filterStateValue?.status || undefined,
     }),
     clinicId: dataProfile?.clinics?.[0]?.id || 0,
+    filter_no_consent_form: filterStateValue?.filter_no_consent_form
+      ? (filterStateValue.filter_no_consent_form === 'true' ? true : false)
+      : undefined,
+    filter_unverified_email: filterStateValue?.filter_unverified_email
+      ? (filterStateValue.filter_unverified_email === 'true' ? true : false)
+      : undefined,
+    filter_no_ihi: filterStateValue?.filter_no_ihi
+      ? (filterStateValue.filter_no_ihi === 'true' ? true : false)
+      : undefined,
+    filter_incomplete_address: filterStateValue?.filter_incomplete_address
+      ? (filterStateValue.filter_incomplete_address === 'true' ? true : false)
+      : undefined,
+    filter_invalid_mobile: filterStateValue?.filter_invalid_mobile
+      ? (filterStateValue.filter_invalid_mobile === 'true' ? true : false)
+      : undefined,
   });
-
-  // console.log("data patients ==============>>>", data);
 
   const { mutate: mutateDeletePatient } = useDeletePatient();
 
@@ -187,6 +205,20 @@ export default function PatientTable() {
   useEffect(() => {
     refetch();
   }, [params, refetch, filterStateValue]);
+
+  useEffect(() => {
+    setParams(prev => ({ ...prev, page: 1 }));
+  }, [
+    params.search,
+    filterStateValue?.createdAt,
+    filterStateValue?.status,
+    filterStateValue?.condition,
+    filterStateValue?.filter_no_consent_form,
+    filterStateValue?.filter_unverified_email,
+    filterStateValue?.filter_no_ihi,
+    filterStateValue?.filter_incomplete_address,
+    filterStateValue?.filter_invalid_mobile,
+  ]);
 
   return (
     <div>

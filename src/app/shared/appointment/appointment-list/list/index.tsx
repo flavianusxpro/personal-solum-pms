@@ -129,8 +129,6 @@ export default function AppointmentListTable({
     timezone_client: localTimezone,
   });
 
-  // let dataAppointments = 
-
   const { mutate } = useDeleteAppointment();
   const isMediumScreen = useMedia('(max-width: 6000px)', false);
   const onHeaderCellClick = (value: string) => ({
