@@ -141,7 +141,7 @@ export default function TableFilter({
         )}
       </div>
 
-      <div className="ms-4 flex flex-shrink-0 items-center">
+      <div className="ms-4 flex flex-shrink-0 items-center gap-2">
         {showSearchOnTheRight ? (
           <Input
             type="search"
@@ -157,9 +157,10 @@ export default function TableFilter({
         ) : null}
 
         {
-          Array.isArray(otherButton) && otherButton.length > 0 &&
-          otherButton.map((Button: any, index: number) =>
-            typeof Button === "function" ? <span key={index}>{Button()}</span> : <span key={index}>{Button}</span>
+          Array.isArray(otherButton) && otherButton.length > 0 && (
+            otherButton.map((Button: any, index: number) =>
+              typeof Button === "function" ? <span key={index} className='bg-amber-200'>{Button()}</span> : <span key={index}>{Button}</span>
+            )
           )
         }
 
@@ -174,7 +175,7 @@ export default function TableFilter({
               : { onClick: () => setShowFilters(() => !showFilters) })}
             variant={'outline'}
             className={cn(
-              'me-2.5 h-9 pe-3 ps-2.5',
+              'h-9 pe-3 ps-2.5',
               !(isMediumScreen || enableDrawerFilter) &&
               showFilters &&
               'border-dashed border-gray-700'

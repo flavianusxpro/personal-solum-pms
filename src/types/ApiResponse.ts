@@ -457,6 +457,7 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
     doctor: IDoctor;
     clinic: any;
   }[];
+  is_action_required?: boolean
 }
 
 export interface IGetInvoiceListResponse extends ApiResponseWithPagination {

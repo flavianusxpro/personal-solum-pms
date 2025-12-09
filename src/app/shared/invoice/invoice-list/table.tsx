@@ -18,6 +18,8 @@ import cn from '@core/utils/class-names';
 import { useMedia } from '@core/hooks/use-media';
 import { useSetAtom } from 'jotai';
 import { summaryInvoiceAtom } from '@/store/invoice';
+import { RiMailSendLine } from 'react-icons/ri';
+import { GoCreditCard } from 'react-icons/go';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/invoice/invoice-list/filter-element'),
@@ -194,7 +196,7 @@ export default function InvoiceTableList() {
         className={cn(
           '[&_.table-filter>div:first-child]:grow [&_.table-filter>div:first-child]:justify-between',
           !isMediumScreen &&
-            '[&_.table-filter>div:first-child]:flex-row-reverse'
+          '[&_.table-filter>div:first-child]:flex-row-reverse'
         )}
       >
         <ControlledTable
@@ -229,6 +231,40 @@ export default function InvoiceTableList() {
             columns,
             checkedColumns,
             setCheckedColumns,
+            otherButton: [
+              <div
+                key='action-buttons'
+                className='flex items-center gap-2'
+              >
+                {selectedRowKeys.length > 0 && (
+                  <>
+                    <Button
+                      key="synchronize"
+                      className="flex items-center gap-[4px] h-9 pe-3 ps-2.5 !bg-none"
+                      variant="outline"
+                      onClick={() => { }}
+                    >
+                      <span>
+                        <RiMailSendLine className="text-lg" />
+                      </span>
+                      <span>Send</span>
+                    </Button>
+                    <Button
+                      key="synchronize"
+                      className="flex items-center gap-[4px] h-9 pe-3 ps-2.5 !bg-none"
+                      variant="outline"
+                      onClick={() => { }}
+                    >
+                      <span>
+                        <GoCreditCard className="text-lg" />
+                      </span>
+                      <span>Pay Now</span>
+                    </Button>
+                    <StatusSelect />
+                  </>
+                )}
+              </div>
+            ]
           }}
           filterElement={
             <FilterElement
@@ -238,11 +274,11 @@ export default function InvoiceTableList() {
               handleReset={handleReset}
             />
           }
-          tableHeader={
-            <TableHeader checkedItems={selectedRowKeys}>
-              <StatusSelect />
-            </TableHeader>
-          }
+          // tableHeader={
+          //   <TableHeader checkedItems={selectedRowKeys}>
+          //     <StatusSelect />
+          //   </TableHeader>
+          // }
           tableFooter={
             <TableFooter
               checkedItems={selectedRowKeys}
@@ -251,10 +287,6 @@ export default function InvoiceTableList() {
                 onDeleteItem(ids.map((id) => parseInt(id)));
               }}
             >
-              {/* <Button size="sm" className="dark:bg-gray-300 dark:text-gray-800">
-              Re-send {selectedRowKeys.length}{' '}
-              {selectedRowKeys.length > 1 ? 'Invoices' : 'Invoice'}{' '}
-            </Button> */}
             </TableFooter>
           }
           className="rounded-md border border-muted text-sm shadow-sm [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:h-60 [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:justify-center [&_.rc-table-row:last-child_td.rc-table-cell]:border-b-0 [&_thead.rc-table-thead]:border-t-0"
