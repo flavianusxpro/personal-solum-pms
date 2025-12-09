@@ -47,6 +47,11 @@ const filterState = {
   inactive_patients_months: null,
   doctor: null,
   patient: null,
+  filter_no_consent_form: null,
+  filter_unverified_email: null,
+  filter_no_ihi: null,
+  filter_incomplete_address: null,
+  filter_invalid_mobile: null,
 };
 
 export default function AppointmentListTable({
@@ -106,8 +111,25 @@ export default function AppointmentListTable({
         ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
         : undefined,
     }),
+    filter_no_consent_form: filterStateValue?.filter_no_consent_form
+      ? (filterStateValue.filter_no_consent_form === 'true' ? true : false)
+      : undefined,
+    filter_unverified_email: filterStateValue?.filter_unverified_email
+      ? (filterStateValue.filter_unverified_email === 'true' ? true : false)
+      : undefined,
+    filter_no_ihi: filterStateValue?.filter_no_ihi
+      ? (filterStateValue.filter_no_ihi === 'true' ? true : false)
+      : undefined,
+    filter_incomplete_address: filterStateValue?.filter_incomplete_address
+      ? (filterStateValue.filter_incomplete_address === 'true' ? true : false)
+      : undefined,
+    filter_invalid_mobile: filterStateValue?.filter_invalid_mobile
+      ? (filterStateValue.filter_invalid_mobile === 'true' ? true : false)
+      : undefined,
     timezone_client: localTimezone,
   });
+
+  // let dataAppointments = 
 
   const { mutate } = useDeleteAppointment();
   const isMediumScreen = useMedia('(max-width: 6000px)', false);
@@ -258,6 +280,14 @@ export default function AppointmentListTable({
     ]
   );
 
+  const isPastAppointment = dataAppointments?.data?.some((item) => {
+    const appointmentDate = new Date(item?.date);
+    const now = new Date();
+    if (isNaN(appointmentDate.getTime())) return false;
+
+    return item?.status === 2 && appointmentDate < now;
+  });
+
   const { visibleColumns, checkedColumns, setCheckedColumns } =
     useColumn(columns);
 
@@ -311,8 +341,12 @@ export default function AppointmentListTable({
     filterStateValue?.by_reschedule,
     dataProfile?.clinics?.[0]?.id,
     filterStateValue?.createdAt,
+    filterStateValue?.filter_no_consent_form,
+    filterStateValue?.filter_unverified_email,
+    filterStateValue?.filter_no_ihi,
+    filterStateValue?.filter_incomplete_address,
+    filterStateValue?.filter_invalid_mobile,
   ]);
-
 
   return (
     <div
@@ -365,18 +399,20 @@ export default function AppointmentListTable({
           checkedColumns,
           setCheckedColumns,
           otherButton: [
-            <Button
-              key="create"
-              className="flex items-center gap-[4px] me-2.5 h-9 pe-3 ps-2.5"
-              onClick={() => { }}
-            >
-              <span>
-                <BsArrowRepeat className='text-lg' />
-              </span>
-              <span>
-                Required
-              </span>
-            </Button>,
+            ...(isPastAppointment
+              ? [
+                <Button
+                  key="create"
+                  className="flex items-center gap-[4px] me-2.5 h-9 pe-3 ps-2.5"
+                  onClick={() => { }}
+                >
+                  <span>
+                    <BsArrowRepeat className="text-lg" />
+                  </span>
+                  <span>Required</span>
+                </Button>,
+              ]
+              : []),
           ],
         }}
         className="rounded-md border border-muted text-sm shadow-sm [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:h-60 [&_.rc-table-placeholder_.rc-table-expanded-row-fixed>div]:justify-center [&_.rc-table-row:last-child_td.rc-table-cell]:border-b-0 [&_thead.rc-table-thead]:border-t-0"
@@ -391,32 +427,38 @@ export default function AppointmentListTable({
         }
         tableHeader={
           <TableHeader checkedItems={selectedRowKeys}>
-            {hasNonCompletedStatus && <StatusSelect />}
-            {buttonType && (
-              <div>
-                <CSelect
-                className="min-w-[140px]"
-                dropdownClassName="h-auto"
-                placeholder="Select Status"
-                options={aptStatusOptions}
-                value=""
-                onChange={() => {}}
-                // onChange={handleChange}
-                // isLoading={isPending}
-                // displayValue={(option: { value: number }) =>
-                //   getAptStatusBadge(option.value)
-                // }
-              />
-              </div>
-            )}
-             {/* <CSelect
-                className="min-w-[140px]"
-                dropdownClassName="h-auto"
-                placeholder="Select Status"
-                options={aptStatusOptions}
-                value=""
-                onChange={() => {}}
-              /> */}
+            <div className='flex gap-1 items-center'>
+              <Button
+                key="create"
+                className="flex items-center gap-[4px] me-2.5 h-10 pe-3 ps-2.5 !bg-none"
+                variant='outline'
+                onClick={() => { }}
+              >
+                <span>
+                  <BsArrowRepeat className="text-lg" />
+                </span>
+                <span>Synchronize</span>
+              </Button>
+
+              {hasNonCompletedStatus && <StatusSelect />}
+              {buttonType && (
+                <div>
+                  <CSelect
+                    className="min-w-[140px]"
+                    dropdownClassName="h-auto"
+                    placeholder="Select Status"
+                    options={aptStatusOptions}
+                    value=""
+                    onChange={() => { }}
+                  // onChange={handleChange}
+                  // isLoading={isPending}
+                  // displayValue={(option: { value: number }) =>
+                  //   getAptStatusBadge(option.value)
+                  // }
+                  />
+                </div>
+              )}
+            </div>
           </TableHeader>
         }
         tableFooter={

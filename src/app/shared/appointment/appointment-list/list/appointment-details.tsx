@@ -7,8 +7,10 @@ import {
   PiPhone,
   PiXBold,
 } from 'react-icons/pi';
-import { ActionIcon, Title, Avatar, Flex, Badge, Text } from 'rizzui';
+import { ActionIcon, Title, Avatar, Flex, Badge, Text, Button, Textarea } from 'rizzui';
 import { useCopyToClipboard } from 'react-use';
+import Link from 'next/link';
+import { routes } from '@/config/routes';
 
 export default function AppointmentDetails({
   data,
@@ -22,7 +24,7 @@ export default function AppointmentDetails({
   const handleCopy = (text: string | number) => {
     copyToClipboard(String(text));
   };
-  
+
   const getPaymentStatusBadge = (status: number | string | undefined) => {
     switch (status) {
       case 2:
@@ -73,7 +75,7 @@ export default function AppointmentDetails({
   return (
     <div className="flex w-full flex-col bg-white rounded-[24px]">
       {/* Header */}
-      <div className="flex items-center justify-between border-b p-10">
+      <div className="flex items-center justify-between border-b px-10 py-5">
         <Title as="h3" className="text-lg font-semibold">
           Appointment Details
         </Title>
@@ -89,7 +91,7 @@ export default function AppointmentDetails({
       <div className="p-10">
         <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
           {/* Doctor Info */}
-          <div>
+          <div className='hidden md:block border-r boder-[#E4E4E4]'>
             <h4 className="mb-4 text-[16px] font-medium">Doctor Info</h4>
             <div className="flex items-center justify-center gap-4">
               <Avatar
@@ -194,6 +196,18 @@ export default function AppointmentDetails({
                     </div>
                   </div>
                 </div>
+                <div className='mt-2'>
+                  <Link
+                    href={routes.patient.patientDetail(data?.patient?.patient_id.toString())}
+                  >
+                    <Button
+                      size='sm'
+                      className="!bg-[#3872F9] text-[16px] font-semibold"
+                    >
+                      Go to Profile
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -204,45 +218,76 @@ export default function AppointmentDetails({
           <h3 className="mb-4 text-sm font-semibold text-[#525252]">
             Appointment Info
           </h3>
-          <div className="grid sm:grid-cols-2">
-            <div className="flex items-start gap-2">
-              <span className="text-sm text-[#525252]">Date:</span>
-              <div className="flex-1">
-                <p className="text-sm text-[#111111]">
-                  {dayjs(data?.date).utc().format('DD MMM YYYY')},{' '}
-                  {dayjs(data?.date).utc().format('hh:mm A')}
-                </p>
+          <div className="grid grid-cols-3">
+            <div>
+              <div className="flex items-start gap-2">
+                <span className="text-sm text-[#525252]">Date:</span>
+                <div className="flex-1">
+                  <p className="text-sm text-[#111111]">
+                    {dayjs(data?.date).utc().format('DD MMM YYYY')},{' '}
+                    {dayjs(data?.date).utc().format('hh:mm A')}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-sm text-[#525252]">Type:</span>
+                <div className="flex-1">
+                  <p className="text-sm text-[#111111]">{data?.type}</p>
+                </div>
               </div>
             </div>
-            <div className="flex items-start gap-2">
-              <span className="text-sm text-[#525252]">Last Appointment:</span>
-              <div className="flex-1">
-                <p className="text-sm text-[#111111]">
-                  {data?.patient?.last_appointment ? `${dayjs(data?.patient?.last_appointment?.date).utc().format('DD MMM YYYY')}, ${dayjs(data?.patient?.last_appointment?.date).utc().format('hh:mm A')}` : 'None'}
-                </p>
+
+            <div>
+              <div className="flex items-start gap-2">
+                <span className="text-sm text-[#525252]">Last Appointment:</span>
+                <div className="flex-1">
+                  <p className="text-sm text-[#111111]">
+                    {data?.patient?.last_appointment ? `${dayjs(data?.patient?.last_appointment?.date).utc().format('DD MMM YYYY')}, ${dayjs(data?.patient?.last_appointment?.date).utc().format('hh:mm A')}` : 'None'}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-sm text-[#525252]">Payment Status:</span>
+                <div className="flex-1">
+                  <p className="text-sm text-[#111111]">
+                    {getPaymentStatusBadge(data?.payment?.status ?? 0)}
+                  </p>
+                </div>
               </div>
             </div>
-            <div className="flex items-start gap-2">
-              <span className="text-sm text-[#525252]">Type:</span>
-              <div className="flex-1">
-                <p className="text-sm text-[#111111]">{data?.type}</p>
+
+            <div>
+              <div className="flex items-start gap-2">
+                <span className="text-sm text-[#525252]">Invoice Number:</span>
+                <div className="flex-1">
+                  <p className="text-sm text-[#111111]">
+                    {data?.payment?.invoice ?? '-'}
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="text-sm text-[#525252]">Payment Status:</span>
-              <div className="flex-1">
-                <p className="text-sm text-[#111111]">
-                  {getPaymentStatusBadge(data?.payment?.status ?? 0)}
-                </p>
+              <div className="flex items-start gap-2">
+                <span className="text-sm text-[#525252]">Status:</span>
+                <div className="flex-1">
+                  <p className="text-sm text-[#111111]">
+                    {getPaymentStatusBadge(data?.payment?.status ?? 0)}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
+        <div className="mb-4 rounded-[8px] border border-[#E4E4E4] p-4">
+          <h3 className="mb-4 text-sm font-semibold text-[#525252]">
+            Add Notes
+          </h3>
+          <Textarea placeholder="Enter another notes" />
+        </div>
+
         {/* Patient Notes */}
         <div className="mb-4 rounded-[8px] border border-[#E4E4E4] p-4">
           <h3 className="mb-4 text-sm font-semibold text-[#525252]">
-            Patient Notes
+            Notes
           </h3>
           <p className="text-sm text-[#444444]">{data?.note ?? '-'}</p>
         </div>
@@ -351,6 +396,15 @@ export default function AppointmentDetails({
             )}
           </div>
         </div>
+      </div>
+
+      {/* Footer */}
+      <div className="flex items-center justify-end border-t px-10 py-5">
+        <Button
+          className="!bg-[#3872F9] text-[16px] font-semibold"
+        >
+          Save
+        </Button>
       </div>
     </div>
   );
