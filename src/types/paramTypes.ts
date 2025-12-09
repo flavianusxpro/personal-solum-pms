@@ -148,6 +148,11 @@ export interface IParamGetAllPatient extends IParamGetDataWithPagination {
   from?: string;
   to?: string;
   clinicId?: number;
+  filter_no_consent_form?: boolean | undefined;
+  filter_unverified_email?: boolean | undefined;
+  filter_no_ihi?: boolean | undefined;
+  filter_incomplete_address?: boolean | undefined;
+  filter_invalid_mobile?: boolean | undefined;
 }
 export interface IParamGetAllDoctor extends IParamGetDataWithPagination {
   from?: string;
@@ -210,11 +215,11 @@ export interface IParamGetAppointments extends IParamGetDataWithPagination {
   clinicId?: number;
   timezone_client?: string;
   range?: string | null | undefined;
-  filter_no_consent_form: boolean | undefined;
-  filter_unverified_email: boolean | undefined;
-  filter_no_ihi: boolean | undefined;
-  filter_incomplete_address: boolean | undefined;
-  filter_invalid_mobile: boolean | undefined;
+  filter_no_consent_form?: boolean | undefined;
+  filter_unverified_email?: boolean | undefined;
+  filter_no_ihi?: boolean | undefined;
+  filter_incomplete_address?: boolean | undefined;
+  filter_invalid_mobile?: boolean | undefined;
 }
 export interface IParamGetInvoices extends IParamGetDataWithPagination {
   doctorId?: number;
