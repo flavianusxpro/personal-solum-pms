@@ -65,15 +65,28 @@ const ModalProfilePatient = (data: any) => {
                     </div>
                 </div>
 
-                <Link
-                    href={routes.patient.patientDetail(data?.data?.patient?.patient_id.toString())}
-                >
-                    <Button
-                        className="!bg-[#3872F9] text-[16px] font-semibold"
+                <div className="flex gap-4">
+                    <Link
+                        href={routes.patient.edit(data?.data?.patient?.patient_id.toString())}
                     >
-                        Go to Profile
-                    </Button>
-                </Link>
+                        <Button
+                            className="text-[16px] font-semibold"
+                            variant="outline"
+                        >
+                            Edit Profile
+                        </Button>
+                    </Link>
+
+                    <Link
+                        href={routes.patient.patientDetail(data?.data?.patient?.patient_id.toString())}
+                    >
+                        <Button
+                            className="!bg-[#3872F9] text-[16px] font-semibold"
+                        >
+                            Go to Profile
+                        </Button>
+                    </Link>
+                </div>
             </div>
 
             {/* Content Grid */}

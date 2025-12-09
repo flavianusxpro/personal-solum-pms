@@ -190,6 +190,8 @@ export interface IGetAllPatientsResponse extends ApiResponseWithPagination {
     clinics: IClinic[];
     email: string;
     mobile_number: string;
+    phone_home_number: string;
+    phone_work_number: string;
     status: number;
     address_line_1: string | null;
     date_of_birth: string;

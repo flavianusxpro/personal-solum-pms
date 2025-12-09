@@ -225,6 +225,151 @@ export default function FilterElement({
         })}
       />
 
+      <CSelect
+        placeholder="Select consent form"
+        dropdownClassName="!z-10 h-auto"
+        className="w-full @[35rem]:w-auto"
+        options={[
+          {
+            label: 'Completed',
+            value: 'true',
+          },
+          {
+            label: 'Missing',
+            value: 'false',
+          },
+        ]}
+        onClear={() => {
+          updateFilter('filter_no_consent_form', '');
+        }}
+        clearable
+        value={filters['filter_no_consent_form']}
+        onChange={(value: string) => {
+          setIsFilter(true);
+          updateFilter('filter_no_consent_form', value);
+        }}
+        {...(isMediumScreen && {
+          label: 'Consent Form',
+          labelClassName: 'font-medium text-gray-700',
+        })}
+      />
+
+      <CSelect
+        placeholder="Select email verification"
+        dropdownClassName="!z-10 h-auto"
+        className="w-full @[35rem]:w-auto"
+        options={[
+          {
+            label: 'Verified',
+            value: 'true',
+          },
+          {
+            label: 'Unverified',
+            value: 'false',
+          },
+        ]}
+        onClear={() => {
+          updateFilter('filter_unverified_email', '');
+        }}
+        clearable
+        value={filters['filter_unverified_email']}
+        onChange={(value: string) => {
+          setIsFilter(true);
+          updateFilter('filter_unverified_email', value);
+        }}
+        {...(isMediumScreen && {
+          label: 'Email Verification',
+          labelClassName: 'font-medium text-gray-700',
+        })}
+      />
+
+      <CSelect
+        placeholder="Select IHI completion"
+        dropdownClassName="!z-10 h-auto"
+        className="w-full @[35rem]:w-auto"
+        options={[
+          {
+            label: 'Completed',
+            value: 'true',
+          },
+          {
+            label: 'Missing',
+            value: 'false',
+          },
+        ]}
+        onClear={() => {
+          updateFilter('filter_no_ihi', '');
+        }}
+        clearable
+        value={filters['filter_no_ihi']}
+        onChange={(value: string) => {
+          setIsFilter(true);
+          updateFilter('filter_no_ihi', value);
+        }}
+        {...(isMediumScreen && {
+          label: 'IHI Completion',
+          labelClassName: 'font-medium text-gray-700',
+        })}
+      />
+
+      <CSelect
+        placeholder="Select address status"
+        dropdownClassName="!z-10 h-auto"
+        className="w-full @[35rem]:w-auto"
+        options={[
+          {
+            label: 'Complete',
+            value: 'true',
+          },
+          {
+            label: 'Incomplete',
+            value: 'false',
+          },
+        ]}
+        onClear={() => {
+          updateFilter('filter_incomplete_address', '');
+        }}
+        clearable
+        value={filters['filter_incomplete_address']}
+        onChange={(value: string) => {
+          setIsFilter(true);
+          updateFilter('filter_incomplete_address', value);
+        }}
+        {...(isMediumScreen && {
+          label: 'Address Status',
+          labelClassName: 'font-medium text-gray-700',
+        })}
+      />
+
+      <CSelect
+        placeholder="Select mobile number status"
+        dropdownClassName="!z-10 h-auto"
+        className="w-full @[35rem]:w-auto"
+        options={[
+          {
+            label: 'Valid',
+            value: 'true',
+          },
+          {
+            label: 'Invalid',
+            value: 'false',
+          },
+        ]}
+        onClear={() => {
+          updateFilter('filter_invalid_mobile', '');
+        }}
+        clearable
+        value={filters['filter_invalid_mobile']}
+        onChange={(value: string) => {
+          setIsFilter(true);
+          updateFilter('filter_invalid_mobile', value);
+        }}
+        {...(isMediumScreen && {
+          label: 'Mobile Number Status',
+          labelClassName: 'font-medium text-gray-700',
+        })}
+      />
+
       {/* <CSelect
         placeholder="Select patient"
         dropdownClassName="!z-10 h-auto"

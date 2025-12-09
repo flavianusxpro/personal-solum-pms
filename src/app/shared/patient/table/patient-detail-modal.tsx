@@ -71,40 +71,40 @@ export default function PatientDetailModal({
                 </div>
 
                 {/* Personal & Contact Info Section */}
-                <div className="mb-6 rounded-xl border border-gray-200 p-5">
-                    <Grid gap="6" className="grid-cols-1 md:grid-cols-2">
-                        {/* Personal Info */}
-                        <div className="col-span-1">
-                            <Title as="h6" className="mb-4 text-sm font-semibold text-gray-900">
-                                Personal Info
-                            </Title>
-                            <div className="space-y-3">
-                                <div className="grid grid-cols-[80px_1fr] gap-2">
-                                    <Text className="text-gray-500">Age:</Text>
-                                    <Text className="font-medium">{calculateAge(data.date_of_birth)} years</Text>
-                                </div>
-                                <div className="grid grid-cols-[80px_1fr] gap-2">
-                                    <Text className="text-gray-500">DOB:</Text>
-                                    <Text className="font-medium">
-                                        {data.date_of_birth ? dayjs(data.date_of_birth).format('DD MMMM YYYY') : '-'}
-                                    </Text>
-                                </div>
-                                <div className="grid grid-cols-[80px_1fr] gap-2">
-                                    <Text className="text-gray-500">Address:</Text>
-                                    <Text className="font-medium leading-relaxed">
-                                        {/* @ts-ignore */}
-                                        {[data.address_line_1, data.address_line_2].filter(Boolean).join(', ') || '-'}
-                                    </Text>
-                                </div>
+                <div className="flex flex-col md:flex-row gap-4 mb-6 rounded-xl border border-gray-200 p-5">
+                    {/* Personal Info */}
+                    <div className="basis-[40%]">
+                        <Title as="h6" className="mb-4 text-sm font-semibold text-gray-900">
+                            Personal Info
+                        </Title>
+                        <div className="space-y-3">
+                            <div className="grid grid-cols-[80px_1fr] gap-2">
+                                <Text className="text-gray-500">Age:</Text>
+                                <Text className="font-medium">{calculateAge(data.date_of_birth)} years</Text>
+                            </div>
+                            <div className="grid grid-cols-[80px_1fr] gap-2">
+                                <Text className="text-gray-500">DOB:</Text>
+                                <Text className="font-medium">
+                                    {data.date_of_birth ? dayjs(data.date_of_birth).format('DD MMMM YYYY') : '-'}
+                                </Text>
+                            </div>
+                            <div className="grid grid-cols-[80px_1fr] gap-2">
+                                <Text className="text-gray-500">Address:</Text>
+                                <Text className="font-medium leading-relaxed">
+                                    {/* @ts-ignore */}
+                                    {[data.address_line_1, data.address_line_2].filter(Boolean).join(', ') || '-'}
+                                </Text>
                             </div>
                         </div>
+                    </div>
 
-                        {/* Contact Info */}
-                        <div className="col-span-1 border-t border-gray-100 pt-6 md:border-l md:border-t-0 md:pl-6 md:pt-0">
-                            <Title as="h6" className="mb-4 text-sm font-semibold text-gray-900">
-                                Contact Info
-                            </Title>
-                            <div className="space-y-3">
+                    {/* Contact Info */}
+                    <div className="basis-[60%]">
+                        <Title as="h6" className="mb-4 text-sm font-semibold text-gray-900">
+                            Contact Info
+                        </Title>
+                        <div className='flex gap-2 flex-col md:flex-row'>
+                            <div className='flex-1 flex flex-col gap-2'>
                                 <div className="grid grid-cols-[60px_1fr] gap-2 items-center">
                                     <Text className="text-gray-500">Email:</Text>
                                     <div className="flex items-center gap-2">
@@ -123,7 +123,42 @@ export default function PatientDetailModal({
                                         )}
                                     </div>
                                 </div>
+
                                 {/* Note: Home and Work phone numbers are not in the interface, using placeholders or available fields */}
+                                <div className="grid grid-cols-[60px_1fr] gap-2 items-center">
+                                    <Text className="text-gray-500">Home:</Text>
+                                    <div className="flex items-center gap-2">
+                                        <Text className="font-medium">{data.phone_home_number || '-'}</Text>
+                                        {data.phone_home_number && (
+                                            <ActionIcon
+                                                size="sm"
+                                                variant="text"
+                                                className="h-auto w-auto p-0 text-gray-400 hover:text-gray-600"
+                                                onClick={() => handleCopy(data.phone_home_number, 'Mobile number')}
+                                            >
+                                                <PiCopySimple className="h-3.5 w-3.5" />
+                                            </ActionIcon>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='flex-1 flex flex-col gap-2'>
+                                <div className="grid grid-cols-[60px_1fr] gap-2 items-center">
+                                    <Text className="text-gray-500">Work:</Text>
+                                    <div className="flex items-center gap-2">
+                                        <Text className="font-medium">{data.phone_work_number || '-'}</Text>
+                                        {data.phone_work_number && (
+                                            <ActionIcon
+                                                size="sm"
+                                                variant="text"
+                                                className="h-auto w-auto p-0 text-gray-400 hover:text-gray-600"
+                                                onClick={() => handleCopy(data.phone_work_number, 'Mobile number')}
+                                            >
+                                                <PiCopySimple className="h-3.5 w-3.5" />
+                                            </ActionIcon>
+                                        )}
+                                    </div>
+                                </div>
                                 <div className="grid grid-cols-[60px_1fr] gap-2 items-center">
                                     <Text className="text-gray-500">Mobile:</Text>
                                     <div className="flex items-center gap-2">
@@ -142,7 +177,7 @@ export default function PatientDetailModal({
                                 </div>
                             </div>
                         </div>
-                    </Grid>
+                    </div>
                 </div>
 
                 {/* Healthcare Info Section */}
