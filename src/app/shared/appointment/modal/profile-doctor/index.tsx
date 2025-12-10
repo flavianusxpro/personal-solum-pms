@@ -1,10 +1,13 @@
 import { useModal } from "@/app/shared/modal-views/use-modal";
 import { IGetAppointmentListResponse } from "@/types/ApiResponse";
 import { Avatar, Button } from 'rizzui';
-import { PiX, PiMapPin, PiEnvelope, PiPhone, PiTranslate, PiBriefcase } from 'react-icons/pi';
+import { PiX, PiMapPin, PiEnvelope, PiPhone, PiTranslate, PiBriefcase, PiCopy } from 'react-icons/pi';
 import dayjs from 'dayjs';
 import Link from "next/link";
 import { routes } from "@/config/routes";
+import { useCopyToClipboard } from "react-use";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 type DataTableType = IGetAppointmentListResponse['data'][number];
 interface HtmlBlockProps {
@@ -13,7 +16,7 @@ interface HtmlBlockProps {
 
 const ModalProfileDoctor = (data: any) => {
     const { closeModal } = useModal();
-
+    const [state, copyToClipboard] = useCopyToClipboard();
     function toNormalCase(text: string) {
         if (!text) return "";
         return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
@@ -38,6 +41,18 @@ const ModalProfileDoctor = (data: any) => {
         );
     }
 
+    const handleCopy = (text: string | number) => {
+        copyToClipboard(String(text));
+    };
+
+    useEffect(() => {
+        if (state.error) {
+            console.error('Failed to copy: ', state.error);
+        } else if (state.value) {
+            toast.success('Copied to clipboard');
+        }
+    }, [state]);
+
     return (
         <div className="relative w-full rounded-[24px] p-10">
             {/* Close Button */}
@@ -54,7 +69,7 @@ const ModalProfileDoctor = (data: any) => {
                     <Avatar
                         name={`${data?.data?.doctor?.first_name} ${data?.data?.doctor?.last_name}`}
                         src={data?.doctor?.photo || `${data?.data?.doctor?.first_name} ${data?.data?.doctor?.last_name}`}
-                        className="!h-[80px] !w-[80px]"
+                        className="!h-[80px] !w-[80px] text-xl text-white"
                     />
                     <div className="flex-1 flex flex-col gap-[6px]">
                         <div className="flex items-center gap-4">
@@ -96,10 +111,16 @@ const ModalProfileDoctor = (data: any) => {
                 <div className="grid gap-4 sm:grid-cols-2">
                     <div className="flex items-start gap-3">
                         <PiEnvelope className="text-[18px]" />
-                        <div className="flex-1">
-                            <p className="text-sm text-[#525252]">
-                                {data?.data?.doctor?.email ?? '-'}
-                            </p>
+                        <div className="flex-1 flex items-center gap-2">
+                            <p className="text-sm text-[#525252]">{data?.data?.doctor?.email ?? '-'}</p>
+                            {data?.data?.doctor?.email && (
+                                <PiCopy
+                                    onClick={() =>
+                                        handleCopy(data?.data?.doctor?.email)
+                                    }
+                                    className="cursor-pointer active:scale-[0.99]"
+                                />
+                            )}
                         </div>
                     </div>
                     <div className="flex items-start gap-3">
@@ -112,10 +133,16 @@ const ModalProfileDoctor = (data: any) => {
                     </div>
                     <div className="flex items-start gap-3">
                         <PiPhone className="text-[18px]" />
-                        <div className="flex-1">
-                            <p className="text-sm text-[#525252]">
-                                {data?.data?.doctor?.mobile_number ?? '-'}
-                            </p>
+                        <div className="flex-1 flex items-center gap-2">
+                            <p className="text-sm text-[#525252]">{data?.data?.doctor?.mobile_number ?? '-'}</p>
+                            {data?.data?.doctor?.mobile_number && (
+                                <PiCopy
+                                    onClick={() =>
+                                        handleCopy(data?.data?.doctor?.mobile_number)
+                                    }
+                                    className="cursor-pointer active:scale-[0.99]"
+                                />
+                            )}
                         </div>
                     </div>
                     <div className="flex items-start gap-3">
@@ -135,21 +162,21 @@ const ModalProfileDoctor = (data: any) => {
                     Doctor Bio
                 </h3>
                 <p className="mb-4 text-sm leading-relaxed text-[#444444]">
-                     <HtmlBlock html={data?.data?.doctor?.description} />
+                    <HtmlBlock html={data?.data?.doctor?.description} />
                 </p>
                 <div className="flex gap-4">
-                    <p className="text-sm flex-col text-[#444444]">
+                    <div className="flex-1 text-sm flex-col text-[#444444]">
                         <p className="font-semibold">Areas of Interest</p>
                         <p className="text-gray-700">
                             {data?.data?.doctor?.medical_interest ?? '-'}
                         </p>
-                    </p>
-                    <p className="text-sm flex-col text-[#444444]">
+                    </div>
+                    <div className="flex-1 text-sm flex-col text-[#444444]">
                         <p className="font-semibold">Education</p>
                         <p className="text-gray-700">
                             {data?.data?.doctor?.medical_interest ?? '-'}
                         </p>
-                    </p>
+                    </div>
                 </div>
             </div>
         </div>

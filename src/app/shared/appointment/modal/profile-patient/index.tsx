@@ -1,36 +1,41 @@
 import { useModal } from "@/app/shared/modal-views/use-modal";
 import { IGetAppointmentListResponse } from "@/types/ApiResponse";
 import { Avatar, Button } from 'rizzui';
-import { PiX, PiMapPin, PiCake, PiIdentificationCard, PiCalendarBlank } from 'react-icons/pi';
+import { PiX, PiMapPin, PiCake, PiIdentificationCard, PiCalendarBlank, PiCopy } from 'react-icons/pi';
 import { MdCancel, MdVerified } from "react-icons/md";
 import dayjs from 'dayjs';
 import { routes } from "@/config/routes";
 import Link from "next/link";
+import { IoWarningOutline } from "react-icons/io5";
+import { useCopyToClipboard } from "react-use";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 type DataTableType = IGetAppointmentListResponse['data'][number];
 
 const ModalProfilePatient = (data: any) => {
     const { closeModal } = useModal();
+    const [state, copyToClipboard] = useCopyToClipboard();
     const VerifiedBadge = ({ isVerified = true }: { isVerified?: boolean }) => {
-        if (isVerified) {
-            return (
-                <span className="flex items-center text-[#3872F9] gap-[4px]">
-                    <MdVerified className="text-[16px] " />
-                    <span className="font-medium text-[14px] ">Verified</span>
-                </span>
-            );
-        }
-
         return (
-            <span className="flex items-center text-[#DC2626] gap-[4px]">
-                <MdCancel className="text-[16px]" />
-                <span className="font-medium text-[14px]">Not Verified</span>
+            <span className={`flex items-center ${isVerified ? 'text-[#3872F9]' : 'text-gray-400'}  gap-[4px]`}>
+                <MdVerified className="text-[16px] " />
+                <span className="font-medium text-[14px]">{isVerified ? "Verified" : "Not Verified"}</span>
             </span>
         );
     };
 
-    console.log('zzz data?.data?', data?.data);
+    const handleCopy = (text: string | number) => {
+        copyToClipboard(String(text));
+    };
 
+    useEffect(() => {
+        if (state.error) {
+            console.error('Failed to copy: ', state.error);
+        } else if (state.value) {
+            toast.success('Copied to clipboard');
+        }
+    }, [state]);
 
     return (
         <div className="relative w-full rounded-[24px] bg-white p-10">
@@ -42,19 +47,31 @@ const ModalProfilePatient = (data: any) => {
                 <PiX className="h-5 w-5" />
             </button>
 
+            {!data?.data?.patient?.has_filled_consent_form && (
+                <div className="bg-[#FFF5E6] rounded-lg p-4">
+                    <p className="text-sm text-[#FF9E02]">
+                        <span className="font-bold">
+                            <IoWarningOutline className="inline text-lg" /> Consent Form Incomplete!
+                        </span>
+                        <br />
+                        The patient has not submitted the consent form.
+                    </p>
+                </div>
+            )}
+
             {/* Header */}
             <div className="flex items-center justify-between my-6 gap-4">
                 <div className="flex items-center gap-4">
                     <Avatar
-                        name={`${data?.data?.patient?.first_name} ${data?.data?.patient?.last_name}`}
-                        src={data?.patient?.photo || `${data?.data?.patient?.first_name} ${data?.data?.patient?.last_name}`}
-                        className="!h-[80px] !w-[80px]"
+                        name={`${data?.data?.patient?.first_name} ${data?.data?.patient?.middle_name ? data?.data?.patient?.middle_name : ''} ${data?.data?.patient?.last_name}`}
+                        src={data?.patient?.photo || `${data?.data?.patient?.first_name} ${data?.data?.patient?.middle_name ? data?.data?.patient?.middle_name : ''} ${data?.data?.patient?.last_name}`}
+                        className="!h-[80px] text-white !w-[80px] text-xl"
                     />
                     <div>
                         <div className="flex items-center gap-[8px]">
                             <h2 className="text-[18px] font-semibold">
                                 {data?.data?.patient
-                                    ?.first_name} {data?.data?.patient
+                                    ?.first_name} {data?.data?.patient?.middle_name ? data?.data?.patient?.middle_name : ''} {data?.data?.patient
                                         ?.last_name}
                             </h2>
                             <VerifiedBadge
@@ -91,68 +108,115 @@ const ModalProfilePatient = (data: any) => {
                 </div>
             </div>
 
-            {/* Content Grid */}
-            <div className="flex gap-4 mb-4">
+            {/* Content*/}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4 rounded-lg border border-[#E4E4E4] p-4">
                 {/* Personal Info */}
-                <div className="rounded-lg basis-[40%] border border-[#E4E4E4] p-4">
+                <div>
                     <h3 className="mb-4 font-semibold text-sm text-[#525252]">
                         Personal Info
                     </h3>
                     <div className="flex flex-col gap-[8px]">
                         <div className="flex">
-                            <p className="text-sm text-[#525252] basis-[20%]">Age:</p>
-                            <p className="text-sm text-[#111111] basis-[80%]">{data?.data?.patient?.age ?? '-'}</p>
+                            <p className="text-sm text-[#525252] mr-5">Age:</p>
+                            <p className="text-sm text-[#111111]">{data?.data?.patient?.age ?? '-'}</p>
                         </div>
 
                         <div className="flex">
-                            <p className="text-sm text-[#525252] basis-[20%]">DOB:</p>
-                            <p className="text-sm text-[#111111] basis-[80%]">{data?.data?.patient?.date_of_birth
+                            <p className="text-sm text-[#525252] mr-5">DOB:</p>
+                            <p className="text-sm text-[#111111]">{data?.data?.patient?.date_of_birth
                                 ? dayjs(data.data.patient.date_of_birth, ['DD-MM-YYYY', 'DD/MM/YYYY', 'YYYY-MM-DD']).format('D MMMM YYYY')
                                 : '-'}
                             </p>
                         </div>
 
                         <div className="flex">
-                            <p className="text-sm text-[#525252] basis-[20%]">
+                            <p className="text-sm text-[#525252] mr-5">
                                 Address:
                             </p>
-                            <p className="text-sm text-[#111111] basis-[80%]">
+                            <p className="text-sm text-[#111111]">
                                 {data?.data?.patient?.address_line_1 ? `${data?.data?.patient?.address_line_1 + ','}` : ''}
                                 {data?.data?.patient?.address_line_2 ? `${data?.data?.patient?.address_line_2 + ','}` : ''}
                                 {data?.data?.patient?.suburb ? `${data?.data?.patient?.suburb + ','}` : '-'}
                                 {data?.data?.patient?.postcode ? `${data?.data?.patient?.postcode + ','}` : '-'}
-                                {data?.data?.patient?.country ? `${data?.data?.patient?.country + ','}` : '-'}
+                                {data?.data?.patient?.country ? `${data?.data?.patient?.country}` : '-'}
                             </p>
                         </div>
                     </div>
                 </div>
 
                 {/* Contact Info */}
-                <div className="rounded-lg basis-[60%] border border-[#E4E4E4] p-4">
+                <div>
                     <h3 className="mb-4 font-semibold text-sm text-[#525252]">
                         Contact Info
                     </h3>
                     <div className="flex gap-[8px]">
                         <div className="flex flex-1 flex-col gap-2">
                             <div className="flex">
-                                <p className="text-sm text-[#525252] basis-[20%]">Email:</p>
-                                <p className="text-sm text-[#111111] basis-[80%]">{data?.data?.patient?.email ?? '-'}</p>
+                                <p className="text-sm text-[#525252] mr-5">Email:</p>
+                                <div className="flex items-center gap-2">
+                                    <p className="text-sm text-[#111111]">{data?.data?.patient?.email ?? '-'}</p>
+                                    {data?.data?.patient?.email && (
+                                        <PiCopy
+                                            onClick={() =>
+                                                handleCopy(data?.data?.patient?.email)
+                                            }
+                                            className="cursor-pointer active:scale-[0.99]"
+                                        />
+                                    )}
+                                </div>
                             </div>
 
                             <div className="flex">
-                                <p className="text-sm text-[#525252] basis-[20%]">Home:</p>
-                                <p className="text-sm text-[#111111] basis-[80%]">{data?.data?.patient?.phone_home_number ?? '-'}</p>
+                                <p className="text-sm text-[#525252] mr-5">Home:</p>
+                                <div className="flex items-center gap-2">
+                                    <p className="text-sm text-[#111111]">{data?.data?.patient?.phone_home_number ?? '-'}</p>
+                                    {data?.data?.patient?.phone_home_number && (
+                                        <PiCopy
+                                            onClick={() =>
+                                                handleCopy(data?.data?.patient?.phone_home_number)
+                                            }
+                                            className="cursor-pointer active:scale-[0.99]"
+                                        />
+                                    )}
+                                </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                {/* Contact Info */}
+                <div>
+                    <div className="flex gap-[8px] mt-[34px]">
                         <div className="flex flex-1 flex-col gap-2">
                             <div className="flex">
-                                <p className="text-sm text-[#525252] basis-[20%]">Work:</p>
-                                <p className="text-sm text-[#111111] basis-[80%]">{data?.data?.patient?.phone_work_number ?? '-'}</p>
+                                <p className="text-sm text-[#525252] mr-5">Work:</p>
+                                <div className="flex items-center gap-2">
+                                    <p className="text-sm text-[#111111]">{data?.data?.patient?.phone_work_number ?? '-'}</p>
+                                    {data?.data?.patient?.phone_work_number && (
+                                        <PiCopy
+                                            onClick={() =>
+                                                handleCopy(data?.data?.patient?.phone_work_number)
+                                            }
+                                            className="cursor-pointer active:scale-[0.99]"
+                                        />
+                                    )}
+                                </div>
                             </div>
 
                             <div className="flex">
-                                <p className="text-sm text-[#525252] basis-[20%]">Mobile:</p>
-                                <p className="text-sm text-[#111111] basis-[80%]">{data?.data?.patient?.mobile_number ?? '-'}</p>
+                                <p className="text-sm text-[#525252] mr-5">Mobile:</p>
+                                <div className="flex items-center gap-2">
+                                    <p className="text-sm text-[#111111]">{data?.data?.patient?.mobile_number ?? '-'}</p>
+
+                                    {data?.data?.patient?.mobile_number && (
+                                        <PiCopy
+                                            onClick={() =>
+                                                handleCopy(data?.data?.patient?.mobile_number)
+                                            }
+                                            className="cursor-pointer active:scale-[0.99]"
+                                        />
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -167,17 +231,17 @@ const ModalProfilePatient = (data: any) => {
                 <div className="flex gap-[8px]">
                     <div className="flex flex-1 flex-col gap-2">
                         <div className="flex">
-                            <p className="text-sm text-[#525252] basis-[40%]">Medicare Number:</p>
-                            <p className="text-sm text-[#111111] basis-[60%]">{data?.data?.patient?.medicare_card_number ?? '-'}</p>
+                            <p className="text-sm text-[#525252] mr-5">Medicare Number:</p>
+                            <p className="text-sm text-[#111111]">{data?.data?.patient?.medicare_card_number ?? '-'}</p>
                         </div>
 
                         <div className="flex">
-                            <p className="text-sm text-[#525252] basis-[40%]">Position:</p>
-                            <p className="text-sm text-[#111111] basis-[60%]">{data?.data?.patient?.position_on_card ?? '-'}</p>
+                            <p className="text-sm text-[#525252] mr-5">Position:</p>
+                            <p className="text-sm text-[#111111]">{data?.data?.patient?.position_on_card ?? '-'}</p>
                         </div>
                         <div className="flex">
-                            <p className="text-sm text-[#525252] basis-[40%]">Expiry Date:</p>
-                            <p className="text-sm text-[#111111] basis-[60%]">
+                            <p className="text-sm text-[#525252] mr-5">Expiry Date:</p>
+                            <p className="text-sm text-[#111111]">
                                 {data?.data?.patient?.medicare_expired_date
                                     ? dayjs(data.data.patient.medicare_expired_date, 'DD MM YYYY').format('MM/YYYY')
                                     : '-'}
@@ -186,19 +250,19 @@ const ModalProfilePatient = (data: any) => {
                     </div>
                     <div className="flex flex-1 flex-col gap-2">
                         <div className="flex">
-                            <p className="text-sm text-[#525252] basis-[40%]">DVA Number:</p>
-                            <p className="text-sm text-[#111111] basis-[60%]">{data?.data?.patient?.concession_card_number ?? '-'}</p>
+                            <p className="text-sm text-[#525252] mr-5">DVA Number:</p>
+                            <p className="text-sm text-[#111111]">{data?.data?.patient?.concession_card_number ?? '-'}</p>
                         </div>
 
                         <div className="flex">
-                            <p className="text-sm text-[#525252] basis-[40%]">DVA Type:</p>
-                            <p className="text-sm text-[#111111] basis-[60%]">{data?.data?.patient?.concession_card_type ?? '-'}</p>
+                            <p className="text-sm text-[#525252] mr-5">DVA Type:</p>
+                            <p className="text-sm text-[#111111]">{data?.data?.patient?.concession_card_type ?? '-'}</p>
                         </div>
                     </div>
                     <div className="flex flex-1 flex-col gap-2">
                         <div className="flex">
-                            <p className="text-sm text-[#525252] basis-[40%]">IHI Number:</p>
-                            <p className="text-sm text-[#111111] basis-[60%]">{data?.data?.patient?.ihi_number ?? '-'}</p>
+                            <p className="text-sm text-[#525252] mr-5">IHI Number:</p>
+                            <p className="text-sm text-[#111111]">{data?.data?.patient?.ihi_number ?? '-'}</p>
                         </div>
                     </div>
                 </div>

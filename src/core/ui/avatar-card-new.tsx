@@ -71,7 +71,10 @@ export default function AvatarCard({
               )
             }
             <PiCopy
-              onClick={() => handleCopy(name)}
+              onClick={(e) => {
+                e.stopPropagation()
+                handleCopy(name)}
+              }
               className="cursor-pointer active:scale-[0.99]"
             />
             {warning && (
@@ -94,7 +97,10 @@ export default function AvatarCard({
           <div className="flex items-center gap-2">
             <Text className="text-[13px] text-gray-500">{description}</Text>
             <PiCopy
-              onClick={() => handleCopy(description)}
+              onClick={(e) => {
+                e.stopPropagation()
+                handleCopy(description)
+              }}
               className="cursor-pointer active:scale-[0.99]"
             />
           </div>
@@ -103,7 +109,10 @@ export default function AvatarCard({
           <div className="flex items-center gap-2">
             <Text className="text-[13px] text-gray-500">{number}</Text>
             <PiCopy
-              onClick={() => handleCopy(number)}
+              onClick={(e) => {
+                e.stopPropagation()
+                handleCopy(number)
+              }}
               className="cursor-pointer active:scale-[0.99]"
             />
           </div>
