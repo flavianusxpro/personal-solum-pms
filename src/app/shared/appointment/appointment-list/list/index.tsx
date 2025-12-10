@@ -93,25 +93,25 @@ export default function AppointmentListTable({
     page: params.page,
     perPage: params.perPage,
     q: JSON.stringify({
-      patient_search: params.search ? params.search : undefined,
-      status: filterStateValue?.status || undefined,
-      doctorId: filterStateValue?.doctor ? filterStateValue?.doctor : undefined,
-      patientId: filterStateValue?.patient
-        ? filterStateValue?.patient
-        : undefined,
-      inactive_patients_months: filterStateValue?.inactive_patients_months
-        ? Number(filterStateValue?.inactive_patients_months)
-        : undefined,
       payment_status: filterStateValue?.payment_status || undefined,
-      by_reschedule: filterStateValue?.by_reschedule || undefined,
-      clinicId: dataProfile?.clinics[0].id || 0,
-      from: filterStateValue?.createdAt?.[0]
-        ? dayjs(filterStateValue?.createdAt?.[0]).format('YYYY-MM-DD')
-        : undefined,
-      to: filterStateValue?.createdAt?.[1]
-        ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
-        : undefined,
+      status: filterStateValue?.status || undefined,
+      doctor_ids: filterStateValue?.doctor ? [filterStateValue?.doctor] : undefined,
+      clinic_ids: [dataProfile?.clinics[0].id],
     }),
+    patient_search: params.search ? params.search : undefined,
+    patientId: filterStateValue?.patient
+      ? filterStateValue?.patient
+      : undefined,
+    inactive_patients_months: filterStateValue?.inactive_patients_months
+      ? Number(filterStateValue?.inactive_patients_months)
+      : undefined,
+    by_reschedule: filterStateValue?.by_reschedule || undefined,
+    from: filterStateValue?.createdAt?.[0]
+      ? dayjs(filterStateValue?.createdAt?.[0]).format('YYYY-MM-DD')
+      : undefined,
+    to: filterStateValue?.createdAt?.[1]
+      ? dayjs(filterStateValue?.createdAt?.[1]).format('YYYY-MM-DD')
+      : undefined,
     filter_no_consent_form: filterStateValue?.filter_no_consent_form
       ? (filterStateValue.filter_no_consent_form === 'true' ? true : false)
       : undefined,
@@ -289,7 +289,7 @@ export default function AppointmentListTable({
       return 0;
     });
   }, [tableData]);
-  
+
   const columns = useMemo(
     () =>
       GetColumns({
