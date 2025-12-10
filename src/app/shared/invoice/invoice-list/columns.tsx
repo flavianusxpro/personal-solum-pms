@@ -20,7 +20,7 @@ import DateCell from '@core/ui/date-cell';
 import TableAvatar from '@core/ui/avatar-card';
 import { IGetInvoiceListResponse } from '@/types/ApiResponse';
 import CSelect from '../../ui/select';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react';
 import {
   usePutUpdateInvoice,
   useResendInvoice,
@@ -37,6 +37,8 @@ import { HiOutlineDotsVertical } from 'react-icons/hi';
 import TrashIcon from '@/core/components/icons/trash';
 import DeleteModal from '../../ui/delete-modal';
 import SendConfirm from '../modal/send-confirm';
+import AvatarCardNew from '@/core/ui/avatar-card-new';
+import { MdVerified } from 'react-icons/md';
 
 type IRowType = IGetInvoiceListResponse['data'][number];
 
@@ -123,99 +125,122 @@ export const getColumns = ({
   idInvoice,
   setIdInvoice,
 }: Columns) => [
-  {
-    title: (
-      <div className="ps-2">
-        <Checkbox
-          title={'Select All'}
-          onChange={handleSelectAll}
-          checked={checkedItems.length === data.length}
-          className="cursor-pointer"
-        />
-      </div>
-    ),
-    dataIndex: 'checked',
-    key: 'checked',
-    width: 30,
-    render: (_: any, row: any) => (
-      <div className="inline-flex ps-2">
-        <Checkbox
-          className="cursor-pointer"
-          checked={checkedItems.includes(row.id)}
-          {...(onChecked && { onChange: () => onChecked(row.id) })}
-        />
-      </div>
-    ),
-  },
-  {
-    title: <HeaderCell title="INVOICE ID" />,
-    dataIndex: 'id',
-    key: 'id',
-    width: 450,
-    render: (id: string) => <p className="w-max">#{id}</p>,
-  },
-  {
-    title: <HeaderCell title="PATIENT NAME" />,
-    dataIndex: 'patien',
-    key: 'patien',
-    render: (_: string, row: IRowType) => (
-      <TableAvatar
-        src={row?.patient?.photo || ''}
-        name={`${row?.patient?.first_name} ${row?.patient?.last_name}`}
-        description={row.patient?.email}
-        number={row.patient?.mobile_number}
-      />
-    ),
-  },
-  {
-    title: <HeaderCell title="TOTAL" />,
-    dataIndex: 'total_amount',
-    key: 'total_amount',
-    width: 250,
-    render: (value: string) => `${currencyData.symbol}${Number(value)}`,
-  },
-  {
-    title: <HeaderCell title="PAYMENT STATUS" />,
-    dataIndex: 'status',
-    key: 'status',
-    width: 650,
-    render: (_: any, row: any) => {
-      return <StatusSelectUpdate id={row.id} selectItem={row.status} />;
+    {
+      title: (
+        <div className="ps-2">
+          <Checkbox
+            title={'Select All'}
+            onChange={handleSelectAll}
+            checked={checkedItems.length === data.length}
+            className="cursor-pointer"
+          />
+        </div>
+      ),
+      dataIndex: 'checked',
+      key: 'checked',
+      width: 30,
+      render: (_: any, row: any) => (
+        <div className="inline-flex ps-2">
+          <Checkbox
+            className="cursor-pointer"
+            checked={checkedItems.includes(row.id)}
+            {...(onChecked && { onChange: () => onChecked(row.id) })}
+          />
+        </div>
+      ),
     },
-  },
-  {
-    title: <HeaderCell title="CREATED BY" />,
-    dataIndex: 'created_at',
-    key: 'created_at',
-    width: 600,
-    render: (created_at: Date) => <DateCell clock date={created_at} />,
-  },
-  {
-    title: <HeaderCell title="UPDATED BY" />,
-    dataIndex: 'updated_at',
-    key: 'updated_at',
-    width: 600,
-    render: (updated_at: Date) => <DateCell clock date={updated_at} />,
-  },
-  {
-    title: <HeaderCell title="Actions" />,
-    dataIndex: 'action',
-    key: 'action',
-    width: 140,
-    render: (_: string, row: any) => (
-      <div className="flex items-center justify-start">
-        <RenderAction
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          row={row}
-          onDeleteItem={onDeleteItem}
-          idInvoice={idInvoice}
-          setIdInvoice={setIdInvoice}
+    {
+      title: <HeaderCell title="INVOICE ID" />,
+      dataIndex: 'id',
+      key: 'id',
+      width: 200,
+      render: (id: string) => <p className="w-max">#{id}</p>,
+    },
+    {
+      title: <HeaderCell title="PATIENT NAME" />,
+      dataIndex: 'patien',
+      key: 'patien',
+      width: 400,
+      render: (_: string, row: any) => (
+        <AvatarCardNew
+          src={row?.patient?.photo || ''}
+          name={`${row?.patient?.first_name} ${row?.patient?.middle_name ? row?.patient?.middle_name : ''} ${row?.patient?.last_name}`}
+          otherIcon={
+            [
+              () => {
+                const isVerified = row?.patient?.verification_status;
+                // const isVerified = row?.patient?.has_filled_consent_form === true && row?.patient?.ihi_number && row?.patient?.ihi_number !== '';
+                return (
+                  <MdVerified
+                    className={`cursor-pointer ${isVerified ? 'text-blue-600' : 'text-gray-400'}`}
+                    title={isVerified ? "Verified" : "Not Verified"}
+                    key="verified"
+                  />
+                );
+              },
+            ]
+          }
         />
-      </div>
-    ),
-  },
-];
+      )
+    },
+    {
+      title: <HeaderCell title="TOTAL" />,
+      dataIndex: 'total_amount',
+      key: 'total_amount',
+      width: 250,
+      render: (value: string) => `${currencyData.symbol}${Number(value)}`,
+    },
+    // {
+    //   title: <HeaderCell title="APT STATUS" />,
+    //   dataIndex: 'status',
+    //   key: 'status',
+    //   width: 650,
+    //   render: (_: any, row: any) => {
+    //     return <StatusSelectAppo id={row.id} status={row.status} />;
+    //   },
+    // },
+    {
+      title: <HeaderCell title="PAYMENT STATUS" />,
+      dataIndex: 'status',
+      key: 'status',
+      width: 650,
+      render: (_: any, row: any) => {
+        return <StatusSelectUpdate id={row.id} selectItem={row.status} />;
+      },
+    },
+    {
+      title: <HeaderCell title="CREATED AT" />,
+      dataIndex: 'created_at',
+      key: 'created_at',
+      width: 600,
+      render: (created_at: Date) => <DateCell clock date={created_at} />,
+    },
+    {
+      title: <HeaderCell title="UPDATED BY" />,
+      dataIndex: 'updated_at',
+      key: 'updated_at',
+      width: 600,
+      render: (_: string, row: any) => <span>{row?.updated_by?.firstName ?? '-'}</span>,
+    },
+    {
+      title: <HeaderCell title="Action" />,
+      dataIndex: 'action',
+      key: 'action',
+      width: 140,
+      render: (_: string, row: any) => (
+        <div className="flex items-center justify-start">
+          <RenderAction
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            row={row}
+            onDeleteItem={onDeleteItem}
+            idInvoice={idInvoice}
+            setIdInvoice={setIdInvoice}
+          />
+        </div>
+      ),
+    },
+  ];
 
 function RenderAction({
   row,
@@ -282,121 +307,75 @@ function RenderAction({
   };
 
   return (
-    <div className="flex items-center justify-end gap-3 pe-3">
+    <div className="flex items-center justify-end gap-3">
       <Dropdown placement="bottom-end">
         <Dropdown.Trigger>
-          <ActionIcon variant="outline" rounded="full">
-            <HiOutlineDotsVertical className="h-5 w-5" />
-          </ActionIcon>
+          <Button
+            as="span"
+            variant="outline"
+          >
+            Action
+          </Button>
         </Dropdown.Trigger>
         <Dropdown.Menu className="min-w-[220px]">
-          {/* <Dropdown.Item>
-            <Button
-              className="w-full hover:border-gray-700 hover:text-gray-700"
-              variant="outline"
-              onClick={() => {}}
-            >
-              <div className="flex items-center gap-3">
-                <PiCheckBold className="h-4 w-4 text-green-500" />
-                <span>Approve Invoice</span>{' '}
-              </div>
-            </Button>
-          </Dropdown.Item> */}
           {row.status == 1 && (
             <Dropdown.Item>
               <Link
                 href={routes.invoice.edit(row.id.toString())}
-                className="w-full"
+                className="flex items-center w-full"
               >
-                <Button
-                  className="w-full hover:border-gray-700 hover:text-gray-700"
-                  variant="outline"
-                >
-                  <div className="flex items-center gap-3">
-                    <PencilIcon className="h-4 w-4" />
-                    <span>Edit</span>
-                  </div>
-                </Button>
+                <PencilIcon className="mr-2 h-4 w-4" />
+                Edit
               </Link>
             </Dropdown.Item>
           )}
 
-          <Dropdown.Item>
-            <Button
-              className="w-full hover:border-gray-700 hover:text-gray-700"
-              variant="outline"
-              // onClick={sendToEmail}
-              onClick={() => sendConfirmModal(row, onSubmit)}
-            >
-              <div className="flex items-center gap-3">
-                <FaRegNoteSticky className="h-4 w-4" />
-                <span>Send</span>{' '}
-              </div>
-            </Button>
+          <Dropdown.Item
+            onClick={() => sendConfirmModal(row, onSubmit)}
+          >
+            <FaRegNoteSticky className="mr-2 h-4 w-4" />
+            Send
           </Dropdown.Item>
 
           {row.status !== 3 && (
             <Dropdown.Item>
-              <Link href="#" className="w-full">
-                <Button
-                  className="w-full hover:border-gray-700 hover:text-gray-700"
-                  variant="outline"
-                >
-                  <div className="flex items-center gap-3">
-                    <PiWalletLight className="h-4 w-4" />
-                    <span>Pay Now</span>
-                  </div>
-                </Button>
+              <Link 
+                href="#" 
+                className="flex items-center w-full"
+              >
+                <PiWalletLight className="mr-2 h-4 w-4" />
+                Pay Now
               </Link>
             </Dropdown.Item>
           )}
 
           {statusAvailToRefund.includes(row.status) && (
-            <Dropdown.Item>
-              <Button
-                className="w-full hover:border-gray-700 hover:text-gray-700"
-                variant="outline"
-                onClick={() => refundModal(row)}
-              >
-                <div className="flex items-center gap-3">
-                  <GrSchedules className="h-4 w-4" />
-                  <span>Refund</span>{' '}
-                </div>
-              </Button>
+            <Dropdown.Item
+              onClick={() => refundModal(row)}
+            >
+              <GrSchedules className="mr-2 h-4 w-4" />
+              Refund
             </Dropdown.Item>
           )}
 
           <Dropdown.Item>
             <Link
               href={routes.invoice.details(row.id.toString())}
-              className="w-full"
+              className="flex items-center w-full"
             >
-              <Button
-                className="w-full hover:border-gray-700 hover:text-gray-700"
-                variant="outline"
-              >
-                <div className="flex items-center gap-3">
-                  <EyeIcon className="h-4 w-4" />
-                  <span>View</span>
-                </div>
-              </Button>
+              <EyeIcon className="mr-2 h-4 w-4" />
+              View
             </Link>
           </Dropdown.Item>
           {row.status == 1 && (
-            <Dropdown.Item>
-              <Button
-                className="w-full hover:border-gray-700 hover:text-gray-700"
-                variant="outline"
-                onClick={() => {
-                  setIdInvoice(row.id);
-                  setIsOpen(true);
-                }}
-              >
-                <div className="flex items-center gap-3">
-                  <TrashIcon className="h-4 w-4" />
-                  <span>Delete</span>{' '}
-                </div>
-              </Button>
+            <Dropdown.Item
+              onClick={() => {
+                setIdInvoice(row.id);
+                setIsOpen(true);
+              }}
+            >
+              <TrashIcon className="mr-2 h-4 w-4" />
+              Delete
             </Dropdown.Item>
           )}
         </Dropdown.Menu>
@@ -450,18 +429,6 @@ function StatusSelectUpdate({
   id: number;
 }) {
   const { openModal, closeModal } = useModal();
-
-  // const showConfirmModal = (
-  //   id: number,
-  //   onClick: (value: number) => void,
-  //   status: string
-  // ) => {
-  //   closeModal(),
-  //     openModal({
-  //       view: <ShowConfirm onClick={onClick} status={status} id={id} />,
-  //       customSize: '600px',
-  //     });
-  // };
   const aptStatusOptions = [
     { label: 'Draft', value: 1 },
     { label: 'Awaiting Approval', value: 2 },
@@ -530,26 +497,20 @@ function StatusSelectUpdate({
   );
 }
 
-export function StatusSelect() {
+interface PropTypes {
+  prefix?: ReactNode
+}
+
+export function StatusSelect(props: PropTypes) {
+  const {
+    prefix
+  } = props
   const [value, setValue] = useState<number | null>(null);
 
   const { mutate, isPending } = usePutUpdateInvoice();
 
   const handleChange = (value: number) => {
     setValue(value);
-    // mutate(
-    //   { id, status: value },
-    //   {
-    //     onSuccess: () => {
-    //       toast.success('Status updated successfully');
-    //     },
-    //     onError: (error: any) => {
-    //       toast.error(
-    //         error?.response?.data?.message || 'Error updating status'
-    //       );
-    //     },
-    //   }
-    // );
   };
 
   return (
@@ -559,6 +520,7 @@ export function StatusSelect() {
       placeholder="Select Payment Method"
       options={statusOptions}
       value={value}
+      prefix={prefix}
       onChange={handleChange}
       isLoading={isPending}
       displayValue={(option: { value: number }) =>

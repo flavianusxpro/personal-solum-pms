@@ -20,6 +20,7 @@ import { useSetAtom } from 'jotai';
 import { summaryInvoiceAtom } from '@/store/invoice';
 import { RiMailSendLine } from 'react-icons/ri';
 import { GoCreditCard } from 'react-icons/go';
+import { CiWallet } from 'react-icons/ci';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/invoice/invoice-list/filter-element'),
@@ -260,7 +261,9 @@ export default function InvoiceTableList() {
                       </span>
                       <span>Pay Now</span>
                     </Button>
-                    <StatusSelect />
+                    <StatusSelect 
+                      prefix={<CiWallet />}
+                    />
                   </>
                 )}
               </div>

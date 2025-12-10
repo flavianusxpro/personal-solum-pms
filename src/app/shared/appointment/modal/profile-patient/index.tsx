@@ -29,6 +29,9 @@ const ModalProfilePatient = (data: any) => {
         );
     };
 
+    console.log('zzz data?.data?', data?.data);
+
+
     return (
         <div className="relative w-full rounded-[24px] bg-white p-10">
             {/* Close Button */}
@@ -55,9 +58,8 @@ const ModalProfilePatient = (data: any) => {
                                         ?.last_name}
                             </h2>
                             <VerifiedBadge
-                                isVerified={data?.data?.patient?.verification_status}
+                                isVerified={data?.data?.patient?.ihi_number !== null && data?.data?.patient?.has_filled_consent_form}
                             />
-
                         </div>
                         <p className="text-sm text-[#525252]">
                             {data?.data?.patient?.gender ? (data?.data?.patient?.gender).charAt(0).toUpperCase() + (data?.data?.patient?.gender).substr(1).toLowerCase() : '-'}
@@ -111,10 +113,15 @@ const ModalProfilePatient = (data: any) => {
                         </div>
 
                         <div className="flex">
-                            <p className="text-sm text-[#525252] basis-[20%]">Address:</p>
+                            <p className="text-sm text-[#525252] basis-[20%]">
+                                Address:
+                            </p>
                             <p className="text-sm text-[#111111] basis-[80%]">
-                                {data?.data?.patient?.address_line_1 ?? '-'}, {data?.data?.patient?.suburb ?? '-'},
-                                {data?.data?.patient?.address_line_1 ?? '-'}, {data?.data?.patient?.country ?? '-'}
+                                {data?.data?.patient?.address_line_1 ? `${data?.data?.patient?.address_line_1 + ','}` : ''}
+                                {data?.data?.patient?.address_line_2 ? `${data?.data?.patient?.address_line_2 + ','}` : ''}
+                                {data?.data?.patient?.suburb ? `${data?.data?.patient?.suburb + ','}` : '-'}
+                                {data?.data?.patient?.postcode ? `${data?.data?.patient?.postcode + ','}` : '-'}
+                                {data?.data?.patient?.country ? `${data?.data?.patient?.country + ','}` : '-'}
                             </p>
                         </div>
                     </div>
