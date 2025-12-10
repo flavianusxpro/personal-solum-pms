@@ -280,7 +280,7 @@ export default function AppointmentListTable({
     handleSelectRow,
     setSelectedRowKeys,
     selectedRowKeys,
-  } = useTable(displayData ?? [], params.perPage, filterStateValue);
+  } = useTable(displayData, params.perPage, filterStateValue);
 
   const sortedTableData = useMemo(() => {
     return [...tableData].sort((a, b) => {
@@ -289,7 +289,7 @@ export default function AppointmentListTable({
       return 0;
     });
   }, [tableData]);
-
+  
   const columns = useMemo(
     () =>
       GetColumns({

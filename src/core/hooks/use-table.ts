@@ -25,7 +25,6 @@ export function useTable<T extends AnyObject>(
    */
   const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
 
-  // ✅ Gunakan useCallback untuk mencegah function dibuat ulang
   const handleRowSelect = useCallback((recordKey: string) => {
     setSelectedRowKeys((prev) => {
       if (prev.includes(recordKey)) {
@@ -78,7 +77,6 @@ export function useTable<T extends AnyObject>(
     direction: null,
   });
 
-  // ✅ Gunakan useCallback untuk mencegah function dibuat ulang
   const sortData = useCallback(
     (data: T[], sortKey: string, sortDirection: string) => {
       return [...data].sort((a, b) => {
@@ -103,7 +101,6 @@ export function useTable<T extends AnyObject>(
     return sortData(data, sortConfig.key, sortConfig.direction);
   }, [sortConfig, data, sortData]);
 
-  // ✅ Gunakan useCallback untuk mencegah function dibuat ulang
   const handleSort = useCallback((key: string) => {
     setSortConfig((prev) => {
       let direction = 'asc';
@@ -119,7 +116,6 @@ export function useTable<T extends AnyObject>(
    */
   const [currentPage, setCurrentPage] = useState(1);
 
-  // ✅ Gunakan useCallback untuk mencegah function dibuat ulang
   const paginatedData = useCallback(
     (data: T[] = sortedData) => {
       const start = (currentPage - 1) * countPerPage;
@@ -151,12 +147,13 @@ export function useTable<T extends AnyObject>(
   /*
    * Handle Filters and searching
    */
+  // ⚠️ PENTING: searchTerm hanya untuk UI state, TIDAK untuk filtering
+  // Filtering search dilakukan di backend
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState<Record<string, any>>(
     initialFilterState ?? {}
   );
 
-  // ✅ Gunakan useCallback untuk mencegah function dibuat ulang
   const updateFilter = useCallback(
     (columnId: string, filterValue: string | any[]) => {
       if (!Array.isArray(filterValue) && !isString(filterValue)) {
@@ -177,81 +174,46 @@ export function useTable<T extends AnyObject>(
     []
   );
 
-  // ✅ Gunakan useMemo untuk mencegah applyFilters dihitung ulang
+  // ✅ HANYA apply filter untuk non-search filters
   const applyFilters = useMemo(() => {
-    const searchTermLower = searchTerm.toLowerCase();
-
-    return sortedData
-      .filter((item) => {
-        const isMatchingItem = Object.entries(filters).some(
-          ([columnId, filterValue]) => {
-            if (
-              Array.isArray(filterValue) &&
-              typeof filterValue[1] === 'object'
-            ) {
-              const itemValue = new Date(item[columnId]);
-              return (
-                // @ts-ignore
-                itemValue >= filterValue[0] && itemValue <= filterValue[1]
-              );
-            }
-            if (
-              Array.isArray(filterValue) &&
-              typeof filterValue[1] === 'string'
-            ) {
-              const itemPrice = Math.ceil(Number(item[columnId]));
-              return (
-                itemPrice >= Number(filterValue[0]) &&
-                itemPrice <= Number(filterValue[1])
-              );
-            }
-            if (isString(filterValue) && !Array.isArray(filterValue)) {
-              const itemValue = item[columnId]?.toString().toLowerCase();
-              if (itemValue !== filterValue.toString().toLowerCase()) {
-                return false;
-              }
-              return true;
-            }
+    return sortedData.filter((item) => {
+      const isMatchingItem = Object.entries(filters).some(
+        ([columnId, filterValue]) => {
+          if (
+            Array.isArray(filterValue) &&
+            typeof filterValue[1] === 'object'
+          ) {
+            const itemValue = new Date(item[columnId]);
+            return (
+              // @ts-ignore
+              itemValue >= filterValue[0] && itemValue <= filterValue[1]
+            );
           }
-        );
-        return isMatchingItem;
-      })
-      .filter((item) =>
-        Object.values(item).some((value) =>
-          typeof value === 'object'
-            ? value &&
-              Object.values(value).some(
-                (nestedItem) =>
-                  nestedItem &&
-                  String(nestedItem).toLowerCase().includes(searchTermLower)
-              )
-            : value && String(value).toLowerCase().includes(searchTermLower)
-        )
+          if (
+            Array.isArray(filterValue) &&
+            typeof filterValue[1] === 'string'
+          ) {
+            const itemPrice = Math.ceil(Number(item[columnId]));
+            return (
+              itemPrice >= Number(filterValue[0]) &&
+              itemPrice <= Number(filterValue[1])
+            );
+          }
+          if (isString(filterValue) && !Array.isArray(filterValue)) {
+            const itemValue = item[columnId]?.toString().toLowerCase();
+            if (itemValue !== filterValue.toString().toLowerCase()) {
+              return false;
+            }
+            return true;
+          }
+        }
       );
-  }, [sortedData, filters, searchTerm]);
-
-  // ✅ Gunakan useMemo untuk mencegah searchedData dihitung ulang
-  const searchedData = useMemo(() => {
-    if (!searchTerm) return sortedData;
-
-    const searchTermLower = searchTerm.toLowerCase();
-
-    return sortedData.filter((item) =>
-      Object.values(item).some((value) =>
-        typeof value === 'object'
-          ? value &&
-            Object.values(value).some(
-              (nestedItem) =>
-                nestedItem &&
-                String(nestedItem).toLowerCase().includes(searchTermLower)
-            )
-          : value && String(value).toLowerCase().includes(searchTermLower)
-      )
-    );
-  }, [sortedData, searchTerm]);
+      return isMatchingItem;
+    });
+  }, [sortedData, filters]);
 
   /*
-   * Handle searching
+   * Handle searching - HANYA untuk state UI, tidak filter data
    */
   const handleSearch = useCallback((searchValue: string) => {
     setSearchTerm(searchValue);
@@ -273,44 +235,34 @@ export function useTable<T extends AnyObject>(
    */
   const isFiltered = applyFilters.length > 0;
 
-  // ✅ Gunakan useMemo untuk mencegah calculateTotalItems dihitung ulang
   const totalItems = useMemo(() => {
     if (isFiltered) {
       return applyFilters.length;
     }
-    if (searchTerm) {
-      return searchedData.length;
-    }
+    // ✅ TIDAK lagi hitung berdasarkan searchedData
     return sortedData.length;
-  }, [
-    isFiltered,
-    applyFilters.length,
-    searchTerm,
-    searchedData.length,
-    sortedData.length,
-  ]);
+  }, [isFiltered, applyFilters.length, sortedData.length]);
 
-  // ✅ Gunakan useMemo untuk mencegah filteredAndSearchedData dihitung ulang
-  const filteredAndSearchedData = useMemo(() => {
-    return isFiltered ? applyFilters : searchedData;
-  }, [isFiltered, applyFilters, searchedData]);
+  // ✅ Data final: gunakan applyFilters jika ada filter, atau sortedData
+  // TIDAK ada searchedData lagi karena search sudah dari backend
+  const filteredData = useMemo(() => {
+    return isFiltered ? applyFilters : sortedData;
+  }, [isFiltered, applyFilters, sortedData]);
 
-  // ✅ Gunakan useMemo untuk mencegah tableData dihitung ulang
   const tableData = useMemo(() => {
-    return paginatedData(filteredAndSearchedData);
-  }, [paginatedData, filteredAndSearchedData]);
+    return paginatedData(filteredData);
+  }, [paginatedData, filteredData]);
 
   /*
-   * Go to first page when data is filtered and searched
+   * Go to first page when data is filtered
+   * ✅ HAPUS dependency searchTerm karena search dari backend
    */
   useEffect(() => {
     handlePaginate(1);
-  }, [isFiltered, searchTerm, handlePaginate]);
+  }, [isFiltered, handlePaginate]);
 
-  // ✅ Optimasi: Hanya update data jika benar-benar berubah
   useEffect(() => {
     if (!initialData) return;
-    // Gunakan JSON.stringify untuk deep comparison
     setData((prev) => {
       if (JSON.stringify(prev) !== JSON.stringify(initialData)) {
         return initialData;
@@ -341,7 +293,7 @@ export function useTable<T extends AnyObject>(
     setSelectedRowKeys,
     handleRowSelect,
     handleSelectAll,
-    // searching
+    // searching (hanya untuk UI state)
     searchTerm,
     handleSearch,
     // filters
