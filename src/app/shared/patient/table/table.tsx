@@ -73,6 +73,7 @@ export default function PatientTable() {
   const {
     data,
     isLoading: isLoadingGetAllPatients,
+    isFetching,
     refetch,
   } = useGetAllPatients({
     page: params.page,
@@ -147,12 +148,23 @@ export default function PatientTable() {
     setFilterStateValue(filterState);
   }, []);
 
-  const handlerSearch = debounce((value: string) => {
-    setParams((prevState) => ({
-      ...prevState,
-      search: value,
-    }));
-  }, 1000);
+  // const handlerSearch = debounce((value: string) => {
+  //   setParams((prevState) => ({
+  //     ...prevState,
+  //     search: value,
+  //   }));
+  // }, 1000);
+
+  const handlerSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setParams((prevState) => ({
+          ...prevState,
+          search: value,
+        }));
+      }, 2000),
+    []
+  );
 
   const {
     isLoading,
@@ -225,7 +237,7 @@ export default function PatientTable() {
       <ControlledTable
         variant="modern"
         data={tableData ?? []}
-        isLoading={isLoading || isLoadingGetAllPatients}
+        isLoading={isLoading || isLoadingGetAllPatients || isFetching}
         showLoadingText={true}
         // @ts-ignore
         columns={visibleColumns}
