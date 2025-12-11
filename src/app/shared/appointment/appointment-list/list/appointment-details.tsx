@@ -11,6 +11,9 @@ import { ActionIcon, Title, Avatar, Flex, Badge, Text, Button, Textarea } from '
 import { useCopyToClipboard } from 'react-use';
 import Link from 'next/link';
 import { routes } from '@/config/routes';
+import { useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { getAptStatusBadge } from './columns';
 
 export default function AppointmentDetails({
   data,
@@ -20,10 +23,18 @@ export default function AppointmentDetails({
   onEdit?: () => void;
 }) {
   const { closeModal } = useModal();
-  const [_, copyToClipboard] = useCopyToClipboard();
+  const [state, copyToClipboard] = useCopyToClipboard();
   const handleCopy = (text: string | number) => {
     copyToClipboard(String(text));
   };
+
+  useEffect(() => {
+    if (state.error) {
+      console.error('Failed to copy: ', state.error);
+    } else if (state.value) {
+      toast.success('Copied to clipboard');
+    }
+  }, [state]);
 
   const getPaymentStatusBadge = (status: number | string | undefined) => {
     switch (status) {
@@ -72,6 +83,27 @@ export default function AppointmentDetails({
     }
   }
 
+  const getAptType = (type: string) => {
+    const colorMap: Record<string, string> = {
+      "Initial Consult": "#1FA551",
+      "Follow Up": "#0078D7",
+      "Transfer": "#F4A523",
+      "Reschedule": "#E84757",
+    };
+
+    const text = type || "Unknown";
+    const dotColor = colorMap[type] || "#999999";
+
+    return (
+      <Flex gap="1" align="center">
+        <Badge style={{ backgroundColor: dotColor }} renderAsDot />
+        <Text className="font-medium" style={{ color: dotColor }}>
+          {text}
+        </Text>
+      </Flex>
+    );
+  };
+
   return (
     <div className="flex w-full flex-col bg-white rounded-[24px]">
       {/* Header */}
@@ -100,7 +132,7 @@ export default function AppointmentDetails({
                   data?.doctor?.photo ||
                   `${data?.doctor?.first_name} ${data?.doctor?.last_name}`
                 }
-                className="!h-[80px] !w-[80px]"
+                className="!h-[80px] !w-[80px] text-xl text-white"
               />
 
               <div className="flex flex-1 flex-col">
@@ -154,7 +186,7 @@ export default function AppointmentDetails({
                   data?.patient?.photo ||
                   `${data?.patient?.first_name} ${data?.patient?.last_name}`
                 }
-                className="!h-[80px] !w-[80px]"
+                className="!h-[80px] !w-[80px] text-xl text-white"
               />
               <div className="flex flex-1 flex-col">
                 <div className="flex items-center gap-4">
@@ -196,7 +228,7 @@ export default function AppointmentDetails({
                     </div>
                   </div>
                 </div>
-                <div className='mt-2'>
+                <div className='mt-2 flex gap-2'>
                   <Link
                     href={routes.patient.patientDetail(data?.patient?.patient_id.toString())}
                   >
@@ -205,6 +237,17 @@ export default function AppointmentDetails({
                       className="!bg-[#3872F9] text-[16px] font-semibold"
                     >
                       Go to Profile
+                    </Button>
+                  </Link>
+                  <Link
+                    href={routes.patient.edit(data?.patient?.patient_id.toString())}
+                  >
+                    <Button
+                      size='sm'
+                      variant='outline'
+                      className="text-[16px] font-semibold"
+                    >
+                      Edit Patient
                     </Button>
                   </Link>
                 </div>
@@ -232,7 +275,7 @@ export default function AppointmentDetails({
               <div className="flex items-start gap-2">
                 <span className="text-sm text-[#525252]">Type:</span>
                 <div className="flex-1">
-                  <p className="text-sm text-[#111111]">{data?.type}</p>
+                  <p className="text-sm text-[#111111]">{getAptType(data?.type ?? '')}</p>
                 </div>
               </div>
             </div>
@@ -269,7 +312,7 @@ export default function AppointmentDetails({
                 <span className="text-sm text-[#525252]">Status:</span>
                 <div className="flex-1">
                   <p className="text-sm text-[#111111]">
-                    {getPaymentStatusBadge(data?.payment?.status ?? 0)}
+                    {getAptStatusBadge(data?.payment?.status ?? '')}
                   </p>
                 </div>
               </div>

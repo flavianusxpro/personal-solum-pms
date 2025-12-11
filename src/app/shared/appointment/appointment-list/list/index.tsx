@@ -97,8 +97,8 @@ export default function AppointmentListTable({
       status: filterStateValue?.status || undefined,
       doctor_ids: filterStateValue?.doctor ? [filterStateValue?.doctor] : undefined,
       clinic_ids: [dataProfile?.clinics[0].id],
+      patient_search: params.search ? params.search : undefined,
     }),
-    patient_search: params.search ? params.search : undefined,
     patientId: filterStateValue?.patient
       ? filterStateValue?.patient
       : undefined,
@@ -202,7 +202,7 @@ export default function AppointmentListTable({
           ...prevState,
           search: value,
         }));
-      }, 2000),
+      }, 500),
     []
   );
 
@@ -220,10 +220,13 @@ export default function AppointmentListTable({
   const [isResetting, setIsResetting] = useState(false);
 
   useEffect(() => {
-    if (!isResetting) {
+    if (
+      filterStateValue.status !== null &&
+      !isResetting
+    ) {
       setRange?.(null);
     }
-  }, [filterStateValue.createdAt]);
+  }, [filterStateValue.createdAt, filterStateValue.status]);
 
   useEffect(() => {
     if (range !== null && !isResetting) {
@@ -232,6 +235,7 @@ export default function AppointmentListTable({
       setFilterStateValue((prev) => ({
         ...prev,
         createdAt: [null, null],
+        status: null
       }));
 
       setTimeout(() => setIsResetting(false), 0);

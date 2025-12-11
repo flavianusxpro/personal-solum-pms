@@ -23,7 +23,7 @@ import CreateUpdateAppointmentForm from '../../modal/appointment-form';
 import { FaRegNoteSticky } from 'react-icons/fa6';
 import { GrSchedules } from 'react-icons/gr';
 import { RxCountdownTimer } from 'react-icons/rx';
-import { MdNotes, MdOutlineFreeCancellation, MdOutlineVisibility } from 'react-icons/md';
+import { MdNotes, MdOutlineFreeCancellation, MdOutlineVisibility, MdVerified } from 'react-icons/md';
 import AddNotesForm from '../../modal/add-notes';
 import CancelForm from '../../modal/cancel-form';
 import RescheduleAppointmentForm from '../../modal/reschedule';
@@ -40,6 +40,8 @@ import StatusColumnCell from './StatusColumnCell';
 import { BsArrowRepeat } from 'react-icons/bs';
 import { routes } from '@/config/routes';
 import Link from 'next/link';
+import AvatarCardNew from '@/core/ui/avatar-card-new';
+
 dayjs.extend(timezonePlugin);
 const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -125,22 +127,37 @@ export const GetColumns = ({
       width: 320,
       render: (_: any, row: RowValue) =>
       (
-        <div className='flex items-center gap-2'>
-          <span
-            className='font-bold cursor-pointer'
-            onClick={(e) => {
-              e.stopPropagation();
-              closeModal(),
-                openModal({
-                  view: <ModalProfilePatient data={row} />,
-                  customSize: '1100px',
-                });
-            }}
-          >
-            {row?.patient?.first_name} {row?.patient?.last_name}
-          </span>
-        </div>
-      ),
+        <div
+          onClick={(e) => {
+            e.stopPropagation()
+            closeModal(),
+              openModal({
+                view: <ModalProfilePatient data={row} />,
+                customSize: '1100px',
+              });
+          }}
+        >
+          <AvatarCardNew
+            className='cursor-pointer'
+            src={row?.patient?.photo || ''}
+            name={`${row?.patient?.first_name} ${row?.patient?.middle_name ? row?.patient?.middle_name : ''} ${row?.patient?.last_name}`}
+            otherIcon={
+              [
+                () => {
+                  const isVerified = row?.patient?.has_filled_consent_form === true && row?.patient?.ihi_number && row?.patient?.ihi_number !== '';
+                  return (
+                    <MdVerified
+                      className={`cursor-pointer ${isVerified ? 'text-blue-600' : 'text-gray-400'}`}
+                      title={isVerified ? "Verified" : "Not Verified"}
+                      key="verified"
+                    />
+                  );
+                },
+              ]
+            }
+          />
+        </div >
+      )
     },
     {
       title: <HeaderCell title="Date" />,

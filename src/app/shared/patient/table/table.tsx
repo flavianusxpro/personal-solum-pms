@@ -162,7 +162,7 @@ export default function PatientTable() {
           ...prevState,
           search: value,
         }));
-      }, 2000),
+      }, 500),
     []
   );
 

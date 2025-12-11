@@ -21,8 +21,10 @@ export default function TableFooter({
 
   return (
     <div className="sticky bottom-0 left-0 z-10 mt-2.5 flex w-full items-center justify-between rounded-md border border-gray-300 bg-gray-0 px-5 py-3.5 text-gray-900 shadow-sm dark:border-gray-300 dark:bg-gray-100 dark:text-white dark:active:bg-gray-100">
-      <div>
-        <Text as="strong">{checkedItems.length}</Text> selected{' '}
+      <div className='flex justify-between w-full items-center'>
+        <span>
+          <Text as="strong">{checkedItems.length}</Text> selected 
+        </span>
         <Button
           size="sm"
           color="danger"

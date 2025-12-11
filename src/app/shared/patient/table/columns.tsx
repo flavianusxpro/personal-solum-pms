@@ -3,12 +3,11 @@
 import Link from 'next/link';
 import { Badge, Text, ActionIcon, Checkbox, Dropdown, Button } from 'rizzui';
 import { routes } from '@/config/routes';
-import EyeIcon from '@core/components/icons/eye';
-import PencilIcon from '@core/components/icons/pencil';
-import AvatarCard from '@core/ui/avatar-card';
-import DateCell from '@core/ui/date-cell';
+import { MdVerified } from 'react-icons/md';
 import { IGetAllPatientsResponse } from '@/types/ApiResponse';
 import { HeaderCell } from '@/app/shared/ui/table';
+import EyeIcon from '@core/components/icons/eye';
+import PencilIcon from '@core/components/icons/pencil';
 import CSelect from '../../ui/select';
 import toast from 'react-hot-toast';
 import { Dispatch, SetStateAction, useState } from 'react';
@@ -16,13 +15,14 @@ import { useUpdatePatient } from '@/hooks/usePatient';
 import { PiFlag, PiNote } from 'react-icons/pi';
 import { useModal } from '../../modal-views/use-modal';
 import RedFlagForm from '../modal/red-flag';
-import { HiOutlineDotsVertical } from 'react-icons/hi';
 import DeleteModal from '../../ui/delete-modal';
 import TrashIcon from '@/core/components/icons/trash';
 import { CiWarning } from 'react-icons/ci';
 import DateCellNew from '@/core/ui/date-cell-new';
-import { MdVerified } from 'react-icons/md';
 import AvatarCardNew from '@/core/ui/avatar-card-new';
+// import AvatarCard from '@core/ui/avatar-card';
+// import DateCell from '@core/ui/date-cell';
+// import { HiOutlineDotsVertical } from 'react-icons/hi';
 
 const statusOptions = [
   { label: 'Active', value: 1 },
@@ -104,6 +104,7 @@ export const getColumns = ({
             name={`${row.first_name} ${row.middle_name ? row.middle_name : ''} ${row.last_name}`}
             // number={row.mobile_number}
             // description={row.email?.toLowerCase()}
+            className='cursor-pointer'
             otherIcon={
               [
                 () => {
