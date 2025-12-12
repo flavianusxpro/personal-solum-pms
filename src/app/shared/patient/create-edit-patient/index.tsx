@@ -14,6 +14,7 @@ import { useParams } from 'next/navigation';
 import { useGetPatientById } from '@/hooks/usePatient';
 import TabHistory from './tab-history';
 import TabDocumentation from './tab-documentation';
+import TabLog from './tab-log';
 
 export const navItems = [
   {
@@ -47,6 +48,10 @@ export const navItems = [
   {
     value: 'history',
     label: 'History',
+  },
+  {
+    value: 'log',
+    label: 'Log',
   },
 ];
 
@@ -108,6 +113,7 @@ export default function CreateEditPatient({
         {tab === 'assign' && <TabAssign isView={isView} />}
         {tab === 'history' && <></>}
         {tab === 'documentation' && <TabDocumentation isView={isView} />}
+        {tab === 'log' && <TabLog />}
       </div>
     </>
   );

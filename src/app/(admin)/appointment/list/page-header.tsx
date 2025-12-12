@@ -42,7 +42,7 @@ export default function AppointmentListPageHeader({ className }: HeaderProps) {
   function handleExport() {
     closeModal(),
     openModal({
-      view: <ExportAppointment />,
+      view: <ExportAppointment data={appointmentData} />,
       customSize: '500px'
     })
   }

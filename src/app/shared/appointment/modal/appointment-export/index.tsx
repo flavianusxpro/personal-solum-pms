@@ -1,21 +1,23 @@
 import { useModal } from "@/app/shared/modal-views/use-modal";
 import FormFooter from "@/core/components/form-footer";
 import CheckCircleIcon from "@/core/components/icons/check-circle";
-import { useEffect, useState } from "react";
-import { PiXBold } from "react-icons/pi";
-import { ActionIcon, AdvancedRadio, RadioGroup, Select, Text, Title } from "rizzui"
+import cn from "@/core/utils/class-names";
+import { exportToCSV } from "@/core/utils/export-to-csv";
+import { useCallback, useEffect, useState } from "react";
+import { PiArrowLineUpBold, PiXBold } from "react-icons/pi";
+import { ActionIcon, AdvancedRadio, Button, RadioGroup, Select, Text, Title } from "rizzui"
 
-const ExportAppointment = () => {
+const ExportAppointment = (data: any) => {
     const [value, setValue] = useState("csv");
     const { closeModal } = useModal();
     const [showColumns, setShowColumns] = useState(false);
     const [selectedColumns, setSelectedColumns] = useState([
-        'patientName', 
-        'doctorName', 
-        'paymentStatus', 
-        'appointmentDate', 
-        'appointmentType', 
-        'appointmentTime', 
+        'patientName',
+        'doctorName',
+        'paymentStatus',
+        'appointmentDate',
+        'appointmentType',
+        'appointmentTime',
         'appointmentStatus'
     ])
 
@@ -57,6 +59,11 @@ const ExportAppointment = () => {
             setShowColumns(false);
         }
     }, [value]);
+
+    const handleExportPdf = useCallback(() => {
+        if (!data) return
+        exportToCSV(data?.data, "ID,Patient,Doctor,Service Type,Date,Status,Payment,Duration", 'appointment_data');
+    }, [data]);
 
     return (
         <div className="relative flex min-h-[400px] flex-col">
@@ -134,11 +141,32 @@ const ExportAppointment = () => {
 
             </div>
 
-            <FormFooter
+            <div className="p-5 flex justify-end border border-t border-[#D8D8D8]">
+                {value === 'csv' ? (
+                    <div>
+                        <Button
+                            onClick={() => { }}
+                            className={cn('w-full @lg:w-auto')}
+                        >
+                            Download
+                        </Button>
+                    </div>
+                ) : (
+                    <div>
+                        <Button
+                            onClick={handleExportPdf}
+                            className={cn('w-full @lg:w-auto')}
+                        >
+                            Download
+                        </Button>
+                    </div>
+                )}
+            </div>
+            {/* <FormFooter
                 className="rounded-b-xl"
                 // altBtnText="Cancel"
                 submitBtnText="Download"
-            />
+            /> */}
         </div>
     )
 }
