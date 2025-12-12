@@ -36,14 +36,17 @@ export default function CreatePatienModal() {
 
   const onSubmit: SubmitHandler<PatientCreateFormTypes> = (data) => {
     const payload: IPayloadCreateEditPatient = {
+      address_line_1: data.address_line_1,
+      address_line_2: data.address_line_2,
       title: data.title,
       first_name: data.first_name,
+      middle_name: data.middle_name,
       last_name: data.last_name as string,
       email: data.email,
       password: data.password,
       date_of_birth: data.date_of_birth as string,
       gender: data.gender as string,
-      mobile_number: ('+' + data.mobile_number) as string,
+      mobile_number: data.mobile_number as string,
       status: 1,
       timezone: data.timezone ?? 'Australia/Sydney',
       medicare_card_number: data.medicare_card as string,
@@ -141,6 +144,14 @@ export default function CreatePatienModal() {
                       className="flex-grow"
                     />
                   </FormGroup>
+                  <FormGroup title="Middle Name" isLabel className="flex-1">
+                    <Input
+                      placeholder="Middle Name"
+                      {...register('middle_name')}
+                      error={errors.middle_name?.message}
+                      className="flex-grow"
+                    />
+                  </FormGroup>
                   <FormGroup title="Last Name" isLabel className="flex-1">
                     <Input
                       placeholder="Last Name"
@@ -161,20 +172,7 @@ export default function CreatePatienModal() {
                       className="flex-grow"
                     />
                   </FormGroup>
-                  <FormGroup title="Phone Number" isLabel className="flex-1">
-                    {/* <Controller
-                      name="mobile_number"
-                      control={control}
-                      render={({ field }) => (
-                        <PhoneNumber
-                          {...field}
-                          country="au"
-                          preferredCountries={['au']}
-                          placeholder="Phone Number"
-                          error={errors.mobile_number?.message}
-                        />
-                      )}
-                    /> */}
+                  <FormGroup title="Mobile Number" isLabel className="flex-1">
                     <Input
                       placeholder="Phone Number"
                       {...register('mobile_number')}

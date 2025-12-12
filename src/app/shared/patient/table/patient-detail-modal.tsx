@@ -92,7 +92,12 @@ export default function PatientDetailModal({
                                 <Text className="text-gray-500">Address:</Text>
                                 <Text className="font-medium leading-relaxed">
                                     {/* @ts-ignore */}
-                                    {[data.address_line_1, data.address_line_2].filter(Boolean).join(', ') || '-'}
+                                    {/* {[data.address_line_1, data.address_line_2].filter(Boolean).join(', ') || '-'} */}
+                                    {data.address_line_1 ? `${data.address_line_1},` : ''}
+                                    {data.address_line_2 ? `${data.address_line_2},` : ''}
+                                    {data.suburb ? `${data.suburb},` : '-'}
+                                    {data.postcode ? `${data.postcode},` : '-'}
+                                    {data.country ? `${data.country}` : '-'}
                                 </Text>
                             </div>
                         </div>
