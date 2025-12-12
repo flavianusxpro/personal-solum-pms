@@ -159,7 +159,7 @@ export default function TableFilter({
         {
           Array.isArray(otherButton) && otherButton.length > 0 && (
             otherButton.map((Button: any, index: number) =>
-              typeof Button === "function" ? <span key={index} className='bg-amber-200'>{Button()}</span> : <span key={index}>{Button}</span>
+              typeof Button === "function" ? <span key={index}>{Button()}</span> : <span key={index}>{Button}</span>
             )
           )
         }

@@ -26,11 +26,12 @@ import { useProfile } from '@/hooks/useProfile';
 import TableHeader from '@/app/shared/ui/table-header';
 import { StatusSelect } from '@/app/shared/invoice/invoice-list/columns';
 import AppointmentDetails from './appointment-details';
-import { Button } from 'rizzui';
+import { Button, Select } from 'rizzui';
 import { BsArrowRepeat } from 'react-icons/bs';
 import ShowConfirm from '../../modal/confirm-modal';
 import CSelect from '@/core/ui/select';
 import { RiMailSendLine } from 'react-icons/ri';
+import ModalSendAppointment from './modalSendAppointment';
 
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
@@ -381,6 +382,8 @@ export default function AppointmentListTable({
     filterStateValue?.filter_invalid_mobile,
   ]);
 
+  const [synchronize, setSynchronize] = useState(null)
+
   return (
     <div
       className={cn(
@@ -451,7 +454,12 @@ export default function AppointmentListTable({
                     key="synchronize"
                     className="flex items-center gap-[4px] h-9 pe-3 ps-2.5 !bg-none"
                     variant="outline"
-                    onClick={() => { }}
+                    onClick={() => {
+                      openModal({
+                        view: <ModalSendAppointment />,
+                        customSize: '1500px',
+                      });
+                    }}
                   >
                     <span>
                       <RiMailSendLine className="text-lg" />
@@ -459,7 +467,7 @@ export default function AppointmentListTable({
                     <span>Send</span>
                   </Button>
 
-                  <Button
+                  {/* <Button
                     key="synchronize"
                     className="flex items-center gap-[4px] h-9 pe-3 ps-2.5 !bg-none"
                     variant="outline"
@@ -469,7 +477,17 @@ export default function AppointmentListTable({
                       <BsArrowRepeat className="text-lg" />
                     </span>
                     <span>Synchronize</span>
-                  </Button>
+                  </Button> */}
+                  <Select
+                    options={[
+                      { label: "Pull from source", value: 'Pull from source' },
+                      { label: "Push to source", value: 'Push to source' },
+                    ]}
+                    value={synchronize}
+                    onChange={(e: any) => setSynchronize(e.value)}
+                    placeholder="Synchronize"
+                    className="!h-9"
+                  />
                 </>
               )}
 

@@ -194,6 +194,10 @@ export interface IGetAllPatientsResponse extends ApiResponseWithPagination {
     phone_work_number: string;
     status: number;
     address_line_1: string | null;
+    address_line_2?: string | null;
+    suburb?: string | null | number;
+    postcode?: string | number | null;
+    country?: string;
     date_of_birth: string;
     gender: string;
     medicare_card_number: string;

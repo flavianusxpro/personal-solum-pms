@@ -94,9 +94,28 @@ export const getColumns = ({
           email: "Email",
         };
 
-        const missingFields = Object.keys(requiredFieldsMap).filter(
-          (key: string) => row[String(key)] === null || row[String(key)] === undefined || row[String(key)] === ""
-        );
+        // const missingFields = Object.keys(requiredFieldsMap).filter(
+        //   (key: string) => row[String(key)] === null || row[String(key)] === undefined || row[String(key)] === ""
+        // );
+
+        const missingFields = Object.keys(requiredFieldsMap).filter((key: string) => {
+          const value = row[String(key)];
+
+          if (key === "mobile_number") {
+            if (!value) return true; 
+
+            const raw = String(value);
+
+            if (raw.startsWith("+")) return true;
+
+            const startsWith04 = raw.startsWith("04");
+            const isTenDigits = raw.length === 10;
+
+            return !startsWith04 || !isTenDigits;
+          }
+
+          return value === null || value === undefined || value === "";
+        });
 
         return (
           <AvatarCardNew
