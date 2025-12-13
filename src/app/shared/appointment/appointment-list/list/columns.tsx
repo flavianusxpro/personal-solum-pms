@@ -129,8 +129,6 @@ export const GetColumns = ({
       key: 'patient',
       width: 320,
       render: (_: any, row: RowValue) => {
-        const isVerified = row?.patient?.has_filled_consent_form === true && row?.patient?.ihi_number && row?.patient?.ihi_number !== '';
-
         return (
           <div
             onClick={(e) => {

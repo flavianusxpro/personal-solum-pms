@@ -200,8 +200,6 @@ export default function SelectClinic() {
                   const selectedPatient = patientsOptions.find(
                     (p) => p.value === value
                   );
-                  console.log('zzz selected patient name', selectedPatient);
-                  
                   field.onChange(value);
                   setFormData((prev) => ({
                     ...prev,
