@@ -50,9 +50,9 @@ export default function SelectClinic() {
   const patientsOptions = useMemo(() => {
     if (!dataPatients) return [];
     return dataPatients.data.map((patient) => ({
-      label: `${patient.first_name} ${patient.last_name} - ${patient.email} - ${patient?.clinics?.[0]?.name}`,
+      label: `${patient.first_name} ${patient.middle_name ?? ''} ${patient.last_name} - ${patient.email} - ${patient?.clinics?.[0]?.name}`,
       value: patient.id,
-      name: `${patient.first_name} ${patient.last_name}`,
+      name: `${patient.first_name} ${patient.middle_name ?? ''} ${patient.last_name}`,
       address: patient?.address_line_1,
       mobile_number: patient?.mobile_number,
     }));
@@ -200,6 +200,8 @@ export default function SelectClinic() {
                   const selectedPatient = patientsOptions.find(
                     (p) => p.value === value
                   );
+                  console.log('zzz selected patient name', selectedPatient);
+                  
                   field.onChange(value);
                   setFormData((prev) => ({
                     ...prev,
@@ -286,9 +288,6 @@ export default function SelectClinic() {
               ))}
             </div>
           )
-          // : (
-          //   <p>Please select patient first</p>
-          // )
         }
       </div>
       <Footer />

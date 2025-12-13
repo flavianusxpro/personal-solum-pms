@@ -15,12 +15,14 @@ interface FooterProps {
   className?: string;
   goBackToStepNumber?: number;
   isLastStep?: boolean;
+  setStatusChanged?: React.Dispatch<React.SetStateAction<boolean>> | undefined;
 }
 
 export default function Footer({
   className,
   goBackToStepNumber,
   isLastStep,
+  setStatusChanged,
 }: FooterProps) {
   const { step, gotoPrevStep, gotoStep } = useStepperCancelAppointment();
   const { closeModal } = useModal();
@@ -30,10 +32,6 @@ export default function Footer({
     usePostRescheduleAppointmentByDate();
 
   function submitRescheduleAppointment() {
-    console.log("==================== asu ====================")
-    console.log(formData)
-    console.log("==================== asu ====================")
-    // Format "YYYY-MM-DD hh:mm A" (e.g., "2025-12-09 02:00 PM")
     const dateTimeString = `${formData.date}T${formData.doctorTime}`;
 
     // Parse string tersebut dan format ke ISO "YYYY-MM-DDTHH:mm:ss"
@@ -57,6 +55,7 @@ export default function Footer({
       {
         onSuccess: () => {
           toast.success("Appointment rescheduled successfully");
+          setStatusChanged?.(true)
           closeModal();
         },
         onError: (error: any) => {

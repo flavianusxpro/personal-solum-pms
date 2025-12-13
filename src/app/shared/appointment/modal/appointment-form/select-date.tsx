@@ -56,12 +56,16 @@ export default function DateTime() {
     formState: { errors },
     handleSubmit,
     setValue,
+    watch,
   } = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       date: formData.date ? new Date(formData.date) : new Date(),
     },
   });
+  
+  const doctorTime =  watch('doctorTime');
+  const doctorDate = watch('date')
 
   const { data: dataDoctor, isLoading: isLoadingDoctor } = useGetDoctorByClinic(
     {
@@ -74,13 +78,6 @@ export default function DateTime() {
     }
   );
 
-  const doctor = useMemo(() => {
-    return dataDoctor?.find(
-      (doctor) => doctor.id === Number(formData.doctorId)
-    );
-  }, [dataDoctor, formData.doctorId]);
-
-  // Auto-expand doctor's times if they were pre-selected from last appointment
   useEffect(() => {
     if (formData.doctorId && dataDoctor?.length) {
       setCurrentOpen(Number(formData.doctorId));
@@ -184,7 +181,6 @@ export default function DateTime() {
             {dataDoctor?.map((doctor, index: number) => {
               if (!doctor.id) return null;
               const name = `${doctor?.first_name} ${doctor?.first_name}`;
-              console.log(doctor);
               return (
                 <div
                   key={`${doctor.id}-${formData.date}-${index}`}
@@ -225,12 +221,14 @@ export default function DateTime() {
                     </div>
                   </div>
 
-                  <DoctorTime
-                    setValue={setValue}
-                    currentOpen={currentOpen}
-                    doctor={doctor}
-                    localTimezone={localTimezone}
-                  />
+                  {doctorDate && formData.date && formData.date !== '' && (
+                    <DoctorTime
+                      setValue={setValue}
+                      currentOpen={currentOpen}
+                      doctor={doctor}
+                      doctorTime={doctorTime}
+                    />
+                  )}
                 </div>
               );
             })}
@@ -247,12 +245,12 @@ function DoctorTime({
   doctor,
   currentOpen,
   setValue,
-  localTimezone,
+  doctorTime,
 }: {
   doctor: IGetDoctorByClinicResponse['data'][number];
   currentOpen: number | null;
   setValue: UseFormSetValue<FormSchemaType>;
-  localTimezone: string;
+  doctorTime: string;
 }) {
   const [formData, setFormData] = useAtom(formDataAtom);
   const [hasAutoSelected, setHasAutoSelected] = useState(false);
@@ -272,8 +270,8 @@ function DoctorTime({
       doctorId: doctor.id as number,
       appointment_type: appointmentType,
       appointment_date: dayjs(formData.date).format('YYYY-MM-DD'),
-      timezone: localTimezone,
-    });
+      timezone: 'Australia/Sydney',
+    })
 
   const timeList = useMemo(() => {
     if (!dataAvailability?.data) return [];
@@ -325,33 +323,16 @@ function DoctorTime({
     return <Loader />;
   }
 
-  const toSydneyFromAvail = (avail: string) => {
-    const today = dayjs().format('YYYY-MM-DD');
-    return dayjs(`${today} ${avail}`, 'YYYY-MM-DD h:mm A')
-      .tz('Australia/Sydney')
-      .format('h:mm A');
-  };
-
-  const toSydneyFromValue = (value: string) => {
-    const today = dayjs().format('YYYY-MM-DD');
-    return dayjs(`${today} ${value}`, 'YYYY-MM-DD HH:mm')
-      .tz('Australia/Sydney')
-      .format('HH:mm');
-  };
 
   return (
     <div className="px-4 pb-4">
       {timeList.length > 0 ? (
         <div className="relative">
           <div
-            className={`mt-4 grid transition-all delay-200 duration-1000 ease-in-out ${
-              currentOpen === doctor.id ? 'max-h-[500px]' : 'max-h-20'
-            } grid-cols-5 gap-2 overflow-hidden`}
+            className={`mt-4 grid transition-all delay-200 duration-1000 ease-in-out ${currentOpen === doctor.id ? 'max-h-[500px]' : 'max-h-20'
+              } grid-cols-5 gap-2 overflow-hidden`}
           >
             {timeList.map(({ availTime, valueTime }, idx) => {
-              const sydneyAvailTime = toSydneyFromAvail(availTime);
-              const sydneyValueTime = toSydneyFromValue(valueTime);
-
               return (
                 <button
                   key={idx}
@@ -359,18 +340,18 @@ function DoctorTime({
                   className={cn(
                     'w-auto rounded-md px-2 py-2 text-sm hover:bg-green-300',
                     formData.doctorId == doctor.id &&
-                      formData.doctorTime === sydneyValueTime
+                      formData.doctorTime === valueTime && doctorTime === valueTime
                       ? 'bg-green-300'
                       : 'bg-green-200/50'
                   )}
                   onClick={() => {
-                    setValue('doctorTime', sydneyValueTime);
+                    setValue('doctorTime', valueTime);
                     setValue('doctorId', doctor.id as number);
                     setValue('fee', doctor.cost.amount || '');
 
                     setFormData((prev) => ({
                       ...prev,
-                      doctorTime: sydneyValueTime,
+                      doctorTime: valueTime,
                       doctorId: doctor.id as number,
                       fee: doctor.cost.amount || '',
                       doctor_name: `${doctor.first_name ?? doctor.first_name} ${doctor.last_name ?? doctor.last_name}`,
@@ -378,7 +359,7 @@ function DoctorTime({
                     }));
                   }}
                 >
-                  {sydneyAvailTime}
+                  {availTime}
                 </button>
               );
             })}

@@ -27,10 +27,12 @@ export const appointmentTypesOptions = Object.entries(appointmentTypes).map(
 
 const statusOptions = [
   { value: 1, label: 'Draft' },
-  { value: 2, label: 'Pending' },
-  { value: 3, label: 'Confirmed' },
+  { value: 2, label: 'Scheduled' },
+  { value: 3, label: 'Check In' },
   { value: 4, label: 'Finished' },
   { value: 5, label: 'Cancelled' },
+  { value: 6, label: 'On Going' },
+  { value: 7, label: 'No Show' },
 ];
 
 const paymentStatusOptions = [
@@ -207,7 +209,7 @@ export default function FilterElement({
         dropdownClassName="!z-10 h-auto"
         className="w-full @[35rem]:w-auto"
         options={Array.from({ length: 12 }, (_, index) => ({
-          label: `${index + 1} Month`,
+          label: `${index + 1} Month `,
           value: index + 1,
         }))}
         onClear={() => {

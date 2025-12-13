@@ -50,7 +50,7 @@ async function attachToken(
     config.headers.set('Authorization', `Bearer ${session.accessToken}`);
   }
 
-  config.headers.set('timezone-client', timeZone);
+  config.headers.set('timezone-client', "Australia/Sydney");
   config.headers.set('timezone-offset', formattedOffset);
 
   config.headers.set('X-Identity-ID', process.env.NEXT_PUBLIC_X_IDENTITY_ID);

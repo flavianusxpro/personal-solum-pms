@@ -31,7 +31,6 @@ export default function Footer({ className, showSaveButton }: FooterProps) {
 
   const isEdit = formData.id;
   const isDisabled = !formData.doctorTime && !formData.date;
-
   return (
     <footer
       className={cn(

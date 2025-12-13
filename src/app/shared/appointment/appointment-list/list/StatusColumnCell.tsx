@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Text } from 'rizzui';
 import { StatusCell, StatusSelect } from './columns';
 
 interface StatusColumnCellProps {
   row: any; 
+  setStatusChanged: Dispatch<SetStateAction<boolean>> | undefined
 }
 
-function StatusColumnCell({ row }: StatusColumnCellProps) {
+function StatusColumnCell({ row, setStatusChanged }: StatusColumnCellProps) {
   const [statusValue, setStatusValue] = useState<number | null>(null);
   
   return (
@@ -14,7 +15,8 @@ function StatusColumnCell({ row }: StatusColumnCellProps) {
       <StatusSelect 
         id={row.id} 
         selectItem={row.status} 
-        statusValue={statusValue} 
+        statusValue={statusValue}
+        setStatusChanged={setStatusChanged} 
       />
       
       {row.date && (
