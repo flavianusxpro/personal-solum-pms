@@ -32,6 +32,8 @@ import ShowConfirm from '../../modal/confirm-modal';
 import CSelect from '@/core/ui/select';
 import { RiMailSendLine } from 'react-icons/ri';
 import ModalSendAppointment from './modalSendAppointment';
+import { LuRepeat2 } from 'react-icons/lu';
+import ModalSynchronize from './modalSynchronize';
 
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
@@ -59,9 +61,13 @@ const filterState = {
 export default function AppointmentListTable({
   range,
   setRange,
+  statusChanged,
+  setStatusChanged
 }: {
   range: string | null | undefined;
   setRange?: React.Dispatch<SetStateAction<string | null | undefined>>;
+  statusChanged?: boolean,
+  setStatusChanged?: React.Dispatch<SetStateAction<boolean>>
 }) {
   const { isOpen: open, closeModal } = useModal();
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -182,6 +188,7 @@ export default function AppointmentListTable({
       mutate(ids, {
         onSuccess: () => {
           setIsOpen(false);
+          setStatusChanged?.(true)
           toast.success('Appointment deleted successfully');
           refetch();
         },
@@ -309,6 +316,7 @@ export default function AppointmentListTable({
         setIdAppointment,
         isOpen,
         setIsOpen,
+        setStatusChanged
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -319,6 +327,7 @@ export default function AppointmentListTable({
       onChecked,
       isOpen,
       idAppointment,
+      setStatusChanged
     ]
   );
 
@@ -382,7 +391,22 @@ export default function AppointmentListTable({
     filterStateValue?.filter_invalid_mobile,
   ]);
 
-  const [synchronize, setSynchronize] = useState(null)
+  const [synchronize, setSynchronize] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (synchronize === 'Push to source') {
+      openModal({
+        view: <ModalSynchronize setSynchronize={setSynchronize} isPush={true} />,
+        customSize: '1100px',
+      })
+    }
+    if (synchronize === 'Pull from source') {
+      openModal({
+        view: <ModalSynchronize setSynchronize={setSynchronize} />,
+        customSize: '1100px',
+      })
+    }
+  }, [synchronize])
 
   return (
     <div
@@ -392,6 +416,7 @@ export default function AppointmentListTable({
       )}
     >
       <ControlledTable
+        filter={filterStateValue}
         variant="modern"
         isLoading={isLoading || isLoadingGetAppointments}
         showLoadingText={true}
@@ -439,12 +464,13 @@ export default function AppointmentListTable({
               {buttonType && (
                 <CSelect
                   key="status-select"
-                  className="min-w-[140px] !h-9"
+                  className="min-w-[140px]"
                   dropdownClassName="h-auto"
                   placeholder="Select Status"
                   options={aptStatusOptions}
                   value=""
                   onChange={() => { }}
+                  size='md'
                 />
               )}
 
@@ -452,7 +478,7 @@ export default function AppointmentListTable({
                 <>
                   <Button
                     key="synchronize"
-                    className="flex items-center gap-[4px] h-9 pe-3 ps-2.5 !bg-none"
+                    className="flex items-center gap-[4px] !bg-none"
                     variant="outline"
                     onClick={() => {
                       openModal({
@@ -460,33 +486,25 @@ export default function AppointmentListTable({
                         customSize: '1500px',
                       });
                     }}
+                    size='md'
                   >
                     <span>
                       <RiMailSendLine className="text-lg" />
                     </span>
                     <span>Send</span>
                   </Button>
-
-                  {/* <Button
-                    key="synchronize"
-                    className="flex items-center gap-[4px] h-9 pe-3 ps-2.5 !bg-none"
-                    variant="outline"
-                    onClick={() => { }}
-                  >
-                    <span>
-                      <BsArrowRepeat className="text-lg" />
-                    </span>
-                    <span>Synchronize</span>
-                  </Button> */}
                   <Select
                     options={[
                       { label: "Pull from source", value: 'Pull from source' },
                       { label: "Push to source", value: 'Push to source' },
                     ]}
+                    prefix={<LuRepeat2 className="text-lg" />}
                     value={synchronize}
                     onChange={(e: any) => setSynchronize(e.value)}
                     placeholder="Synchronize"
-                    className="!h-9"
+                    size='md'
+                    clearable={synchronize !== null}
+                    onClear={() => setSynchronize(null)}
                   />
                 </>
               )}
@@ -495,7 +513,8 @@ export default function AppointmentListTable({
                 <Button
                   key="required"
                   variant={showRequiredOnly ? 'solid' : 'outline'}
-                  className={`flex items-center gap-[4px] h-9 pe-3 ps-2.5`}
+                  className={`flex items-center gap-[4px]`}
+                  size='md'
                   onClick={() => {
                     setShowRequiredOnly(!showRequiredOnly);
                   }}

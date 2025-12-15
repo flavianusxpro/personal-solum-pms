@@ -24,6 +24,7 @@ const TablePagination = dynamic(
 );
 
 type ControlledTableProps = {
+  filter?: any;
   isLoading?: boolean;
   showLoadingText?: boolean;
   filterElement?: React.ReactElement;
@@ -37,6 +38,7 @@ type ControlledTableProps = {
 } & TableProps;
 
 export default function ControlledTable({
+  filter,
   isLoading,
   filterElement,
   filterOptions,
@@ -51,7 +53,7 @@ export default function ControlledTable({
   return (
     <>
       {!isEmpty(filterOptions) && (
-        <TableFilter {...filterOptions}>{filterElement}</TableFilter>
+        <TableFilter filter={filter} {...filterOptions}>{filterElement}</TableFilter>
       )}
 
       <div className="relative">

@@ -6,15 +6,20 @@ import { useState } from 'react';
 
 export default function AppointmentList() {
   const [range, setRange] = useState<string | null | undefined>(null);
+  const [statusChanged, setStatusChanged] = useState(false)
   return (
     <div className="flex flex-col gap-10 @container">
       <AppointmentListStats
         range={range}
         setRange={setRange}
+        statusChanged={statusChanged}
+        setStatusChanged={setStatusChanged}
       />
       <AppointmentListTable
         range={range}
         setRange={setRange}
+        statusChanged={statusChanged}
+        setStatusChanged={setStatusChanged}
       />
     </div>
   );

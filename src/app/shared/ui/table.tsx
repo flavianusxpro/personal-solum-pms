@@ -194,7 +194,7 @@ export function ToggleColumns<T>({
     <div>
       <Popover shadow="sm" placement="bottom-end">
         <Popover.Trigger>
-          <ActionIcon variant="outline" title={'Toggle Columns'}>
+          <ActionIcon size='md' className='h-10 w-10' variant="outline" title={'Toggle Columns'}>
             <PiTextColumns strokeWidth={3} className="h-6 w-6" />
           </ActionIcon>
         </Popover.Trigger>

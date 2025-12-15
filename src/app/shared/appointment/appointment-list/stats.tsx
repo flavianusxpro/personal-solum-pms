@@ -16,13 +16,15 @@ import {
   PiBookBookmark,
   PiCheckBold,
 } from 'react-icons/pi';
-import { SetStateAction, useMemo } from 'react';
+import { SetStateAction, useEffect, useMemo } from 'react';
 import { useGetSummaryAppointments } from '@/hooks/useAppointment';
 
 type AppointmentStatsType = {
   className?: string;
   setRange?: React.Dispatch<SetStateAction<string | null | undefined>>;
   range?: string | null
+  statusChanged?: boolean;
+  setStatusChanged?: React.Dispatch<SetStateAction<boolean>> | undefined
 };
 
 export type StatType = {
@@ -148,6 +150,8 @@ export default function AppointmentListStats({
   className,
   range,
   setRange,
+  statusChanged,
+  setStatusChanged
 }: AppointmentStatsType) {
   const {
     sliderEl,
@@ -157,7 +161,7 @@ export default function AppointmentListStats({
     scrollToTheLeft,
   } = useScrollableSlider();
 
-  const { data, isLoading } = useGetSummaryAppointments();
+  const { data, isLoading, refetch, isSuccess } = useGetSummaryAppointments();
   const statData: StatType[] = useMemo(
     () => [
       {
@@ -220,6 +224,14 @@ export default function AppointmentListStats({
       data?.draft_appointment_increased_last_month,
     ]
   );
+
+  useEffect(() => {
+    if (statusChanged) refetch()
+  }, [statusChanged])
+
+  useEffect(() => {
+    if (isSuccess && statusChanged) setStatusChanged?.(false)
+  }, [statusChanged])
 
   return (
     <div

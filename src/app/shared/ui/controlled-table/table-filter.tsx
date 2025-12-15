@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { PiMagnifyingGlassBold, PiFunnel, PiXBold } from 'react-icons/pi';
-import { Button, ActionIcon, Input, Title } from 'rizzui';
+import { Button, ActionIcon, Input, Title, Badge } from 'rizzui';
 import cn from '@core/utils/class-names';
 import { useMedia } from '@core/hooks/use-media';
 import { ToggleColumns } from '@/app/shared/ui/table';
@@ -81,6 +81,7 @@ export type TableFilterProps = {
   enableDrawerFilter?: boolean;
   menu?: React.ReactNode;
   otherButton?: any[];
+  filter?: Record<string, any>
 };
 
 export default function TableFilter({
@@ -98,10 +99,33 @@ export default function TableFilter({
   menu,
   children,
   otherButton = [],
+  filter
 }: TableFilterProps) {
   const isMediumScreen = useMedia('(max-width: 6000px)', false);
   const [showFilters, setShowFilters] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
+
+  const hasActiveFilter = (filter?: Record<string, any>) => {
+    if (!filter || typeof filter !== 'object') return false;
+
+    return Object.values(filter).some((value) => {
+      if (value === null || value === undefined) return false;
+
+      if (Array.isArray(value)) {
+        return value.some(
+          (v) => v !== null && v !== undefined && v !== ''
+        );
+      }
+
+      if (typeof value === 'string') {
+        return value.trim() !== '';
+      }
+
+      return true;
+    });
+  };
+
+  const isFilterActive = hasActiveFilter(filter);
 
   return (
     <div className="mb-4 flex items-center justify-between">
@@ -165,27 +189,37 @@ export default function TableFilter({
         }
 
         {children ? (
-          <Button
-            {...(isMediumScreen || enableDrawerFilter
-              ? {
-                onClick: () => {
-                  setOpenDrawer(() => !openDrawer);
-                },
-              }
-              : { onClick: () => setShowFilters(() => !showFilters) })}
-            variant={'outline'}
-            className={cn(
-              'h-9 pe-3 ps-2.5',
-              !(isMediumScreen || enableDrawerFilter) &&
-              showFilters &&
-              'border-dashed border-gray-700'
+          <div className="relative ml-3 inline-flex">
+            {isFilterActive && (
+              <Badge
+                size="lg"
+                renderAsDot
+                color="warning"
+                enableOutlineRing
+                className="absolute right-0 top-0 -translate-y-[30%]"
+              />
             )}
-          >
-            <PiFunnel className="me-1.5 h-[18px] w-[18px]" strokeWidth={1.7} />
-            {!(isMediumScreen || enableDrawerFilter) && showFilters
-              ? 'Hide Filters'
-              : 'Filters'}
-          </Button>
+            <Button
+              {...(isMediumScreen || enableDrawerFilter
+                ? {
+                  onClick: () => {
+                    setOpenDrawer(() => !openDrawer);
+                  },
+                }
+                : { onClick: () => setShowFilters(() => !showFilters) })}
+              variant={'outline'}
+              className={cn(
+                !(isMediumScreen || enableDrawerFilter) &&
+                showFilters &&
+                'border-dashed border-gray-700'
+              )}
+            >
+              <PiFunnel className="me-1.5 h-[18px] w-[18px]" strokeWidth={1.7} />
+              {!(isMediumScreen || enableDrawerFilter) && showFilters
+                ? 'Hide Filters'
+                : 'Filters'}
+            </Button>
+          </div>
         ) : null}
 
         <ToggleColumns

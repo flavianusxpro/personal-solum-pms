@@ -39,6 +39,7 @@ import DeleteModal from '../../ui/delete-modal';
 import SendConfirm from '../modal/send-confirm';
 import AvatarCardNew from '@/core/ui/avatar-card-new';
 import { MdVerified } from 'react-icons/md';
+import ModalProfilePatient from '../../appointment/modal/profile-patient';
 
 type IRowType = IGetInvoiceListResponse['data'][number];
 
@@ -124,7 +125,9 @@ export const getColumns = ({
   setIsOpen,
   idInvoice,
   setIdInvoice,
-}: Columns) => [
+}: Columns) => {
+  const { openModal, closeModal } = useModal();
+  return [
     {
       title: (
         <div className="ps-2">
@@ -162,25 +165,37 @@ export const getColumns = ({
       key: 'patien',
       width: 400,
       render: (_: string, row: any) => (
-        <AvatarCardNew
-          src={row?.patient?.photo || ''}
-          name={`${row?.patient?.first_name} ${row?.patient?.middle_name ? row?.patient?.middle_name : ''} ${row?.patient?.last_name}`}
-          otherIcon={
-            [
-              () => {
-                const isVerified = row?.patient?.verification_status;
-                // const isVerified = row?.patient?.has_filled_consent_form === true && row?.patient?.ihi_number && row?.patient?.ihi_number !== '';
-                return (
-                  <MdVerified
-                    className={`cursor-pointer ${isVerified ? 'text-blue-600' : 'text-gray-400'}`}
-                    title={isVerified ? "Verified" : "Not Verified"}
-                    key="verified"
-                  />
-                );
-              },
-            ]
-          }
-        />
+        <div
+          className='cursor-pointer'
+          onClick={(e) => {
+            e.stopPropagation()
+            closeModal(),
+              openModal({
+                view: <ModalProfilePatient data={row} />,
+                customSize: '1100px',
+              });
+          }}
+        >
+          <AvatarCardNew
+            src={row?.patient?.photo || ''}
+            name={`${row?.patient?.first_name} ${row?.patient?.middle_name ? row?.patient?.middle_name : ''} ${row?.patient?.last_name}`}
+            otherIcon={
+              [
+                () => {
+                  const isVerified = row?.patient?.verification_status;
+                  // const isVerified = row?.patient?.has_filled_consent_form === true && row?.patient?.ihi_number && row?.patient?.ihi_number !== '';
+                  return (
+                    <MdVerified
+                      className={`cursor-pointer ${isVerified ? 'text-blue-600' : 'text-gray-400'}`}
+                      title={isVerified ? "Verified" : "Not Verified"}
+                      key="verified"
+                    />
+                  );
+                },
+              ]
+            }
+          />
+        </div>
       )
     },
     {
@@ -241,6 +256,8 @@ export const getColumns = ({
       ),
     },
   ];
+}
+
 
 function RenderAction({
   row,
@@ -339,8 +356,8 @@ function RenderAction({
 
           {row.status !== 3 && (
             <Dropdown.Item>
-              <Link 
-                href="#" 
+              <Link
+                href="#"
                 className="flex items-center w-full"
               >
                 <PiWalletLight className="mr-2 h-4 w-4" />

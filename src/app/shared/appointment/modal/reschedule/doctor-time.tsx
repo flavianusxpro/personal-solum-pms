@@ -198,7 +198,7 @@ function DoctorTime({
       doctorId: doctor.id as number,
       appointment_type: appointmentType,
       appointment_date: dayjs(formData.date).format('YYYY-MM-DD'),
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      timezone: 'Australia/Sydney',
     });
 
   const timeList = useMemo(() => {

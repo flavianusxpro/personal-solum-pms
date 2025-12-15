@@ -33,7 +33,7 @@ export interface IPayloadCheckout {
 export interface IParamsGetDoctorAvailability {
   clinicId: number;
   doctorId: number;
-  appointment_date: string;
+  appointment_date: string | undefined | null;
   appointment_type: string;
   timezone: string;
 }

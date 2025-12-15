@@ -166,11 +166,8 @@ export default function AppointmentPayment() {
                     {formData.patient_address ?? '-'}
                   </p>
                   <p className="text-[12px]">
-                    {formData.patient_mobile_number ?? '-'} (
-                    {formData.patient_mobile_number
-                      ? getCountryFromPhone(formData.patient_mobile_number)
-                      : '-'}
-                    )
+                    {formData.patient_mobile_number ?? '-'} 
+                    {/* ({formData.patient_mobile_number ? getCountryFromPhone(formData.patient_mobile_number) : '-'}) */}
                   </p>
                   <p className="text-[12px]">
                     {

@@ -8,6 +8,7 @@ import {
   Flex,
   Dropdown,
   Button,
+  Tooltip,
 } from 'rizzui';
 import EyeIcon from '@core/components/icons/eye';
 import { Type } from '@/data/appointment-data';
@@ -69,6 +70,7 @@ type Columns = {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   idAppointment: number | string;
   setIdAppointment: Dispatch<SetStateAction<number | string>>;
+  setStatusChanged: Dispatch<SetStateAction<boolean>> | undefined
 };
 interface StatusCellProps {
   id: number;
@@ -89,6 +91,7 @@ export const GetColumns = ({
   setIsOpen,
   idAppointment,
   setIdAppointment,
+  setStatusChanged
 }: Columns) => {
   const { openModal, closeModal } = useModal();
   return [
@@ -125,39 +128,51 @@ export const GetColumns = ({
       dataIndex: 'patient',
       key: 'patient',
       width: 320,
-      render: (_: any, row: RowValue) =>
-      (
-        <div
-          onClick={(e) => {
-            e.stopPropagation()
-            closeModal(),
-              openModal({
-                view: <ModalProfilePatient data={row} />,
-                customSize: '1100px',
-              });
-          }}
-        >
-          <AvatarCardNew
-            className='cursor-pointer'
-            src={row?.patient?.photo || ''}
-            name={`${row?.patient?.first_name} ${row?.patient?.middle_name ? row?.patient?.middle_name : ''} ${row?.patient?.last_name}`}
-            otherIcon={
-              [
-                () => {
-                  const isVerified = row?.patient?.has_filled_consent_form === true && row?.patient?.ihi_number && row?.patient?.ihi_number !== '';
-                  return (
-                    <MdVerified
-                      className={`cursor-pointer ${isVerified ? 'text-blue-600' : 'text-gray-400'}`}
-                      title={isVerified ? "Verified" : "Not Verified"}
-                      key="verified"
-                    />
-                  );
-                },
-              ]
-            }
-          />
-        </div >
-      )
+      render: (_: any, row: RowValue) => {
+        return (
+          <div
+            onClick={(e) => {
+              e.stopPropagation()
+              closeModal(),
+                openModal({
+                  view: <ModalProfilePatient data={row} />,
+                  customSize: '1100px',
+                });
+            }}
+          >
+            <AvatarCardNew
+              className='cursor-pointer'
+              src={row?.patient?.photo || ''}
+              name={`${row?.patient?.first_name} ${row?.patient?.middle_name ? row?.patient?.middle_name : ''} ${row?.patient?.last_name}`}
+              otherIcon={
+                [
+                  () => {
+                    const isVerified = row?.patient?.has_filled_consent_form === true && row?.patient?.ihi_number && row?.patient?.ihi_number !== '';
+                    return (
+                      <Tooltip
+                        color={isVerified ? 'info' : 'danger'}
+                        content={
+                          isVerified
+                            ? 'Consent form completed and IHI number available'
+                            : 'Consent form uncompleted or IHI number not available'
+                        }
+                      >
+                        <span className='inline-flex'>
+                          <MdVerified
+                            className={`cursor-pointer ${isVerified ? 'text-blue-600' : 'text-gray-400'}`}
+                            title={isVerified ? 'Consent form completed and IHI number available' : 'Consent form uncompleted or IHI number not available'}
+                            key="verified"
+                          />
+                        </span>
+                      </Tooltip>
+                    );
+                  },
+                ]
+              }
+            />
+          </div >
+        )
+      }
     },
     {
       title: <HeaderCell title="Date" />,
@@ -254,7 +269,7 @@ export const GetColumns = ({
       key: 'status',
       width: 260,
       render: (value: number, row: RowValue) => (
-        <StatusColumnCell row={row} />
+        <StatusColumnCell row={row} setStatusChanged={setStatusChanged} />
       ),
     },
     {
@@ -300,6 +315,7 @@ export const GetColumns = ({
           onDeleteItem={onDeleteItem}
           idAppointment={idAppointment}
           setIdAppointment={setIdAppointment}
+          setStatusChanged={setStatusChanged}
         />
       ),
     },
@@ -313,6 +329,7 @@ function RenderAction({
   setIsOpen,
   idAppointment,
   setIdAppointment,
+  setStatusChanged
 }: {
   row: RowValue;
   onDeleteItem: (id: number[]) => void;
@@ -320,6 +337,7 @@ function RenderAction({
   setIsOpen: any;
   idAppointment: number | string;
   setIdAppointment: Dispatch<SetStateAction<number | string>>;
+  setStatusChanged: Dispatch<SetStateAction<boolean>> | undefined;
 }) {
   const { openModal, closeModal } = useModal();
 
@@ -354,7 +372,7 @@ function RenderAction({
   function rescheduleModal(row: RowValue) {
     closeModal(),
       openModal({
-        view: <RescheduleAppointmentForm data={row} />,
+        view: <RescheduleAppointmentForm setStatusChanged={setStatusChanged} data={row} />,
         customSize: '600px',
       });
   }
@@ -576,7 +594,7 @@ export function getAptStatusBadge(status: number | string) {
   }
 }
 
-export function StatusSelect({ selectItem, id, statusValue }: { selectItem: number; id: number, statusValue: number | null }) {
+export function StatusSelect({ selectItem, id, statusValue, setStatusChanged }: { selectItem: number; id: number, statusValue: number | null, setStatusChanged: Dispatch<SetStateAction<boolean>> | undefined }) {
   const { openModal, closeModal } = useModal();
 
   useEffect(() => {
@@ -609,6 +627,7 @@ export function StatusSelect({ selectItem, id, statusValue }: { selectItem: numb
       { id, status: value },
       {
         onSuccess: () => {
+          setStatusChanged?.(true)
           toast.success('Status updated successfully');
           closeModal();
         },

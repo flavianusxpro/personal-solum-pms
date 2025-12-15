@@ -5,7 +5,16 @@ import { formRescheduleDataAtom, useStepperCancelAppointment } from '.';
 import dayjs from 'dayjs';
 import { useGetAllDoctors } from '@/hooks/useDoctor';
 
-export default function RescheduleConfirmation() {
+
+interface PropTypes {
+  setStatusChanged?: React.Dispatch<React.SetStateAction<boolean>> | undefined;
+}
+
+export default function RescheduleConfirmation(props: PropTypes) {
+  const {
+    setStatusChanged
+  } = props
+
   const [formData, setFormData] = useAtom(formRescheduleDataAtom);
 
   const { data: dataDoctor } = useGetAllDoctors({
@@ -47,7 +56,10 @@ export default function RescheduleConfirmation() {
           <Text> Doctor : {getDoctorName(formData.doctorId)}</Text>
         </div>
       </div>
-      <Footer isLastStep />
+      <Footer 
+        isLastStep 
+        setStatusChanged={setStatusChanged}
+      />
     </>
   );
 }

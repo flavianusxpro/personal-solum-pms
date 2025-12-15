@@ -177,8 +177,10 @@ export const stepAppointmentTotalSteps = Object.keys(
 
 export default function CancelAppointmentForm({
   data,
+  setStatusChanged,
 }: {
   data?: IGetAppointmentListResponse['data'][number];
+  setStatusChanged?: React.Dispatch<React.SetStateAction<boolean>> | undefined;
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -250,7 +252,7 @@ export default function CancelAppointmentForm({
             <PiXBold className="h-5 w-5" />
           </ActionIcon>
         </div>
-        <Component />
+        <Component setStatusChanged={setStatusChanged} />
       </div>
     </div>
   );
