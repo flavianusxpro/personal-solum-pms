@@ -488,11 +488,14 @@ interface Patient {
   id: number;
   patient_id: string;
   first_name: string;
+  middle_name?: string;
   last_name: string;
   email: string;
   mobile_number: string;
   status: number;
   title: string;
+  address_line_1?: string;
+  address_line_2?: string;
   potition_on_card: string;
   photo: null;
   country: string;
@@ -518,6 +521,17 @@ interface Patient {
   updated_at: string;
 }
 
+interface IPayment {
+  id: number;
+  paymentId: string;
+  amount: string;
+  stripeId: string;
+  type: string;
+  status: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface IGetInvoiceByIdResponse extends ApiResponse {
   data: {
     id: number;
@@ -537,6 +551,7 @@ export interface IGetInvoiceByIdResponse extends ApiResponse {
     patient: Patient;
     clinic: Clinic;
     items: Item[];
+    payment?: IPayment
   };
 }
 
