@@ -33,6 +33,7 @@ type ControlledTableProps = {
   tableFooter?: React.ReactNode;
   tableHeader?: React.ReactNode;
   className?: string;
+  isDeactiveToogleColumns?: boolean;
   paginatorClassName?: string;
   onRow?: (record: any, index: number) => React.HTMLAttributes<any>;
 } & TableProps;
@@ -48,12 +49,13 @@ export default function ControlledTable({
   paginatorClassName,
   className,
   tableHeader,
+  isDeactiveToogleColumns,
   ...tableProps
 }: ControlledTableProps) {
   return (
     <>
       {!isEmpty(filterOptions) && (
-        <TableFilter filter={filter} {...filterOptions}>{filterElement}</TableFilter>
+        <TableFilter isDeactiveToogleColumns={isDeactiveToogleColumns} filter={filter} {...filterOptions}>{filterElement}</TableFilter>
       )}
 
       <div className="relative">
