@@ -33,37 +33,37 @@ export default function InvoiceDetails({ id }: { id: string }) {
       case 1:
         return (
           <div className="flex text-center px-2 py-1 rounded-[4px] items-center bg-orange-dark">
-            <Text className="text-white font-normal">Draft</Text>
+            <Text className="text-white font-normal text-sm">Draft</Text>
           </div>
         );
       case 2:
         return (
           <div className="flex text-center px-2 py-1 rounded-[4px] items-center bg-gray-dark">
-            <Text className="text-white font-normal">Awaiting Payment</Text>
+            <Text className="text-white font-normal text-sm">Awaiting Payment</Text>
           </div>
         );
       case 3:
         return (
           <span className="flex text-center px-2 py-1 rounded-[4px] items-center bg-green-dark">
-            <Text className="text-white font-normal">Paid</Text>
+            <Text className="text-white font-normal text-sm">Paid</Text>
           </span>
         );
       case 4:
         return (
-          <div className="flex text-center px-2 py-1 rounded-[4px] items-center bg-gray-dark">
-            <Text className="text-white font-normal">Void</Text>
+          <div className="flex text-center px-2 py-1 rounded-[4px] items-center bg-orange-600">
+            <Text className="text-white font-normal text-sm">Void</Text>
           </div>
         );
       case 5:
         return (
-          <div className="flex text-center px-2 py-1 rounded-[4px] items-center bg-gray-dark">
-            <Text className="text-white font-normal">Refund</Text>
+          <div className="flex text-center px-2 py-1 rounded-[4px] items-center bg-slate-500">
+            <Text className="text-white font-normal text-sm">Refund</Text>
           </div>
         );
       default:
         return (
           <div className="flex text-center px-2 py-1 rounded-[4px] items-center bg-gray-600">
-            <Text className="text-white font-normal">{status}</Text>
+            <Text className="text-white font-normal text-sm">{status}</Text>
           </div>
         );
     }
@@ -74,49 +74,49 @@ export default function InvoiceDetails({ id }: { id: string }) {
       case 7:
         return (
           <div className="flex text-center px-2 justify-center py-1 rounded-[4px] items-center bg-green-dark">
-            <p className="text-white font-normal">No Show</p>
+            <p className="text-white font-normal text-sm">No Show</p>
           </div>
         );
       case 6:
         return (
           <div className="flex text-center px-2 justify-center py-1 rounded-[4px] items-center bg-text-green-500">
-            <p className="text-white font-normal">On Going</p>
+            <p className="text-white font-normal text-sm">On Going</p>
           </div>
         );
       case 5:
         return (
           <div className="flex text-center px-2 justify-center py-1 rounded-[4px] items-center bg-red">
-            <p className="text-white font-normal">Canceled</p>
+            <p className="text-white font-normal text-sm">Canceled</p>
           </div>
         );
       case 4:
         return (
           <div className="flex text-center px-2 justify-center py-1 rounded-[4px] items-center bg-green-dark">
-            <p className="text-white font-normal">Completed</p>
+            <p className="text-white font-normal text-sm">Completed</p>
           </div>
         );
       case 3:
         return (
           <div className="flex text-center px-2 justify-center py-1 rounded-[4px] items-center bg-blue-500">
-            <p className="text-white font-normal">Checked In</p>
+            <p className="text-white font-normal text-sm">Checked In</p>
           </div>
         );
       case 2:
         return (
           <div className="flex text-center px-2 justify-center py-1 rounded-[4px] items-center bg-yellow-600">
-            <p className="text-white font-normal">Scheduled</p>
+            <p className="text-white font-normal text-sm">Scheduled</p>
           </div>
         );
       case 1:
         return (
           <div className="flex text-center px-2 justify-center py-1 rounded-[4px] items-center bg-red-dark">
-            <p className="text-white font-normal">Draft</p>
+            <p className="text-white font-normal text-sm">Draft</p>
           </div>
         );
       default:
         return (
           <div className="flex text-center px-2 justify-center py-1 rounded-[4px] items-center bg-blue-600">
-            <p className="text-white font-normal">{status}</p>
+            <p className="text-white font-normal text-sm">{status}</p>
           </div>
         );
     }
@@ -160,21 +160,21 @@ export default function InvoiceDetails({ id }: { id: string }) {
       <div className='flex flex-col gap-4'>
         <div className='grid grid-cols-2 md:grid-cols-4 border border-[#E4E4E4] rounded-xl p-6 gap-2'>
           <div className='flex flex-col gap-3'>
-            <h1 className='font-semibold text-sm flex items-center'>
+            <h1 className='font-semibold text-sm flex items-center font-inter'>
               <span>Payment ID:</span>
-              <span className='ml-3 font-semibold text-base'>{dataInvoice?.payment?.id ?? '-'}</span>
+              <span className='ml-3 font-semibold text-base'>{dataInvoice?.payment?.stripeId ? (dataInvoice?.payment?.stripeId ?? '-') : (dataInvoice?.payment?.id ?? '-')}</span>
             </h1>
-            <h1 className='font-semibold text-sm flex items-center'>
+            <h1 className='font-semibold text-sm flex items-center font-inter'>
               <span>Invoice No:</span>
               <span className='ml-3 font-semibold text-base'>#INV-{dataInvoice?.id ?? '.'}</span>
             </h1>
-            <h1 className='font-semibold text-sm flex items-center'>
+            <h1 className='font-semibold text-sm flex items-center font-inter'>
               <span>
                 Invoice Status:
               </span>
               <span className='ml-3 font-semibold text-base'>{getInvoiceStatusBadge(dataInvoice?.status ?? 0) ?? '-'}</span>
             </h1>
-            <h1 className='font-semibold text-sm flex items-center'>
+            <h1 className='font-semibold text-sm flex items-center font-inter'>
               <span>
                 Appointment Status:
               </span>
@@ -183,30 +183,30 @@ export default function InvoiceDetails({ id }: { id: string }) {
           </div>
 
           <div className='flex flex-col gap-3'>
-            <h1 className='font-semibold text-sm flex items-center'>
+            <h1 className='font-semibold text-sm flex items-center font-inter'>
+              <span>
+                Refund ID:
+              </span>
+              <span className='ml-3 text-sm text-[#484848] font-normal'>{dataInvoice?.stripe_refund_id}</span>
+            </h1>
+            <h1 className='font-semibold text-sm flex items-center font-inter'>
               <span>
                 Invoice Date:
               </span>
               <span className='ml-3 text-sm text-[#484848] font-normal'>{dataInvoice?.date ? dayjs(dataInvoice?.date).utc().format('DD MMM YYYY') : '-'}</span>
             </h1>
-            <h1 className='font-semibold text-sm flex items-center'>
-              <span>
-                Due Date:
-              </span>
-              <span className='ml-3 text-sm text-[#484848] font-normal'>{dataInvoice?.due_date ? dayjs(dataInvoice?.due_date).utc().format('DD MMM YYYY') : '-'}</span>
-            </h1>
-            <h1 className='font-semibold text-sm flex items-center'>
+            <h1 className='font-semibold text-sm flex items-center font-inter'>
               <span>
                 Appointment Date:
               </span>
               <span className='ml-3 text-sm text-[#484848] font-normal'>
-                {'-'}
+                {dataInvoice?.appointment?.date ? dayjs(dataInvoice?.date).utc().format('DD MMM YYYY') : '-'}
               </span>
             </h1>
           </div>
 
           <div className='flex flex-col gap-3'>
-            <h1 className='font-semibold text-sm flex items-center'>
+            <h1 className='font-semibold text-sm flex items-center font-inter'>
               <span>
                 Patient Name:
               </span>
@@ -214,7 +214,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
                 {dataInvoice?.patient?.first_name ?? '-'} {dataInvoice?.patient?.middle_name} {dataInvoice?.patient?.last_name}
               </span>
             </h1>
-            <h1 className='font-semibold text-sm flex items-center'>
+            <h1 className='font-semibold text-sm flex items-center font-inter'>
               <span>
                 Patient Address:
               </span>
@@ -222,7 +222,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
                 {dataInvoice?.patient?.address_line_1}{dataInvoice?.patient?.address_line_2 ? `, ${dataInvoice?.patient?.address_line_2}` : ''}
               </span>
             </h1>
-            <h1 className='font-semibold text-sm flex items-center'>
+            <h1 className='font-semibold text-sm flex items-center font-inter'>
               <span>
                 Patient Email:
               </span>
@@ -233,7 +233,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
           </div>
 
           <div className='flex flex-col gap-3'>
-            <h1 className='font-semibold text-sm flex items-center'>
+            <h1 className='font-semibold text-sm flex items-center font-inter'>
               <span>
                 Patient Mobile Number:
               </span>
@@ -241,7 +241,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
                 {dataInvoice?.patient?.mobile_number ?? '-'}
               </span>
             </h1>
-            <h1 className='font-semibold text-sm flex items-center'>
+            <h1 className='font-semibold text-sm flex items-center font-inter'>
               <span>
                 Payment Method:
               </span>
@@ -249,7 +249,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
                 {dataInvoice?.payment?.type ?? '-'}
               </span>
             </h1>
-            <h1 className='font-semibold text-sm flex items-center'>
+            <h1 className='font-semibold text-sm flex items-center font-inter'>
               <span>
                 Clinic Name:
               </span>
@@ -262,7 +262,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
 
         <div className='flex flex-col'>
           <div className='p-6 border border-[#E4E4E4] rounded-t-lg'>
-            <h1 className='font-semibold text-lg'>
+            <h1 className='font-semibold text-lg font-inter'>
               Item Details
             </h1>
           </div>
@@ -305,16 +305,16 @@ export default function InvoiceDetails({ id }: { id: string }) {
 
         <div className='grid grid-cols-1 md:grid-cols-2 border border-[#E4E4E4] rounded-xl p-6'>
           <div className='flex'>
-            <h1 className='font-semibold text-sm text-[#111111]'>Notes:</h1>
-            <p className='font-normal text-sm text-[#484848] ml-4'>
+            <h1 className='font-semibold text-sm text-[#111111] font-inter'>Notes:</h1>
+            <p className='font-normal font-inter text-sm text-[#484848] ml-4'>
               {dataInvoice?.note ?? '-'}
             </p>
           </div>
           <div className='flex'>
-            <h1 className='font-semibold text-sm text-[#111111]'>
+            <h1 className='font-semibold text-sm text-[#111111] font-inter'>
               Internal Notes:
             </h1>
-            <p className='font-normal text-sm text-[#484848] ml-4'>
+            <p className='font-normal font-inter text-sm text-[#484848] ml-4'>
               -
             </p>
           </div>

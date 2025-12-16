@@ -50,8 +50,47 @@ export const patientDetailsFormSchema = z
     patient_problem: z.array(z.string()).optional(),
     dva_card_number: z.string().optional(),
     dva_card_type: z.string().optional(),
+
+    // Emergency Contact
+    first_name_emergency_contact: z
+      .string()
+      .min(1, { message: messages.firstNameRequired }),
+    last_name_emergency_contact: z.string().optional(),
+    email_emergency_contact: validateEmail,
+    mobile_number_emergency_contact: z.string().optional(),
+    relationship_emergency_contact: z.string().optional(),
+
+    // Password
+    newPassword: z.string().optional(),
+    confirmPassword: z.string().optional(),
   })
   .superRefine((data, ctx) => {
+    if (data.newPassword || data.confirmPassword) {
+      if (!data.newPassword || data.newPassword.length < 7) {
+        ctx.addIssue({
+          path: ['newPassword'],
+          message: 'New Password must be at least 7 characters',
+          code: z.ZodIssueCode.custom,
+        });
+      }
+
+      if (!data.confirmPassword || data.confirmPassword.length < 7) {
+        ctx.addIssue({
+          path: ['confirmPassword'],
+          message: 'Confirm Password must be at least 7 characters',
+          code: z.ZodIssueCode.custom,
+        });
+      }
+
+      if (data.newPassword !== data.confirmPassword) {
+        ctx.addIssue({
+          path: ['confirmPassword'],
+          message: 'Confirm Password must match New Password',
+          code: z.ZodIssueCode.custom,
+        });
+      }
+    }
+
     // If Australian resident, medicare fields are required
     if (data.is_australian_resident === true) {
       if (!data.medicare_card || data.medicare_card.length === 0) {
@@ -145,7 +184,10 @@ export const patientCreateFormSchema = z
     concession_card_number: z.string().optional(),
     concession_card_expiry: z.date().optional(),
 
-    medicare_card: z.string().min(10, { message: 'Medicare card minimum 10 characters' }).max(13, { message: 'Medicare card maximum 13 characters' }),
+    medicare_card: z
+      .string()
+      .min(10, { message: 'Medicare card minimum 10 characters' })
+      .max(13, { message: 'Medicare card maximum 13 characters' }),
     medicare_expiry: z.date().optional(),
     position_on_card: z.string().optional(),
     avatar: z.string().optional(),

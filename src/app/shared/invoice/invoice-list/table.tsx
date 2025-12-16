@@ -21,6 +21,8 @@ import { summaryInvoiceAtom } from '@/store/invoice';
 import { RiMailSendLine } from 'react-icons/ri';
 import { GoCreditCard } from 'react-icons/go';
 import { CiWallet } from 'react-icons/ci';
+import { routes } from '@/config/routes';
+import { useRouter } from 'next/navigation';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/invoice/invoice-list/filter-element'),
@@ -56,7 +58,7 @@ export default function InvoiceTableList() {
     pageSize: 10,
     search: '',
   });
-
+  const router = useRouter();
   const {
     data: dataInvoices,
     isLoading: isLoadingGetInvoices,
@@ -208,6 +210,12 @@ export default function InvoiceTableList() {
           scroll={{
             x: 1560,
           }}
+          onRow={(record) => ({
+            onClick: () => {
+              router.push(routes.invoice.details(record.id.toString()));
+            },
+            className: 'cursor-pointer',
+          })}
           // @ts-ignore
           columns={visibleColumns}
           paginatorOptions={{
@@ -261,7 +269,7 @@ export default function InvoiceTableList() {
                       </span>
                       <span>Pay Now</span>
                     </Button>
-                    <StatusSelect 
+                    <StatusSelect
                       prefix={<CiWallet />}
                     />
                   </>

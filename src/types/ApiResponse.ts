@@ -138,7 +138,7 @@ export interface DoctorSchedule {
   break_times: BreakTime[];
   created_at: string;
   updated_at: string;
-  appointment?: any
+  appointment?: any;
 }
 
 interface BreakTime {
@@ -462,7 +462,7 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
     doctor: IDoctor;
     clinic: any;
   }[];
-  is_action_required?: boolean
+  is_action_required?: boolean;
 }
 
 export interface IGetInvoiceListResponse extends ApiResponseWithPagination {
@@ -532,6 +532,30 @@ interface IPayment {
   updated_at: string;
 }
 
+interface IAppointment {
+  id: number;
+  clinicId: number;
+  patientId: number;
+  doctorId: number;
+  date: string;
+  status: number;
+  type: string;
+  meeting_link: string | null;
+  meeting_id: string | null;
+  meeting_passcode: string | null;
+  patient_type: string;
+  patient_problem: string | null;
+  note: string;
+  timezone_client: string | null;
+  halaxy_appointment_id: string | null;
+  sessionId: string | null;
+  paymentId: number | null;
+  is_reschedule: boolean;
+  receipt_doctor_url: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface IGetInvoiceByIdResponse extends ApiResponse {
   data: {
     id: number;
@@ -551,7 +575,9 @@ export interface IGetInvoiceByIdResponse extends ApiResponse {
     patient: Patient;
     clinic: Clinic;
     items: Item[];
-    payment?: IPayment
+    payment?: IPayment;
+    appointment?: IAppointment;
+    stripe_refund_id?: string;
   };
 }
 
@@ -572,7 +598,7 @@ interface Item {
 
 type TIncreased = {
   percentage: number;
-  status: string
+  status: string;
 };
 
 export interface IGetAppointmentSummaryResponse extends ApiResponse {
@@ -725,7 +751,7 @@ export interface IGetListScheduleResponse extends ApiResponseWithPagination {
     break_times: BreakTime[];
     created_at: string;
     updated_at: string;
-    appointments: AppointmentData[]
+    appointments: AppointmentData[];
   }[];
 }
 
