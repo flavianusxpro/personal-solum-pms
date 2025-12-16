@@ -27,7 +27,7 @@ import {
   useUpdatePaymentStatusInvoice,
 } from '@/hooks/useInvoice';
 import { useModal } from '../../modal-views/use-modal';
-import { FaRegNoteSticky } from 'react-icons/fa6';
+import { FaCcStripe, FaRegNoteSticky } from 'react-icons/fa6';
 import { GrSchedules } from 'react-icons/gr';
 import RefundForm from '../modal/refund-form';
 import { PiCheckBold, PiWalletLight } from 'react-icons/pi';
@@ -40,6 +40,8 @@ import SendConfirm from '../modal/send-confirm';
 import AvatarCardNew from '@/core/ui/avatar-card-new';
 import { MdVerified } from 'react-icons/md';
 import ModalProfilePatient from '../../appointment/modal/profile-patient';
+import { CgNotes } from 'react-icons/cg';
+import ModalLogHistory from './ModalLogHistory';
 
 type IRowType = IGetInvoiceListResponse['data'][number];
 
@@ -142,6 +144,9 @@ export const getColumns = ({
       dataIndex: 'checked',
       key: 'checked',
       width: 30,
+      onCell: () => ({
+        onClick: (e: any) => e.stopPropagation(),
+      }),
       render: (_: any, row: any) => (
         <div className="inline-flex ps-2">
           <Checkbox
@@ -157,7 +162,7 @@ export const getColumns = ({
       dataIndex: 'id',
       key: 'id',
       width: 200,
-      render: (id: string) => <p className="w-max">#{id}</p>,
+      render: (id: string) => <p className="w-max">#INV-{id}</p>,
     },
     {
       title: <HeaderCell title="PATIENT NAME" />,
@@ -205,22 +210,19 @@ export const getColumns = ({
       width: 250,
       render: (value: string) => `${currencyData.symbol}${Number(value)}`,
     },
-    // {
-    //   title: <HeaderCell title="APT STATUS" />,
-    //   dataIndex: 'status',
-    //   key: 'status',
-    //   width: 650,
-    //   render: (_: any, row: any) => {
-    //     return <StatusSelectAppo id={row.id} status={row.status} />;
-    //   },
-    // },
     {
       title: <HeaderCell title="PAYMENT STATUS" />,
       dataIndex: 'status',
       key: 'status',
       width: 650,
       render: (_: any, row: any) => {
-        return <StatusSelectUpdate id={row.id} selectItem={row.status} />;
+        return (
+          <div
+            onClick={(e) => e.stopPropagation()}
+          >
+            <StatusSelectUpdate id={row.id} selectItem={row.status} />
+          </div>
+        );
       },
     },
     {
@@ -243,7 +245,7 @@ export const getColumns = ({
       key: 'action',
       width: 140,
       render: (_: string, row: any) => (
-        <div className="flex items-center justify-start">
+        <div onClick={(e) => e.stopPropagation()} className="flex items-center justify-start">
           <RenderAction
             isOpen={isOpen}
             setIsOpen={setIsOpen}
@@ -336,7 +338,9 @@ function RenderAction({
         </Dropdown.Trigger>
         <Dropdown.Menu className="min-w-[220px]">
           {row.status == 1 && (
-            <Dropdown.Item>
+            <Dropdown.Item
+              onClick={(e) => e.stopPropagation()}
+            >
               <Link
                 href={routes.invoice.edit(row.id.toString())}
                 className="flex items-center w-full"
@@ -355,7 +359,9 @@ function RenderAction({
           </Dropdown.Item>
 
           {row.status !== 3 && (
-            <Dropdown.Item>
+            <Dropdown.Item
+              onClick={(e) => e.stopPropagation()}
+            >
               <Link
                 href="#"
                 className="flex items-center w-full"
@@ -368,14 +374,19 @@ function RenderAction({
 
           {statusAvailToRefund.includes(row.status) && (
             <Dropdown.Item
-              onClick={() => refundModal(row)}
+              onClick={(e) => {
+                e.stopPropagation()
+                refundModal(row)
+              }}
             >
               <GrSchedules className="mr-2 h-4 w-4" />
               Refund
             </Dropdown.Item>
           )}
 
-          <Dropdown.Item>
+          <Dropdown.Item
+            onClick={(e) => e.stopPropagation()}
+          >
             <Link
               href={routes.invoice.details(row.id.toString())}
               className="flex items-center w-full"
@@ -386,13 +397,35 @@ function RenderAction({
           </Dropdown.Item>
           {row.status == 1 && (
             <Dropdown.Item
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation()
                 setIdInvoice(row.id);
                 setIsOpen(true);
               }}
             >
               <TrashIcon className="mr-2 h-4 w-4" />
               Delete
+            </Dropdown.Item>
+          )}
+          <Dropdown.Item
+            onClick={(e) => {
+              e.stopPropagation()
+              openModal({
+                view: <ModalLogHistory />,
+                customSize: '1100px',
+              });
+            }}
+          >
+            <CgNotes className='mr-2 h-4 w-4' />
+            Log History
+          </Dropdown.Item>
+
+          {statusAvailToRefund.includes(row.status) && (
+            <Dropdown.Item
+              onClick={(e) => e.stopPropagation()}
+            >
+              <FaCcStripe className='mr-2 h-4 w-4' />
+              Stripe
             </Dropdown.Item>
           )}
         </Dropdown.Menu>
@@ -451,6 +484,7 @@ function StatusSelectUpdate({
     { label: 'Awaiting Approval', value: 2 },
     { label: 'Approved', value: 3 },
     { label: 'Cancelled', value: 4 },
+    { label: 'Refund', value: 5 },
   ];
   const selectItemValue = aptStatusOptions.find(
     (option) => option.value === selectItem
@@ -478,23 +512,6 @@ function StatusSelectUpdate({
   };
 
   const handleChange = (value: number) => {
-    // if (value == 1) {
-    //   showConfirmModal(value, handleSubmitStatus, 'Draft');
-    // } else if (value == 2) {
-    //   showConfirmModal(value, handleSubmitStatus, 'Scheduled');
-    // } else if (value == 3) {
-    //   showConfirmModal(value, handleSubmitStatus, 'Check In');
-    // } else if (value == 4) {
-    //   showConfirmModal(value, handleSubmitStatus, 'Finished');
-    // } else if (value == 5) {
-    //   showConfirmModal(value, handleSubmitStatus, 'Cancelled');
-    // } else if (value == 6) {
-    //   showConfirmModal(value, handleSubmitStatus, 'On Going');
-    // } else if (value == 7) {
-    //   showConfirmModal(value, handleSubmitStatus, 'No Show');
-    // } else {
-    //   handleSubmitStatus(value);
-    // }
     handleSubmitStatus(value);
   };
 
