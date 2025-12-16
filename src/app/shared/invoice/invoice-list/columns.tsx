@@ -42,6 +42,7 @@ import { MdVerified } from 'react-icons/md';
 import ModalProfilePatient from '../../appointment/modal/profile-patient';
 import { CgNotes } from 'react-icons/cg';
 import ModalLogHistory from './ModalLogHistory';
+import { CiCreditCard1 } from 'react-icons/ci';
 
 type IRowType = IGetInvoiceListResponse['data'][number];
 
@@ -64,7 +65,7 @@ export function getInvoicePaymentStatusBadge(status: number) {
         <div className="flex items-center">
           <Badge color="info" renderAsDot />
           <Text className="text-gray-dark ms-2 font-medium">
-            Awaiting Payment
+            Unpaid
           </Text>
         </div>
       );
@@ -358,7 +359,7 @@ function RenderAction({
             Send
           </Dropdown.Item>
 
-          {row.status !== 3 && (
+          {row.status === 2 && (
             <Dropdown.Item
               onClick={(e) => e.stopPropagation()}
             >
@@ -384,17 +385,6 @@ function RenderAction({
             </Dropdown.Item>
           )}
 
-          <Dropdown.Item
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Link
-              href={routes.invoice.details(row.id.toString())}
-              className="flex items-center w-full"
-            >
-              <EyeIcon className="mr-2 h-4 w-4" />
-              View
-            </Link>
-          </Dropdown.Item>
           {row.status == 1 && (
             <Dropdown.Item
               onClick={(e) => {
@@ -407,6 +397,25 @@ function RenderAction({
               Delete
             </Dropdown.Item>
           )}
+
+          {row.status === 3 && (
+            <Dropdown.Item
+              onClick={(e) => e.stopPropagation()}
+            >
+              <CiCreditCard1 className='mr-2 h-4 w-4' />
+              Stripe Payment
+            </Dropdown.Item>
+          )}
+
+          {row.status === 5 && (
+            <Dropdown.Item
+              onClick={(e) => e.stopPropagation()}
+            >
+              <FaCcStripe className='mr-2 h-4 w-4' />
+              Stripe Refund
+            </Dropdown.Item>
+          )}
+
           <Dropdown.Item
             onClick={(e) => {
               e.stopPropagation()
@@ -420,14 +429,17 @@ function RenderAction({
             Log History
           </Dropdown.Item>
 
-          {statusAvailToRefund.includes(row.status) && (
-            <Dropdown.Item
-              onClick={(e) => e.stopPropagation()}
+          <Dropdown.Item
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Link
+              href={routes.invoice.details(row.id.toString())}
+              className="flex items-center w-full"
             >
-              <FaCcStripe className='mr-2 h-4 w-4' />
-              Stripe
-            </Dropdown.Item>
-          )}
+              <EyeIcon className="mr-2 h-4 w-4" />
+              View
+            </Link>
+          </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
       <DeleteModal
@@ -481,9 +493,9 @@ function StatusSelectUpdate({
   const { openModal, closeModal } = useModal();
   const aptStatusOptions = [
     { label: 'Draft', value: 1 },
-    { label: 'Awaiting Approval', value: 2 },
-    { label: 'Approved', value: 3 },
-    { label: 'Cancelled', value: 4 },
+    { label: 'Unpaid', value: 2 },
+    { label: 'Paid', value: 3 },
+    { label: 'Void', value: 4 },
     { label: 'Refund', value: 5 },
   ];
   const selectItemValue = aptStatusOptions.find(

@@ -22,7 +22,7 @@ import { useOneTimePayment } from '@/hooks/useBookAppoinment';
 import { useAtom } from 'jotai';
 
 export type CardMinimal0Ref = {
-  handleSubmit: () => Promise<void>;
+  handleSubmit: (selectedMethod: 'visa-master-card' | 'counter' | 'link') => Promise<void>;
 };
 
 function CheckoutForm(
@@ -45,46 +45,21 @@ function CheckoutForm(
     }
   }, [error]);
 
-  // const handleSubmit = async (event: { preventDefault: () => void }) => {
-  //   setIsLoading(true);
-  //   // Block native form submission.
-  //   event.preventDefault();
-
-  //   if (!stripe || !elements) {
-  //     // Stripe.js has not loaded yet. Make sure to disable
-  //     // form submission until Stripe.js has loaded.
-  //     return;
-  //   }
-
-  //   const card = elements.getElement(CardElement);
-
-  //   if (card == null) {
-  //     return;
-  //   }
-
-  //   const { error: errorFromStripe, paymentMethod } =
-  //     await stripe.createPaymentMethod({
-  //       type: 'card',
-  //       card,
-  //     });
-
-  //   if (errorFromStripe) {
-  //     setError(errorFromStripe);
-  //   } else {
-  //     setError(null);
-  //     onSuccess(paymentMethod.id);
-  //   }
-  //   setIsLoading(false);
-  // };
-
   useImperativeHandle(ref, () => ({
-    handleSubmit: async () => {
+    handleSubmit: async (selectedMethod) => {
       if (!stripe || !elements) {
         toast.error('Stripe belum siap');
         return;
       }
 
       setIsLoading(true);
+      if (selectedMethod === 'counter') {
+        onSuccess('COUNTER');
+        toast.success('Payment counter selected');
+        setIsLoading(false);
+        return;
+      }
+
       const card = elements.getElement(CardElement);
       if (!card) return;
 
@@ -127,17 +102,6 @@ function CheckoutForm(
         }}
       />
       {error && <div style={{ color: 'red' }}>{error?.message}</div>}
-      {/* <div className="mt-4 w-full">
-        <Button
-          className="w-full bg-[#3666AA] px-[16px] py-[12px] text-[14px] font-semibold text-white"
-          isLoading={isLoading}
-          type="submit"
-          disabled={!stripe}
-        >
-          Pay Now
-        </Button>
-      </div> */}
-      {/* // </form> */}
     </div>
   );
 }
@@ -156,11 +120,6 @@ function InjectedCheckoutForm(
     <ElementsConsumer>
       {({ elements, stripe }) => (
         <>
-          {/* <CheckoutForm
-            onSuccess={onSuccess}
-            elements={elements}
-            stripe={stripe}
-          /> */}
           <ForwardedCheckoutForm
             ref={ref}
             elements={elements}

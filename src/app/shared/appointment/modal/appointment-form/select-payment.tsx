@@ -166,7 +166,7 @@ export default function AppointmentPayment() {
                     {formData.patient_address ?? '-'}
                   </p>
                   <p className="text-[12px]">
-                    {formData.patient_mobile_number ?? '-'} 
+                    {formData.patient_mobile_number ?? '-'}
                     {/* ({formData.patient_mobile_number ? getCountryFromPhone(formData.patient_mobile_number) : '-'}) */}
                   </p>
                   <p className="text-[12px]">
@@ -315,11 +315,10 @@ export default function AppointmentPayment() {
                   <div className="flex gap-2">
                     <Button
                       onClick={() => setSelectedMethod('visa-master-card')}
-                      className={`flex h-[69px] flex-col items-center justify-center gap-[8px] rounded-[6px] px-[16px] py-[12px] text-center text-[14px] ${
-                        selectedMethod === 'visa-master-card'
+                      className={`flex h-[69px] flex-col items-center justify-center gap-[8px] rounded-[6px] px-[16px] py-[12px] text-center text-[14px] ${selectedMethod === 'visa-master-card'
                           ? 'bg-[#3666AA1A]/10 text-[#3666AA]'
                           : 'bg-white text-[#A19F9F]'
-                      }`}
+                        }`}
                       variant="outline"
                     >
                       <CgCreditCard />
@@ -327,11 +326,10 @@ export default function AppointmentPayment() {
                     </Button>
                     <Button
                       onClick={() => setSelectedMethod('counter')}
-                      className={`flex h-[69px] flex-1 flex-col items-center justify-center gap-[8px] rounded-[6px] px-[16px] py-[12px] text-center text-[14px] ${
-                        selectedMethod === 'counter'
+                      className={`flex h-[69px] flex-1 flex-col items-center justify-center gap-[8px] rounded-[6px] px-[16px] py-[12px] text-center text-[14px] ${selectedMethod === 'counter'
                           ? 'bg-[#3666AA1A]/10 text-[#3666AA]'
                           : 'bg-white text-[#A19F9F]'
-                      }`}
+                        }`}
                       variant="outline"
                     >
                       <PiMoneyWavy />
@@ -339,11 +337,10 @@ export default function AppointmentPayment() {
                     </Button>
                     <Button
                       onClick={() => setSelectedMethod('link')}
-                      className={`flex h-[69px] flex-1 flex-col items-center justify-center gap-[8px] rounded-[6px] px-[16px] py-[12px] text-center text-[14px] ${
-                        selectedMethod === 'link'
+                      className={`flex h-[69px] flex-1 flex-col items-center justify-center gap-[8px] rounded-[6px] px-[16px] py-[12px] text-center text-[14px] ${selectedMethod === 'link'
                           ? 'bg-[#3666AA1A]/10 text-[#3666AA]'
                           : 'bg-white text-[#A19F9F]'
-                      }`}
+                        }`}
                       variant="outline"
                     >
                       <CgLink />
@@ -411,9 +408,25 @@ export default function AppointmentPayment() {
                     {Number(totalValue)}
                   </p>
                 </div>
+                {/* <div className="mt-4">
+                  <Button
+                    onClick={() => cardRef.current?.handleSubmit(selectedMethod)}
+                    className="w-full bg-[#3666AA] px-4 py-3 font-semibold text-white"
+                  >
+                    Pay Now
+                  </Button>
+                </div> */}
                 <div className="mt-4">
                   <Button
-                    onClick={() => cardRef.current?.handleSubmit()}
+                    onClick={() => {
+                      if (selectedMethod === 'counter') {
+                        successPayment('COUNTER');
+                      } else if (selectedMethod === 'link') {
+                        toast.error('Link payment not implemented yet');
+                      } else {
+                        cardRef.current?.handleSubmit(selectedMethod);
+                      }
+                    }}
                     className="w-full bg-[#3666AA] px-4 py-3 font-semibold text-white"
                   >
                     Pay Now
@@ -464,16 +477,6 @@ const Link = () => {
   ];
   return (
     <>
-      {/* <div className="flex">
-        <Input
-          label="Email/Phone Number"
-          placeholder="Email/Phone Number"
-          className="flex-1"
-        />
-      </div>
-      <Button className="mt-4 w-full flex-[1] rounded-[6px] bg-[#3666AA] px-[16px] py-[12px] text-[14px] font-semibold text-white">
-        Submit
-      </Button> */}
       <RadioGroup
         value={viaClicked}
         setValue={setViaClicked}

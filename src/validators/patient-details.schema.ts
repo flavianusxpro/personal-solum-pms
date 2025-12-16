@@ -46,7 +46,7 @@ export const patientDetailsFormSchema = z
     avatar: z.string().optional(),
     password: z.string().optional(),
     timezone: z.string().optional(),
-    patient_type: z.string().optional(),
+    patient_type: z.string().optional().nullable(),
     patient_problem: z.array(z.string()).optional(),
     dva_card_number: z.string().optional(),
     dva_card_type: z.string().optional(),
