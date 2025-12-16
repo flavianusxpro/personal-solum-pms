@@ -94,7 +94,7 @@ export interface IPayloadCreateEditPatient {
   emergency_email?: string;
   emergency_relationship?: string;
   patient_problem?: string[];
-  patient_type?: string;
+  patient_type?: string | null;
   photo?: string;
   ihi_number?: string;
   concession_card_type?: string;

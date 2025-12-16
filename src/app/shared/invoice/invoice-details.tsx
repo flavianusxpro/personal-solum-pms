@@ -187,7 +187,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
               <span>
                 Refund ID:
               </span>
-              <span className='ml-3 text-sm text-[#484848] font-normal'>{dataInvoice?.stripe_refund_id}</span>
+              <span className='ml-3 text-sm text-[#484848] font-normal'>{dataInvoice?.stripe_refund_id ?? '-'}</span>
             </h1>
             <h1 className='font-semibold text-sm flex items-center font-inter'>
               <span>
