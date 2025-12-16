@@ -196,6 +196,13 @@ const ModalLogHistory = (props: PropTypes) => {
                     scroll={{
                         x: 1560,
                     }}
+                    paginatorOptions={{
+                        current: params.page,
+                        pageSize: params.pageSize,
+                        setPageSize: (pageSize: number) => setParams((p) => ({...p, pageSize})),
+                        total: 10,
+                        onChange: (page: number) => setParams((p) => ({ ...p, page }))
+                    }}
                     columns={visibleColumns}
                     filterOptions={{
                         searchTerm,
@@ -229,11 +236,13 @@ const ModalLogHistory = (props: PropTypes) => {
                                     placeholderText="Select start & end date"
                                 />
 
-                                <ExportButton
-                                    data={data}
-                                    fileName="invoice_data"
-                                    header="ID,Name,Username,Avatar,Email,Due Date,Amount,Status,Created At"
-                                />
+                                <div>
+                                    <ExportButton
+                                        data={data}
+                                        fileName="invoice_data"
+                                        header="ID,Name,Username,Avatar,Email,Due Date,Amount,Status,Created At"
+                                    />
+                                </div>
                             </div>
                         ]
                     }}

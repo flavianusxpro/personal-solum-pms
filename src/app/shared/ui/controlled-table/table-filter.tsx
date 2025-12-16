@@ -82,6 +82,7 @@ export type TableFilterProps = {
   menu?: React.ReactNode;
   otherButton?: any[];
   filter?: Record<string, any>
+  isDeactiveToogleColumns?: boolean;
 };
 
 export default function TableFilter({
@@ -99,7 +100,8 @@ export default function TableFilter({
   menu,
   children,
   otherButton = [],
-  filter
+  filter,
+  isDeactiveToogleColumns = false,
 }: TableFilterProps) {
   const isMediumScreen = useMedia('(max-width: 6000px)', false);
   const [showFilters, setShowFilters] = useState(false);
@@ -189,7 +191,7 @@ export default function TableFilter({
         }
 
         {children ? (
-          <div className="relative ml-3 inline-flex">
+          <div className="relative inline-flex">
             {isFilterActive && (
               <Badge
                 size="lg"
@@ -222,12 +224,14 @@ export default function TableFilter({
           </div>
         ) : null}
 
-        <ToggleColumns
-          columns={columns}
-          checkedColumns={checkedColumns}
-          setCheckedColumns={setCheckedColumns}
-          hideIndex={hideIndex}
-        />
+        {!isDeactiveToogleColumns && (
+          <ToggleColumns
+            columns={columns}
+            checkedColumns={checkedColumns}
+            setCheckedColumns={setCheckedColumns}
+            hideIndex={hideIndex}
+          />
+        )}
       </div>
     </div>
   );
