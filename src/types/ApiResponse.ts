@@ -222,6 +222,16 @@ export interface IGetAllPatientsResponse extends ApiResponseWithPagination {
 export interface IGetPatientByIdResponse extends ApiResponse {
   data: {
     id: number;
+    address?: any;
+    addresses?: Array<{
+      address_type: string;
+      address_line_1: string;
+      address_line_2?: string;
+      suburb: string;
+      state: string;
+      post_code: string;
+      country: string;
+    }>;
     patient_id: string;
     first_name: string;
     middle_name: string;

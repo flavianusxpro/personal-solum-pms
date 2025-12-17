@@ -8,7 +8,7 @@ export default function TabNotesFlags({
   isView?: boolean;
 }) {
   return (
-    <div className="grid">
+    <div className="grid gap-4">
       <ListTable isView={isView} />
     </div>
   );

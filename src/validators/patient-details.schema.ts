@@ -18,6 +18,23 @@ export const patientDetailsFormSchema = z
       .min(1, { message: messages.phoneNumberIsRequired }),
     status: z.number().optional(),
     address: z.string().optional(),
+    addresses: z
+      .array(
+        z.object({
+          address_type: z
+            .string()
+            .min(1, { message: 'Address Type is required' }),
+          address_line_1: z
+            .string()
+            .min(1, { message: 'Street Address is required' }),
+          address_line_2: z.string().optional(),
+          suburb: z.string().min(1, { message: 'City is required' }),
+          state: z.string().min(1, { message: 'State is required' }),
+          post_code: z.string().min(1, { message: 'Post Code is required' }),
+          country: z.string().min(1, { message: 'Country is required' }),
+        })
+      )
+      .min(1, { message: 'At least one address is required' }),
     date_of_birth: z.string().min(1, {
       message: messages.dateOfBirthRequired,
     }),
@@ -27,14 +44,23 @@ export const patientDetailsFormSchema = z
     address_line_1: z.string().optional(),
     address_line_2: z.string().optional(),
     suburb: z.string().min(1, { message: 'City is required' }),
-    // street_name: z.string().min(1, { message: 'Street Address is required' }),
-    // address_line1: z.string().min(1, { message: 'Street Address is required' }),
     post_code: z.string().min(1, { message: 'Post Code is required' }),
     address_type: z.string().min(1, { message: 'Address Type is required' }),
     is_australian_resident: z.boolean().optional(),
+    // street_name: z.string().min(1, { message: 'Street Address is required' }),
+    // address_line1: z.string().min(1, { message: 'Street Address is required' }),
+    // ihi_number: z
+    //   .string()
+    //   .regex(/^\d*$/, { message: 'IHI number must contain only numbers' })
+    //   .optional(),
     ihi_number: z
       .string()
-      .regex(/^\d*$/, { message: 'IHI number must contain only numbers' })
+      .regex(/^\d+$/, {
+        message: 'IHI number must contain only numbers',
+      })
+      .length(16, {
+        message: 'IHI number must be exactly 16 digits',
+      })
       .optional(),
     concession_card_type: z.string().optional(),
     concession_card_number: z.string().optional(),

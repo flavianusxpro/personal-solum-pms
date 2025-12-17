@@ -19,6 +19,8 @@ import { useModal } from '@/app/shared/modal-views/use-modal';
 import { useParams } from 'next/navigation';
 import { useGetPatientById } from '@/hooks/usePatient';
 import toast from 'react-hot-toast';
+import { debounce } from 'lodash';
+import ModalDetailFlagAndNotes from './ModalDetailFlagAndNotes';
 const TableFooter = dynamic(() => import('@/app/shared/ui/table-footer'), {
   ssr: false,
 });
@@ -71,8 +73,7 @@ export default function ListTable({
     currentPage,
     totalItems,
     handlePaginate,
-    filters,
-    updateFilter,
+    isFiltered,
     searchTerm,
     handleSearch,
     sortConfig,
@@ -81,7 +82,6 @@ export default function ListTable({
     setSelectedRowKeys,
     handleRowSelect,
     handleSelectAll,
-    handleDelete,
   } = useTable(dataFlags?.data ?? [], params.perPage);
 
   const columns = useMemo(
@@ -110,30 +110,35 @@ export default function ListTable({
     ]
   );
 
-  const { visibleColumns } = useColumn(columns);
+  const { visibleColumns, checkedColumns, setCheckedColumns } = useColumn(columns);
+  const handlerSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setParams((prevState) => ({
+          ...prevState,
+          search: value,
+        }));
+      }, 500),
+    []
+  );
 
   return (
     <div className={className}>
       <FormGroup title="Notes & Flags" className="mb-5" />
-      <div className="flex flex-col gap-3">
-        <div className="flex justify-end gap-2">
-          {!isView && (
-            <>
-              <ModalButton
-                view={<FlagForm modalType="flag" />}
-                label="Add Flag"
-              />
-              <ModalButton
-                view={<FlagForm modalType="notes" />}
-                label="Add Notes"
-              />
-            </>
-          )}
-        </div>
+      <div>
         <ControlledTable
+          isDeactiveToogleColumns
           isLoading={isLoading}
           showLoadingText={true}
           data={tableData ?? []}
+          onRow={(record, index) => ({
+            onClick: () => {
+              openModal({
+                view: <ModalDetailFlagAndNotes data={record} />,
+                customSize: '700px',
+              });
+            },
+          })}
           // @ts-ignore
           columns={visibleColumns}
           scroll={{ x: 1300 }}
@@ -145,17 +150,43 @@ export default function ListTable({
             setPageSize: (pageSize: number) =>
               setParams((prev) => ({ ...prev, perPage: pageSize })),
             total: totalItems,
-            current: params.page,
+            current: currentPage,
             onChange: (page: number) => {
               setParams((prev) => ({ ...prev, page }));
               handlePaginate(page);
             },
           }}
-          // tableHeader={
-          //   <TableHeader isCustomHeader checkedItems={[]}>
-          //     <ModalButton view={<FlagForm />} />
-          //   </TableHeader>
-          // }
+          filterOptions={{
+            searchTerm,
+            onSearchClear: () => {
+              handleSearch('');
+              handlerSearch('');
+            },
+            onSearchChange: (event) => {
+              handlerSearch(event.target.value);
+              handleSearch(event.target.value);
+            },
+            hasSearched: isFiltered,
+            columns,
+            checkedColumns,
+            setCheckedColumns,
+            otherButton: [
+              <div key="action-buttons" className="flex justify-end gap-2">
+                {!isView && (
+                  <>
+                    <ModalButton
+                      view={<FlagForm modalType="flag" />}
+                      label="Add Flag"
+                    />
+                    <ModalButton
+                      view={<FlagForm modalType="notes" />}
+                      label="Add Notes"
+                    />
+                  </>
+                )}
+              </div>
+            ]
+          }}
           tableFooter={
             <TableFooter
               checkedItems={selectedRowKeys}

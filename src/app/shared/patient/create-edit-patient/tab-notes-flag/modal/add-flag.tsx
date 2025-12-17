@@ -20,6 +20,7 @@ import toast from 'react-hot-toast';
 import { useGetPatientById } from '@/hooks/usePatient';
 import { IGetPatientFlagResponse } from '@/types/ApiResponse';
 import { useGetTypes } from '@/hooks/use-type';
+import TextEditor from '@/components/Tiptap';
 
 export default function FlagForm({
   flagData,
@@ -40,7 +41,7 @@ export default function FlagForm({
   });
 
   const { mutate: mutateCreate, isPending } = useCreatePatientFLag();
-  const { mutate: mutateUpdate } = useUpdatePatientFLag();
+  const { mutate: mutateUpdate, isPending: isPendingUpdate } = useUpdatePatientFLag();
   const categoryOptions = useMemo(() => {
     if (!dataTypes) return [];
     return dataTypes?.data?.map((template) => ({
@@ -147,17 +148,22 @@ export default function FlagForm({
               name="description"
               control={control}
               render={({ field }) => (
-                <Textarea
+                // <Textarea
+                //   {...field}
+                //   label="Description"
+                //   placeholder="description"
+                // />
+                <TextEditor
                   {...field}
-                  label="Description"
-                  placeholder="description"
+                  label='Description'
+                  placeholder='Write description here...'
                 />
               )}
             />
 
             <FormFooter
               className="rounded-b-xl"
-              isLoading={isPending}
+              isLoading={isPending || isPendingUpdate}
               altBtnText="Cancel"
               submitBtnText="Save"
               isSticky={false}

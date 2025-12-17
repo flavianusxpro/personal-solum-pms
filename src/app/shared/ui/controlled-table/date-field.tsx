@@ -14,11 +14,16 @@ export default function DateFiled({
         monthsShown={1}
         placeholderText={placeholderText}
         inputProps={{
+          clearable: props.isClearable,
+          onClear: onClear,
+          suffixClassName: 'flex items-center gap-1',
+          
           inputClassName: 'h-9 [&_input]:text-ellipsis',
           ...inputProps,
         }}
         className="w-72"
-        {...props}
+        // {...props}
+        {...{ ...props, isClearable: false }}
       />
     </div>
   );

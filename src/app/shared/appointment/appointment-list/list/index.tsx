@@ -288,7 +288,6 @@ export default function AppointmentListTable({
     // handleDelete,
     handleReset,
     handleSelectAllRow,
-    // handleRowSelect,
     handleSelectRow,
     setSelectedRowKeys,
     selectedRowKeys,

@@ -15,6 +15,8 @@ import { useGetPatientById } from '@/hooks/usePatient';
 import TabHistory from './tab-history';
 import TabDocumentation from './tab-documentation';
 import TabLog from './tab-log';
+import TabCommunications from './tab-communications';
+import TabLetterAndAttachment from './tab-letterAndAttachment';
 
 export const navItems = [
   {
@@ -22,28 +24,24 @@ export const navItems = [
     label: 'Patient Details',
   },
   {
-    value: 'password',
-    label: 'Password',
-  },
-  {
-    value: 'emergency',
-    label: 'Emergency Contact',
-  },
-  {
     value: 'billing',
     label: 'Billing & Appointments',
+  },
+  {
+    value: 'communications',
+    label: 'Communications',
   },
   {
     value: 'notes-flags',
     label: 'Notes & Flags',
   },
   {
-    value: 'documentation',
-    label: 'Documentation',
+    value: 'consent',
+    label: 'Consent',
   },
   {
-    value: 'assign',
-    label: 'Assign',
+    value: 'letterAndAttachment',
+    label: 'Letter & Attachment',
   },
   {
     value: 'history',
@@ -53,6 +51,14 @@ export const navItems = [
     value: 'log',
     label: 'Log',
   },
+  // {
+  //   value: 'password',
+  //   label: 'Password',
+  // },
+  // {
+  //   value: 'emergency',
+  //   label: 'Emergency Contact',
+  // },
 ];
 
 export default function CreateEditPatient({
@@ -62,7 +68,7 @@ export default function CreateEditPatient({
 }) {
   const id = useParams().id as string;
 
-  const [tab, setTab] = useState(navItems[0].value);
+  const [tab, setTab] = useState(navItems[5].value);
 
   const { data: dataPatient } = useGetPatientById(id);
 
@@ -99,20 +105,23 @@ export default function CreateEditPatient({
                 key={nav.value}
                 isActive={tab === nav.value}
                 onClick={() => selectTab(nav.value)}
-                //   disabled={isPending}
+                // disabled={isPending}
               />
             ))}
           </nav>
         </SimpleBar>
 
+        {/* {tab === 'password' && <TabPassword isView={isView} />} */}
+        {/* {tab === 'emergency' && <TabEmergencyContact isView={isView} />} */}
+        {/* {tab === 'history' && <></>} */}
+        {/* {tab === 'assign' && <TabAssign isView={isView} />} */}
+
         {tab === 'patient' && <PatientDetails isView={isView} />}
-        {tab === 'password' && <TabPassword isView={isView} />}
-        {tab === 'emergency' && <TabEmergencyContact isView={isView} />}
         {tab === 'billing' && <TabBillingAppointments isView={isView} />}
+        {tab === 'communications' && <TabCommunications isView={isView} />}
         {tab === 'notes-flags' && <TabNotesFlags isView={isView} />}
-        {tab === 'assign' && <TabAssign isView={isView} />}
-        {tab === 'history' && <></>}
-        {tab === 'documentation' && <TabDocumentation isView={isView} />}
+        {tab === 'consent' && <TabDocumentation isView={isView} />}
+        {tab === 'letterAndAttachment' && <TabLetterAndAttachment isView={isView} />}
         {tab === 'log' && <TabLog />}
       </div>
     </>

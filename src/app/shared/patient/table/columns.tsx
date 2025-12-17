@@ -20,6 +20,7 @@ import TrashIcon from '@/core/components/icons/trash';
 import { CiWarning } from 'react-icons/ci';
 import DateCellNew from '@/core/ui/date-cell-new';
 import AvatarCardNew from '@/core/ui/avatar-card-new';
+import { FaRegCircleDot } from 'react-icons/fa6';
 // import AvatarCard from '@core/ui/avatar-card';
 // import DateCell from '@core/ui/date-cell';
 // import { HiOutlineDotsVertical } from 'react-icons/hi';
@@ -102,7 +103,7 @@ export const getColumns = ({
           const value = row[String(key)];
 
           if (key === "mobile_number") {
-            if (!value) return true; 
+            if (!value) return true;
 
             const raw = String(value);
 
@@ -326,6 +327,15 @@ function RenderAction({
           >
             <PiNote className="mr-2 h-4 w-4" />
             Add Notes
+          </Dropdown.Item>
+
+          <Dropdown.Item
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <FaRegCircleDot className="mr-2 h-4 w-4" />
+            <span>Deactivate</span>
           </Dropdown.Item>
 
           <Dropdown.Item>
