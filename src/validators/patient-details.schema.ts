@@ -38,21 +38,10 @@ export const patientDetailsFormSchema = z
     date_of_birth: z.string().min(1, {
       message: messages.dateOfBirthRequired,
     }),
-    state: z.string().min(1, { message: 'State is required' }),
-    country: z.string().min(1, { message: 'Country is required' }),
     unit_number: z.string().optional(),
     address_line_1: z.string().optional(),
     address_line_2: z.string().optional(),
-    suburb: z.string().min(1, { message: 'City is required' }),
-    post_code: z.string().min(1, { message: 'Post Code is required' }),
-    address_type: z.string().min(1, { message: 'Address Type is required' }),
     is_australian_resident: z.boolean().optional(),
-    // street_name: z.string().min(1, { message: 'Street Address is required' }),
-    // address_line1: z.string().min(1, { message: 'Street Address is required' }),
-    // ihi_number: z
-    //   .string()
-    //   .regex(/^\d*$/, { message: 'IHI number must contain only numbers' })
-    //   .optional(),
     ihi_number: z
       .string()
       .regex(/^\d+$/, {
@@ -65,7 +54,6 @@ export const patientDetailsFormSchema = z
     concession_card_type: z.string().optional(),
     concession_card_number: z.string().optional(),
     concession_card_expiry: z.date().optional(),
-
     medicare_card: z.string().optional(),
     medicare_expiry: z.date().optional(),
     position_on_card: z.string().optional(),
@@ -76,8 +64,6 @@ export const patientDetailsFormSchema = z
     patient_problem: z.array(z.string()).optional(),
     dva_card_number: z.string().optional(),
     dva_card_type: z.string().optional(),
-
-    // Emergency Contact
     first_name_emergency_contact: z
       .string()
       .min(1, { message: messages.firstNameRequired }),
@@ -85,10 +71,20 @@ export const patientDetailsFormSchema = z
     email_emergency_contact: validateEmail,
     mobile_number_emergency_contact: z.string().optional(),
     relationship_emergency_contact: z.string().optional(),
-
-    // Password
     newPassword: z.string().optional(),
     confirmPassword: z.string().optional(),
+
+     // state: z.string().min(1, { message: 'State is required' }),
+    // country: z.string().min(1, { message: 'Country is required' }),
+    // suburb: z.string().min(1, { message: 'City is required' }),
+    // post_code: z.string().min(1, { message: 'Post Code is required' }),
+    // address_type: z.string().min(1, { message: 'Address Type is required' }),
+    // street_name: z.string().min(1, { message: 'Street Address is required' }),
+    // address_line1: z.string().min(1, { message: 'Street Address is required' }),
+    // ihi_number: z
+    //   .string()
+    //   .regex(/^\d*$/, { message: 'IHI number must contain only numbers' })
+    //   .optional(),
   })
   .superRefine((data, ctx) => {
     if (data.newPassword || data.confirmPassword) {

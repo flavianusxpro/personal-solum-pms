@@ -68,7 +68,7 @@ export default function CreateEditPatient({
 }) {
   const id = useParams().id as string;
 
-  const [tab, setTab] = useState(navItems[5].value);
+  const [tab, setTab] = useState(navItems[0].value);
 
   const { data: dataPatient } = useGetPatientById(id);
 
