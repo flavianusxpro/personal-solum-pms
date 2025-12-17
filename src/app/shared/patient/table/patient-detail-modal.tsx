@@ -25,10 +25,6 @@ const ModalProfilePatient = (data: any) => {
         );
     };
 
-
-    console.log('zzz mantap data data', data);
-    
-
     const handleCopy = (text: string | number) => {
         copyToClipboard(String(text));
     };

@@ -106,6 +106,16 @@ export interface IPayloadCreateEditPatient {
   dva_card_number?: string;
   dva_card_type?: string;
   address_type?: string;
+
+  addresses?: Array<{
+    address_type: string;
+    address_line_1: string;
+    address_line_2?: string;
+    suburb: string;
+    state: string;
+    post_code: string;
+    country: string;
+  }>;
 }
 
 export interface IPayloadCreateEditDoctor {

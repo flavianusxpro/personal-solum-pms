@@ -58,6 +58,9 @@ export const getColumns = ({
       dataIndex: 'checked',
       key: 'checked',
       width: 40,
+      onCell: () => ({
+        onClick: (e: any) => e.stopPropagation(),
+      }),
       render: (_: any, row: any) => (
         <div className="inline-flex ps-2">
           <Checkbox
@@ -130,22 +133,30 @@ export const getColumns = ({
       width: 100,
       render: (_: string, row: Row) => (
         <div className="relative flex items-center justify-end gap-3">
-          <ActionTooltipButton
-            onClick={() => {
-              openModal?.({
-                view: <FlagForm flagData={row} modalType={row.type} />,
-              });
-            }}
-            tooltipContent="Edit"
-            variant="outline"
+          <div
+            onClick={(e) => e.stopPropagation()}
           >
-            <PencilIcon className="h-4 w-4" />
-          </ActionTooltipButton>
-          <DeletePopover
-            title={`Delete the Patient`}
-            description={`Are you sure you want to delete this #${row.id} Patient?`}
-            onDelete={() => onDeleteItem([row?.id.toString()])}
-          />
+            <ActionTooltipButton
+              onClick={() => {
+                openModal?.({
+                  view: <FlagForm flagData={row} modalType={row.type} />,
+                });
+              }}
+              tooltipContent="Edit"
+              variant="outline"
+            >
+              <PencilIcon className="h-4 w-4" />
+            </ActionTooltipButton>
+          </div>
+          <div
+            onClick={(e) => e.stopPropagation()}
+          >
+            <DeletePopover
+              title={`Delete data`}
+              description={`Are you sure you want to delete this data?`}
+              onDelete={() => onDeleteItem([row?.id.toString()])}
+            />
+          </div>
         </div>
       ),
     },

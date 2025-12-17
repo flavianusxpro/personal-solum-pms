@@ -118,7 +118,7 @@ export default function DocumentationForm({
       <div className="flex flex-col gap-6 px-6 pt-6">
         <Flex justify="between" align="center" gap="4">
           <Title className="text-lg">
-            {isEdit ? 'Edit' : 'Add'} Documentation
+            {isEdit ? 'Edit' : 'Add'} Consent
           </Title>
           <ActionIcon variant="text" onClick={closeModal} className="">
             <PiX className="h-6 w-6" />
