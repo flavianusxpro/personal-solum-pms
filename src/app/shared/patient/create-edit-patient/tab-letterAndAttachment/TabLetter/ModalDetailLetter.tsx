@@ -13,18 +13,12 @@ interface HtmlBlockProps {
 
 const ModalDetailLetter = (props: PropTypes) => {
     const { data } = props 
-
-    console.log('zzz hasil', data);
-    
-
     const { closeModal } = useModal();
-
     function HtmlBlock({ html }: HtmlBlockProps) {
         return (
             <div dangerouslySetInnerHTML={{ __html: html }} />
         );
     }
-
     return (
         <div className="w-full rounded-[24px]">
             <div className="flex items-center justify-between mb-6 px-10 py-5 border-b border-[#D8D8D8]">
@@ -57,7 +51,6 @@ const ModalDetailLetter = (props: PropTypes) => {
                 </div>
 
                 <div className='bg-[#FAFAFA] flex flex-col gap-4 p-4 rounded-lg'>
-                    {/* <HtmlBlock html={data?.description} /> */}
                     <div>
                         <h1 className='font-medium text-sm'>Subject</h1>
                         <p className='font-normal text-sm'>
