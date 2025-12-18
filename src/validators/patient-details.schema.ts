@@ -18,6 +18,7 @@ export const patientDetailsFormSchema = z
       .min(1, { message: messages.phoneNumberIsRequired }),
     status: z.number().optional(),
     address: z.string().optional(),
+    hearAboutUs: z.string().optional(),
     addresses: z
       .array(
         z.object({

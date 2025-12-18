@@ -6,10 +6,9 @@ import { debounce } from 'lodash';
 import { useColumn } from '@/core/hooks/use-column';
 import { Button } from 'rizzui';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import ModalAddEditLetter from './ModalAddEditLetter';
-import ModalDetailLetter from './ModalDetailLetter';
+import ModalAddEditNewAllergy from './ModalAddEditNewAllergy';
 
-const TabLetter = () => {
+const TabAllergiesAndReactions = () => {
     const { openModal } = useModal();
     const [params, setParams] = useState({
         page: 1,
@@ -20,43 +19,48 @@ const TabLetter = () => {
     const data = [
         {
             id: 1,
-            subject: 'Appointment Reschedule',
-            summary: "Patient's appointment has been moved to a new schedule...",
-            fileName: 'appointment-reschedule-letter.pdf',
-            issuedBy: 'Dr. Emily',
-            issuedAt: '01/12/2025 7:56 AM',
+            allergen: 'Penicillin',
+            reaction: 'Skin rash, itching',
+            severity: 'Moderate',
+            warnings: 'Avoid beta-lactam antibiotics',
+            createdAt: '01/12/2025 7:56 AM',
+            createdBy: 'Dr. Sarah',
         },
         {
             id: 2,
-            subject: 'Follow-up Reminder',
-            summary: 'A reminder for the scheduled follow-up visit...',
-            fileName: 'follow-up-reminder.pdf',
-            issuedBy: 'Dr. Benjamin',
-            issuedAt: '01/12/2025 7:56 AM',
+            allergen: 'Peanuts',
+            reaction: 'Anaphylaxis',
+            severity: 'Severe',
+            warnings: 'Carry epinephrine',
+            createdAt: '01/12/2025 7:56 AM',
+            createdBy: 'Nurse Lina',
         },
         {
             id: 3,
-            subject: 'Email Evidence',
-            summary: 'Recent pathology results are now ready for review...',
-            fileName: 'pathology-result-summary.pdf',
-            issuedBy: 'Nurse Putri',
-            issuedAt: '01/12/2025 7:56 AM',
+            allergen: 'Dust Mites',
+            reaction: 'Sneezing, runny nose',
+            severity: 'Mild',
+            warnings: 'Use air purifier',
+            createdAt: '01/12/2025 7:56 AM',
+            createdBy: 'Dr. Sarah',
         },
         {
             id: 4,
-            subject: 'Vaccination Update',
-            summary: 'Immunisation schedule updated based on latest records...',
-            fileName: 'vaccination-update-letter.pdf',
-            issuedBy: 'Dr. Lee',
-            issuedAt: '01/12/2025 7:56 AM',
+            allergen: 'Shellfish',
+            reaction: 'Swelling, hives',
+            severity: 'Severe',
+            warnings: 'Avoid all seafood',
+            createdAt: '01/12/2025 7:56 AM',
+            createdBy: 'Dr. Andi',
         },
         {
             id: 5,
-            subject: 'General Health Advice',
-            summary: 'Lifestyle recommendations provided for improving health...',
-            fileName: 'general-health-advice.pdf',
-            issuedBy: 'Dr. Emily',
-            issuedAt: '01/12/2025 7:56 AM',
+            allergen: 'Latex',
+            reaction: 'Contact dermatitis',
+            severity: 'Mild',
+            warnings: 'Use latex-free equipment',
+            createdAt: '01/12/2025 7:56 AM',
+            createdBy: 'Dr. Sarah',
         },
     ];
 
@@ -104,9 +108,9 @@ const TabLetter = () => {
     const { visibleColumns, checkedColumns, setCheckedColumns } = useColumn(columns);
 
     return (
-        <div className='flex flex-col gap-9'>
+        <div className='flex flex-col gap-9 w-full'>
             <h1 className='font-medium font-lexend text-base'>
-                Letter
+                Allergies & Reactions
             </h1>
 
             <div>
@@ -121,10 +125,10 @@ const TabLetter = () => {
                     }}
                     onRow={(record, index) => ({
                         onClick: () => {
-                            openModal({
-                                view: <ModalDetailLetter data={record} />,
-                                customSize: '700px',
-                            });
+                            // openModal({
+                            //     view: <ModalDetailLetter data={record} />,
+                            //     customSize: '700px',
+                            // });
                         },
                     })}
                     columns={visibleColumns}
@@ -157,7 +161,7 @@ const TabLetter = () => {
                                 <Button
                                     onClick={() => {
                                         openModal({
-                                            view: <ModalAddEditLetter />,
+                                            view: <ModalAddEditNewAllergy />,
                                             customSize: '1100px',
                                         });
                                     }}
@@ -175,4 +179,4 @@ const TabLetter = () => {
     )
 }
 
-export default TabLetter
+export default TabAllergiesAndReactions

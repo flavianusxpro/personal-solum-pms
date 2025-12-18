@@ -17,6 +17,7 @@ import TabDocumentation from './tab-documentation';
 import TabLog from './tab-log';
 import TabCommunications from './tab-communications';
 import TabLetterAndAttachment from './tab-letterAndAttachment';
+import TabClinical from './tab-clinical';
 
 export const navItems = [
   {
@@ -44,13 +45,17 @@ export const navItems = [
     label: 'Letter & Attachment',
   },
   {
-    value: 'history',
-    label: 'History',
+    value: 'clinical',
+    label: 'Clinical',
   },
   {
     value: 'log',
     label: 'Log',
   },
+  // {
+  //   value: 'history',
+  //   label: 'History',
+  // },
   // {
   //   value: 'password',
   //   label: 'Password',
@@ -68,7 +73,7 @@ export default function CreateEditPatient({
 }) {
   const id = useParams().id as string;
 
-  const [tab, setTab] = useState(navItems[0].value);
+  const [tab, setTab] = useState(navItems[6].value);
 
   const { data: dataPatient } = useGetPatientById(id);
 
@@ -122,6 +127,7 @@ export default function CreateEditPatient({
         {tab === 'notes-flags' && <TabNotesFlags isView={isView} />}
         {tab === 'consent' && <TabDocumentation isView={isView} />}
         {tab === 'letterAndAttachment' && <TabLetterAndAttachment isView={isView} />}
+        {tab === 'clinical' && <TabClinical isView={isView} />}
         {tab === 'log' && <TabLog />}
       </div>
     </>

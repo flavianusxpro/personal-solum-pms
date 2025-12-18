@@ -6,10 +6,10 @@ import { debounce } from 'lodash';
 import { useColumn } from '@/core/hooks/use-column';
 import { Button } from 'rizzui';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import ModalAddEditLetter from './ModalAddEditLetter';
-import ModalDetailLetter from './ModalDetailLetter';
+import ModalAddEditAdmissionHistory from './ModalAddEditAdmissionHistory';
+import ModalDetailAdmission from './ModalDetailAdmission';
 
-const TabLetter = () => {
+const TabAdmissionHistory = () => {
     const { openModal } = useModal();
     const [params, setParams] = useState({
         page: 1,
@@ -19,46 +19,81 @@ const TabLetter = () => {
 
     const data = [
         {
-            id: 1,
-            subject: 'Appointment Reschedule',
-            summary: "Patient's appointment has been moved to a new schedule...",
-            fileName: 'appointment-reschedule-letter.pdf',
-            issuedBy: 'Dr. Emily',
-            issuedAt: '01/12/2025 7:56 AM',
+            "id": 1,
+            "admissionDate": "18/12/2025",
+            "status": "Discharge",
+            "clinicBranch": "Solum Clinic",
+            "attendingProvider": "Dr. Lisa Morgan",
+            "reasonForPresentation": "Acute Appendicitis",
+            "dischargeDate": "21/12/2025",
+            "confirmed": true,
+            "patientName": "Ahmad Santoso",
+            "age": 32,
+            "gender": "Male",
+            "roomNumber": "A-102",
+            "medicalRecordNumber": "MR-2025-001"
         },
         {
-            id: 2,
-            subject: 'Follow-up Reminder',
-            summary: 'A reminder for the scheduled follow-up visit...',
-            fileName: 'follow-up-reminder.pdf',
-            issuedBy: 'Dr. Benjamin',
-            issuedAt: '01/12/2025 7:56 AM',
+            "id": 2,
+            "admissionDate": "05/12/2025",
+            "status": "Discharge",
+            "clinicBranch": "Solum Clinic",
+            "attendingProvider": "Dr. Michael Turner",
+            "reasonForPresentation": "Severe Migraine",
+            "dischargeDate": "07/12/2025",
+            "confirmed": true,
+            "patientName": "Siti Rahayu",
+            "age": 28,
+            "gender": "Female",
+            "roomNumber": "B-205",
+            "medicalRecordNumber": "MR-2025-002"
         },
         {
-            id: 3,
-            subject: 'Email Evidence',
-            summary: 'Recent pathology results are now ready for review...',
-            fileName: 'pathology-result-summary.pdf',
-            issuedBy: 'Nurse Putri',
-            issuedAt: '01/12/2025 7:56 AM',
+            "id": 3,
+            "admissionDate": "20/11/2025",
+            "status": "Emergency",
+            "clinicBranch": "Solum Clinic",
+            "attendingProvider": "Dr. Chloe Wright",
+            "reasonForPresentation": "Abdominal Pain",
+            "dischargeDate": null,
+            "confirmed": true,
+            "patientName": "Budi Hartono",
+            "age": 45,
+            "gender": "Male",
+            "roomNumber": "E-301",
+            "medicalRecordNumber": "MR-2025-003"
         },
         {
-            id: 4,
-            subject: 'Vaccination Update',
-            summary: 'Immunisation schedule updated based on latest records...',
-            fileName: 'vaccination-update-letter.pdf',
-            issuedBy: 'Dr. Lee',
-            issuedAt: '01/12/2025 7:56 AM',
+            "id": 4,
+            "admissionDate": "12/11/2025",
+            "status": "Discharge",
+            "clinicBranch": "Solum Clinic",
+            "attendingProvider": "Dr. Henry Collins",
+            "reasonForPresentation": "Wrist Fracture",
+            "dischargeDate": "12/11/2025",
+            "confirmed": true,
+            "patientName": "Dewi Kusuma",
+            "age": 19,
+            "gender": "Female",
+            "roomNumber": "C-108",
+            "medicalRecordNumber": "MR-2025-004"
         },
         {
-            id: 5,
-            subject: 'General Health Advice',
-            summary: 'Lifestyle recommendations provided for improving health...',
-            fileName: 'general-health-advice.pdf',
-            issuedBy: 'Dr. Emily',
-            issuedAt: '01/12/2025 7:56 AM',
-        },
-    ];
+            "id": 5,
+            "admissionDate": "03/11/2025",
+            "status": "Admitted",
+            "clinicBranch": "Solum Clinic",
+            "attendingProvider": "Dr. Sarah Logan",
+            "reasonForPresentation": "Gallbladder Issue",
+            "dischargeDate": null,
+            "confirmed": true,
+            "patientName": "Eko Prasetyo",
+            "age": 51,
+            "gender": "Male",
+            "roomNumber": "A-215",
+            "medicalRecordNumber": "MR-2025-005"
+        }
+    ]
 
     const {
         isLoading,
@@ -106,7 +141,7 @@ const TabLetter = () => {
     return (
         <div className='flex flex-col gap-9'>
             <h1 className='font-medium font-lexend text-base'>
-                Letter
+                Admission History
             </h1>
 
             <div>
@@ -122,8 +157,8 @@ const TabLetter = () => {
                     onRow={(record, index) => ({
                         onClick: () => {
                             openModal({
-                                view: <ModalDetailLetter data={record} />,
-                                customSize: '700px',
+                                view: <ModalDetailAdmission data={record} />,
+                                customSize: '1100px',
                             });
                         },
                     })}
@@ -157,12 +192,12 @@ const TabLetter = () => {
                                 <Button
                                     onClick={() => {
                                         openModal({
-                                            view: <ModalAddEditLetter />,
+                                            view: <ModalAddEditAdmissionHistory />,
                                             customSize: '1100px',
                                         });
                                     }}
                                 >
-                                    + Add New
+                                    + Add External Admission
                                 </Button>
                             </div>
                         ],
@@ -175,4 +210,4 @@ const TabLetter = () => {
     )
 }
 
-export default TabLetter
+export default TabAdmissionHistory

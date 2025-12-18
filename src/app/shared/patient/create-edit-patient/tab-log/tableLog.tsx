@@ -88,6 +88,7 @@ const TableLog = (data: any) => {
             )}
         >
             <ControlledTable
+                isDeactiveToogleColumns
                 variant="modern"
                 isLoading={isLoading}
                 showLoadingText={true}

@@ -122,6 +122,14 @@ export const relationshipOption: SelectOption[] = [
   { label: 'Other', value: 'other' },
 ];
 
+export const howDidYouHearAboutUs: SelectOption[] = [
+  { label: 'Search Engine (Google, Bing)', value: 'search engine' },
+  { label: 'Social Media', value: 'social media' },
+  { label: 'Friend or Colleague', value: 'friend or colleague' },
+  { label: 'Pharmacy', value: 'pharmacy' },
+  { label: 'Others', value: 'other' },
+]
+
 export const doctorsOption = [
   { label: 'Dr. John Doe', value: 'dr-john-doe' },
   { label: 'Dr. Jane Smith', value: 'dr-jane-smith' },
