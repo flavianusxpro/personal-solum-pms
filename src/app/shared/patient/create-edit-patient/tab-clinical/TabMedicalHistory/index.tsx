@@ -6,10 +6,9 @@ import { debounce } from 'lodash';
 import { useColumn } from '@/core/hooks/use-column';
 import { Button } from 'rizzui';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import ModalAddEditLetter from './ModalAddEditLetter';
-import ModalDetailLetter from './ModalDetailLetter';
+import ModalAddEditMedicalHistory from './ModalAddEditMedicalHistory';
 
-const TabLetter = () => {
+const TabMedicalHistory = () => {
     const { openModal } = useModal();
     const [params, setParams] = useState({
         page: 1,
@@ -20,45 +19,66 @@ const TabLetter = () => {
     const data = [
         {
             id: 1,
-            subject: 'Appointment Reschedule',
-            summary: "Patient's appointment has been moved to a new schedule...",
-            fileName: 'appointment-reschedule-letter.pdf',
-            issuedBy: 'Dr. Emily',
-            issuedAt: '01/12/2025 7:56 AM',
+            date: '19/11/2025',
+            condition: 'Hypertension',
+            severity: 'Moderate',
+            status: 'Active',
+            summary: 'BP 150/95',
+            mhr: true,
+            comments: 'Needs monitoring every month',
+            createdBy: 'Dr. Emily',
+            confidential: true,
         },
         {
             id: 2,
-            subject: 'Follow-up Reminder',
-            summary: 'A reminder for the scheduled follow-up visit...',
-            fileName: 'follow-up-reminder.pdf',
-            issuedBy: 'Dr. Benjamin',
-            issuedAt: '01/12/2025 7:56 AM',
+            date: '05/11/2024',
+            condition: 'Diabetes Type 2',
+            severity: 'Severe',
+            status: 'Active',
+            summary: 'HbA1c 9.0%',
+            mhr: false,
+            comments: 'Patient advised dietary changes',
+            createdBy: 'Dr. Emily',
+            confidential: true,
         },
         {
             id: 3,
-            subject: 'Email Evidence',
-            summary: 'Recent pathology results are now ready for review...',
-            fileName: 'pathology-result-summary.pdf',
-            issuedBy: 'Nurse Putri',
-            issuedAt: '01/12/2025 7:56 AM',
+            date: '14/03/2024',
+            condition: 'Allergy – Dust',
+            severity: 'Mild',
+            status: 'Active',
+            summary: 'Runny nose & sneezing',
+            mhr: false,
+            comments: 'Considering allergy test',
+            createdBy: 'Admin Dian',
+            confidential: true,
         },
         {
             id: 4,
-            subject: 'Vaccination Update',
-            summary: 'Immunisation schedule updated based on latest records...',
-            fileName: 'vaccination-update-letter.pdf',
-            issuedBy: 'Dr. Lee',
-            issuedAt: '01/12/2025 7:56 AM',
+            date: '22/07/2023',
+            condition: 'Asthma',
+            severity: 'Mild',
+            status: 'Resolved',
+            summary: 'No attacks in 6 months',
+            mhr: true,
+            comments: 'Continue inhaler PRN',
+            createdBy: 'Nurse Alex',
+            confidential: true,
         },
         {
             id: 5,
-            subject: 'General Health Advice',
-            summary: 'Lifestyle recommendations provided for improving health...',
-            fileName: 'general-health-advice.pdf',
-            issuedBy: 'Dr. Emily',
-            issuedAt: '01/12/2025 7:56 AM',
+            date: '30/09/2022',
+            condition: 'Migraine',
+            severity: 'Moderate',
+            status: 'Inactive',
+            summary: 'No symptoms in past year',
+            mhr: true,
+            comments: 'Monitor if recurring',
+            createdBy: 'Dr. Benjamin',
+            confidential: true,
         },
     ];
+
 
     const {
         isLoading,
@@ -106,7 +126,7 @@ const TabLetter = () => {
     return (
         <div className='flex flex-col gap-9'>
             <h1 className='font-medium font-lexend text-base'>
-                Letter
+                Medical History
             </h1>
 
             <div>
@@ -121,10 +141,10 @@ const TabLetter = () => {
                     }}
                     onRow={(record, index) => ({
                         onClick: () => {
-                            openModal({
-                                view: <ModalDetailLetter data={record} />,
-                                customSize: '700px',
-                            });
+                            // openModal({
+                            //     view: <ModalDetailLetter data={record} />,
+                            //     customSize: '700px',
+                            // });
                         },
                     })}
                     columns={visibleColumns}
@@ -157,7 +177,7 @@ const TabLetter = () => {
                                 <Button
                                     onClick={() => {
                                         openModal({
-                                            view: <ModalAddEditLetter />,
+                                            view: <ModalAddEditMedicalHistory />,
                                             customSize: '1100px',
                                         });
                                     }}
@@ -175,4 +195,4 @@ const TabLetter = () => {
     )
 }
 
-export default TabLetter
+export default TabMedicalHistory

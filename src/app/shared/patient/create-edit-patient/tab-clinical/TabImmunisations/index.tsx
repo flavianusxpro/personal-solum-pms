@@ -6,10 +6,10 @@ import { debounce } from 'lodash';
 import { useColumn } from '@/core/hooks/use-column';
 import { Button } from 'rizzui';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import ModalAddEditLetter from './ModalAddEditLetter';
-import ModalDetailLetter from './ModalDetailLetter';
+import ModalAddEditImmunisation from './ModalAddEditImmunisation';
+import ModalDetailImmunisation from './ModalDetailImmunisation';
 
-const TabLetter = () => {
+const TabImmunisations = () => {
     const { openModal } = useModal();
     const [params, setParams] = useState({
         page: 1,
@@ -20,43 +20,91 @@ const TabLetter = () => {
     const data = [
         {
             id: 1,
-            subject: 'Appointment Reschedule',
-            summary: "Patient's appointment has been moved to a new schedule...",
-            fileName: 'appointment-reschedule-letter.pdf',
-            issuedBy: 'Dr. Emily',
-            issuedAt: '01/12/2025 7:56 AM',
+            givenDate: '19/11/2025',
+            vaccine: 'Influenza (FluQuadri)',
+            dose: '0.5 mL',
+            batchNo: 'FLQ25-088',
+            site: 'Left Deltoid',
+            route: 'Intramuscular',
+            given: true,
+            confidential: false,
         },
         {
             id: 2,
-            subject: 'Follow-up Reminder',
-            summary: 'A reminder for the scheduled follow-up visit...',
-            fileName: 'follow-up-reminder.pdf',
-            issuedBy: 'Dr. Benjamin',
-            issuedAt: '01/12/2025 7:56 AM',
+            givenDate: '19/11/2025',
+            vaccine: 'COVID-19 Pfizer',
+            dose: '0.3 mL',
+            batchNo: 'PFZ25-112',
+            site: 'Right Deltoid',
+            route: 'Subcutaneous',
+            given: true,
+            confidential: true,
         },
         {
             id: 3,
-            subject: 'Email Evidence',
-            summary: 'Recent pathology results are now ready for review...',
-            fileName: 'pathology-result-summary.pdf',
-            issuedBy: 'Nurse Putri',
-            issuedAt: '01/12/2025 7:56 AM',
+            givenDate: '19/11/2025',
+            vaccine: 'Tdap',
+            dose: '0.5 mL',
+            batchNo: 'TDP25-055',
+            site: 'Left Anterior Thigh',
+            route: 'Oral',
+            given: true,
+            confidential: false,
         },
         {
             id: 4,
-            subject: 'Vaccination Update',
-            summary: 'Immunisation schedule updated based on latest records...',
-            fileName: 'vaccination-update-letter.pdf',
-            issuedBy: 'Dr. Lee',
-            issuedAt: '01/12/2025 7:56 AM',
+            givenDate: '19/11/2025',
+            vaccine: 'Hepatitis B',
+            dose: '1 mL',
+            batchNo: 'HEP25-009',
+            site: 'Right Anterior Thigh',
+            route: 'Intradermal',
+            given: false,
+            confidential: false,
         },
         {
             id: 5,
-            subject: 'General Health Advice',
-            summary: 'Lifestyle recommendations provided for improving health...',
-            fileName: 'general-health-advice.pdf',
-            issuedBy: 'Dr. Emily',
-            issuedAt: '01/12/2025 7:56 AM',
+            givenDate: '19/11/2025',
+            vaccine: 'MMR',
+            dose: '0.5 mL',
+            batchNo: 'TDP25-056',
+            site: 'Left Gluteus',
+            route: 'Intramuscular',
+            given: true,
+            confidential: true,
+        },
+        {
+            id: 6,
+            givenDate: '19/11/2025',
+            vaccine: 'MMR',
+            dose: '0.5 mL',
+            batchNo: 'TDP25-057',
+            site: 'Right Gluteus',
+            route: 'Subcutaneous',
+            given: true,
+            confidential: true,
+        },
+        {
+            id: 7,
+            givenDate: '19/11/2025',
+            vaccine: 'MMR',
+            dose: '0.5 mL',
+            batchNo: 'TDP25-058',
+            site: 'Left Forearm',
+            route: 'Oral',
+            given: true,
+            confidential: true,
+        },
+        {
+            id: 8,
+            givenDate: '19/11/2025',
+            vaccine: 'MMR',
+            dose: '0.5 mL',
+            batchNo: 'TDP25-059',
+            site: 'Right Forearm',
+            route: 'Intradermal',
+            given: true,
+            confidential: true,
         },
     ];
 
@@ -106,7 +154,7 @@ const TabLetter = () => {
     return (
         <div className='flex flex-col gap-9'>
             <h1 className='font-medium font-lexend text-base'>
-                Letter
+                Immunisations
             </h1>
 
             <div>
@@ -122,7 +170,7 @@ const TabLetter = () => {
                     onRow={(record, index) => ({
                         onClick: () => {
                             openModal({
-                                view: <ModalDetailLetter data={record} />,
+                                view: <ModalDetailImmunisation data={record} />,
                                 customSize: '700px',
                             });
                         },
@@ -157,12 +205,12 @@ const TabLetter = () => {
                                 <Button
                                     onClick={() => {
                                         openModal({
-                                            view: <ModalAddEditLetter />,
+                                            view: <ModalAddEditImmunisation />,
                                             customSize: '1100px',
                                         });
                                     }}
                                 >
-                                    + Add New
+                                    + New Immunisation
                                 </Button>
                             </div>
                         ],
@@ -175,4 +223,4 @@ const TabLetter = () => {
     )
 }
 
-export default TabLetter
+export default TabImmunisations

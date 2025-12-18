@@ -6,11 +6,11 @@ import { debounce } from 'lodash';
 import { useColumn } from '@/core/hooks/use-column';
 import { Button } from 'rizzui';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import ModalAddEditLetter from './ModalAddEditLetter';
-import ModalDetailLetter from './ModalDetailLetter';
+import ModalAddEditRx from './ModalAddEditRx';
 
-const TabLetter = () => {
+const TabMedications = () => {
     const { openModal } = useModal();
+    const [subTab, setSubTab] = useState<'current rx' | 'past rx'>('current rx')
     const [params, setParams] = useState({
         page: 1,
         perPage: 10,
@@ -20,43 +20,73 @@ const TabLetter = () => {
     const data = [
         {
             id: 1,
-            subject: 'Appointment Reschedule',
-            summary: "Patient's appointment has been moved to a new schedule...",
-            fileName: 'appointment-reschedule-letter.pdf',
-            issuedBy: 'Dr. Emily',
-            issuedAt: '01/12/2025 7:56 AM',
+            type: 'Acute',
+            drugName: 'Amoxicillin',
+            strength: '500 mg',
+            dose: '1 tablet, 3x/day',
+            qty: 21,
+            repeats: 0,
+            prescribed: '12/01/2025',
+            longTerm: false,
+            endDate: '19/01/2025',
+            status: 'Active',
+            reason: 'Infection',
         },
         {
             id: 2,
-            subject: 'Follow-up Reminder',
-            summary: 'A reminder for the scheduled follow-up visit...',
-            fileName: 'follow-up-reminder.pdf',
-            issuedBy: 'Dr. Benjamin',
-            issuedAt: '01/12/2025 7:56 AM',
+            type: 'Long-term',
+            drugName: 'Metformin',
+            strength: '850 mg',
+            dose: '1 tablet, 2x/day',
+            qty: 60,
+            repeats: 3,
+            prescribed: '05/01/2025',
+            longTerm: true,
+            endDate: '-',
+            status: 'Active',
+            reason: 'Diabetes',
         },
         {
             id: 3,
-            subject: 'Email Evidence',
-            summary: 'Recent pathology results are now ready for review...',
-            fileName: 'pathology-result-summary.pdf',
-            issuedBy: 'Nurse Putri',
-            issuedAt: '01/12/2025 7:56 AM',
+            type: 'Long-term',
+            drugName: 'Amlodipine',
+            strength: '10 mg',
+            dose: '1 tablet/day',
+            qty: 30,
+            repeats: 5,
+            prescribed: '15/12/2024',
+            longTerm: true,
+            endDate: '-',
+            status: 'Active',
+            reason: 'Hypertension',
         },
         {
             id: 4,
-            subject: 'Vaccination Update',
-            summary: 'Immunisation schedule updated based on latest records...',
-            fileName: 'vaccination-update-letter.pdf',
-            issuedBy: 'Dr. Lee',
-            issuedAt: '01/12/2025 7:56 AM',
+            type: 'Imported',
+            drugName: 'Vitamin D',
+            strength: '1000 IU',
+            dose: '1 capsule/day',
+            qty: 30,
+            repeats: 0,
+            prescribed: '10/11/2024',
+            longTerm: false,
+            endDate: '10/12/2024',
+            status: 'Active',
+            reason: 'Supplement',
         },
         {
             id: 5,
-            subject: 'General Health Advice',
-            summary: 'Lifestyle recommendations provided for improving health...',
-            fileName: 'general-health-advice.pdf',
-            issuedBy: 'Dr. Emily',
-            issuedAt: '01/12/2025 7:56 AM',
+            type: 'Acute',
+            drugName: 'Ibuprofen',
+            strength: '400 mg',
+            dose: '1 tablet PRN',
+            qty: 10,
+            repeats: 0,
+            prescribed: '02/10/2024',
+            longTerm: false,
+            endDate: '07/10/2024',
+            status: 'Active',
+            reason: 'Pain relief',
         },
     ];
 
@@ -104,10 +134,32 @@ const TabLetter = () => {
     const { visibleColumns, checkedColumns, setCheckedColumns } = useColumn(columns);
 
     return (
-        <div className='flex flex-col gap-9'>
-            <h1 className='font-medium font-lexend text-base'>
-                Letter
-            </h1>
+        <div className='flex flex-col gap-9 w-full'>
+            <div className='flex gap-2 justify-between items-center'>
+                <h1 className='font-medium font-lexend text-base'>
+                    Medications
+                </h1>
+                <div className='flex gap-2'>
+                    <Button
+                        variant={subTab === 'current rx' ? 'solid' : 'outline'}
+                        type="button"
+                        size='sm'
+                        onClick={() => setSubTab('current rx')}
+                        className='flex text-sm'
+                    >
+                        Current rx
+                    </Button>
+                    <Button
+                        variant={subTab === 'past rx' ? 'solid' : 'outline'}
+                        type="button"
+                        size='sm'
+                        onClick={() => setSubTab('past rx')}
+                        className='flex text-sm'
+                    >
+                        Past Rx
+                    </Button>
+                </div>
+            </div>
 
             <div>
                 <ControlledTable
@@ -121,10 +173,10 @@ const TabLetter = () => {
                     }}
                     onRow={(record, index) => ({
                         onClick: () => {
-                            openModal({
-                                view: <ModalDetailLetter data={record} />,
-                                customSize: '700px',
-                            });
+                            // openModal({
+                            //     view: <ModalDetailLetter data={record} />,
+                            //     customSize: '700px',
+                            // });
                         },
                     })}
                     columns={visibleColumns}
@@ -157,7 +209,7 @@ const TabLetter = () => {
                                 <Button
                                     onClick={() => {
                                         openModal({
-                                            view: <ModalAddEditLetter />,
+                                            view: <ModalAddEditRx />,
                                             customSize: '1100px',
                                         });
                                     }}
@@ -175,4 +227,4 @@ const TabLetter = () => {
     )
 }
 
-export default TabLetter
+export default TabMedications

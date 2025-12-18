@@ -8,7 +8,7 @@ import FormFooter from '@core/components/form-footer';
 import { Form } from '@core/ui/form';
 import { Button, Flex, Input, Loader, Password, Textarea } from 'rizzui';
 import CSelect from '@/core/ui/select';
-import { genderOption, relationshipOption, stateOption } from '@/config/constants';
+import { genderOption, howDidYouHearAboutUs, relationshipOption, stateOption } from '@/config/constants';
 import {
   patientDetailsFormSchema,
   PatientDetailsFormTypes,
@@ -272,9 +272,16 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
         const isAustralianResident = watch('is_australian_resident');
         const relationShipValue = watch('relationship_emergency_contact');
         const isOther =
-          relationShipValue === 'other' ||
-          !relationshipOption.some(
-            (option) => option.value === relationShipValue
+        relationShipValue === 'other' ||
+        !relationshipOption.some(
+          (option) => option.value === relationShipValue
+        );
+
+        const hearAboutUs = watch('hearAboutUs');
+        const isOtherHearAboutUs =
+          hearAboutUs === 'other' ||
+          !howDidYouHearAboutUs.some(
+            (option) => option.value === hearAboutUs
           );
         return (
           <>
@@ -469,47 +476,6 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                     </FormGroup>
                   </div>
                 </div>
-                {/* <div className='flex-1 flex flex-col gap-6'>
-                  <h1 className='font-medium text-base'>
-                    Patient Details
-                  </h1>
-
-                  <div className='flex flex-col gap-4'>
-                    <FormGroup title="Patient Type" isLabel>
-                      <Controller
-                        name="patient_type"
-                        control={control}
-                        render={({ field }) => (
-                          <CSelect
-                            {...field}
-                            label=""
-                            placeholder="Select Patient Type"
-                            options={patientTypeOptions ?? []}
-                            disabled={isView}
-                            error={errors.patient_type?.message as string}
-                          />
-                        )}
-                      />
-                    </FormGroup>
-
-                    <FormGroup title="Patient Condition" isLabel>
-                      <Controller
-                        name="patient_problem"
-                        control={control}
-                        render={({ field }) => (
-                          <CSelect
-                            {...field}
-                            label=""
-                            placeholder="Select Patient Condition"
-                            options={patientProblemOptions ?? []}
-                            disabled={isView}
-                            error={errors.patient_problem?.message as string}
-                          />
-                        )}
-                      />
-                    </FormGroup>
-                  </div>
-                </div> */}
               </div>
             </div>
 
@@ -863,7 +829,7 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
 
             <Divider />
 
-            <div className='flex-1 flex flex-col gap-6 mb-6'>
+            <div className='flex-1 flex flex-col gap-6'>
               <h1 className='font-medium text-base'>
                 Concession Card
               </h1>
@@ -908,6 +874,47 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                 </div>
               </div>
             </div>
+
+            <Divider />
+
+            <div className='flex-1 flex flex-col gap-6 mb-6'>
+              <h1 className='font-medium text-base'>
+                Help us understand how you discovered our product
+              </h1>
+
+               <FormGroup title="How Did You Hear About Us?" className="w-full" isLabel>
+                  <Controller
+                        name="hearAboutUs"
+                        control={control}
+                        render={({ field }) => (
+                          <Flex direction="col" className="w-full" gap="4">
+                            <CSelect
+                              {...field}
+                              value={
+                                howDidYouHearAboutUs.find(
+                                  (option) => option.value === field.value
+                                )?.value ?? 'other'
+                              }
+                              options={howDidYouHearAboutUs}
+                              placeholder="Select answer"
+                              className="flex-grow"
+                              disabled={isView}
+                            />
+                            {isOtherHearAboutUs && (
+                              <Input
+                                placeholder="Other (please specify)"
+                                {...register('hearAboutUs')}
+                                disabled={isView}
+                                className="w-full"
+                              />
+                            )}
+                          </Flex>
+                        )}
+                      />
+               </FormGroup>
+
+            </div>
+
             {!isView && (
               <FormFooter
                 isLoading={isPending}
