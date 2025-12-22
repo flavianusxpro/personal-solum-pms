@@ -2,7 +2,7 @@
 import { routes } from '@/config/routes';
 import PageHeader from '../../ui/page-header';
 import { TabButton } from '../../ui/tab-button';
-import { startTransition, useState } from 'react';
+import { startTransition, useEffect, useState } from 'react';
 import SimpleBar from 'simplebar-react';
 import PatientDetails from './tab-patient-details';
 import TabPassword from './tab-password';
@@ -10,7 +10,7 @@ import TabEmergencyContact from './tab-emergency-contact';
 import TabBillingAppointments from './tab-billing-appointment';
 import TabNotesFlags from './tab-notes-flag';
 import TabAssign from './tab-assign';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useGetPatientById } from '@/hooks/usePatient';
 import TabHistory from './tab-history';
 import TabDocumentation from './tab-documentation';
@@ -19,6 +19,12 @@ import TabCommunications from './tab-communications';
 import TabLetterAndAttachment from './tab-letterAndAttachment';
 import TabClinical from './tab-clinical';
 import TabSettings from './TabSettings';
+import { Select } from 'rizzui';
+import { FiPlus } from 'react-icons/fi';
+import CreateUpdateAppointmentForm from '../../appointment/modal/appointment-form';
+import { useModal } from '../../modal-views/use-modal';
+import AddNotesForm from '../../appointment/modal/add-notes';
+import RedFlagForm from '../modal/red-flag';
 
 export const navItems = [
   {
@@ -77,7 +83,7 @@ export default function CreateEditPatient({
   isView?: boolean;
 }) {
   const id = useParams().id as string;
-
+  const { closeModal, openModal } = useModal();
   const [tab, setTab] = useState(navItems[0].value);
 
   const { data: dataPatient } = useGetPatientById(id);
@@ -103,21 +109,84 @@ export default function CreateEditPatient({
     ],
   };
 
+  const extraActions = [
+    {
+      label: 'Appointment',
+      value: 'appointment',
+    },
+    {
+      label: 'Invoice',
+      value: 'invoice',
+    },
+    {
+      label: 'Note',
+      value: 'note',
+    },
+    {
+      label: 'Flag',
+      value: 'flag',
+    },
+  ]
+  const [createAction, setCreateAction] = useState(null)
+  const selectedOption = extraActions.find(opt => opt.value === createAction)
+  const router = useRouter()
+
+  useEffect(() => {
+    if (createAction === 'appointment') {
+      openModal({
+        view: <CreateUpdateAppointmentForm setCreateAction={setCreateAction} />,
+        customSize: '1000px',
+      });
+    }
+
+    if (createAction === 'invoice') {
+      router.push(routes.invoice.create);
+    }
+
+    if (createAction === 'note') {
+      openModal({
+        view: <AddNotesForm setCreateAction={setCreateAction} patient_id={Number(dataPatient?.patient_id)} />,
+        customSize: '600px',
+      });
+    }
+
+    if (createAction === 'flag') {
+      openModal({
+        view: <RedFlagForm setCreateAction={setCreateAction} patient_id={Number(dataPatient?.id)} modalType={'flag'} />,
+        customSize: '600px',
+      });
+    }
+  }, [createAction])
+
   return (
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb} />
       <div className="flex flex-col @container">
         <SimpleBar>
-          <nav className="mb-7 flex items-center gap-5 border-b border-gray-300 md:gap-7 lg:gap-10">
-            {navItems.map((nav) => (
-              <TabButton
-                item={nav}
-                key={nav.value}
-                isActive={tab === nav.value}
-                onClick={() => selectTab(nav.value)}
+          <nav className="mb-7 flex justify-between items-center border-b border-gray-300 w-full flex-wrap gap-4">
+            <div className='flex items-center gap-5 md:gap-7 lg:gap-10'>
+              {navItems.map((nav) => (
+                <TabButton
+                  item={nav}
+                  key={nav.value}
+                  isActive={tab === nav.value}
+                  onClick={() => selectTab(nav.value)}
                 // disabled={isPending}
+                />
+              ))}
+            </div>
+
+            <div className='w-[200px]'>
+              <Select
+                prefix={<FiPlus />}
+                placeholder='Create'
+                options={extraActions}
+                value={selectedOption}
+                clearable={createAction !== null}
+                onClear={() => setCreateAction(null)}
+                onChange={(e: any) => setCreateAction(e.value)}
               />
-            ))}
+            </div>
           </nav>
         </SimpleBar>
 
