@@ -286,7 +286,7 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
         return (
           <>
             {/* Personal Detail Section */}
-            <div className="flex gap-6">
+            <div className="flex gap-8">
               <div className='flex-1 flex flex-col gap-6'>
                 <h1 className='font-medium text-base'>
                   Personal Detail

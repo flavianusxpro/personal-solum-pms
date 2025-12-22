@@ -18,6 +18,7 @@ import TabLog from './tab-log';
 import TabCommunications from './tab-communications';
 import TabLetterAndAttachment from './tab-letterAndAttachment';
 import TabClinical from './tab-clinical';
+import TabSettings from './TabSettings';
 
 export const navItems = [
   {
@@ -52,6 +53,10 @@ export const navItems = [
     value: 'log',
     label: 'Log',
   },
+  {
+    value: 'settings',
+    label: 'Settings',
+  },
   // {
   //   value: 'history',
   //   label: 'History',
@@ -73,7 +78,7 @@ export default function CreateEditPatient({
 }) {
   const id = useParams().id as string;
 
-  const [tab, setTab] = useState(navItems[6].value);
+  const [tab, setTab] = useState(navItems[0].value);
 
   const { data: dataPatient } = useGetPatientById(id);
 
@@ -129,6 +134,7 @@ export default function CreateEditPatient({
         {tab === 'letterAndAttachment' && <TabLetterAndAttachment isView={isView} />}
         {tab === 'clinical' && <TabClinical isView={isView} />}
         {tab === 'log' && <TabLog />}
+        {tab === 'settings' && <TabSettings />}
       </div>
     </>
   );

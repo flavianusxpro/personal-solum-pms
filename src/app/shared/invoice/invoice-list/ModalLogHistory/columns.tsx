@@ -17,30 +17,6 @@ export const getColumns = ({
 }: Columns) => {
     return [
         {
-            title: (
-                <div className="ps-2">
-                    <Checkbox
-                        title={'Select All'}
-                        onChange={handleSelectAll}
-                        checked={checkedItems.length === data.length}
-                        className="cursor-pointer"
-                    />
-                </div>
-            ),
-            dataIndex: 'checked',
-            key: 'checked',
-            width: 30,
-            render: (_: any, row: any) => (
-                <div className="inline-flex ps-2">
-                    <Checkbox
-                        className="cursor-pointer"
-                        checked={checkedItems.includes(row.id)}
-                        {...(onChecked && { onChange: () => onChecked(row.id) })}
-                    />
-                </div>
-            ),
-        },
-        {
             title: <HeaderCell title="DATE & TIME" />,
             dataIndex: 'datetime',
             key: 'datetime',
@@ -51,6 +27,13 @@ export const getColumns = ({
             title: <HeaderCell title="EVENT" />,
             dataIndex: 'event',
             key: 'event',
+            width: 400,
+            render: (event: string) => <p className="w-max">{event}</p>,
+        },
+        {
+            title: <HeaderCell title="ENTITY" />,
+            dataIndex: 'entity',
+            key: 'entity',
             width: 400,
             render: (event: string) => <p className="w-max">{event}</p>,
         },

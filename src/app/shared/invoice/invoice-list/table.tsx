@@ -23,6 +23,8 @@ import { GoCreditCard } from 'react-icons/go';
 import { CiWallet } from 'react-icons/ci';
 import { routes } from '@/config/routes';
 import { useRouter } from 'next/navigation';
+import ModalSendInvoice from './ModalSendInvoice';
+import { useModal } from '../../modal-views/use-modal';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/invoice/invoice-list/filter-element'),
@@ -83,7 +85,7 @@ export default function InvoiceTableList() {
       setSummaryInvoiceAtom(dataInvoices.summary);
     }
   }, [dataInvoices]);
-
+  const { openModal } = useModal();
   const { mutate: mutateDelete } = useDeleteInvoice();
 
   const onHeaderCellClick = (value: string) => ({
@@ -249,9 +251,15 @@ export default function InvoiceTableList() {
                   <>
                     <Button
                       key="synchronize"
-                      className="flex items-center gap-[4px] h-9 pe-3 ps-2.5 !bg-none"
+                      className="flex items-center gap-[4px] !bg-none"
                       variant="outline"
-                      onClick={() => { }}
+                      onClick={() => {
+                        openModal({
+                          view: <ModalSendInvoice />,
+                          customSize: '900px',
+                        });
+                      }}
+                      size='md'
                     >
                       <span>
                         <RiMailSendLine className="text-lg" />
@@ -260,9 +268,10 @@ export default function InvoiceTableList() {
                     </Button>
                     <Button
                       key="synchronize"
-                      className="flex items-center gap-[4px] h-9 pe-3 ps-2.5 !bg-none"
+                      className="flex items-center gap-[4px] !bg-none"
                       variant="outline"
                       onClick={() => { }}
+                      size='md'
                     >
                       <span>
                         <GoCreditCard className="text-lg" />
