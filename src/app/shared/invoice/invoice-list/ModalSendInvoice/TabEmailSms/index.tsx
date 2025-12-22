@@ -31,7 +31,7 @@ const TabEmailSms = forwardRef<TabEmailSmsRef>((props, ref) => {
     smsEditor: '',
     emailTemplate: null,
     emailEditor: '',
-    
+
     schedule: null,
     date: null,
     time: null,

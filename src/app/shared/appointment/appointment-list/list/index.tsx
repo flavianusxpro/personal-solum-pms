@@ -482,7 +482,7 @@ export default function AppointmentListTable({
                     onClick={() => {
                       openModal({
                         view: <ModalSendAppointment />,
-                        customSize: '1500px',
+                        customSize: '900px',
                       });
                     }}
                     size='md'

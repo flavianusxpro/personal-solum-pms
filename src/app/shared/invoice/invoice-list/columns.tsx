@@ -359,17 +359,12 @@ function RenderAction({
             Send
           </Dropdown.Item>
 
-          {row.status === 2 && (
+          {row.status === 3 && (
             <Dropdown.Item
               onClick={(e) => e.stopPropagation()}
             >
-              <Link
-                href="#"
-                className="flex items-center w-full"
-              >
-                <PiWalletLight className="mr-2 h-4 w-4" />
-                Pay Now
-              </Link>
+              <CiCreditCard1 className='mr-2 h-4 w-4' />
+              Stripe Payment
             </Dropdown.Item>
           )}
 
@@ -385,6 +380,21 @@ function RenderAction({
             </Dropdown.Item>
           )}
 
+          {row.status === 2 && (
+            <Dropdown.Item
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Link
+                href="#"
+                className="flex items-center w-full"
+              >
+                <PiWalletLight className="mr-2 h-4 w-4" />
+                Pay Now
+              </Link>
+            </Dropdown.Item>
+          )}
+
+
           {row.status == 1 && (
             <Dropdown.Item
               onClick={(e) => {
@@ -395,15 +405,6 @@ function RenderAction({
             >
               <TrashIcon className="mr-2 h-4 w-4" />
               Delete
-            </Dropdown.Item>
-          )}
-
-          {row.status === 3 && (
-            <Dropdown.Item
-              onClick={(e) => e.stopPropagation()}
-            >
-              <CiCreditCard1 className='mr-2 h-4 w-4' />
-              Stripe Payment
             </Dropdown.Item>
           )}
 
@@ -561,7 +562,7 @@ export function StatusSelect(props: PropTypes) {
 
   return (
     <CSelect
-      className={'w-[200px]'}
+      className={'w-[250px]'}
       dropdownClassName="h-auto"
       placeholder="Select Payment Method"
       options={statusOptions}
