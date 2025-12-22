@@ -25,7 +25,7 @@ const Payment = dynamic(
   }
 );
 import { atomWithReset, useResetAtom } from 'jotai/utils';
-import { useEffect } from 'react';
+import { SetStateAction, useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { ActionIcon, Title } from 'rizzui';
 import { PiXBold } from 'react-icons/pi';
@@ -131,8 +131,10 @@ export const stepAppointmentTotalSteps = Object.keys(
 
 export default function CreateUpdateAppointmentForm({
   data,
+  setCreateAction,
 }: {
   data?: IGetAppointmentListResponse['data'][number];
+  setCreateAction?: React.Dispatch<SetStateAction<any>>
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -162,6 +164,7 @@ export default function CreateUpdateAppointmentForm({
           onClick={() => {
             closeModal();
             setFormData(initialFormData);
+            setCreateAction?.(null)
           }}
           className="p-0 text-gray-500 hover:!text-gray-900"
         >

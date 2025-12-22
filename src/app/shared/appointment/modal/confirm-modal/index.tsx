@@ -15,6 +15,8 @@ export default function ShowConfirm({
 }) {
   const { closeModal } = useModal();
 
+  const showNotify = status === 'Scheduled' || status === 'Cancelled' || status === 'No Show'
+
   return (
     <div className="flex justify-center items-center flex-col gap-6 p-6 h-[350px]">
       <div className="flex justify-center">
@@ -26,12 +28,14 @@ export default function ShowConfirm({
           Are you sure you want to change the appointment status to {''}
           <span className="text-center font-bold text-gray-400">{status}</span>?
         </span>
-        <Checkbox 
-          label={
-            <span className='ml-1'>Notify patient about this update</span>
-          } 
-          size="sm" 
-        />
+        {showNotify && (
+          <Checkbox
+            label={
+              <span className='ml-1'>Notify patient about this update</span>
+            }
+            size="sm"
+          />
+        )}
       </div>
       <div className="flex justify-center gap-[16px]">
         <Button

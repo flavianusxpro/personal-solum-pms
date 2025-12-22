@@ -42,6 +42,8 @@ import { BsArrowRepeat } from 'react-icons/bs';
 import { routes } from '@/config/routes';
 import Link from 'next/link';
 import AvatarCardNew from '@/core/ui/avatar-card-new';
+import { CgNotes } from 'react-icons/cg';
+import LogAppointment from './modalLogHistoryAppointment';
 
 dayjs.extend(timezonePlugin);
 const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -365,7 +367,15 @@ function RenderAction({
     closeModal(),
       openModal({
         view: <AddNotesForm patient_id={row.patientId} />,
-        customSize: '600px',
+        customSize: '1100px',
+      });
+  }
+
+  function LogHistory() {
+    closeModal(),
+      openModal({
+        view: <LogAppointment />,
+        customSize: '1100px',
       });
   }
 
@@ -450,6 +460,14 @@ function RenderAction({
           }}>
             <FaRegNoteSticky className="mr-2 h-4 w-4" />
             Add Note
+          </Dropdown.Item>
+
+          <Dropdown.Item onClick={(e) => {
+            e.stopPropagation();
+            LogHistory ()
+          }}>
+            <CgNotes className='mr-2 h-4 w-4' />
+            Log History
           </Dropdown.Item>
 
           <Dropdown.Item onClick={(e) => {

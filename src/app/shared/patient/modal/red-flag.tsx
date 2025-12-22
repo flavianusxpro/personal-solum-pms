@@ -11,14 +11,16 @@ import {
 import { useCreatePatientFLag } from '@/hooks/usePatientFlag';
 import toast from 'react-hot-toast';
 import { useGetTypes } from '@/hooks/use-type';
-import { useMemo } from 'react';
+import { SetStateAction, useMemo } from 'react';
 
 export default function RedFlagForm({
   patient_id,
   modalType,
+  setCreateAction
 }: {
   patient_id: number;
   modalType?: string;
+  setCreateAction?: React.Dispatch<SetStateAction<any>>
 }) {
   const { closeModal } = useModal();
   const { mutate } = useCreatePatientFLag();
@@ -67,7 +69,10 @@ export default function RedFlagForm({
               <Title className="text-lg">
                 Add {modalType == 'flag' ? 'Flag' : 'Notes'}
               </Title>
-              <ActionIcon variant="text" onClick={closeModal} className="">
+              <ActionIcon variant="text" onClick={() => {
+                setCreateAction?.(null)
+                closeModal()
+              }} className="">
                 <PiX className="h-6 w-6" />
               </ActionIcon>
             </Flex>
