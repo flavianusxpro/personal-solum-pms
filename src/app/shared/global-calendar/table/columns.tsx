@@ -4,13 +4,6 @@ import { HeaderCell } from '@/app/shared/ui/table';
 import cn from '@/core/utils/class-names';
 import { Badge, Flex, Text } from 'rizzui';
 import ModalAppointmentDetails, { getPaymentStatusBadge } from '../modal/ModalAppointmentDetail';
-import {
-  Calendar,
-  dayjsLocalizer,
-  NavigateAction,
-  ToolbarProps,
-  View,
-} from 'react-big-calendar';
 import dayjs from 'dayjs';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import { useDrag, useDrop } from 'react-dnd';
@@ -22,9 +15,6 @@ import toast from 'react-hot-toast';
 import { useUpdateAppointment } from '@/hooks/useAppointment';
 import AppointmentDetailsCalendar from './AppointmentDetailsCalendar';
 
-// tipe unik untuk item yang di-drag
-const localizer = dayjsLocalizer(dayjs);
-
 const calendarToolbarClassName =
   '[&_.rbc-toolbar_.rbc-toolbar-label]:whitespace-nowrap [&_.rbc-toolbar_.rbc-toolbar-label]:my-2 [&_.rbc-toolbar]:flex [&_.rbc-toolbar]:flex-col [&_.rbc-toolbar]:items-center @[56rem]:[&_.rbc-toolbar]:flex-row [&_.rbc-btn-group_button:hover]:bg-gray-300 [&_.rbc-btn-group_button]:duration-200 [&_.rbc-btn-group_button.rbc-active:hover]:bg-gray-600 dark:[&_.rbc-btn-group_button.rbc-active:hover]:bg-gray-300 [&_.rbc-btn-group_button.rbc-active:hover]:text-gray-50 dark:[&_.rbc-btn-group_button.rbc-active:hover]:text-gray-900 [@media(max-width:375px)]:[&_.rbc-btn-group:last-child_button]:!px-2.5 [&_.rbc-toolbar_>_*:last-child_>_button:focus]:!bg-primary [&_.rbc-toolbar_>_*:last-child_>_button:focus]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button:focus]:!text-gray-900 [&_.rbc-toolbar_>_*:last-child_>_button:hover]:!text-gray-900 dark:[&_.rbc-toolbar_>_*:last-child_>_button:hover]:!bg-gray-300 [&_.rbc-toolbar_>_*:last-child_>_button:hover]:!bg-gray-300 [&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!bg-primary-dark [&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-900';
 
@@ -35,7 +25,7 @@ type Columns = {
   data: any[];
   openModal: (props: any) => void;
   handleDrop?: any;
-  closeModal?: (props: any) => void
+  closeModal?: (props: any) => void;
 };
 
 type Row = {
@@ -45,26 +35,65 @@ type Row = {
 };
 
 export const getColumns = ({ data, openModal, handleDrop, closeModal }: Columns) => {
+  const nearestDoctorName = data[0]?._nearestDoctor || '';
+  
   const doctorNames = Object.keys(data[0]).filter(
-    (key) => key !== 'time' && key !== 'type'
+    (key) => key !== 'time' && key !== 'type' && key !== '_nearestDoctor' && 
+            key !== '_scheduleStart' && key !== '_scheduleEnd'
   );
+  
   const baseColumn = {
     title: <HeaderCell title="Time" className="justify-center" />,
     dataIndex: 'time',
     key: 'time',
-    width: 100,
+    width: 70,
     render: (time: string) => {
-      return <Text className="text-center font-medium">{time}</Text>;
+      return <Text className="text-center font-normal text-sm">{time}</Text>;
     },
   };
 
-  const doctorColumns = doctorNames.map((name) => ({
-    title: <HeaderCell title={`Dr. ${name}`} />,
-    dataIndex: name,
-    key: name,
-    render: (value: any, row: Row) =>
-      getRowAppointment(value, row.type, openModal, row, name, handleDrop, closeModal),
-  }));
+  const doctorColumns = doctorNames.map((name) => {
+    const isNearestDoctor = name === nearestDoctorName;
+    
+    return {
+      title: (
+        <HeaderCell 
+          title={`Dr. ${name}`}
+        />
+      ),
+      dataIndex: name,
+      key: name,
+      onCell: (row: Row) => {
+        // Only apply background if it's the nearest doctor AND within schedule time
+        if (isNearestDoctor && row._scheduleStart && row._scheduleEnd) {
+          // Get current row time in 24h format
+          const currentTime = row.time;
+          const timeMatch = currentTime.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+          
+          if (timeMatch) {
+            let hour = parseInt(timeMatch[1]);
+            const minute = timeMatch[2];
+            const period = timeMatch[3].toUpperCase();
+            
+            if (period === 'PM' && hour !== 12) hour += 12;
+            if (period === 'AM' && hour === 12) hour = 0;
+            
+            const currentTime24 = `${hour.toString().padStart(2, '0')}:${minute}`;
+            
+            // Check if current time is within schedule range
+            if (currentTime24 >= row._scheduleStart && currentTime24 <= row._scheduleEnd) {
+              return {
+                style: { backgroundColor: '#EBF1FE' }
+              };
+            }
+          }
+        }
+        return {};
+      },
+      render: (value: any, row: Row) =>
+        getRowAppointment(value, row.type, openModal, row, name, handleDrop, closeModal),
+    };
+  });
 
   return [baseColumn, ...doctorColumns];
 };
@@ -238,15 +267,20 @@ export function AppointmentCell({
       }}
       onClick={handleOpenModal}
       className={cn(
-        'relative w-fit cursor-pointer rounded-md p-2 transition-opacity',
+        // 'relative px-3 py-1.5 cursor-pointer w-full h-10 transition-opacity flex items-center flex-wrap gap-3',
+        'relative px-2 cursor-pointer w-full h-7 transition-opacity flex items-center gap-2 leading-none',
         bgColor,
-        isDragging && 'opacity-50'
+        isDragging && 'opacity-50',
+        value.type === 'Initial Consult' && 'bg-[#3291B6]',
+        value.type === 'Follow Up Appointment' && 'bg-[#BB8ED0]',
+        value.type === 'Transfer' && 'bg-[#E0A8A8]',
+        value.type === 'Reschedule' && 'bg-[#E84757]',
       )}
     >
       {isOver && <div className="absolute inset-0 rounded-md bg-black/60" />}
       <div className='flex items-center gap-4'>
         <div>
-          <Text className="font-medium">
+          <Text className="font-medium text-white">
             {`${value.patient?.first_name ?? ''} ${value.patient?.last_name ?? ''}`.trim() || '-'}
           </Text>
         </div>
@@ -255,7 +289,7 @@ export function AppointmentCell({
 
         <div onClick={(e) => e.stopPropagation()}>
           <CSelect
-            className="min-w-[140px]"
+            className="min-w-[140px] bg-white rounded-lg"
             dropdownClassName="h-auto"
             placeholder="Select Status"
             options={aptStatusOptions}
@@ -270,29 +304,23 @@ export function AppointmentCell({
 
         <div className="h-4 w-px bg-gray-300" />
 
-        <div>
-          <p>{getAptType(value?.type)}</p>
+        <div className='bg-white py-[6px] px-4 rounded-lg'>
+          {getPaymentStatusBadge(value?.payment?.status ?? 0)}
         </div>
 
-        <div className="h-4 w-px bg-gray-300" />
-
-        <div>
-          <p>{getPaymentStatusBadge(value?.payment?.status ?? 0)}</p>
-        </div>
-
-        {value?.type === 'Initial Consult' && (
-          <>
-            <div className="h-4 w-px bg-gray-300" />
-
-            <div className="flex-1 flex items-center gap-2">
-              <p className="text-sm font-medium">Notes:</p>
-              <p className="text-sm font-normal">
-                {value?.note ?? '-'}
-              </p>
-            </div>
-          </>
-        )}
       </div>
+      {value?.type === 'Initial Consult' && (
+        <>
+          <div className="h-4 w-px bg-gray-300" />
+
+          <div className="flex-1 flex items-center gap-2">
+            <p className="text-sm font-medium text-white">Notes:</p>
+            <p className="text-sm font-normal text-white">
+              {value?.note ?? ''}
+            </p>
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -319,7 +347,7 @@ export function DropCell({ row, doctor, onDrop }: any) {
         dropRef(instance);
       }}
       className={cn(
-        'h-12 w-full', // Important: give it a size
+        'h-7 w-full', 
         isOver ? 'bg-blue-100' : 'bg-transparent'
       )}
     />

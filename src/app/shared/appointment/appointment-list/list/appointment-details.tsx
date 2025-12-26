@@ -132,7 +132,7 @@ export default function AppointmentDetails({
                   data?.doctor?.photo ||
                   `${data?.doctor?.first_name} ${data?.doctor?.last_name}`
                 }
-                className="!h-[80px] !w-[80px] text-xl text-white"
+                className="!h-[80px] !w-[80px] text-xl text-white font-semibold"
               />
 
               <div className="flex flex-1 flex-col">
@@ -186,7 +186,7 @@ export default function AppointmentDetails({
                   data?.patient?.photo ||
                   `${data?.patient?.first_name} ${data?.patient?.last_name}`
                 }
-                className="!h-[80px] !w-[80px] text-xl text-white"
+                className="!h-[80px] !w-[80px] text-xl text-white font-semibold"
               />
               <div className="flex flex-1 flex-col">
                 <div className="flex items-center gap-4">

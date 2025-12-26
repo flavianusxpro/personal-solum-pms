@@ -6,32 +6,46 @@ import { getAptStatusBadge } from '../../appointment/appointment-list/list/colum
 
 export function getPaymentStatusBadge(status: number | string) {
   switch (status) {
+    case 5:
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="secondary" renderAsDot />
+          <Text className="text-gray-dark ms-2 font-medium">Refund</Text>
+        </Flex>
+      );
+    case 4:
+      return (
+        <Flex gap="1" align="center">
+          <Badge color="warning" renderAsDot />
+          <Text className="text-gray-dark ms-2 font-medium">Void</Text>
+        </Flex>
+      );
     case 3:
       return (
         <Flex gap="1" align="center">
-          <Badge color="danger" renderAsDot />
-          <Text className="font-medium text-red-500">Cancelled</Text>
+          <Badge color="success" renderAsDot />
+          <Text className="font-medium ms-2 text-green-dark">Paid</Text>
         </Flex>
       );
     case 2:
       return (
         <Flex gap="1" align="center">
-          <Badge color="success" renderAsDot />
-          <Text className="font-medium text-green-600">Paid</Text>
+          <Badge color="info" renderAsDot />
+          <Text className="font-medium ms-2 text-gray-dark">Unpaid</Text>
         </Flex>
       );
     case 1:
       return (
         <Flex gap="1" align="center">
-          <Badge color="warning" renderAsDot />
-          <Text className="font-medium text-yellow-600">Pending</Text>
+          <Badge color="secondary" renderAsDot />
+          <Text className="font-medium ms-2 text-orange-dark">Draft</Text>
         </Flex>
       );
     default:
       return (
         <div className="flex items-center">
           <Badge renderAsDot className="bg-gray-400" />
-          <Text className="font-medium text-blue-600">{status}</Text>
+          <Text className="font-medium ms-2 text-blue-600">-</Text>
         </div>
       );
   }
@@ -80,15 +94,6 @@ function ModalAppointmentDetails({ data }: { data: any }) {
             <span>Appointment Type:</span>
             <span className="font-medium text-gray-1000">{details.type}</span>
           </li>
-
-          {/* <li className="flex gap-2">
-            <MdOutlineCalendarMonth className="h-5 w-5" />
-            <span>details End:</span>
-            <span className="font-medium text-gray-1000">
-              {formatDate(details.end, 'MMMM D, YYYY')} at{' '}
-              {formatDate(details.end, 'h:mm A')}
-            </span>
-          </li> */}
           <li className="flex gap-2">
             <span>Payment Status:</span>
             <span className="font-medium text-gray-1000">

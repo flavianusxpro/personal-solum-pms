@@ -44,6 +44,7 @@ import Link from 'next/link';
 import AvatarCardNew from '@/core/ui/avatar-card-new';
 import { CgNotes } from 'react-icons/cg';
 import LogAppointment from './modalLogHistoryAppointment';
+// import ModalRescheduleAppointment from './modalRescheduleAppointment';
 
 dayjs.extend(timezonePlugin);
 const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;

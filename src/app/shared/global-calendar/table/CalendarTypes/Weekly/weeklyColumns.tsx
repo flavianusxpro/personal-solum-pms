@@ -9,18 +9,26 @@ import { WeeklyEmptyCell } from './WeeklyEmptyCell';
 type Columns = {
     openModal: (props: any) => void;
     handleDrop?: any;
-    closeModal?: (props: any) => void
-    weekDates?: string[]
+    closeModal?: (props: any) => void;
+    weekDates?: string[];
+    isWithinSchedule?: (date: string, time: string) => boolean;
+    doctorSchedule?: any;
 };
 
-export const getColumns = ({ openModal, handleDrop, closeModal, weekDates = [] }: Columns) => {
+export const getColumns = ({ 
+    openModal, 
+    handleDrop, 
+    closeModal, 
+    weekDates = [],
+    isWithinSchedule,
+    doctorSchedule
+}: Columns) => {
     const dayNames = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-
     const typeColors: Record<string, string> = {
-        "Initial Consult": "#1FA551",
-        "Follow Up": "#0078D7",
-        "Transfer": "#F4A523",
-        "Reschedule": "#E84757",
+        "Initial Consult": "#3291B6",
+        "Follow Up Appointment": "#BB8ED0",
+        "Transfer": "#E0A8A8",
+        "Reschedule": "#E0A8A8",
     };
 
     const baseColumn = {
@@ -50,7 +58,7 @@ export const getColumns = ({ openModal, handleDrop, closeModal, weekDates = [] }
                             <div className="font-semibold">{day}</div>
                             {formattedDate && (
                                 <div className="text-xs font-normal text-gray-500">
-                                    ({formattedDate})
+                                    {formattedDate}
                                 </div>
                             )}
                         </div>
@@ -61,6 +69,16 @@ export const getColumns = ({ openModal, handleDrop, closeModal, weekDates = [] }
             dataIndex: day,
             key: day,
             width: 150,
+            onCell: (record: any) => {
+                const time24 = record.time;
+                const shouldHighlight = isWithinSchedule && date && isWithinSchedule(date, time24);
+                
+                return {
+                    style: shouldHighlight ? {
+                        backgroundColor: '#EBF1FE',
+                    } : {}
+                };
+            },
             render: (appointments: any[], row: any) => {
                 if (!appointments || appointments.length === 0) {
                     return (
@@ -72,9 +90,16 @@ export const getColumns = ({ openModal, handleDrop, closeModal, weekDates = [] }
                     );
                 }
 
+                const uniqueAppointments = new Map();
+                appointments.forEach(apt => {
+                    if (!uniqueAppointments.has(apt.id)) {
+                        uniqueAppointments.set(apt.id, apt);
+                    }
+                });
+
                 return (
-                    <div className="flex flex-col gap-1">
-                        {appointments.map((apt: any, idx: number) => {
+                    <div className="flex flex-col gap-1 h-full">
+                        {Array.from(uniqueAppointments.values()).map((apt: any, idx: number) => {
                             const doctorName = `${apt.doctor?.first_name || ''} ${apt.doctor?.last_name || ''}`.trim();
                             const bgColor = typeColors[apt.type] ?? "#1FA551";
 
@@ -98,4 +123,4 @@ export const getColumns = ({ openModal, handleDrop, closeModal, weekDates = [] }
     });
 
     return [baseColumn, ...dayColumns];
-}
+};

@@ -3,13 +3,12 @@ import { Calendar, dayjsLocalizer, View } from 'react-big-calendar';
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import MounthlyCardEvent from './MounthlyCardEvent';
 import MounthlyCustomCell from './MounthlyCustomCell';
-import cn from '@/core/utils/class-names';
 import dayjs from '@/config/dayjs';
 import { useModal } from '@/app/shared/modal-views/use-modal';
-import AppointmentDetails from '@/app/shared/appointment/appointment-list/list/appointment-details';
 import AppointmentDetailsCalendar from '../../AppointmentDetailsCalendar';
 
 interface PropTypes {
+    data: any;
     events: any;
     selectedDate: string;
     handleNavigate: (newDate: Date, view: View, action: string) => void;
@@ -27,11 +26,11 @@ const MounthlyCalendar = (props: PropTypes) => {
         setViewType,
         rescheduleModal
     } = props
-    
+
     const localizer = dayjsLocalizer(dayjs);
     const DnDCalendar = withDragAndDrop<any, any>(Calendar);
     const { openModal } = useModal();
-    
+
     const openModalDetail = (data: any) => {
         openModal({
             view: <AppointmentDetailsCalendar data={data?.appointment} />,
@@ -86,14 +85,14 @@ const MounthlyCalendar = (props: PropTypes) => {
                     padding: 4px;
                 }
             `}</style>
-            
+
             <DnDCalendar
                 localizer={localizer}
                 events={events}
                 selectable={false}
                 startAccessor="start"
                 endAccessor="end"
-                className={cn('h-[650px] md:h-[1100px] !z-10')}
+                // className={cn('h-[650px] md:h-[1100px] !z-10')}
                 toolbar={false}
                 components={{
                     event: (props) => (
