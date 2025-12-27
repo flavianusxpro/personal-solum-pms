@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react'
-import { Calendar, dayjsLocalizer, View } from 'react-big-calendar';
+import { Calendar, dayjsLocalizer, View, Views } from 'react-big-calendar';
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import MounthlyCardEvent from './MounthlyCardEvent';
 import MounthlyCustomCell from './MounthlyCustomCell';
@@ -50,7 +50,7 @@ const MounthlyCalendar = (props: PropTypes) => {
             <div className="rbc-date-cell">
                 <button
                     onClick={handleDateClick}
-                    className="cursor-pointer hover:bg-blue-100 rounded px-2 py-1 transition-colors"
+                    className="cursor-pointer"
                 >
                     {label}
                 </button>
@@ -59,72 +59,33 @@ const MounthlyCalendar = (props: PropTypes) => {
     };
 
     return (
-        <>
-            <style>{`
-                .rbc-month-row {
-                    min-height: 150px !important;
-                    overflow: visible !important;
-                }
-                .rbc-day-bg {
-                    min-height: 150px !important;
-                }
-                .rbc-row-content {
-                    min-height: 150px !important;
-                }
-                .rbc-addons-dnd .rbc-event {
-                    cursor: move !important;
-                }
-                .rbc-addons-dnd-dragging {
-                    opacity: 0.5 !important;
-                }
-                .rbc-addons-dnd-over {
-                    background-color: rgba(59, 130, 246, 0.1) !important;
-                }
-                .rbc-date-cell {
-                    text-align: right;
-                    padding: 4px;
-                }
-            `}</style>
-
-            <DnDCalendar
-                localizer={localizer}
-                events={events}
-                selectable={false}
-                startAccessor="start"
-                endAccessor="end"
-                // className={cn('h-[650px] md:h-[1100px] !z-10')}
-                toolbar={false}
-                components={{
-                    event: (props) => (
-                        <MounthlyCardEvent {...props} />
-                    ),
-                    dateCellWrapper: (props) => (
+        <DnDCalendar
+            localizer={localizer}
+            events={events}
+            selectable={false}
+            startAccessor="start"
+            endAccessor="end"
+            toolbar={false}
+            date={new Date(selectedDate)}
+            onNavigate={handleNavigate}
+            resizable={false}
+            onSelectEvent={openModalDetail}
+            onEventDrop={({ event, start }: any) => {
+                rescheduleModal(event.raw, dayjs(start).format('YYYY-MM-DD'));
+            }}
+            popup
+            components={{
+                month: {
+                    event: MounthlyCardEvent,
+                    dateHeader: CustomDateCellHeader,
+                },
+                dateCellWrapper: (props) => (
                         <MounthlyCustomCell {...props} events={events} />
                     ),
-                    month: {
-                        dateHeader: CustomDateCellHeader,
-                    },
-                }}
-                date={new Date(selectedDate)}
-                onNavigate={handleNavigate}
-                popup
-                resizable={false}
-                eventPropGetter={() => ({
-                    style: {
-                        backgroundColor: 'transparent',
-                        padding: 0,
-                        marginBottom: '4px',
-                        border: 'none',
-                        boxShadow: 'none',
-                    },
-                })}
-                onSelectEvent={openModalDetail}
-                onEventDrop={({ event, start }: any) => {
-                    rescheduleModal(event.raw, dayjs(start).format('YYYY-MM-DD'));
-                }}
-                draggableAccessor={() => true}
-            />
-        </>
+            }}
+            views={['month']}
+            defaultView={Views.MONTH}
+        />
     )
 }
 

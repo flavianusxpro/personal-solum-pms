@@ -306,6 +306,17 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                             { label: 'Mr', value: 'Mr' },
                             { label: 'Mrs', value: 'Mrs' },
                             { label: 'Ms', value: 'Ms' },
+                            { label: 'Miss', value: 'Miss' },
+                            { label: 'Mx', value: 'Mx' },
+                            { label: 'Dr', value: 'Dr' },
+                            { label: 'Prof', value: 'Prof' },
+                            { label: 'Sir', value: 'Sir' },
+                            { label: 'Lady', value: 'Lady' },
+                            { label: 'Br', value: 'Br' },
+                            { label: 'Fr', value: 'Fr' },
+                            { label: 'Sr', value: 'Sr' },
+                            { label: 'Master', value: 'Master' },
+                            { label: 'Assoc Prof', value: 'Assoc Prof' },
                           ]}
                           error={errors.title?.message as string}
                           disabled={isView}

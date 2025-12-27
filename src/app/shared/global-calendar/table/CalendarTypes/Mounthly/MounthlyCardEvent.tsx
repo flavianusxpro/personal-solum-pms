@@ -1,63 +1,65 @@
-const MounthlyCardEvent = ({ event }: any) => {
-  const getColorByType = (type: string) => {
-    const appointmentType = type?.toLowerCase() || '';
+import React from 'react';
+import { EventProps } from 'react-big-calendar';
 
-    if (appointmentType.includes('initial')) {
-      return {
-        bg: '#E8F5E9',
-        border: '#1FA551',
-        text: '#1FA551',
-      };
-    } else if (appointmentType.includes('follow')) {
-      return {
-        bg: '#E3F2FD',
-        border: '#0078D7',
-        text: '#0078D7',
-      };
-    } else if (appointmentType.includes('transfer')) {
-      return {
-        bg: '#FFF3E0',
-        border: '#F4A523',
-        text: '#F4A523',
-      };
-    } else if (appointmentType.includes('reschedule')) {
-      return {
-        bg: '#FFEBEE',
-        border: '#E84757',
-        text: '#E84757',
-      };
-    } else {
-      return {
-        bg: '#F5F5F5',
-        border: '#6B7280',
-        text: '#6B7280',
-      };
+interface CustomEvent {
+  title: string;
+  doctor: string;
+  patient: string;
+  time: string;
+  start: Date;
+  end: Date;
+  resourceId: string;
+  raw: any;
+  appointment: any;
+}
+
+const MonthlyCardEvent: React.FC<EventProps<CustomEvent>> = ({ event }) => {
+  const appointmentType = event.appointment?.type;
+
+  const getEventStyles = () => {
+    switch (appointmentType) {
+      case 'Initial Consult':
+        return {
+          backgroundColor: '#EAF4F8',
+          color: '#3291B6'
+        };
+      case 'Follow Up Appointment':
+      case 'Follow Up':
+        return {
+          backgroundColor: '#F8F4FA',
+          color: '#BB8ED0'
+        };
+      case 'Transfer':
+        return {
+          backgroundColor: '#FCF6F6',
+          color: '#E0A8A8'
+        };
+      default:
+        return {
+          backgroundColor: '#EFF6FF',
+          color: '#3B82F6'
+        };
     }
   };
 
-  const appointmentType = event?.appointment?.type || '';
-  const colors = getColorByType(appointmentType);
+  const styles = getEventStyles();
 
   return (
-    <div
-      className="cursor-pointer rounded px-2 py-1.5 transition-opacity hover:opacity-80"
+    <div 
+      className='px-2 py-1 h-full w-full rounded-lg'
       style={{
-        backgroundColor: colors.bg,
-        borderLeft: `4px solid ${colors.border}`,
+        backgroundColor: styles.backgroundColor,
+        color: styles.color
       }}
-      title={`${event.time} - Dr. ${event.doctor}\n${event.patient}\nType: ${appointmentType}`}
     >
-      <div
-        className="truncate text-[11px] font-semibold leading-tight"
-        style={{ color: colors.text }}
-      >
-        {event.time} - Dr. {event.doctor}
+      <div className="font-normal text-xs truncate" style={{ color: styles.color }}>
+        {event.time} - {event.title}
       </div>
-      <div className="mt-0.5 truncate text-[11px] leading-tight text-gray-700">
+      <div className="text-xs truncate" style={{ color: styles.color }}>
         {event.patient}
       </div>
     </div>
   );
 };
 
-export default MounthlyCardEvent
+export default MonthlyCardEvent;

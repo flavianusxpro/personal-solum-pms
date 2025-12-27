@@ -82,9 +82,7 @@
         appointmentsByDateTime[date] = {};
       });
 
-      // Helper function to round time to nearest 10-minute slot
       const roundToNearest10Min = (hour: number, minute: number): string => {
-        // Round down to nearest 10 minutes
         const roundedMinute = Math.floor(minute / 10) * 10;
         return `${hour.toString().padStart(2, '0')}:${roundedMinute.toString().padStart(2, '0')}`;
       };
@@ -122,7 +120,6 @@
                 hour = 0;
               }
 
-              // Round to nearest 10-minute slot
               timeStr = roundToNearest10Min(hour, minute);
             } else {
               const localDate = new Date(item.local_date);
@@ -139,7 +136,6 @@
         }
 
         if (appointmentsByDateTime[appointmentDate]) {
-          // Store appointment in array at the rounded time slot
           if (!appointmentsByDateTime[appointmentDate][timeStr]) {
             appointmentsByDateTime[appointmentDate][timeStr] = [];
           }
