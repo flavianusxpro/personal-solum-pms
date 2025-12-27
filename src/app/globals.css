@@ -1198,7 +1198,7 @@ div[style='z-index: 1000001;'],
 }
 
 .rbc-header {
-  @apply h-12 border-muted py-3.5 text-[13px] font-semibold uppercase text-gray-400 lg:px-7;
+  @apply border-muted text-sm font-semibold uppercase text-gray-400;
 }
 
 :is(
@@ -1213,10 +1213,10 @@ div[style='z-index: 1000001;'],
 .rbc-day-bg {
   @apply sm:px-5;
 }
-
+/* 
 .rbc-date-cell {
-  @apply p-2.5 text-left text-sm font-medium text-gray-700 md:p-5 md:text-lg;
-}
+  @apply text-left text-sm font-medium text-gray-700 md:text-lg;
+} */
 
 .rbc-day-bg.rbc-off-range-bg {
   @apply bg-gray-50;
@@ -1252,7 +1252,7 @@ div[style='z-index: 1000001;'],
 
 .rbc-event,
 .rbc-day-slot .rbc-background-event {
-  @apply h-fit rounded-md px-2 text-sm font-medium !important;
+  @apply h-fit rounded-md  !important;
 }
 
 .rbc-time-view .rbc-row {
@@ -1341,7 +1341,47 @@ div[style='z-index: 1000001;'],
   @apply p-4 text-center;
 }
 
+.rbc-event {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+.rbc-event-content {
+  padding: 0 !important;
+}
+
+/* Remove selected event outline */
+.rbc-event.rbc-selected {
+  background-color: transparent !important;
+  outline: none !important;
+}
+
+/* Remove focus outline */
+.rbc-event:focus {
+  outline: none !important;
+}
+
+/* Ensure month view events don't have default styling */
+.rbc-month-view .rbc-event {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+/* Remove any label background */
+.rbc-event-label {
+  display: none;
+}
+
+/* Remove default hover state */
+.rbc-event:hover {
+  background-color: transparent !important;
+}
+
+/* ................................................... */
 /* react-colorful */
+/* ................................................... */
 .react-colorful {
   @apply gap-3;
 }

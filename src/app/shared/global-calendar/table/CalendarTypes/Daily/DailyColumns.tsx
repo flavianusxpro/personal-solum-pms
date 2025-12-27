@@ -3,17 +3,17 @@
 import { HeaderCell } from '@/app/shared/ui/table';
 import cn from '@/core/utils/class-names';
 import { Badge, Flex, Text } from 'rizzui';
-import ModalAppointmentDetails, { getPaymentStatusBadge } from '../modal/ModalAppointmentDetail';
 import dayjs from 'dayjs';
 import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import { useDrag, useDrop } from 'react-dnd';
-import AppointmentDetails from '../../appointment/appointment-list/list/appointment-details';
-import CSelect from '../../ui/select';
-import { getAptStatusBadge } from '../../appointment/appointment-list/list/columns';
-import ShowConfirm from '../../appointment/modal/confirm-modal';
+
 import toast from 'react-hot-toast';
 import { useUpdateAppointment } from '@/hooks/useAppointment';
-import AppointmentDetailsCalendar from './AppointmentDetailsCalendar';
+import CSelect from '@/core/ui/select';
+import { getPaymentStatusBadge } from '../../../modal/ModalAppointmentDetail';
+import { getAptStatusBadge } from '@/app/shared/appointment/appointment-list/list/columns';
+import ShowConfirm from '@/app/shared/appointment/modal/confirm-modal';
+import AppointmentDetailsCalendar from '../../AppointmentDetailsCalendar';
 
 const calendarToolbarClassName =
   '[&_.rbc-toolbar_.rbc-toolbar-label]:whitespace-nowrap [&_.rbc-toolbar_.rbc-toolbar-label]:my-2 [&_.rbc-toolbar]:flex [&_.rbc-toolbar]:flex-col [&_.rbc-toolbar]:items-center @[56rem]:[&_.rbc-toolbar]:flex-row [&_.rbc-btn-group_button:hover]:bg-gray-300 [&_.rbc-btn-group_button]:duration-200 [&_.rbc-btn-group_button.rbc-active:hover]:bg-gray-600 dark:[&_.rbc-btn-group_button.rbc-active:hover]:bg-gray-300 [&_.rbc-btn-group_button.rbc-active:hover]:text-gray-50 dark:[&_.rbc-btn-group_button.rbc-active:hover]:text-gray-900 [@media(max-width:375px)]:[&_.rbc-btn-group:last-child_button]:!px-2.5 [&_.rbc-toolbar_>_*:last-child_>_button:focus]:!bg-primary [&_.rbc-toolbar_>_*:last-child_>_button:focus]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button:focus]:!text-gray-900 [&_.rbc-toolbar_>_*:last-child_>_button:hover]:!text-gray-900 dark:[&_.rbc-toolbar_>_*:last-child_>_button:hover]:!bg-gray-300 [&_.rbc-toolbar_>_*:last-child_>_button:hover]:!bg-gray-300 [&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!bg-primary-dark [&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-900';

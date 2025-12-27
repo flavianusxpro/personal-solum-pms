@@ -221,7 +221,7 @@ export interface IParamGetAppointments extends IParamGetDataWithPagination {
   payment_status?: number;
   doctorName?: string;
   by_reschedule?: boolean;
-  q?: string;
+  q?: string | any;
   patient_search?: string;
   clinicId?: number;
   timezone_client?: string;

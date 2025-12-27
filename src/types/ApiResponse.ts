@@ -473,6 +473,7 @@ export interface IGetAppointmentListResponse extends ApiResponseWithPagination {
     clinic: any;
   }[];
   is_action_required?: boolean;
+  nearest_doctor_schedule?: any;
 }
 
 export interface IGetInvoiceListResponse extends ApiResponseWithPagination {
