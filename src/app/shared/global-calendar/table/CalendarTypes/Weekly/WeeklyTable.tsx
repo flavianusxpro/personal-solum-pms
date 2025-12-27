@@ -1,80 +1,80 @@
-  import React, { useCallback, useEffect, useMemo, useRef } from 'react'
-  import { HTML5Backend } from 'react-dnd-html5-backend';
-  import { DndProvider } from 'react-dnd';
-  import ControlledTable from '@/app/shared/ui/controlled-table';
-  import { getColumns } from './weeklyColumns';
-  import { useModal } from '@/app/shared/modal-views/use-modal';
-  import { IGetAppointmentListResponse } from '@/types/ApiResponse';
-  import dayjs from '@/config/dayjs';
-  import { Loader } from 'rizzui';
-  import { LuCalendarX2 } from 'react-icons/lu';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DndProvider } from 'react-dnd';
+import ControlledTable from '@/app/shared/ui/controlled-table';
+import { getColumns } from './weeklyColumns';
+import { useModal } from '@/app/shared/modal-views/use-modal';
+import { IGetAppointmentListResponse } from '@/types/ApiResponse';
+import dayjs from '@/config/dayjs';
+import { Loader } from 'rizzui';
+import { LuCalendarX2 } from 'react-icons/lu';
 
-  interface PropTypes {
-    data: any
-    handleDrop: (appointment: any, newDoctor: string, newTime: string) => void
-    weekDates: string[]
-    isLoadingGetAppointments: boolean;
-    events: any;
-    selectedDoctor?: string[];
-    doctorSchedule?: any
-  }
+interface PropTypes {
+  data: any
+  handleDrop: (appointment: any, newDoctor: string, newTime: string) => void
+  weekDates: string[]
+  isLoadingGetAppointments: boolean;
+  events: any;
+  selectedDoctor?: string[];
+  doctorSchedule?: any
+}
 
-  const WeeklyTable = (props: PropTypes) => {
-    const {
-      data,
-      handleDrop,
-      weekDates,
-      isLoadingGetAppointments,
-      events,
-      selectedDoctor,
-      doctorSchedule,
-    } = props
+const WeeklyTable = (props: PropTypes) => {
+  const {
+    data,
+    handleDrop,
+    weekDates,
+    isLoadingGetAppointments,
+    events,
+    selectedDoctor,
+    doctorSchedule,
+  } = props
 
-    const { openModal, closeModal } = useModal();
+  const { openModal, closeModal } = useModal();
 
-    const isWithinSchedule = useCallback((date: string, time: string) => {
-      if (!doctorSchedule?.nearest_doctor_schedule?.start_date ||
-        !doctorSchedule?.nearest_doctor_schedule?.end_date) {
-        return false;
-      }
+  const isWithinSchedule = useCallback((date: string, time: string) => {
+    if (!doctorSchedule?.nearest_doctor_schedule?.start_date ||
+      !doctorSchedule?.nearest_doctor_schedule?.end_date) {
+      return false;
+    }
 
-      const scheduleStart = dayjs(
-        doctorSchedule.nearest_doctor_schedule.start_date,
-        'YYYY-MM-DD hh:mm A'
-      );
-      const scheduleEnd = dayjs(
-        doctorSchedule.nearest_doctor_schedule.end_date,
-        'YYYY-MM-DD hh:mm A'
-      );
-      const now = dayjs();
-
-      if (scheduleEnd.isBefore(now)) {
-        return false;
-      }
-
-      const [hour, minute] = time.split(':').map(Number);
-      const slotDateTime = dayjs(date).hour(hour).minute(minute);
-
-      const isInRange = slotDateTime.isSameOrAfter(scheduleStart) &&
-        slotDateTime.isSameOrBefore(scheduleEnd);
-
-      return isInRange;
-    }, [doctorSchedule]);
-
-    const columns = React.useMemo(
-      () =>
-        getColumns({
-          openModal,
-          handleDrop,
-          closeModal,
-          weekDates,
-          isWithinSchedule,
-          doctorSchedule,
-        }),
-      [openModal, handleDrop, closeModal, weekDates, isWithinSchedule, doctorSchedule]
+    const scheduleStart = dayjs(
+      doctorSchedule.nearest_doctor_schedule.start_date,
+      'YYYY-MM-DD hh:mm A'
     );
+    const scheduleEnd = dayjs(
+      doctorSchedule.nearest_doctor_schedule.end_date,
+      'YYYY-MM-DD hh:mm A'
+    );
+    const now = dayjs();
 
-    const formatAppointments = useCallback(
+    if (scheduleEnd.isBefore(now)) {
+      return false;
+    }
+
+    const [hour, minute] = time.split(':').map(Number);
+    const slotDateTime = dayjs(date).hour(hour).minute(minute);
+
+    const isInRange = slotDateTime.isSameOrAfter(scheduleStart) &&
+      slotDateTime.isSameOrBefore(scheduleEnd);
+
+    return isInRange;
+  }, [doctorSchedule]);
+
+  const columns = React.useMemo(
+    () =>
+      getColumns({
+        openModal,
+        handleDrop,
+        closeModal,
+        weekDates,
+        isWithinSchedule,
+        doctorSchedule,
+      }),
+    [openModal, handleDrop, closeModal, weekDates, isWithinSchedule, doctorSchedule]
+  );
+
+  const formatAppointments = useCallback(
     (data: IGetAppointmentListResponse['data'], weekDates: string[]) => {
       const appointmentsByDateTime: Record<string, Record<string, any[]>> = {};
 
@@ -170,70 +170,70 @@
     []
   );
 
-    const tableData = useMemo(() => {
-      return formatAppointments(data ?? [], weekDates);
-    }, [data, weekDates, formatAppointments]);
+  const tableData = useMemo(() => {
+    return formatAppointments(data ?? [], weekDates);
+  }, [data, weekDates, formatAppointments]);
 
-    const hasAppointments = useMemo(() => {
-      return tableData.some(row => {
+  const hasAppointments = useMemo(() => {
+    return tableData.some(row => {
+      return weekDates.some(date => {
+        const dayKey = dayjs(date).format('ddd').toUpperCase();
+        return row[dayKey] && Array.isArray(row[dayKey]) && row[dayKey].length > 0;
+      });
+    });
+  }, [tableData, weekDates]);
+
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  const hasScrolledRef = useRef(false);
+  const prevWeekDatesRef = useRef<string>('');
+
+  useEffect(() => {
+    const currentWeekDatesStr = weekDates.join(',');
+    // const selectedDoctorStr = selectedDoctor?.join(',');
+
+    if (prevWeekDatesRef.current !== currentWeekDatesStr) {
+      hasScrolledRef.current = false;
+      prevWeekDatesRef.current = currentWeekDatesStr;
+    }
+  }, [weekDates, selectedDoctor]);
+
+  useEffect(() => {
+    if (tableData.length > 0 && tableContainerRef.current && !hasScrolledRef.current) {
+      const firstAppointmentIndex = tableData.findIndex(row => {
         return weekDates.some(date => {
           const dayKey = dayjs(date).format('ddd').toUpperCase();
-          return row[dayKey] && Array.isArray(row[dayKey]) && row[dayKey].length > 0;
+          return row[dayKey] && row[dayKey].length > 0;
         });
       });
-    }, [tableData, weekDates]);
 
-    const tableContainerRef = useRef<HTMLDivElement>(null);
-    const hasScrolledRef = useRef(false);
-    const prevWeekDatesRef = useRef<string>('');
+      if (firstAppointmentIndex !== -1) {
+        setTimeout(() => {
+          const scrollBody = tableContainerRef.current?.querySelector('.rc-table-body');
 
-    useEffect(() => {
-      const currentWeekDatesStr = weekDates.join(',');
-      // const selectedDoctorStr = selectedDoctor?.join(',');
+          if (scrollBody) {
+            const rows = scrollBody.querySelectorAll('tr');
+            const targetRow = rows[firstAppointmentIndex];
 
-      if (prevWeekDatesRef.current !== currentWeekDatesStr) {
-        hasScrolledRef.current = false;
-        prevWeekDatesRef.current = currentWeekDatesStr;
-      }
-    }, [weekDates, selectedDoctor]);
+            if (targetRow) {
+              const rowOffsetTop = targetRow.offsetTop;
 
-    useEffect(() => {
-      if (tableData.length > 0 && tableContainerRef.current && !hasScrolledRef.current) {
-        const firstAppointmentIndex = tableData.findIndex(row => {
-          return weekDates.some(date => {
-            const dayKey = dayjs(date).format('ddd').toUpperCase();
-            return row[dayKey] && row[dayKey].length > 0;
-          });
-        });
+              scrollBody.scrollTo({
+                top: rowOffsetTop,
+                behavior: 'smooth'
+              });
 
-        if (firstAppointmentIndex !== -1) {
-          setTimeout(() => {
-            const scrollBody = tableContainerRef.current?.querySelector('.rc-table-body');
-
-            if (scrollBody) {
-              const rows = scrollBody.querySelectorAll('tr');
-              const targetRow = rows[firstAppointmentIndex];
-
-              if (targetRow) {
-                const rowOffsetTop = targetRow.offsetTop;
-
-                scrollBody.scrollTo({
-                  top: rowOffsetTop,
-                  behavior: 'smooth'
-                });
-
-                hasScrolledRef.current = true;
-              }
+              hasScrolledRef.current = true;
             }
-          }, 100);
-        }
+          }
+        }, 100);
       }
-    }, [tableData, weekDates, selectedDoctor]);
+    }
+  }, [tableData, weekDates, selectedDoctor]);
 
-    return (
-      <div ref={tableContainerRef}>
-        <DndProvider backend={HTML5Backend}>
-          {/* {isLoadingGetAppointments ? (
+  return (
+    <div ref={tableContainerRef}>
+      <DndProvider backend={HTML5Backend}>
+        {/* {isLoadingGetAppointments ? (
             <div className="flex h-[500px] items-center justify-center">
               <Loader />
             </div>
@@ -261,19 +261,29 @@
               scroll={{ y: 580 }}
             />
           )} */}
-          <ControlledTable
-            showLoadingText={true}
-            data={tableData}
-            // @ts-ignore
-            columns={columns}
-            variant="bordered"
-            // className="[&_td.rc-table-cell]:h-[10px] [&_td.rc-table-cell]:max-h-[10px] [&_td.rc-table-cell]:overflow-hidden [&_td.rc-table-cell]:p-0"
-            className="[&_td.rc-table-cell]:overflow-hidden [&_td.rc-table-cell]:p-0 [&_td.rc-table-cell]:align-middle [&_td.rc-table-cell]:leading-none"
-            scroll={{ y: 580 }}
-          />
-        </DndProvider>
-      </div>
-    )
-  }
+        <ControlledTable
+          showLoadingText={true}
+          data={tableData}
+          // @ts-ignore
+          columns={columns}
+          variant="bordered"
+          scroll={{ y: 'calc(100vh - 250px)' }} 
+          className="
+    [&_td.rc-table-cell]:overflow-hidden 
+    [&_td.rc-table-cell]:p-0 
+    [&_td.rc-table-cell]:align-middle 
+    [&_td.rc-table-cell]:leading-none 
+    [&_.rc-table-body]:scrollbar-hide 
+    [&_.rc-table-body]:overflow-y-scroll
+    [&_.rc-table-header]:overflow-hidden
+    [&_table]:!rounded-none
+    [&_th]:!rounded-none
+    [&_td]:!rounded-none
+  "
+        />
+      </DndProvider>
+    </div>
+  )
+}
 
-  export default WeeklyTable
+export default WeeklyTable

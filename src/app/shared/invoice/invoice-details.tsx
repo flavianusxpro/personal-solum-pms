@@ -1,6 +1,6 @@
 'use client';
 
-import { Text, Loader, Button, Table } from 'rizzui';
+import { Text, Loader, Button, Table, Flex, Badge } from 'rizzui';
 import { useGetInvoiceById } from '@/hooks/useInvoice';
 import dayjs from '@/config/dayjs';
 import { IGetInvoiceByIdResponse } from '@/types/ApiResponse';
@@ -32,39 +32,39 @@ export default function InvoiceDetails({ id }: { id: string }) {
     switch (status) {
       case 1:
         return (
-          <div className="flex text-center px-2 py-1 rounded-[4px] items-center bg-orange-dark">
+          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-orange-dark">
             <Text className="text-white font-normal text-sm">Draft</Text>
-          </div>
+          </span>
         );
       case 2:
         return (
-          <div className="flex text-center px-2 py-1 rounded-[4px] items-center bg-gray-dark">
+          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-gray-dark">
             <Text className="text-white font-normal text-sm">Awaiting Payment</Text>
-          </div>
+          </span>
         );
       case 3:
         return (
-          <span className="flex text-center px-2 py-1 rounded-[4px] items-center bg-green-dark">
+          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-green-dark">
             <Text className="text-white font-normal text-sm">Paid</Text>
           </span>
         );
       case 4:
         return (
-          <div className="flex text-center px-2 py-1 rounded-[4px] items-center bg-orange-600">
-            <Text className="text-white font-normal text-sm">Void</Text>
-          </div>
+          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-[#999999]">
+            <Text className="text-white font-normal text-sm">Unpaid</Text>
+          </span>
         );
       case 5:
         return (
-          <div className="flex text-center px-2 py-1 rounded-[4px] items-center bg-slate-500">
+          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-slate-500">
             <Text className="text-white font-normal text-sm">Refund</Text>
-          </div>
+          </span>
         );
       default:
         return (
-          <div className="flex text-center px-2 py-1 rounded-[4px] items-center bg-gray-600">
+          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-gray-600">
             <Text className="text-white font-normal text-sm">{status}</Text>
-          </div>
+          </span>
         );
     }
   }
@@ -73,51 +73,52 @@ export default function InvoiceDetails({ id }: { id: string }) {
     switch (status) {
       case 7:
         return (
-          <div className="flex text-center px-2 justify-center py-1 rounded-[4px] items-center bg-green-dark">
-            <p className="text-white font-normal text-sm">No Show</p>
-          </div>
+          <Flex gap="1" align="center">
+            <Badge renderAsDot className="bg-gray-400" />
+            <Text className="font-medium text-gray-600">No Show</Text>
+          </Flex>
         );
       case 6:
         return (
-          <div className="flex text-center px-2 justify-center py-1 rounded-[4px] items-center bg-text-green-500">
-            <p className="text-white font-normal text-sm">On Going</p>
-          </div>
+           <Flex gap="1" align="center">
+            <Badge color="warning" renderAsDot />
+            <Text className="font-medium text-yellow-600">On Going</Text>
+          </Flex>
         );
       case 5:
         return (
-          <div className="flex text-center px-2 justify-center py-1 rounded-[4px] items-center bg-red">
-            <p className="text-white font-normal text-sm">Canceled</p>
-          </div>
+          <Flex gap="1" align="center">
+            <Badge color="success" renderAsDot />
+            <Text className="font-medium text-green-dark">Canceled</Text>
+          </Flex>
         );
       case 4:
         return (
-          <div className="flex text-center px-2 justify-center py-1 rounded-[4px] items-center bg-green-dark">
-            <p className="text-white font-normal text-sm">Completed</p>
-          </div>
+           <Flex gap="1" align="center">
+            <Badge color="warning" renderAsDot />
+            <Text className="font-medium text-red-dark">Completed</Text>
+          </Flex>
         );
       case 3:
         return (
-          <div className="flex text-center px-2 justify-center py-1 rounded-[4px] items-center bg-blue-500">
-            <p className="text-white font-normal text-sm">Checked In</p>
-          </div>
+          <Flex gap="1" align="center">
+            <Badge color="secondary" renderAsDot />
+            <Text className="font-medium text-secondary">Checked In</Text>
+          </Flex>
         );
       case 2:
         return (
-          <div className="flex text-center px-2 justify-center py-1 rounded-[4px] items-center bg-yellow-600">
-            <p className="text-white font-normal text-sm">Scheduled</p>
-          </div>
+           <Flex gap="1" align="center">
+            <Badge className='bg-green-500' renderAsDot />
+            <Text className="font-medium text-green-500">Scheduled</Text>
+          </Flex>
         );
       case 1:
         return (
-          <div className="flex text-center px-2 justify-center py-1 rounded-[4px] items-center bg-red-dark">
-            <p className="text-white font-normal text-sm">Draft</p>
-          </div>
-        );
-      default:
-        return (
-          <div className="flex text-center px-2 justify-center py-1 rounded-[4px] items-center bg-blue-600">
-            <p className="text-white font-normal text-sm">{status}</p>
-          </div>
+           <Flex gap="1" align="center">
+            <Badge className='bg-red-dark' renderAsDot />
+            <Text className="font-medium text-red-dark">Draft</Text>
+          </Flex>
         );
     }
   }
@@ -138,6 +139,9 @@ export default function InvoiceDetails({ id }: { id: string }) {
     pdfInvoiceRef.current?.handleDownload();
   };
 
+  console.log('zzz data invoice', dataInvoice);
+  
+
   return (
     <>
       <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
@@ -157,115 +161,86 @@ export default function InvoiceDetails({ id }: { id: string }) {
           </Button>
         </div>
       </PageHeader>
+
       <div className='flex flex-col gap-4'>
-        <div className='grid grid-cols-2 md:grid-cols-4 border border-[#E4E4E4] rounded-xl p-6 gap-2'>
-          <div className='flex flex-col gap-3'>
-            <h1 className='font-semibold text-sm flex items-center font-inter'>
-              <span>Payment ID:</span>
-              <span className='ml-3 font-semibold text-base'>{dataInvoice?.payment?.stripeId ? (dataInvoice?.payment?.stripeId ?? '-') : (dataInvoice?.payment?.id ?? '-')}</span>
+        <div className='flex flex-col md:flex-row border border-[#E4E4E4] rounded-xl p-6 gap-4'>
+          <div className='flex-1 flex flex-col gap-4'>
+            <h1 className='font-semibold font-lexend text-base'>
+              Invoice Details
             </h1>
-            <h1 className='font-semibold text-sm flex items-center font-inter'>
-              <span>Invoice No:</span>
-              <span className='ml-3 font-semibold text-base'>#INV-{dataInvoice?.id ?? '.'}</span>
-            </h1>
-            <h1 className='font-semibold text-sm flex items-center font-inter'>
-              <span>
-                Invoice Status:
-              </span>
-              <span className='ml-3 font-semibold text-base'>{getInvoiceStatusBadge(dataInvoice?.status ?? 0) ?? '-'}</span>
-            </h1>
-            <h1 className='font-semibold text-sm flex items-center font-inter'>
-              <span>
-                Appointment Status:
-              </span>
-              <span className='ml-3 font-semibold text-base'>{getAptStatusBadge(dataInvoice?.status ?? 0) ?? '-'}</span>
-            </h1>
+
+            <div className='flex flex-col'>
+              <p className='text-sm font-semibold font-inter'>
+                Invoice ID : <span className='text-base ml-2'>INV-{dataInvoice?.id ?? '-'}</span>
+              </p>
+              <p className='text-sm font-semibold font-inter'>
+                Date : <span className='text-base ml-2'>{dataInvoice?.date ? dayjs(dataInvoice?.date).utc().format('DD MMM YYYY') : '-'}</span>
+              </p>
+              <p className='text-sm font-semibold font-inter flex items-center'>
+                Status : {getInvoiceStatusBadge(dataInvoice?.status ?? 0) ?? '-'}
+              </p>
+            </div>
           </div>
 
-          <div className='flex flex-col gap-3'>
-            <h1 className='font-semibold text-sm flex items-center font-inter'>
-              <span>
-                Refund ID:
-              </span>
-              <span className='ml-3 text-sm text-[#484848] font-normal'>{dataInvoice?.stripe_refund_id ?? '-'}</span>
+          <div className='flex-1 flex flex-col gap-4'>
+            <h1 className='font-semibold font-lexend text-base'>
+              Payment Details
             </h1>
-            <h1 className='font-semibold text-sm flex items-center font-inter'>
-              <span>
-                Invoice Date:
-              </span>
-              <span className='ml-3 text-sm text-[#484848] font-normal'>{dataInvoice?.date ? dayjs(dataInvoice?.date).utc().format('DD MMM YYYY') : '-'}</span>
-            </h1>
-            <h1 className='font-semibold text-sm flex items-center font-inter'>
-              <span>
-                Appointment Date:
-              </span>
-              <span className='ml-3 text-sm text-[#484848] font-normal'>
-                {dataInvoice?.appointment?.date ? dayjs(dataInvoice?.date).utc().format('DD MMM YYYY') : '-'}
-              </span>
-            </h1>
+
+            <div className='flex flex-col'>
+              <p className='text-sm font-semibold font-inter'>
+                Payment ID : <span className='text-base ml-2'>{dataInvoice?.payment?.stripeId ? (dataInvoice?.payment?.stripeId ?? '-') : (dataInvoice?.payment?.id ?? '-')}</span>
+              </p>
+              <p className='text-sm font-semibold font-inter'>
+                Refund ID : <span className='text-base ml-2'>{dataInvoice?.stripe_refund_id ?? 'N/A'}</span>
+              </p>
+              <p className='text-sm font-semibold font-inter flex items-center'>
+                Payment Method : <span className='text-base ml-2'>{dataInvoice?.payment?.type ?? '-'}</span>
+              </p>
+            </div>
           </div>
 
-          <div className='flex flex-col gap-3'>
-            <h1 className='font-semibold text-sm flex items-center font-inter'>
-              <span>
-                Patient Name:
-              </span>
-              <span className='ml-3 text-sm text-[#484848] font-normal'>
-                {dataInvoice?.patient?.first_name ?? '-'} {dataInvoice?.patient?.middle_name} {dataInvoice?.patient?.last_name}
-              </span>
+          <div className='flex-1 flex flex-col gap-4'>
+            <h1 className='font-semibold font-lexend text-base'>
+              Contact Details
             </h1>
-            <h1 className='font-semibold text-sm flex items-center font-inter'>
-              <span>
-                Patient Address:
-              </span>
-              <span className='ml-3 text-sm text-[#484848] font-normal'>
-                {dataInvoice?.patient?.address_line_1}{dataInvoice?.patient?.address_line_2 ? `, ${dataInvoice?.patient?.address_line_2}` : ''}
-              </span>
-            </h1>
-            <h1 className='font-semibold text-sm flex items-center font-inter'>
-              <span>
-                Patient Email:
-              </span>
-              <span className='ml-3 text-sm text-[#484848] font-normal'>
-                {dataInvoice?.patient?.email ?? '-'}
-              </span>
-            </h1>
+
+            <div className='flex flex-col'>
+              <p className='text-sm font-semibold font-inter'>
+                Name : <span className='text-base ml-2'>{dataInvoice?.patient?.first_name ?? '-'} {dataInvoice?.patient?.middle_name} {dataInvoice?.patient?.last_name}</span>
+              </p>
+              <p className='text-sm font-semibold font-inter'>
+                Email : <span className='text-base ml-2'>{dataInvoice?.patient?.email ?? '-'}</span>
+              </p>
+              <p className='text-sm font-semibold font-inter flex items-center'>
+                Mobile Number : <span className='text-base ml-2'>{dataInvoice?.patient?.mobile_number ?? '-'}</span>
+              </p>
+              <p className='text-sm font-semibold font-inter flex items-center'>
+                Address : <span className='text-base ml-2'>{dataInvoice?.patient?.address_line_1}{dataInvoice?.patient?.address_line_2 ? `, ${dataInvoice?.patient?.address_line_2}` : ''}</span>
+              </p>
+            </div>
           </div>
 
-          <div className='flex flex-col gap-3'>
-            <h1 className='font-semibold text-sm flex items-center font-inter'>
-              <span>
-                Patient Mobile Number:
-              </span>
-              <span className='ml-3 text-sm text-[#484848] font-normal'>
-                {dataInvoice?.patient?.mobile_number ?? '-'}
-              </span>
+          <div className='flex-1 flex flex-col gap-4'>
+            <h1 className='font-semibold font-lexend text-base'>
+              Appointment Details
             </h1>
-            <h1 className='font-semibold text-sm flex items-center font-inter'>
-              <span>
-                Payment Method:
-              </span>
-              <span className='ml-3 text-sm text-[#484848] font-normal'>
-                {dataInvoice?.payment?.type ?? '-'}
-              </span>
-            </h1>
-            <h1 className='font-semibold text-sm flex items-center font-inter'>
-              <span>
-                Clinic Name:
-              </span>
-              <span className='ml-3 text-sm text-[#484848] font-normal'>
-                {dataInvoice?.clinic?.name ?? '-'}
-              </span>
-            </h1>
+
+            <div className='flex flex-col'>
+              <p className='text-sm font-semibold font-inter'>
+                Date : <span className='text-base ml-2'>{dataInvoice?.appointment?.date ? dayjs(dataInvoice?.date).utc().format('DD MMM YYYY') : '-'}</span>
+              </p>
+              <p className='text-sm font-semibold font-inter'>
+                Type : <span className='text-base ml-2'>{dataInvoice?.appointment?.type ?? '-'}</span>
+              </p>
+              <p className='text-sm font-semibold font-inter flex items-center'>
+                Status : <span className='text-base ml-2'>{getAptStatusBadge(dataInvoice?.status ?? 0) ?? '-'}</span>
+              </p>
+            </div>
           </div>
         </div>
 
         <div className='flex flex-col'>
-          <div className='p-6 border border-[#E4E4E4] rounded-t-lg'>
-            <h1 className='font-semibold text-lg font-inter'>
-              Item Details
-            </h1>
-          </div>
           <Table variant='classic'>
             <Table.Header>
               <Table.Row>
@@ -303,21 +278,89 @@ export default function InvoiceDetails({ id }: { id: string }) {
           </Table>
         </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-2 border border-[#E4E4E4] rounded-xl p-6'>
-          <div className='flex'>
-            <h1 className='font-semibold text-sm text-[#111111] font-inter'>Notes:</h1>
-            <p className='font-normal font-inter text-sm text-[#484848] ml-4'>
-              {dataInvoice?.note ?? '-'}
-            </p>
+        <div className='flex gap-2'> 
+          <div className='basis-[80%] flex flex-col gap-4'>
+            <div className='flex flex-col gap-2'>
+              <h1 className='font-semibold text-base font-lexend'>
+                Notes
+              </h1>
+              <p className='text-[#484848] text-sm font-normal'>
+                {dataInvoice?.note ?? '-'}
+              </p>
+            </div>
+            <div className='flex flex-col gap-2'>
+              <h1 className='font-semibold text-base font-lexend'>
+                Internal Notes
+              </h1>
+              <p className='text-[#484848] text-sm font-normal'>
+                -
+              </p>
+            </div>
           </div>
-          <div className='flex'>
-            <h1 className='font-semibold text-sm text-[#111111] font-inter'>
-              Internal Notes:
-            </h1>
-            <p className='font-normal font-inter text-sm text-[#484848] ml-4'>
-              -
-            </p>
+          <div className='basis-[20%]  flex flex-col gap-4'>
+            <div className='border-b border-[#E4E4E4] flex justify-between items-center py-4'>
+              <h1 className='text-[#666666] font-medium text-sm'>
+                Subtotal:
+              </h1>
+              <p className=' ml-2 font-semibold text-sm text-[#333333]'>
+                ${dataInvoice?.amount ?? 0}
+              </p>
+            </div>
+            <div className='flex justify-between items-center py-2'>
+              <h1 className='text-[#111111] font-semibold text-base'>
+                Total:
+              </h1>
+              <p className='text-[#111111] font-semibold text-base'>
+                ${dataInvoice?.total_amount ?? 0}
+              </p>
+            </div>
           </div>
+        </div>
+
+        <div className='p-6 border border-[#E4E4E4] rounded-xl flex flex-col gap-4'>
+            <h1 className='font-semibold text-base font-lexend'>Log History</h1>
+            <Table variant='classic'>
+            <Table.Header>
+              <Table.Row>
+                <Table.Head>
+                  DATE & TIME
+                </Table.Head>
+                <Table.Head>
+                  EVENT
+                </Table.Head>
+                <Table.Head>
+                  SOURCE
+                </Table.Head>
+                <Table.Head>
+                  PERFORMED BY
+                </Table.Head>
+                <Table.Head>
+                  STATUS
+                </Table.Head>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {dataInvoice?.items?.map((item, index) => (
+                <Table.Row key={index}>
+                  <Table.Cell className='flex flex-col gap-2'>
+                    -
+                  </Table.Cell>
+                  <Table.Cell className='text-[#666666] text-[12px] font-semibold'>
+                    -
+                  </Table.Cell>
+                  <Table.Cell className='text-[#666666] text-[12px] font-semibold'>
+                   -
+                  </Table.Cell>
+                  <Table.Cell className='text-sm font-semibold text-[#333333]'>
+                   -
+                  </Table.Cell>
+                  <Table.Cell className='text-sm font-semibold text-[#333333]'>
+                   -
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
         </div>
       </div>
     </>

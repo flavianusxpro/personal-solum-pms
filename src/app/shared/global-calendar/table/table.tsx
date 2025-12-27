@@ -1,6 +1,12 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useModal } from '../../modal-views/use-modal';
 import {
   useGetAppointments,
@@ -21,8 +27,9 @@ import MounthlyCalendar from './CalendarTypes/Mounthly/MounthlyCalendar';
 import { IoNotificationsOutline } from 'react-icons/io5';
 import CalendarHeader from './CalendarHeaders';
 import DailyCalendar from './CalendarTypes/Daily/DailyCalendar';
+import ModalNextAvailability from './ModalNextAvailability';
 
-export default function GlobalCalendarTable({ }: {}) {
+export default function GlobalCalendarTable({}: {}) {
   const { openModal, closeModal } = useModal();
   const [pageSize] = useState(100);
   const [viewType, setViewType] = useState<'daily' | 'weekly' | 'monthly'>(
@@ -61,11 +68,12 @@ export default function GlobalCalendarTable({ }: {}) {
           : selectedDate,
     clinicId: dataProfile?.clinics[0]?.id || 0,
     // doctorId: selectedDoctor ? Number(selectedDoctor) : undefined,
-    q: selectedDoctor.length > 0 && !selectedDoctor.includes('0')
-      ? JSON.stringify({
-        doctor_ids: selectedDoctor.map(id => Number(id))
-      })
-      : undefined,
+    q:
+      selectedDoctor.length > 0 && !selectedDoctor.includes('0')
+        ? JSON.stringify({
+            doctor_ids: selectedDoctor.map((id) => Number(id)),
+          })
+        : undefined,
   });
 
   const { data: doctorDatas } = useGetAllDoctors({
@@ -92,16 +100,21 @@ export default function GlobalCalendarTable({ }: {}) {
     (row: any, newDate: string, newDoctorName?: string, newTime?: string) => {
       closeModal();
       if (viewType === 'daily' && newDoctorName && newTime) {
-        const doctorId = optionDoctors.find(doc => {
-          const docNameWithoutTitle = doc.label.replace(/^Dr\.\s*/, "").toLowerCase();
+        const doctorId = optionDoctors.find((doc) => {
+          const docNameWithoutTitle = doc.label
+            .replace(/^Dr\.\s*/, '')
+            .toLowerCase();
           return docNameWithoutTitle.startsWith(newDoctorName.toLowerCase());
         })?.value;
 
         const displayTime = dayjs(newTime, 'HH:mm').format('h:mm A');
         const confirmationText = `Are you sure you want to reschedule to Dr. ${newDoctorName} at ${displayTime}?`;
 
-        const converted = dayjs(newTime, "HH:mm").format("hh:mm A");
-        const result = dayjs.utc(`${newDate} ${converted}`, "YYYY-MM-DD hh:mm A")
+        const converted = dayjs(newTime, 'HH:mm').format('hh:mm A');
+        const result = dayjs.utc(
+          `${newDate} ${converted}`,
+          'YYYY-MM-DD hh:mm A'
+        );
 
         const handleConfirm = () => {
           const payload = {
@@ -121,7 +134,7 @@ export default function GlobalCalendarTable({ }: {}) {
             onError: (error: any) => {
               toast.error(
                 error?.response?.data?.message ||
-                'Error rescheduling appointment'
+                  'Error rescheduling appointment'
               );
               console.error('Error rescheduling appointment:', error);
               closeModal();
@@ -140,13 +153,18 @@ export default function GlobalCalendarTable({ }: {}) {
           customSize: '400px',
         });
       } else if (viewType === 'weekly' && newDoctorName && newTime) {
-        const doctorId = optionDoctors.find(doc => {
-          const docNameWithoutTitle = doc.label.replace(/^Dr\.\s*/, "").toLowerCase();
+        const doctorId = optionDoctors.find((doc) => {
+          const docNameWithoutTitle = doc.label
+            .replace(/^Dr\.\s*/, '')
+            .toLowerCase();
           return docNameWithoutTitle.startsWith(newDoctorName.toLowerCase());
         })?.value;
 
-        const converted = dayjs(newTime, "HH:mm").format("hh:mm A");
-        const result = dayjs.utc(`${newDate} ${converted}`, "YYYY-MM-DD hh:mm A")
+        const converted = dayjs(newTime, 'HH:mm').format('hh:mm A');
+        const result = dayjs.utc(
+          `${newDate} ${converted}`,
+          'YYYY-MM-DD hh:mm A'
+        );
 
         const handleConfirm = () => {
           const payload = {
@@ -164,7 +182,8 @@ export default function GlobalCalendarTable({ }: {}) {
             },
             onError: (error: any) => {
               toast.error(
-                error?.response?.data?.message || 'Error rescheduling appointment'
+                error?.response?.data?.message ||
+                  'Error rescheduling appointment'
               );
               console.error('Error rescheduling appointment:', error);
               closeModal();
@@ -200,17 +219,26 @@ export default function GlobalCalendarTable({ }: {}) {
       mutateRescheduleByDate,
       refetch,
       openModal,
-      isPendingReschedule
+      isPendingReschedule,
     ]
   );
 
   const handleDropWeekly = useCallback(
     (appointment: any, newDayKey: string, newTime: string) => {
-      const dayIndex = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].indexOf(newDayKey);
+      const dayIndex = [
+        'MON',
+        'TUE',
+        'WED',
+        'THU',
+        'FRI',
+        'SAT',
+        'SUN',
+      ].indexOf(newDayKey);
       const weekDates = getWeekDates(selectedDate);
       const newDate = weekDates[dayIndex];
 
-      const doctorName = `${appointment.doctor?.first_name || ''} ${appointment.doctor?.last_name || ''}`.trim();
+      const doctorName =
+        `${appointment.doctor?.first_name || ''} ${appointment.doctor?.last_name || ''}`.trim();
 
       rescheduleModal(appointment, newDate, doctorName, newTime);
     },
@@ -301,7 +329,10 @@ export default function GlobalCalendarTable({ }: {}) {
   const isScheduleAvailable = useMemo(() => {
     if (!data?.nearest_doctor_schedule?.end_date) return false;
 
-    const endDate = dayjs(data.nearest_doctor_schedule.end_date, 'YYYY-MM-DD hh:mm A');
+    const endDate = dayjs(
+      data.nearest_doctor_schedule.end_date,
+      'YYYY-MM-DD hh:mm A'
+    );
     const now = dayjs();
 
     return endDate.isAfter(now);
@@ -310,62 +341,71 @@ export default function GlobalCalendarTable({ }: {}) {
   const formattedStartDate = useMemo(() => {
     if (!data?.nearest_doctor_schedule?.start_date) return '';
 
-    const startDate = dayjs(data.nearest_doctor_schedule.start_date, 'YYYY-MM-DD hh:mm A');
+    const startDate = dayjs(
+      data.nearest_doctor_schedule.start_date,
+      'YYYY-MM-DD hh:mm A'
+    );
 
     return startDate.format('dddd, D MMMM YYYY [at] hh:mm A');
   }, [data?.nearest_doctor_schedule?.start_date]);
 
   return (
-    <div className='flex flex-col h-screen'>
-       {isScheduleAvailable && data?.nearest_doctor_schedule && (
-          <div className="mb-2 flex gap-4 rounded-lg px-6 py-4 border border-[#3872F959] bg-[#3872F91A] items-center">
-            <div>
-              <IoNotificationsOutline className='text-2xl text-[#3872F9]' />
-            </div>
-
-            <div className='flex-1 flex justify-between items-center'>
-              <div className='flex flex-col gap-1'>
-                <h1 className='font-semibold text-sm text-[#3872F9] font-inter'>
-                  Next Availability for a New Patient!
-                </h1>
-
-                <p className='text-[#3872F9] font-normal text-sm'>
-                  The next available appointment with Dr. {data.nearest_doctor_schedule.doctor.first_name} {data.nearest_doctor_schedule.doctor.last_name} is on {formattedStartDate}.
-                </p>
-              </div>
-
-              <Button
-                className='bg-[#3872F9] py-3 px-4'
-                onClick={() => {
-                  if (data?.nearest_doctor_schedule) {
-                    const scheduleDate = dayjs(
-                      data.nearest_doctor_schedule.start_date,
-                      'YYYY-MM-DD hh:mm A'
-                    );
-
-                    setSelectedDate(scheduleDate.format('YYYY-MM-DD'));
-
-                    setViewType('daily');
-
-                    // setSelectedDoctor([String(data.nearest_doctor_schedule.doctor.id)]);
-                  }
-                }}
-              >
-                Check Now
-              </Button>
-            </div>
+    <div className="flex h-screen flex-col">
+      {isScheduleAvailable && data?.nearest_doctor_schedule && (
+        <div className="mb-2 flex items-center gap-4 rounded-lg border border-[#3872F959] bg-[#3872F91A] px-6 py-4">
+          <div>
+            <IoNotificationsOutline className="text-2xl text-[#3872F9]" />
           </div>
-        )}
 
-        <CalendarHeader
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          viewType={viewType}
-          setViewType={setViewType}
-          selectedDoctor={selectedDoctor}
-          setSelectedDoctor={setSelectedDoctor}
-          optionDoctors={optionDoctors}
-        />
+          <div className="flex flex-1 items-center justify-between">
+            <div className="flex flex-col gap-1">
+              <h1 className="font-inter text-sm font-semibold text-[#3872F9]">
+                Next Availability for a New Patient!
+              </h1>
+
+              <p className="text-sm font-normal text-[#3872F9]">
+                The next available appointment with Dr.{' '}
+                {data.nearest_doctor_schedule.doctor.first_name}{' '}
+                {data.nearest_doctor_schedule.doctor.last_name} is on{' '}
+                {formattedStartDate}.
+              </p>
+            </div>
+
+            <Button
+              className="bg-[#3872F9] px-4 py-3"
+              onClick={() => {
+                if (data?.nearest_doctor_schedule) {
+                  const scheduleDate = dayjs(
+                    data.nearest_doctor_schedule.start_date,
+                    'YYYY-MM-DD hh:mm A'
+                  );
+                  setSelectedDate(scheduleDate.format('YYYY-MM-DD'));
+                  setViewType('daily');
+                  // setSelectedDoctor([String(data.nearest_doctor_schedule.doctor.id)]);
+                }
+                // openModal({
+                //   view: <ModalNextAvailability data={data} />,
+                //   customSize: '1100px',
+                // });
+              }}
+            >
+              Check Now
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <CalendarHeader
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+        viewType={viewType}
+        setViewType={setViewType}
+        selectedDoctor={selectedDoctor}
+        setSelectedDoctor={setSelectedDoctor}
+        optionDoctors={optionDoctors}
+      />
+      <div className="flex-1 min-h-0 overflow-hidden">
+        {' '}
         {viewType == 'daily' ? (
           <DailyCalendar
             isLoadingGetAppointments={isLoadingGetAppointments}
@@ -396,6 +436,7 @@ export default function GlobalCalendarTable({ }: {}) {
             rescheduleModal={rescheduleModal}
           />
         )}
+      </div>
     </div>
   );
 }
