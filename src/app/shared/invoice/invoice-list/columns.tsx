@@ -113,6 +113,7 @@ type Columns = {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   idInvoice: number | string;
   setIdInvoice: Dispatch<SetStateAction<number | string>>;
+  refetch?: () => void;
 };
 
 export const getColumns = ({
@@ -128,6 +129,7 @@ export const getColumns = ({
   setIsOpen,
   idInvoice,
   setIdInvoice,
+  refetch
 }: Columns) => {
   const { openModal, closeModal } = useModal();
   return [
@@ -159,7 +161,7 @@ export const getColumns = ({
       ),
     },
     {
-      title: <HeaderCell title="INVOICE ID" />,
+      title: <HeaderCell title="ID" />,
       dataIndex: 'id',
       key: 'id',
       render: (id: string) => <p className="w-max">INV-{id}</p>,
@@ -245,6 +247,7 @@ export const getColumns = ({
             onDeleteItem={onDeleteItem}
             idInvoice={idInvoice}
             setIdInvoice={setIdInvoice}
+            refetch={refetch}
           />
         </div>
       ),
@@ -260,6 +263,7 @@ function RenderAction({
   setIsOpen,
   idInvoice,
   setIdInvoice,
+  refetch
 }: {
   row: IRowType;
   onDeleteItem: (id: number[]) => void;
@@ -267,6 +271,7 @@ function RenderAction({
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   idInvoice: number | string;
   setIdInvoice: Dispatch<SetStateAction<number | string>>;
+  refetch?: () => void;
 }) {
   const { openModal, closeModal } = useModal();
 
@@ -290,7 +295,7 @@ function RenderAction({
   function refundModal(row: IRowType) {
     closeModal(),
       openModal({
-        view: <RefundForm data={row} />,
+        view: <RefundForm data={row} refetch={refetch} />,
         customSize: '600px',
       });
   }
@@ -495,6 +500,10 @@ function StatusSelectUpdate({
   )?.value;
   const [value, setValue] = useState(selectItemValue);
   const { mutate, isPending } = useUpdatePaymentStatusInvoice();
+
+   useEffect(() => {
+    setValue(selectItemValue);
+  }, [selectItemValue]);
 
   const handleSubmitStatus = (value: number) => {
     setValue(value);

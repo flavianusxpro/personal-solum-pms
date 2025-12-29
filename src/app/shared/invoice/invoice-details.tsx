@@ -1,17 +1,20 @@
 'use client';
 
-import { Text, Loader, Button, Table, Flex, Badge } from 'rizzui';
+import { Text, Loader, Button, Table, Flex, Badge, Empty, Tooltip } from 'rizzui';
 import { useGetInvoiceById } from '@/hooks/useInvoice';
 import dayjs from '@/config/dayjs';
 import { IGetInvoiceByIdResponse } from '@/types/ApiResponse';
+import { AiOutlineInfoCircle } from "react-icons/ai";
 import PageHeader from '../ui/page-header';
 import { routes } from '@/config/routes';
 import PrintButton from '../ui/print-button';
-import { PiDownloadSimpleBold } from 'react-icons/pi';
-import { useRef } from 'react';
+import { PiCopy, PiDownloadSimpleBold } from 'react-icons/pi';
+import { useEffect, useRef } from 'react';
 import PDFInvoice, { PDFInvoiceRef } from './modal/pdf-invoice';
 import { currencyAtom } from '@/store/currency';
 import { useAtom } from 'jotai';
+import { useCopyToClipboard } from 'react-use';
+import toast from 'react-hot-toast';
 
 const pageHeader = {
   title: 'Invoice Details',
@@ -28,6 +31,10 @@ const pageHeader = {
 
 export default function InvoiceDetails({ id }: { id: string }) {
   const [currencyData] = useAtom(currencyAtom);
+  const [state, copyToClipboard] = useCopyToClipboard();
+  const handleCopy = (text: string | number) => {
+    copyToClipboard(String(text));
+  };
   const getInvoiceStatusBadge = (status: number) => {
     switch (status) {
       case 1:
@@ -75,49 +82,49 @@ export default function InvoiceDetails({ id }: { id: string }) {
         return (
           <Flex gap="1" align="center">
             <Badge renderAsDot className="bg-gray-400" />
-            <Text className="font-medium text-gray-600">No Show</Text>
+            <Text className="font-medium text-sm text-gray-600">No Show</Text>
           </Flex>
         );
       case 6:
         return (
-           <Flex gap="1" align="center">
+          <Flex gap="1" align="center">
             <Badge color="warning" renderAsDot />
-            <Text className="font-medium text-yellow-600">On Going</Text>
+            <Text className="font-medium text-sm text-yellow-600">On Going</Text>
           </Flex>
         );
       case 5:
         return (
           <Flex gap="1" align="center">
             <Badge color="success" renderAsDot />
-            <Text className="font-medium text-green-dark">Canceled</Text>
+            <Text className="font-medium text-sm text-green-dark">Canceled</Text>
           </Flex>
         );
       case 4:
         return (
-           <Flex gap="1" align="center">
+          <Flex gap="1" align="center">
             <Badge color="warning" renderAsDot />
-            <Text className="font-medium text-red-dark">Completed</Text>
+            <Text className="font-medium text-sm text-red-dark">Completed</Text>
           </Flex>
         );
       case 3:
         return (
           <Flex gap="1" align="center">
             <Badge color="secondary" renderAsDot />
-            <Text className="font-medium text-secondary">Checked In</Text>
+            <Text className="font-medium text-sm text-secondary">Checked In</Text>
           </Flex>
         );
       case 2:
         return (
-           <Flex gap="1" align="center">
+          <Flex gap="1" align="center">
             <Badge className='bg-green-500' renderAsDot />
-            <Text className="font-medium text-green-500">Scheduled</Text>
+            <Text className="font-medium text-sm text-green-500">Scheduled</Text>
           </Flex>
         );
       case 1:
         return (
-           <Flex gap="1" align="center">
+          <Flex gap="1" align="center">
             <Badge className='bg-red-dark' renderAsDot />
-            <Text className="font-medium text-red-dark">Draft</Text>
+            <Text className="font-medium text-sm text-red-dark">Draft</Text>
           </Flex>
         );
     }
@@ -129,6 +136,14 @@ export default function InvoiceDetails({ id }: { id: string }) {
     null
   ) as React.MutableRefObject<HTMLDivElement | null>;
 
+  useEffect(() => {
+    if (state.error) {
+      console.error('Failed to copy: ', state.error);
+    } else if (state.value) {
+      toast.success('Copied to clipboard');
+    }
+  }, [state]);
+
   if (isLoading) return <Loader className="h-10 w-10" />;
 
   const handlePrint = () => {
@@ -139,8 +154,33 @@ export default function InvoiceDetails({ id }: { id: string }) {
     pdfInvoiceRef.current?.handleDownload();
   };
 
-  console.log('zzz data invoice', dataInvoice);
-  
+  // Payment ID
+  const rawPaymentId = () => {
+    return (
+      dataInvoice?.payment?.stripeId ??
+      dataInvoice?.payment?.id ??
+      null
+    );
+  };
+  const paymentIdValue = rawPaymentId();
+  const paymentId = String(paymentIdValue || '-');
+  const isLongPaymentId = paymentIdValue && paymentId.length > 10;
+  const displayPaymentValue = isLongPaymentId
+    ? `${paymentId.slice(0, 10)}...`
+    : paymentId;
+
+
+  // Refund ID
+  const refundId = dataInvoice?.stripe_refund_id ?? null;
+  const refundIdString = String(refundId || 'N/A');
+  const isLongRefundId = refundId && refundIdString.length > 10;
+  const displayRefundValue = isLongRefundId
+    ? `${refundIdString.slice(0, 10)}...`
+    : refundIdString;
+
+  const fullAddress = `${dataInvoice?.patient?.address_line_1 || ''}${dataInvoice?.patient?.address_line_2 ? `, ${dataInvoice?.patient?.address_line_2}` : ''}`;
+
+  const dataLogHistory: any = [];
 
   return (
     <>
@@ -188,11 +228,55 @@ export default function InvoiceDetails({ id }: { id: string }) {
             </h1>
 
             <div className='flex flex-col'>
-              <p className='text-sm font-semibold font-inter'>
-                Payment ID : <span className='text-base ml-2'>{dataInvoice?.payment?.stripeId ? (dataInvoice?.payment?.stripeId ?? '-') : (dataInvoice?.payment?.id ?? '-')}</span>
+              <p className='text-sm font-semibold font-inter flex items-center'>
+                Payment ID : <span className="text-base ml-2">
+                  {paymentIdValue ? (
+                    <>
+                      {isLongPaymentId ? (
+                        <Tooltip color='invert' content={paymentId}>
+                          <span className="cursor-pointer underline decoration-dotted">
+                            {displayPaymentValue}
+                          </span>
+                        </Tooltip>
+                      ) : (
+                        paymentId
+                      )}
+                    </>
+                  ) : (
+                    '-'
+                  )}
+                </span>
+                {paymentIdValue && (
+                  <PiCopy
+                    onClick={() => handleCopy(paymentIdValue)}
+                    className="cursor-pointer active:scale-[0.99] ml-2"
+                  />
+                )}
               </p>
-              <p className='text-sm font-semibold font-inter'>
-                Refund ID : <span className='text-base ml-2'>{dataInvoice?.stripe_refund_id ?? 'N/A'}</span>
+              <p className='text-sm font-semibold font-inter flex items-center'>
+                Refund ID :  <span className="text-base ml-2">
+                  {refundId ? (
+                    <>
+                      {isLongRefundId ? (
+                        <Tooltip color='invert' content={refundIdString}>
+                          <span className="cursor-pointer underline decoration-dotted">
+                            {displayRefundValue}
+                          </span>
+                        </Tooltip>
+                      ) : (
+                        refundIdString
+                      )}
+                    </>
+                  ) : (
+                    'N/A'
+                  )}
+                </span>
+                {refundId && (
+                  <PiCopy
+                    onClick={() => handleCopy(refundId)}
+                    className="cursor-pointer active:scale-[0.99] ml-2"
+                  />
+                )}
               </p>
               <p className='text-sm font-semibold font-inter flex items-center'>
                 Payment Method : <span className='text-base ml-2'>{dataInvoice?.payment?.type ?? '-'}</span>
@@ -201,8 +285,13 @@ export default function InvoiceDetails({ id }: { id: string }) {
           </div>
 
           <div className='flex-1 flex flex-col gap-4'>
-            <h1 className='font-semibold font-lexend text-base'>
+            <h1 className='font-semibold font-lexend text-base flex items-center gap-2'>
               Contact Details
+              <Tooltip color='invert' content={fullAddress}>
+                <span className='inline-flex items-center'>
+                  <AiOutlineInfoCircle className='cursor-pointer' />
+                </span>
+              </Tooltip>
             </h1>
 
             <div className='flex flex-col'>
@@ -215,9 +304,9 @@ export default function InvoiceDetails({ id }: { id: string }) {
               <p className='text-sm font-semibold font-inter flex items-center'>
                 Mobile Number : <span className='text-base ml-2'>{dataInvoice?.patient?.mobile_number ?? '-'}</span>
               </p>
-              <p className='text-sm font-semibold font-inter flex items-center'>
+              {/* <p className='text-sm font-semibold font-inter flex items-center'>
                 Address : <span className='text-base ml-2'>{dataInvoice?.patient?.address_line_1}{dataInvoice?.patient?.address_line_2 ? `, ${dataInvoice?.patient?.address_line_2}` : ''}</span>
-              </p>
+              </p> */}
             </div>
           </div>
 
@@ -234,7 +323,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
                 Type : <span className='text-base ml-2'>{dataInvoice?.appointment?.type ?? '-'}</span>
               </p>
               <p className='text-sm font-semibold font-inter flex items-center'>
-                Status : <span className='text-base ml-2'>{getAptStatusBadge(dataInvoice?.status ?? 0) ?? '-'}</span>
+                Status : <span className='ml-2'>{getAptStatusBadge(dataInvoice?.status ?? 0) ?? '-'}</span>
               </p>
             </div>
           </div>
@@ -278,7 +367,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
           </Table>
         </div>
 
-        <div className='flex gap-2'> 
+        <div className='flex gap-2'>
           <div className='basis-[80%] flex flex-col gap-4'>
             <div className='flex flex-col gap-2'>
               <h1 className='font-semibold text-base font-lexend'>
@@ -318,8 +407,8 @@ export default function InvoiceDetails({ id }: { id: string }) {
         </div>
 
         <div className='p-6 border border-[#E4E4E4] rounded-xl flex flex-col gap-4'>
-            <h1 className='font-semibold text-base font-lexend'>Log History</h1>
-            <Table variant='classic'>
+          <h1 className='font-semibold text-base font-lexend'>Log History</h1>
+          <Table variant='classic'>
             <Table.Header>
               <Table.Row>
                 <Table.Head>
@@ -340,25 +429,33 @@ export default function InvoiceDetails({ id }: { id: string }) {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {dataInvoice?.items?.map((item, index) => (
-                <Table.Row key={index}>
-                  <Table.Cell className='flex flex-col gap-2'>
-                    -
-                  </Table.Cell>
-                  <Table.Cell className='text-[#666666] text-[12px] font-semibold'>
-                    -
-                  </Table.Cell>
-                  <Table.Cell className='text-[#666666] text-[12px] font-semibold'>
-                   -
-                  </Table.Cell>
-                  <Table.Cell className='text-sm font-semibold text-[#333333]'>
-                   -
-                  </Table.Cell>
-                  <Table.Cell className='text-sm font-semibold text-[#333333]'>
-                   -
+              {dataLogHistory && dataLogHistory?.length > 0 ? (
+                dataLogHistory?.map((item: any, index: any) => (
+                  <Table.Row key={index}>
+                    <Table.Cell className='flex flex-col gap-2'>
+                      -
+                    </Table.Cell>
+                    <Table.Cell className='text-[#666666] text-[12px] font-semibold'>
+                      -
+                    </Table.Cell>
+                    <Table.Cell className='text-[#666666] text-[12px] font-semibold'>
+                      -
+                    </Table.Cell>
+                    <Table.Cell className='text-sm font-semibold text-[#333333]'>
+                      -
+                    </Table.Cell>
+                    <Table.Cell className='text-sm font-semibold text-[#333333]'>
+                      -
+                    </Table.Cell>
+                  </Table.Row>
+                ))
+              ) : (
+                <Table.Row>
+                  <Table.Cell colSpan={5} className="text-center py-6">
+                    <Empty text="No Data" textClassName="mt-2" />
                   </Table.Cell>
                 </Table.Row>
-              ))}
+              )}
             </Table.Body>
           </Table>
         </div>

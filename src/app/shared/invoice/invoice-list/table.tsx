@@ -168,6 +168,7 @@ export default function InvoiceTableList() {
         setIdInvoice,
         isOpen,
         setIsOpen,
+        refetch,
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -180,6 +181,7 @@ export default function InvoiceTableList() {
       handleRowSelect,
       handleSelectAll,
       idInvoice,
+      refetch
     ]
   );
 
@@ -249,6 +251,9 @@ export default function InvoiceTableList() {
               >
                 {selectedRowKeys.length > 0 && (
                   <>
+                     <StatusSelect
+                      prefix={<CiWallet />}
+                    />
                     <Button
                       key="synchronize"
                       className="flex items-center gap-[4px] !bg-none"
@@ -278,9 +283,6 @@ export default function InvoiceTableList() {
                       </span>
                       <span>Pay Now</span>
                     </Button>
-                    <StatusSelect
-                      prefix={<CiWallet />}
-                    />
                   </>
                 )}
               </div>
