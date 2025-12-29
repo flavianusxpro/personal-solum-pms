@@ -1379,6 +1379,21 @@ div[style='z-index: 1000001;'],
   background-color: transparent !important;
 }
 
+
+/* ................................................... */
+/* React Table */
+/* ................................................... */
+.rc-table-body {
+  /* max-height: calc(100vh - 250px); */
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.rc-table-body::-webkit-scrollbar {
+  display: none;
+}
+
 /* ................................................... */
 /* react-colorful */
 /* ................................................... */

@@ -105,7 +105,7 @@ const CalendarHeader = (props: PropTypes) => {
 
     return (
         <div
-            className='flex flex-wrap justify-between rounded-tl-lg rounded-tr-lg rounded-bl-lg rounded-br-lg px-6 py-4 border border-[#00000026] gap-4 mb-2'
+            className='flex flex-wrap justify-between rounded-tl-lg rounded-tr-lg px-6 py-4 border border-[#00000026] gap-4'
         >
             <div className='flex items-center gap-4'>
                 <div className="flex w-12 flex-col items-center justify-center rounded-md border border-gray-300">

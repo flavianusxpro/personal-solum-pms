@@ -315,8 +315,18 @@ const DailyCalendar = (props: PropTypes) => {
                         // @ts-ignore
                         columns={columns}
                         variant="bordered"
-                        className="[&_td.rc-table-cell]:overflow-hidden [&_td.rc-table-cell]:p-0 [&_td.rc-table-cell]:align-middle [&_td.rc-table-cell]:leading-none"
-                        scroll={{ y: 600 }}
+                        scroll={{ y: 'calc(100vh - 250px)' }} 
+                        className="[&_td.rc-table-cell]:overflow-hidden 
+    [&_td.rc-table-cell]:p-0 
+    [&_td.rc-table-cell]:align-middle 
+    [&_td.rc-table-cell]:leading-none 
+    [&_.rc-table-body]:scrollbar-hide 
+    [&_.rc-table-body]:overflow-y-scroll
+    [&_.rc-table-header]:overflow-hidden
+    [&_table]:!rounded-none
+    [&_th]:!rounded-none
+    [&_td]:!rounded-none
+    "
                     />
                 )}
             </DndProvider>

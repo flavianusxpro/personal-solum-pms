@@ -162,11 +162,10 @@ export const getColumns = ({
       title: <HeaderCell title="INVOICE ID" />,
       dataIndex: 'id',
       key: 'id',
-      width: 200,
-      render: (id: string) => <p className="w-max">#INV-{id}</p>,
+      render: (id: string) => <p className="w-max">INV-{id}</p>,
     },
     {
-      title: <HeaderCell title="PATIENT NAME" />,
+      title: <HeaderCell title="NAME" />,
       dataIndex: 'patien',
       key: 'patien',
       width: 400,
@@ -205,17 +204,23 @@ export const getColumns = ({
       )
     },
     {
+      title: <HeaderCell title="CREATED AT" />,
+      dataIndex: 'created_at',
+      key: 'created_at',
+      width: 250,
+      render: (created_at: Date) => <DateCell date={created_at} />,
+    },
+    {
       title: <HeaderCell title="TOTAL" />,
       dataIndex: 'total_amount',
       key: 'total_amount',
-      width: 250,
       render: (value: string) => `${currencyData.symbol}${Number(value)}`,
     },
     {
       title: <HeaderCell title="PAYMENT STATUS" />,
       dataIndex: 'status',
       key: 'status',
-      width: 650,
+      width: 50,
       render: (_: any, row: any) => {
         return (
           <div
@@ -227,24 +232,10 @@ export const getColumns = ({
       },
     },
     {
-      title: <HeaderCell title="CREATED AT" />,
-      dataIndex: 'created_at',
-      key: 'created_at',
-      width: 600,
-      render: (created_at: Date) => <DateCell clock date={created_at} />,
-    },
-    {
-      title: <HeaderCell title="UPDATED BY" />,
-      dataIndex: 'updated_at',
-      key: 'updated_at',
-      width: 600,
-      render: (_: string, row: any) => <span>{row?.updated_by?.firstName ?? '-'}</span>,
-    },
-    {
       title: <HeaderCell title="Action" />,
       dataIndex: 'action',
       key: 'action',
-      width: 140,
+      width: 100,
       render: (_: string, row: any) => (
         <div onClick={(e) => e.stopPropagation()} className="flex items-center justify-start">
           <RenderAction
