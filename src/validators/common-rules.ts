@@ -15,6 +15,12 @@ export const validateEmail = z
   .min(1, { message: messages.emailIsRequired })
   .email({ message: messages.invalidEmail });
 
+export const validateEmailOptional = z
+  .string()
+  .email({ message: messages.invalidEmail })
+  .optional()
+  .or(z.literal(''));
+
 export const validatePassword = z
   .string()
   .min(1, { message: messages.passwordRequired })

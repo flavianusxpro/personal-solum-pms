@@ -3,12 +3,12 @@
 import React from 'react';
 import { PiTrashDuotone } from 'react-icons/pi';
 import DateFiled from '@/app/shared/ui/controlled-table/date-field';
-import StatusField from '@/app/shared/ui/controlled-table/status-field';
 import { Button } from 'rizzui';
 import { getDateRangeStateValues } from '@core/utils/get-formatted-date';
 import { useMedia } from '@core/hooks/use-media';
-import { statusOptions } from '@/app/shared/invoice/create-edit-form/form-utils';
+import { paymentStatus } from '@/app/shared/invoice/create-edit-form/form-utils';
 import CSelect from '../../ui/select';
+// import StatusField from '@/app/shared/ui/controlled-table/status-field';
 
 type FilterElementProps = {
   isFiltered: boolean;
@@ -50,7 +50,7 @@ export default function FilterElement({
         })}
       />
       <CSelect
-        options={statusOptions}
+        options={paymentStatus}
         value={filters?.['status'] || null}
         onChange={(value: number) => {
           updateFilter('status', value);

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { messages } from '@/config/messages';
-import { fileSchema, validateEmail } from './common-rules';
+import { fileSchema, validateEmail, validateEmailOptional } from './common-rules';
 
 // form zod validation schema
 export const patientDetailsFormSchema = z
@@ -66,10 +66,9 @@ export const patientDetailsFormSchema = z
     dva_card_number: z.string().optional(),
     dva_card_type: z.string().optional(),
     first_name_emergency_contact: z
-      .string()
-      .min(1, { message: messages.firstNameRequired }),
+      .string().optional(),
     last_name_emergency_contact: z.string().optional(),
-    email_emergency_contact: validateEmail,
+    email_emergency_contact: validateEmailOptional,
     mobile_number_emergency_contact: z.string().optional(),
     relationship_emergency_contact: z.string().optional(),
     newPassword: z.string().optional(),

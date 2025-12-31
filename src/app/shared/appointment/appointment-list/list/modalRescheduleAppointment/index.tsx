@@ -6,18 +6,24 @@ import SelectOption from './SelectOption';
 import SelectDateTime from './SelectDateTime';
 import { useGetCalendarScheduleByClinicId } from '@/hooks/useClinic';
 import dayjs from 'dayjs';
+import ReasonRescheduling from './ReasonRescheduling';
+import RescheduleConfirmation from './RescheduleConfirmation';
+import { usePostRescheduleAppointmentByDate } from '@/hooks/useAppointment';
+import toast from 'react-hot-toast';
 
 interface PropTypes {
-    data?: any
+    data?: any;
+    setStatusChanged?: React.Dispatch<React.SetStateAction<boolean>> | undefined;
 }
 
 const totalSteps = 4;
 const ModalRescheduleAppointment = (props: PropTypes) => {
-    const { data } = props;
+    const { data, setStatusChanged } = props;
     const { closeModal } = useModal();
     const [currentStep, setCurrentStep] = useState(1);
     const [reason, setReason] = useState('');
     const [formData, setFormData] = useState({
+        id: data?.id,
         rescheduleType: '',
         doctorId: data?.doctor?.id ?? '',
         treatment_type: data?.patient?.patient_type ?? '',
@@ -26,8 +32,16 @@ const ModalRescheduleAppointment = (props: PropTypes) => {
         timezone: 'Australia/Sydney',
         clinicId: data?.clinic?.id ?? '',
         doctorTime: '',
-        fee: ''
+        fee: '',
+        reasonForRescheduling: '',
+        doctorFirstName: '',
+        doctorLastName: '',
     })
+
+    const { 
+        mutate: mutateRescheduleByDate, 
+        isPending: isPendingReschedule 
+    } = usePostRescheduleAppointmentByDate();
 
     const handleChange = (key: string, value: any) => {
         setFormData((prev: any) => ({
@@ -44,15 +58,48 @@ const ModalRescheduleAppointment = (props: PropTypes) => {
 
     const handleBack = () => {
         if (currentStep > 1) {
+            if (currentStep === 2) {
+                setFormData((prev) => ({
+                    ...prev,
+                    appointment_date: data?.date ? dayjs(data?.date).format('YYYY-MM-DD') : '',
+                    doctorTime: '',
+                    doctorId: data?.doctor?.id ?? '',
+                    fee: '',
+                    doctorFirstName: '',
+                    doctorLastName: ''
+                }));
+            } else if (currentStep === 3) {
+            } else if (currentStep === 4) {
+                // Optional: Reset step 4 values if needed
+            }
+
             setCurrentStep(currentStep - 1);
         }
     };
 
     const handleSubmit = () => {
-        console.log({
-            reason
-        });
-        closeModal();
+        const dateTimeString = `${formData.appointment_date}T${formData.doctorTime}`
+        mutateRescheduleByDate(
+      {
+        id: formData.id as number,
+        doctorId: formData.doctorId,
+        date: dateTimeString,
+        note: formData.reasonForRescheduling,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Appointment rescheduled successfully");
+          setStatusChanged?.(true);
+          closeModal();
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || "Error rescheduling appointment"
+          );
+          console.error("Error rescheduling appointment:", error);
+        },
+      }
+    );
     };
 
     const {
@@ -76,65 +123,39 @@ const ModalRescheduleAppointment = (props: PropTypes) => {
 
             case 3:
                 return (
-                    <div>
-                        <h2 className="font-semibold text-base mb-4">
-                            Reason for Rescheduling
-                        </h2>
-                        <textarea
-                            value={reason}
-                            onChange={(e) => setReason(e.target.value)}
-                            placeholder="Add your reason here ..."
-                            className="w-full min-h-[200px] p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:border-[#3872F9]"
-                        />
-                    </div>
+                    <ReasonRescheduling
+                        onChange={handleChange}
+                        value={formData.reasonForRescheduling}
+                    />
                 );
 
             case 4:
                 return (
-                    <div>
-                        <div className="text-center mb-6">
-                            <h2 className="font-semibold text-base mb-2">
-                                Reschedule Confirmation
-                            </h2>
-                            <div className="text-xs bg-[#3872F9] text-white inline-block px-2 py-1 rounded">
-                                199 x 20
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-6">
-                            <div className="border-r pr-6">
-                                <h3 className="font-semibold text-sm mb-4">Last Schedule</h3>
-                                <div className="space-y-3 text-sm">
-                                    <div>
-                                        <div className="text-gray-600">Date & Time:</div>
-                                        <div className="font-medium">12 December 2025, 09:00 AM</div>
-                                    </div>
-                                    <div>
-                                        <div className="text-gray-600">Doctor:</div>
-                                        <div className="font-medium">Dr. Emily Turner</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="pl-6">
-                                <h3 className="font-semibold text-sm mb-4">New Schedule</h3>
-                                <div className="space-y-3 text-sm">
-                                    <div>
-                                        <div className="text-gray-600">Date & Time:</div>
-                                        <div className="font-medium">14 December 2025, 10:00 AM</div>
-                                    </div>
-                                    <div>
-                                        <div className="text-gray-600">Doctor:</div>
-                                        <div className="font-medium">Dr. Emily Turner</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <RescheduleConfirmation
+                        data={data}
+                        formData={formData}
+                    />
                 );
 
             default:
                 return null;
+        }
+    };
+
+    const isStepValid = () => {
+        switch (currentStep) {
+            case 1:
+                // Step 1: Must select reschedule type
+                return formData.rescheduleType !== '';
+
+            case 2:
+                // Step 2: Must select date, doctor, and time (optional, sesuaikan kebutuhan)
+                return formData.appointment_date !== '' &&
+                    formData.doctorId !== '' &&
+                    formData.doctorTime !== '';
+
+            default:
+                return true;
         }
     };
 
@@ -156,7 +177,7 @@ const ModalRescheduleAppointment = (props: PropTypes) => {
 
             <div className='p-10'>
                 {/* Step Content */}
-                <div className='flex flex-col gap-4'>
+                <div className='flex flex-col gap-4 h-[65vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'>
                     {renderStepContent()}
                 </div>
             </div>
@@ -186,16 +207,25 @@ const ModalRescheduleAppointment = (props: PropTypes) => {
                         <Button
                             variant='outline'
                             onClick={handleBack}
+                            disabled={isPendingReschedule}
+                            isLoading={isPendingReschedule}
                         >
                             Back
                         </Button>
                     )}
                     {currentStep < totalSteps ? (
-                        <Button onClick={handleNext}>
+                        <Button
+                            onClick={handleNext}
+                            disabled={!isStepValid()}
+                        >
                             Next
                         </Button>
                     ) : (
-                        <Button onClick={handleSubmit}>
+                        <Button
+                            onClick={handleSubmit}
+                            disabled={!isStepValid() || isPendingReschedule}
+                            isLoading={isPendingReschedule}
+                        >
                             Submit
                         </Button>
                     )}

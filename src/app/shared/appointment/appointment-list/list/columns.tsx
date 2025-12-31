@@ -44,6 +44,7 @@ import Link from 'next/link';
 import AvatarCardNew from '@/core/ui/avatar-card-new';
 import { CgNotes } from 'react-icons/cg';
 import LogAppointment from './modalLogHistoryAppointment';
+import ModalRescheduleAppointment from './modalRescheduleAppointment';
 // import ModalRescheduleAppointment from './modalRescheduleAppointment';
 
 dayjs.extend(timezonePlugin);
@@ -383,9 +384,13 @@ function RenderAction({
   function rescheduleModal(row: RowValue) {
     closeModal(),
       openModal({
-        view: <RescheduleAppointmentForm setStatusChanged={setStatusChanged} data={row} />,
-        customSize: '600px',
+        view: <ModalRescheduleAppointment setStatusChanged={setStatusChanged} data={row} />,
+        customSize: '1100px',
       });
+      // openModal({
+      //   view: <RescheduleAppointmentForm setStatusChanged={setStatusChanged} data={row} />,
+      //   customSize: '600px',
+      // });
   }
 
   function cancelModal(row: RowValue) {
@@ -507,53 +512,57 @@ function RenderAction({
 
 export function getPaymentStatusBadge(status: number | string | undefined) {
   switch (status) {
-    case 0:
-      return (
-        <div className="flex items-center">
-          <Badge renderAsDot className="bg-gray-400" />
-          <Text className="font-medium text-gray-600">Not Paid</Text>
-        </div>
-      );
     case 1:
       return (
         <Flex gap="1" align="center">
-          <Badge color="warning" renderAsDot />
-          <Text className="font-medium text-yellow-600">Pending</Text>
+          <Badge className='bg-[#484848]' renderAsDot />
+          <Text className="font-medium text-[#484848]">Draft</Text>
         </Flex>
       );
     case 2:
       return (
         <Flex gap="1" align="center">
-          <Badge color="success" renderAsDot />
-          <Text className="font-medium text-green-dark">Paid</Text>
+          <Badge className='bg-[#11833C]' renderAsDot />
+          <Text className="font-medium text-[#11833C]">
+            Paid
+          </Text>
         </Flex>
       );
     case 3:
       return (
         <Flex gap="1" align="center">
-          <Badge color="danger" renderAsDot />
-          <Text className="text-yellow-dark font-medium">Canceled</Text>
+          <Badge className='bg-[#E90000]' renderAsDot />
+          <Text className="font-medium text-[#E90000]">
+            Cancelled
+          </Text>
         </Flex>
       );
     case 4:
       return (
         <Flex gap="1" align="center">
-          <Badge color="warning" renderAsDot />
-          <Text className="font-medium text-red-dark">Unpaid</Text>
+          <Badge className='bg-[#F4A523]' renderAsDot />
+          <Text className="font-medium bg-[#F4A523]">Void</Text>
         </Flex>
       );
     case 5:
       return (
         <Flex gap="1" align="center">
-          <Badge color="secondary" renderAsDot />
-          <Text className="font-medium text-secondary">Refund</Text>
+          <Badge className='bg-[#AB570A]' renderAsDot />
+          <Text className="font-medium text-[#AB570A]">Refund</Text>
+        </Flex>
+      );
+    case 6:
+      return (
+        <Flex gap="1" align="center">
+          <Badge className='bg-[#1E88E5]' renderAsDot />
+          <Text className="font-medium text-[#1E88E5]">Unpaid</Text>
         </Flex>
       );
     default:
       return (
         <div className="flex items-center">
-          <Badge renderAsDot className="bg-gray-400" />
-          <Text className="font-medium text-gray-600">{status}</Text>
+          <Badge renderAsDot className="bg-gray-600" />
+          <Text className="font-medium text-gray-600">Not Paid</Text>
         </div>
       );
   }
@@ -579,7 +588,7 @@ export function getAptStatusBadge(status: number | string) {
       return (
         <Flex gap="1" align="center">
           <Badge color="danger" renderAsDot />
-          <Text className="font-medium text-red">Canceled</Text>
+          <Text className="font-medium text-red">Cancelled</Text>
         </Flex>
       );
     case 4:
@@ -613,8 +622,10 @@ export function getAptStatusBadge(status: number | string) {
     default:
       return (
         <div className="flex items-center">
-          <Badge renderAsDot className="bg-gray-400" />
-          <Text className="font-medium text-blue-600">{status}</Text>
+          <Badge renderAsDot className="bg-gray-600" />
+          <Text className="font-medium text-blue-600">
+            N/A
+          </Text>
         </div>
       );
   }

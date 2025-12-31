@@ -37,6 +37,38 @@ const ModalProfilePatient = (data: any) => {
         }
     }, [state]);
 
+    const getMissingInformation = () => {
+        const ihiNumber = data?.data?.ihi_number;
+        const email = data?.data?.email;
+        const mobileNumber = data?.data?.mobile_number;
+        const consentForm = data?.data?.has_filled_consent_form;
+
+        const missingFields: string[] = [];
+
+        if (!ihiNumber || ihiNumber.trim() === '') {
+            missingFields.push('IHI Number');
+        }
+
+        if (!email || email.trim() === '') {
+            missingFields.push('Email');
+        }
+
+        if (!mobileNumber ||
+            mobileNumber.trim() === '' ||
+            mobileNumber.startsWith('+') ||
+            !mobileNumber.startsWith('04') ||
+            mobileNumber.length !== 10
+        ) {
+            missingFields.push('Mobile Number');
+        }
+
+        if (!consentForm) {
+            missingFields.push('Consent Form');
+        }
+
+        return missingFields;
+    };
+    const missingInfo = getMissingInformation();
     return (
         <div className="relative w-full rounded-[24px] bg-white p-10">
             {/* Close Button */}
@@ -47,29 +79,17 @@ const ModalProfilePatient = (data: any) => {
                 <PiX className="h-5 w-5" />
             </button>
 
-            {!data?.data?.has_filled_consent_form && (
-                <div className="bg-[#FFF5E6] rounded-lg p-4">
-                    <p className="text-sm text-[#FF9E02]">
-                        <span className="font-bold">
-                            <IoWarningOutline className="inline text-lg" /> Consent Form Incomplete!
-                        </span>
-                        <br />
-                        The patient has not submitted the consent form.
-                    </p>
-                </div>
-            )}
-
             {/* Header */}
             <div className="flex items-center justify-between my-6 gap-4">
                 <div className="flex items-center gap-4">
-                    <Avatar
+                    {/* <Avatar
                         name={`${data?.data?.first_name} ${data?.data?.middle_name ? data?.data?.middle_name : ''} ${data?.data?.last_name}`}
                         src={data?.photo || `${data?.data?.first_name} ${data?.data?.middle_name ? data?.data?.middle_name : ''} ${data?.data?.last_name}`}
                         className="!h-[80px] text-white !w-[80px] text-xl"
-                    />
-                    <div>
+                    /> */}
+                    <div className="flex flex-col gap-4">
                         <div className="flex items-center gap-[8px]">
-                            <h2 className="text-[18px] font-semibold">
+                            <h2 className="text-[18px] font-semibold capitalize">
                                 {data?.data?.patient
                                     ?.first_name} {data?.data?.middle_name ? data?.data?.middle_name : ''} {data?.data
                                         ?.last_name}
@@ -78,6 +98,11 @@ const ModalProfilePatient = (data: any) => {
                                 isVerified={data?.data?.ihi_number !== null && data?.data?.has_filled_consent_form}
                             />
                         </div>
+                        {missingInfo.length > 0 && (
+                            <p className="text-sm font-normal font-inter">
+                                ⚠️ Missing required information: <span className="font-bold"> {missingInfo.join(', ')}</span>
+                            </p>
+                        )}
                         <p className="text-sm text-[#525252]">
                             {data?.data?.gender ? (data?.data?.gender).charAt(0).toUpperCase() + (data?.data?.gender).substr(1).toLowerCase() : '-'}
                         </p>

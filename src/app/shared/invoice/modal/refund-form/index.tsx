@@ -15,8 +15,10 @@ import toast from 'react-hot-toast';
 
 export default function RefundForm({
   data,
+  refetch: refetchDataInvoice
 }: {
   data: IGetInvoiceListResponse['data'][number];
+  refetch?: () => void
 }) {
   const { closeModal } = useModal();
 
@@ -33,6 +35,7 @@ export default function RefundForm({
         refetch();
         toast.success('Refund updated successfully');
         closeModal();
+        refetchDataInvoice?.()
       },
       onError: (error) => {
         toast.error('Failed to update note: ' + error.message);

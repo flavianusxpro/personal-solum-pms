@@ -124,7 +124,7 @@ export const getColumns = ({
             name={`${row.first_name} ${row.middle_name ? row.middle_name : ''} ${row.last_name}`}
             // number={row.mobile_number}
             // description={row.email?.toLowerCase()}
-            className='cursor-pointer'
+            className='cursor-pointer capitalize'
             otherIcon={
               [
                 () => {
