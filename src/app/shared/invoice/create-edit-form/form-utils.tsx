@@ -73,6 +73,33 @@ export const statusOptions = [
   },
 ];
 
+export const paymentStatus = [
+  {
+    value: 1,
+    label: 'Draft',
+  },
+  {
+    value: 2,
+    label: 'Paid',
+  },
+  {
+    value: 3,
+    label: 'Cancelled',
+  },
+  {
+    value: 4,
+    label: 'Void',
+  },
+  {
+    value: 5,
+    label: 'Refund',
+  },
+  {
+    value: 6,
+    label: 'Unpaid',
+  },
+]
+
 export function renderOptionDisplayValue(value: number) {
   switch (value) {
     case 4:

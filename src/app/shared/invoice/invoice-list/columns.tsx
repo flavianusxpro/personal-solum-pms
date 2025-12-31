@@ -56,45 +56,52 @@ export function getInvoicePaymentStatusBadge(status: number) {
     case 1:
       return (
         <div className="flex items-center">
-          <Badge color="secondary" renderAsDot />
-          <Text className="ms-2 font-medium text-orange-dark">Draft</Text>
+          <Badge className='bg-[#484848]' renderAsDot />
+          <Text className="ms-2 font-medium text-[#484848]">Draft</Text>
         </div>
       );
     case 2:
       return (
         <div className="flex items-center">
-          <Badge color="info" renderAsDot />
-          <Text className="text-gray-dark ms-2 font-medium">
-            Unpaid
-          </Text>
+          <Badge className='bg-[#11833C]' renderAsDot />
+          <Text className="ms-2 font-medium text-[#11833C]">Paid</Text>
         </div>
       );
     case 3:
       return (
         <div className="flex items-center">
-          <Badge color="success" renderAsDot />
-          <Text className="ms-2 font-medium text-green-dark">Paid</Text>
+          <Badge className='bg-[#E90000]' renderAsDot />
+          <Text className="ms-2 font-medium text-[#E90000]">Cancelled</Text>
         </div>
       );
     case 4:
       return (
         <div className="flex items-center">
-          <Badge color="warning" renderAsDot />
-          <Text className="text-gray-dark ms-2 font-medium">Void</Text>
+          <Badge className='bg-[#F4A523]' renderAsDot />
+          <Text className="text-[#F4A523] ms-2 font-medium">Void</Text>
         </div>
       );
     case 5:
       return (
         <div className="flex items-center">
-          <Badge color="secondary" renderAsDot />
-          <Text className="text-gray-dark ms-2 font-medium">Refund</Text>
+          <Badge className='bg-[#AB570A]' renderAsDot />
+          <Text className="text-[#AB570A] ms-2 font-medium">Refund</Text>
+        </div>
+      );
+    case 6:
+      return (
+        <div className="flex items-center">
+          <Badge className='bg-[#1E88E5]' renderAsDot />
+          <Text className="text-[#1E88E5] ms-2 font-medium">
+            Unpaid
+          </Text>
         </div>
       );
     default:
       return (
         <div className="flex items-center">
-          <Badge renderAsDot className="bg-gray-400" />
-          <Text className="ms-2 font-medium text-gray-600">{status}</Text>
+          <Badge renderAsDot className="bg-gray-600" />
+          <Text className="ms-2 font-medium text-gray-600">Not Paid</Text>
         </div>
       );
   }
@@ -164,6 +171,7 @@ export const getColumns = ({
       title: <HeaderCell title="ID" />,
       dataIndex: 'id',
       key: 'id',
+      width: 30,
       render: (id: string) => <p className="w-max">INV-{id}</p>,
     },
     {
@@ -185,6 +193,7 @@ export const getColumns = ({
         >
           <AvatarCardNew
             src={row?.patient?.photo || ''}
+            className='capitalize'
             name={`${row?.patient?.first_name} ${row?.patient?.middle_name ? row?.patient?.middle_name : ''} ${row?.patient?.last_name}`}
             otherIcon={
               [
@@ -490,10 +499,11 @@ function StatusSelectUpdate({
   const { openModal, closeModal } = useModal();
   const aptStatusOptions = [
     { label: 'Draft', value: 1 },
-    { label: 'Unpaid', value: 2 },
-    { label: 'Paid', value: 3 },
+    { label: 'Paid', value: 2 },
+    { label: 'Cancelled', value: 3 },
     { label: 'Void', value: 4 },
     { label: 'Refund', value: 5 },
+    { label: 'Unpaid', value: 6 },
   ];
   const selectItemValue = aptStatusOptions.find(
     (option) => option.value === selectItem
@@ -501,7 +511,7 @@ function StatusSelectUpdate({
   const [value, setValue] = useState(selectItemValue);
   const { mutate, isPending } = useUpdatePaymentStatusInvoice();
 
-   useEffect(() => {
+  useEffect(() => {
     setValue(selectItemValue);
   }, [selectItemValue]);
 

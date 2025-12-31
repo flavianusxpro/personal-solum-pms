@@ -416,7 +416,6 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                       <Input
                         placeholder="First Name"
                         {...register('first_name_emergency_contact')}
-                        error={errors.first_name_emergency_contact?.message}
                         className="flex-grow"
                         disabled={isView}
                       />
@@ -426,7 +425,6 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                       <Input
                         placeholder="Last Name"
                         {...register('last_name_emergency_contact')}
-                        error={errors.last_name_emergency_contact?.message}
                         className="flex-grow"
                         disabled={isView}
                       />
@@ -437,7 +435,6 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                         placeholder="Mobile Number"
                         {...register('mobile_number_emergency_contact')}
                         type="number"
-                        error={errors.mobile_number_emergency_contact?.message}
                         className="flex-grow"
                         disabled={isView}
                       />
@@ -468,7 +465,6 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                               }
                               options={relationshipOption}
                               placeholder="Relationship"
-                              error={errors.relationship_emergency_contact?.message}
                               className="flex-grow"
                               disabled={isView}
                             />
@@ -476,7 +472,6 @@ export default function PatientDetails({ isView }: { isView?: boolean }) {
                               <Input
                                 placeholder="Specify Relationship"
                                 {...register('relationship_emergency_contact')}
-                                error={errors.relationship_emergency_contact?.message}
                                 disabled={isView}
                                 className="w-full"
                               />

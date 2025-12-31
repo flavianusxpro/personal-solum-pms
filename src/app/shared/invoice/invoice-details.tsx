@@ -39,38 +39,44 @@ export default function InvoiceDetails({ id }: { id: string }) {
     switch (status) {
       case 1:
         return (
-          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-orange-dark">
+          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-[#484848]">
             <Text className="text-white font-normal text-sm">Draft</Text>
           </span>
         );
       case 2:
         return (
-          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-gray-dark">
-            <Text className="text-white font-normal text-sm">Awaiting Payment</Text>
+          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-[#11833C]">
+            <Text className="text-white font-normal text-sm">Paid</Text>
           </span>
         );
       case 3:
         return (
-          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-green-dark">
-            <Text className="text-white font-normal text-sm">Paid</Text>
+          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-[#E90000]">
+            <Text className="text-white font-normal text-sm">Cancelled</Text>
           </span>
         );
       case 4:
         return (
-          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-[#999999]">
-            <Text className="text-white font-normal text-sm">Unpaid</Text>
+          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-[#F4A523]">
+            <Text className="text-white font-normal text-sm">Void</Text>
           </span>
         );
       case 5:
         return (
-          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-slate-500">
+          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-[#AB570A]">
             <Text className="text-white font-normal text-sm">Refund</Text>
+          </span>
+        );
+      case 6:
+        return (
+          <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-[#1E88E5]">
+            <Text className="text-white font-normal text-sm">Unpaid</Text>
           </span>
         );
       default:
         return (
           <span className="flex text-center ml-2 px-2 py-1 rounded-[4px] items-center bg-gray-600">
-            <Text className="text-white font-normal text-sm">{status}</Text>
+            <Text className="text-white font-normal text-sm">Not Paid</Text>
           </span>
         );
     }
@@ -211,10 +217,10 @@ export default function InvoiceDetails({ id }: { id: string }) {
 
             <div className='flex flex-col'>
               <p className='text-sm font-semibold font-inter'>
-                Invoice ID : <span className='text-base ml-2'>INV-{dataInvoice?.id ?? '-'}</span>
+                Invoice ID : <span className='text-sm font-normal font-inter ml-2 text-[#484848]'>INV-{dataInvoice?.id ?? '-'}</span>
               </p>
               <p className='text-sm font-semibold font-inter'>
-                Date : <span className='text-base ml-2'>{dataInvoice?.date ? dayjs(dataInvoice?.date).utc().format('DD MMM YYYY') : '-'}</span>
+                Date : <span className='text-sm font-normal font-inter ml-2 text-[#484848]'>{dataInvoice?.date ? dayjs(dataInvoice?.date).utc().format('DD MMM YYYY') : '-'}</span>
               </p>
               <p className='text-sm font-semibold font-inter flex items-center'>
                 Status : {getInvoiceStatusBadge(dataInvoice?.status ?? 0) ?? '-'}
@@ -229,7 +235,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
 
             <div className='flex flex-col'>
               <p className='text-sm font-semibold font-inter flex items-center'>
-                Payment ID : <span className="text-base ml-2">
+                Payment ID : <span className="text-sm font-normal font-inter ml-2 text-[#484848]">
                   {paymentIdValue ? (
                     <>
                       {isLongPaymentId ? (
@@ -254,7 +260,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
                 )}
               </p>
               <p className='text-sm font-semibold font-inter flex items-center'>
-                Refund ID :  <span className="text-base ml-2">
+                Refund ID :  <span className="text-sm font-normal font-inter ml-2 text-[#484848]">
                   {refundId ? (
                     <>
                       {isLongRefundId ? (
@@ -279,7 +285,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
                 )}
               </p>
               <p className='text-sm font-semibold font-inter flex items-center'>
-                Payment Method : <span className='text-base ml-2'>{dataInvoice?.payment?.type ?? '-'}</span>
+                Payment Method : <span className='text-sm font-normal font-inter ml-2 text-[#484848]'>{dataInvoice?.payment?.type ?? '-'}</span>
               </p>
             </div>
           </div>
@@ -296,16 +302,16 @@ export default function InvoiceDetails({ id }: { id: string }) {
 
             <div className='flex flex-col'>
               <p className='text-sm font-semibold font-inter'>
-                Name : <span className='text-base ml-2'>{dataInvoice?.patient?.first_name ?? '-'} {dataInvoice?.patient?.middle_name} {dataInvoice?.patient?.last_name}</span>
+                Name : <span className='text-sm font-normal font-inter ml-2 text-[#484848]'>{dataInvoice?.patient?.first_name ?? '-'} {dataInvoice?.patient?.middle_name} {dataInvoice?.patient?.last_name}</span>
               </p>
               <p className='text-sm font-semibold font-inter'>
-                Email : <span className='text-base ml-2'>{dataInvoice?.patient?.email ?? '-'}</span>
+                Email : <span className='text-sm font-normal font-inter ml-2 text-[#484848]'>{dataInvoice?.patient?.email ?? '-'}</span>
               </p>
               <p className='text-sm font-semibold font-inter flex items-center'>
-                Mobile Number : <span className='text-base ml-2'>{dataInvoice?.patient?.mobile_number ?? '-'}</span>
+                Mobile Number : <span className='text-sm font-normal font-inter ml-2 text-[#484848]'>{dataInvoice?.patient?.mobile_number ?? '-'}</span>
               </p>
               {/* <p className='text-sm font-semibold font-inter flex items-center'>
-                Address : <span className='text-base ml-2'>{dataInvoice?.patient?.address_line_1}{dataInvoice?.patient?.address_line_2 ? `, ${dataInvoice?.patient?.address_line_2}` : ''}</span>
+                Address : <span className='text-sm font-normal font-inter ml-2 text-[#484848]'>{dataInvoice?.patient?.address_line_1}{dataInvoice?.patient?.address_line_2 ? `, ${dataInvoice?.patient?.address_line_2}` : ''}</span>
               </p> */}
             </div>
           </div>
@@ -317,10 +323,10 @@ export default function InvoiceDetails({ id }: { id: string }) {
 
             <div className='flex flex-col'>
               <p className='text-sm font-semibold font-inter'>
-                Date : <span className='text-base ml-2'>{dataInvoice?.appointment?.date ? dayjs(dataInvoice?.date).utc().format('DD MMM YYYY') : '-'}</span>
+                Date : <span className='text-sm font-normal font-inter ml-2 text-[#484848]'>{dataInvoice?.appointment?.date ? dayjs(dataInvoice?.date).utc().format('DD MMM YYYY') : '-'}</span>
               </p>
               <p className='text-sm font-semibold font-inter'>
-                Type : <span className='text-base ml-2'>{dataInvoice?.appointment?.type ?? '-'}</span>
+                Type : <span className='text-sm font-normal font-inter ml-2 text-[#484848]'>{dataInvoice?.appointment?.type ?? '-'}</span>
               </p>
               <p className='text-sm font-semibold font-inter flex items-center'>
                 Status : <span className='ml-2'>{getAptStatusBadge(dataInvoice?.status ?? 0) ?? '-'}</span>

@@ -155,7 +155,7 @@ export function SidebarMenu() {
             {item?.dropdownItems ? (
               <>
                 <Collapse
-                  defaultOpen={isDropdownOpen}
+                  defaultOpen={true}
                   header={({ open, toggle }) => (
                     <div
                       onClick={toggle}

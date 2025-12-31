@@ -8,7 +8,7 @@ import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
 import useSelectDateTime from './useSelectDateTime';
 import { Value } from 'react-calendar/dist/cjs/shared/types';
 import cn from '@/core/utils/class-names';
-
+import DoctorTime from './DoctorTime';
 interface PropTypes {
     data: any;
     formData: any;
@@ -18,7 +18,9 @@ interface PropTypes {
 }
 
 const SelectDateTime = (props: PropTypes) => {
-    const [seeAll, setSeeAll] = useState(false)
+    // Change from single boolean to Set of doctor IDs
+    const [expandedDoctors, setExpandedDoctors] = useState<Set<number>>(new Set())
+
     const {
         data,
         formData,
@@ -29,7 +31,7 @@ const SelectDateTime = (props: PropTypes) => {
 
     const {
         dataDoctors,
-        dataAvailability
+        isLoadingDataDoctor
     } = useSelectDateTime({ data, formData })
 
     const handleSelectDate = (value: Value) => {
@@ -40,6 +42,19 @@ const SelectDateTime = (props: PropTypes) => {
         onChange('appointment_date', formattedDate);
     };
 
+    // Toggle function for individual doctor
+    const toggleDoctor = (doctorId: number) => {
+        setExpandedDoctors(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(doctorId)) {
+                newSet.delete(doctorId);
+            } else {
+                newSet.add(doctorId);
+            }
+            return newSet;
+        });
+    };
+
     // Patient Time:
     const patientTimezone = data?.patient?.timezone;
     const patientCreatedAt = data?.patient?.created_at;
@@ -47,10 +62,6 @@ const SelectDateTime = (props: PropTypes) => {
         patientCreatedAt && patientTimezone
             ? dayjs.utc(patientCreatedAt).tz(patientTimezone).format('hh:mm A')
             : '-';
-    const patientGmt =
-        patientCreatedAt && patientTimezone
-            ? `GMT${dayjs.tz(patientCreatedAt, patientTimezone).format('Z')}`
-            : '';
 
     // Doctor Time:
     const doctorTimezone = data?.doctor?.timezone;
@@ -59,10 +70,6 @@ const SelectDateTime = (props: PropTypes) => {
         doctorCreatedAt && doctorTimezone
             ? dayjs.utc(doctorCreatedAt).tz(doctorTimezone).format('hh:mm A')
             : '-';
-    const doctorGmt =
-        doctorCreatedAt && doctorTimezone
-            ? `GMT${dayjs.tz(doctorCreatedAt, doctorTimezone).format('Z')}`
-            : '';
 
     const timeDifferenceText = (() => {
         if (!patientTimezone || !doctorTimezone) return '-';
@@ -86,22 +93,10 @@ const SelectDateTime = (props: PropTypes) => {
         return disabledDates;
     }, [dataCalendarSchedule]);
 
-    const timeList = useMemo(() => {
-        if (!dataAvailability?.data) return [];
-        return dataAvailability.data.reduce((acc, item) => {
-            if (item.available) {
-                const timeObj = dayjs.utc(item.time, 'YYYY-MM-DD HH:mm', true);
-                acc.push({
-                    display: timeObj.format('hh:mm A'), // Format untuk ditampilkan di UI
-                    storage: timeObj.format('HH:mm'),   // Format untuk disimpan di state
-                });
-            }
-            return acc;
-        }, [] as { display: string; storage: string }[]);
-    }, [dataAvailability?.data]);
+    
 
     return (
-        <div className='flex flex-col gap-8'>
+        <div className='flex flex-col gap-8 h-[calc(65vh-200px)]'>
             <h1 className='font-medium text-base font-lexend text-center'>
                 Select Appointment Date
             </h1>
@@ -117,7 +112,6 @@ const SelectDateTime = (props: PropTypes) => {
                                 Patient Time {''}
                                 <span className="font-semibold">
                                     {patientTime}
-                                    {/* ({patientGmt}) */}
                                 </span>
                             </h1>
                             <p className='text-[#3872F9] text-sm font-normal'>
@@ -133,7 +127,6 @@ const SelectDateTime = (props: PropTypes) => {
                             <h1 className='text-[#3872F9] font-normal text-sm '>
                                 Doctor Time <span className='font-semibold'>
                                     {doctorTime}
-                                    {/* ({doctorGmt}) */}
                                 </span>
                             </h1>
                             <p className='text-[#3872F9] text-sm font-normal'>
@@ -175,83 +168,90 @@ const SelectDateTime = (props: PropTypes) => {
                         className="!border-none !bg-none"
                     />
                 </div>
-                <div className='flex-1 flex flex-col gap-6'>
-                    {dataDoctors?.map((doctor: any, idx: number) => {
-                        if (!doctor.id) return null;
-                        return (
-                            <div key={idx} className='flex flex-col gap-2'>
-                                <div className='flex justify-between items-center'>
-                                    <div className='flex items-center gap-4'>
-                                        <Avatar
-                                            src={doctor?.url_photo}
-                                            name={`${doctor?.first_name} ${doctor?.last_name}`}
-                                            className='text-lg text-white font-semibold'
-                                        />
+                <div className='flex-1 overflow-y-auto flex flex-col gap-6'>
+                    {isLoadingDataDoctor ?
+                        (
+                            <>
+                                {[1, 2, 3].map((item) => (
+                                    <div key={item} className='flex flex-col gap-2 animate-pulse'>
+                                        <div className='flex justify-between items-center'>
+                                            <div className='flex items-center gap-4'>
+                                                <div className='w-12 h-12 bg-gray-300 rounded-full' />
+                                                <div className='h-5 bg-gray-300 rounded w-40' />
+                                            </div>
+                                            <div className='h-8 bg-gray-300 rounded w-32' />
+                                        </div>
 
-                                        <h1 className='font-semibold text-base font-lexend'>
-                                            Dr. {doctor?.first_name} {doctor?.last_name}
-                                        </h1>
-                                    </div>
-
-                                    <div className='cursor-pointer'
-                                        onClick={() => setSeeAll(!seeAll)}
-                                    >
-                                        <span className='flex items-center gap-2'>
-                                            {seeAll ? (
-                                                <>
-                                                    <Text>Hide Appointment</Text>{' '}
-                                                    <BiChevronUp size={30} />
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Text>See All Appointment</Text>
-                                                    <BiChevronDown size={30} />
-                                                </>
-                                            )}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                {timeList.length > 0 ? (
-                                    <div className='relative'>
-                                        <div
-                                            className='grid grid-cols-5 gap-2 transition-all delay-200 duration-1000 ease-in-out'
-                                        >
-                                            {timeList.map((time, index) => (
-                                                <button
-                                                    key={index}
-                                                    type='button'
-                                                    className={cn(
-                                                        'rounded-md px-3 py-2 text-sm transition-colors',
-                                                        formData.doctorTime === time.storage && formData.doctorId === doctor.id
-                                                            ? 'bg-green-600 text-white'
-                                                            : 'bg-green-200/50 hover:bg-green-300'
-                                                    )}
-                                                    onClick={() => {
-                                                        onChange('doctorTime', time.storage);
-                                                        onChange('doctorId', doctor.id as number);
-                                                        onChange('fee', doctor.cost.amount);
-                                                    }}
-                                                >
-                                                    {time.display}
-                                                </button>
+                                        <div className='grid grid-cols-5 gap-2'>
+                                            {[1, 2, 3, 4, 5].map((slot) => (
+                                                <div
+                                                    key={slot}
+                                                    className='h-10 bg-gray-200 rounded-md'
+                                                />
                                             ))}
                                         </div>
                                     </div>
-                                ) : (
-                                    <div className='bg-gray-50 p-4'>
-                                        <span className="rounded-md px-2 py-1 text-green-700">
-                                            Next available:{' '}
-                                            <span className="text-black">Please contact centre</span>
-                                        </span>
+                                ))}
+                            </>
+                        ) : dataDoctors && dataDoctors?.length > 0 ? (
+                            dataDoctors?.map((doctor: any, idx: number) => {
+                                if (!doctor.id) return null;
+
+                                const isExpanded = expandedDoctors.has(doctor.id);
+                                return (
+                                    <div key={idx} className='flex flex-col gap-2'>
+                                        <div className='flex justify-between items-center'>
+                                            <div className='flex items-center gap-4'>
+                                                <Avatar
+                                                    src={doctor?.url_photo}
+                                                    name={`${doctor?.first_name} ${doctor?.last_name}`}
+                                                    className='text-lg text-white font-semibold'
+                                                />
+
+                                                <h1 className='font-semibold text-base font-lexend'>
+                                                    Dr. {doctor?.first_name} {doctor?.last_name}
+                                                </h1>
+                                            </div>
+
+                                            <div
+                                                className='cursor-pointer'
+                                                onClick={() => toggleDoctor(doctor.id)}
+                                            >
+                                                <span className='flex items-center gap-2'>
+                                                    {isExpanded ? (
+                                                        <>
+                                                            <Text>Hide Appointment</Text>{' '}
+                                                            <BiChevronUp size={30} />
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Text>See All Appointment</Text>
+                                                            <BiChevronDown size={30} />
+                                                        </>
+                                                    )}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <DoctorTime
+                                            key={idx}
+                                            data={data}
+                                            formData={formData}
+                                            doctor={doctor}
+                                            onChange={onChange}
+                                            isExpanded={isExpanded}
+                                        />
                                     </div>
-                                )}
+                                )
+                            })
+                        ) : (
+                            <div className='flex items-center justify-center h-40'>
+                                <Text className='text-gray-500'>No doctors available</Text>
                             </div>
-                        )
-                    })}
+                        )}
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }
 
