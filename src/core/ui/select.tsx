@@ -10,12 +10,14 @@ const Select = dynamic(() => import('rizzui').then((mod) => mod.Select), {
 
 interface CSelectProps extends SelectProps<SelectOption> {
   isLoading?: boolean;
+  displayClassName?: string | any
 }
 
 const CSelect: ComponentType<CSelectProps> = ({
   options,
   dropdownClassName = 'h-auto',
   isLoading = false,
+  displayClassName,
   ...field
 }) => {
   return (
@@ -27,7 +29,7 @@ const CSelect: ComponentType<CSelectProps> = ({
           return <SelectLoader />;
         }
         return (
-          <div className="flex items-center gap-2">
+          <div className={`flex items-center gap-2 ${displayClassName}`}>
             <Text>{selectedOption?.label}</Text>
           </div>
         );

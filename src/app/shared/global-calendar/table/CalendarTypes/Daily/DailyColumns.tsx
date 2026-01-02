@@ -3,45 +3,53 @@
 import { HeaderCell } from '@/app/shared/ui/table';
 import cn from '@/core/utils/class-names';
 import { Badge, Flex, Text } from 'rizzui';
-import dayjs from 'dayjs';
-import { useColorPresetName } from '@/layouts/settings/use-theme-color';
 import { useDrag, useDrop } from 'react-dnd';
 
 import toast from 'react-hot-toast';
 import { useUpdateAppointment } from '@/hooks/useAppointment';
 import CSelect from '@/core/ui/select';
 import { getPaymentStatusBadge } from '../../../modal/ModalAppointmentDetail';
-import { getAptStatusBadge } from '@/app/shared/appointment/appointment-list/list/columns';
 import ShowConfirm from '@/app/shared/appointment/modal/confirm-modal';
 import AppointmentDetailsCalendar from '../../AppointmentDetailsCalendar';
+import BooingAppointmentCalendar from './BookingAppointmentCalendar';
 
-const calendarToolbarClassName =
-  '[&_.rbc-toolbar_.rbc-toolbar-label]:whitespace-nowrap [&_.rbc-toolbar_.rbc-toolbar-label]:my-2 [&_.rbc-toolbar]:flex [&_.rbc-toolbar]:flex-col [&_.rbc-toolbar]:items-center @[56rem]:[&_.rbc-toolbar]:flex-row [&_.rbc-btn-group_button:hover]:bg-gray-300 [&_.rbc-btn-group_button]:duration-200 [&_.rbc-btn-group_button.rbc-active:hover]:bg-gray-600 dark:[&_.rbc-btn-group_button.rbc-active:hover]:bg-gray-300 [&_.rbc-btn-group_button.rbc-active:hover]:text-gray-50 dark:[&_.rbc-btn-group_button.rbc-active:hover]:text-gray-900 [@media(max-width:375px)]:[&_.rbc-btn-group:last-child_button]:!px-2.5 [&_.rbc-toolbar_>_*:last-child_>_button:focus]:!bg-primary [&_.rbc-toolbar_>_*:last-child_>_button:focus]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button:focus]:!text-gray-900 [&_.rbc-toolbar_>_*:last-child_>_button:hover]:!text-gray-900 dark:[&_.rbc-toolbar_>_*:last-child_>_button:hover]:!bg-gray-300 [&_.rbc-toolbar_>_*:last-child_>_button:hover]:!bg-gray-300 [&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!bg-primary-dark [&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-900';
-
-const rtcEventClassName =
-  '[&_.rbc-event]:!text-gray-0 dark:[&_.rbc-event]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:hover]:!text-gray-0 dark:[&_.rbc-toolbar_>_*:last-child_>_button.rbc-active:focus]:!text-gray-0';
-
-type Columns = {
+interface Columns {
   data: any[];
   openModal: (props: any) => void;
   handleDrop?: any;
   closeModal?: (props: any) => void;
+  selectedDate?: string;
+  clinicId?: number;
+  refetch: () => void
 };
 
-type Row = {
+interface Row {
   time: string;
-  [key: string]: string;
-  type: string;
-};
+  type?: string;
+  _nearestDoctor?: string;
+  _scheduleStart?: string;
+  _scheduleEnd?: string;
+  _doctorId?: number;
+  _doctorFirstName?: string;
+  _doctorLastName?: string;
+  [key: string]: any;
+}
 
-export const getColumns = ({ data, openModal, handleDrop, closeModal }: Columns) => {
+export const getColumns = ({
+  data,
+  openModal,
+  handleDrop,
+  closeModal,
+  selectedDate,
+  clinicId,
+  refetch
+}: Columns) => {
   const nearestDoctorName = data[0]?._nearestDoctor || '';
-  
+
   const doctorNames = Object.keys(data[0]).filter(
-    (key) => key !== 'time' && key !== 'type' && key !== '_nearestDoctor' && 
-            key !== '_scheduleStart' && key !== '_scheduleEnd'
+    (key) => !key.startsWith('_') && key !== 'time' && key !== 'type'
   );
-  
+
   const baseColumn = {
     title: <HeaderCell title="Time" className="justify-center" />,
     dataIndex: 'time',
@@ -54,36 +62,69 @@ export const getColumns = ({ data, openModal, handleDrop, closeModal }: Columns)
 
   const doctorColumns = doctorNames.map((name) => {
     const isNearestDoctor = name === nearestDoctorName;
-    
+
     return {
       title: (
-        <HeaderCell 
+        <HeaderCell
           title={`Dr. ${name}`}
         />
       ),
       dataIndex: name,
       key: name,
       onCell: (row: Row) => {
-        // Only apply background if it's the nearest doctor AND within schedule time
-        if (isNearestDoctor && row._scheduleStart && row._scheduleEnd) {
-          // Get current row time in 24h format
+        const isWithinSchedule = isNearestDoctor &&
+          row._scheduleStart &&
+          row._scheduleEnd;
+
+        if (isWithinSchedule) {
           const currentTime = row.time;
           const timeMatch = currentTime.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
-          
+
           if (timeMatch) {
             let hour = parseInt(timeMatch[1]);
             const minute = timeMatch[2];
             const period = timeMatch[3].toUpperCase();
-            
+
             if (period === 'PM' && hour !== 12) hour += 12;
             if (period === 'AM' && hour === 12) hour = 0;
-            
+
             const currentTime24 = `${hour.toString().padStart(2, '0')}:${minute}`;
-            
-            // Check if current time is within schedule range
-            if (currentTime24 >= row._scheduleStart && currentTime24 <= row._scheduleEnd) {
+
+            const isInRange = currentTime24 >= (row._scheduleStart ?? '') &&
+              currentTime24 <= (row._scheduleEnd ?? '');
+
+            if (isInRange) {
               return {
-                style: { backgroundColor: '#EBF1FE' }
+                style: {
+                  backgroundColor: '#EBF1FE',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.2s'
+                },
+                onClick: () => {
+                  if (row._doctorFirstName && row._doctorLastName && row._doctorId) {
+                    const appointmentData = {
+                      clinicId: clinicId,
+                      date: selectedDate, 
+                      time: row.time,
+                      doctor: {
+                        id: row._doctorId,
+                        first_name: row._doctorFirstName,
+                        last_name: row._doctorLastName,
+                      }
+                    };
+
+                    openModal({
+                      view: <BooingAppointmentCalendar data={appointmentData} refetch={refetch} />,
+                      customSize: '1100px',
+                    });
+                  }
+                },
+                onMouseEnter: (e: React.MouseEvent<HTMLElement>) => {
+                  e.currentTarget.style.backgroundColor = '#D6E4FD';
+                },
+                onMouseLeave: (e: React.MouseEvent<HTMLElement>) => {
+                  e.currentTarget.style.backgroundColor = '#EBF1FE';
+                }
               };
             }
           }
@@ -100,7 +141,7 @@ export const getColumns = ({ data, openModal, handleDrop, closeModal }: Columns)
 
 function getRowAppointment(
   value: any,
-  type: string,
+  type: string | undefined,
   openModal: any,
   row?: any,
   doctor?: string,
@@ -258,6 +299,68 @@ export function AppointmentCell({
       handleSubmitStatus(value);
     }
   };
+  const getAptStatusBadge = (status: number | string) => {
+    switch (status) {
+      case 7:
+        return (
+          <Flex gap="1" align="center">
+            <Badge color="warning" renderAsDot />
+            <p className="font-medium text-sm text-green-dark">No Show</p>
+          </Flex>
+        );
+      case 6:
+        return (
+          <Flex gap="1" align="center">
+            <Badge color="info" renderAsDot />
+            <p className="font-medium text-sm text-green-500">On Going</p>
+          </Flex>
+        );
+      case 5:
+        return (
+          <Flex gap="1" align="center">
+            <Badge color="danger" renderAsDot />
+            <p className="font-medium text-sm text-red">Cancelled</p>
+          </Flex>
+        );
+      case 4:
+        return (
+          <Flex gap="1" align="center">
+            <Badge color="success" renderAsDot />
+            <p className="font-medium text-sm text-green-dark">Completed</p>
+          </Flex>
+        );
+      case 3:
+        return (
+          <Flex gap="1" align="center">
+            <Badge color="info" renderAsDot />
+            <p className="font-medium text-sm text-blue-500">Checked In</p>
+          </Flex>
+        );
+      case 2:
+        return (
+          <Flex gap="1" align="center">
+            <Badge color="warning" renderAsDot />
+            <p className="font-medium text-sm text-yellow-600">Scheduled</p>
+          </Flex>
+        );
+      case 1:
+        return (
+          <Flex gap="1" align="center">
+            <Badge color="info" renderAsDot />
+            <p className="font-medium text-sm text-red-dark">Draft</p>
+          </Flex>
+        );
+      default:
+        return (
+          <div className="flex items-center">
+            <Badge renderAsDot className="bg-gray-600" />
+            <p className="font-medium text-sm text-blue-600">
+              N/A
+            </p>
+          </div>
+        );
+    }
+  }
 
   return (
     <div
@@ -267,8 +370,7 @@ export function AppointmentCell({
       }}
       onClick={handleOpenModal}
       className={cn(
-        // 'relative px-3 py-1.5 cursor-pointer w-full h-10 transition-opacity flex items-center flex-wrap gap-3',
-        'relative px-2 cursor-pointer w-full h-7 transition-opacity flex items-center gap-2 leading-none',
+        'relative px-2 py-6 cursor-pointer w-full h-7 transition-opacity flex items-center gap-2 leading-none',
         bgColor,
         isDragging && 'opacity-50',
         value.type === 'Initial Consult' && 'bg-[#3291B6]',
@@ -287,15 +389,16 @@ export function AppointmentCell({
 
         <div className="h-4 w-px bg-gray-300" />
 
-        <div onClick={(e) => e.stopPropagation()}>
+        <div onClick={(e) => e.stopPropagation()} className="h-[33px]">
           <CSelect
-            className="min-w-[140px] bg-white rounded-lg"
+            className="min-w-[140px] bg-white rounded-lg h-[33px]"
             dropdownClassName="h-auto"
             placeholder="Select Status"
+            size='sm'
             options={aptStatusOptions}
-            size="sm"
             onChange={handleChange}
             value={value?.status}
+            displayClassName='text-sm'
             displayValue={(option: { value: number }) =>
               getAptStatusBadge(option.value)
             }
@@ -304,7 +407,7 @@ export function AppointmentCell({
 
         <div className="h-4 w-px bg-gray-300" />
 
-        <div className='bg-white py-[6px] px-4 rounded-lg'>
+        <div className='bg-white h-[33px] items-center px-4 flex justify-center rounded-lg'>
           {getPaymentStatusBadge(value?.payment?.status ?? 0)}
         </div>
 
@@ -347,7 +450,7 @@ export function DropCell({ row, doctor, onDrop }: any) {
         dropRef(instance);
       }}
       className={cn(
-        'h-7 w-full', 
+        'h-7 w-full',
         isOver ? 'bg-blue-100' : 'bg-transparent'
       )}
     />

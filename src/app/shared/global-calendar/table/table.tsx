@@ -27,13 +27,13 @@ import MounthlyCalendar from './CalendarTypes/Mounthly/MounthlyCalendar';
 import { IoNotificationsOutline } from 'react-icons/io5';
 import CalendarHeader from './CalendarHeaders';
 import DailyCalendar from './CalendarTypes/Daily/DailyCalendar';
-import ModalNextAvailability from './ModalNextAvailability';
+// import ModalNextAvailability from './ModalNextAvailability';
 
-export default function GlobalCalendarTable({}: {}) {
+export default function GlobalCalendarTable({ }: {}) {
   const { openModal, closeModal } = useModal();
   const [pageSize] = useState(100);
   const [viewType, setViewType] = useState<'daily' | 'weekly' | 'monthly'>(
-    'monthly'
+    'weekly'
   );
   const [selectedDate, setSelectedDate] = useState(
     viewType === 'monthly'
@@ -45,7 +45,6 @@ export default function GlobalCalendarTable({}: {}) {
   const { data: dataProfile } = useProfile(true);
   const { mutate: mutateRescheduleByDate, isPending: isPendingReschedule } =
     usePostRescheduleAppointmentByDate();
-
   const {
     data,
     isLoading: isLoadingGetAppointments,
@@ -71,20 +70,18 @@ export default function GlobalCalendarTable({}: {}) {
     q:
       selectedDoctor.length > 0 && !selectedDoctor.includes('0')
         ? JSON.stringify({
-            doctor_ids: selectedDoctor.map((id) => Number(id)),
-          })
+          doctor_ids: selectedDoctor.map((id) => Number(id)),
+        })
         : undefined,
-  });
+  },
+    selectedDoctor.length > 0 && !!dataProfile?.clinics[0]?.id
+  );
 
   const { data: doctorDatas } = useGetAllDoctors({
     page: 1,
     perPage: 1000,
     clinicId: dataProfile?.clinics[0]?.id,
   });
-
-  useEffect(() => {
-    setSelectedDoctor([]);
-  }, [viewType]);
 
   const optionDoctors = React.useMemo(() => {
     if (!doctorDatas?.data) return [];
@@ -134,7 +131,7 @@ export default function GlobalCalendarTable({}: {}) {
             onError: (error: any) => {
               toast.error(
                 error?.response?.data?.message ||
-                  'Error rescheduling appointment'
+                'Error rescheduling appointment'
               );
               console.error('Error rescheduling appointment:', error);
               closeModal();
@@ -183,7 +180,7 @@ export default function GlobalCalendarTable({}: {}) {
             onError: (error: any) => {
               toast.error(
                 error?.response?.data?.message ||
-                  'Error rescheduling appointment'
+                'Error rescheduling appointment'
               );
               console.error('Error rescheduling appointment:', error);
               closeModal();
@@ -349,6 +346,12 @@ export default function GlobalCalendarTable({}: {}) {
     return startDate.format('dddd, D MMMM YYYY [at] hh:mm A');
   }, [data?.nearest_doctor_schedule?.start_date]);
 
+  useEffect(() => {
+    if (viewType !== 'daily' && selectedDoctor.length > 1) {
+      setSelectedDoctor([selectedDoctor[0]]);
+    }
+  }, [viewType, selectedDoctor.length]);
+
   return (
     <div className="flex h-screen flex-col">
       {isScheduleAvailable && data?.nearest_doctor_schedule && (
@@ -405,7 +408,6 @@ export default function GlobalCalendarTable({}: {}) {
         optionDoctors={optionDoctors}
       />
       <div className="flex-1 min-h-0 overflow-hidden">
-        {' '}
         {viewType == 'daily' ? (
           <DailyCalendar
             isLoadingGetAppointments={isLoadingGetAppointments}
@@ -414,6 +416,7 @@ export default function GlobalCalendarTable({}: {}) {
             selectedDate={selectedDate}
             viewType={viewType}
             rescheduleModal={rescheduleModal}
+            refetch={refetch}
           />
         ) : viewType === 'weekly' ? (
           <WeeklyTable
@@ -424,6 +427,7 @@ export default function GlobalCalendarTable({}: {}) {
             weekDates={getWeekDates(selectedDate)}
             events={events}
             selectedDoctor={selectedDoctor}
+            refetch={refetch}
           />
         ) : (
           <MounthlyCalendar
@@ -434,6 +438,7 @@ export default function GlobalCalendarTable({}: {}) {
             handleNavigate={handleNavigate}
             setViewType={setViewType}
             rescheduleModal={rescheduleModal}
+            selectedDoctor={selectedDoctor}
           />
         )}
       </div>

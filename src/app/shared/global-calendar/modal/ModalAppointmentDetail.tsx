@@ -2,50 +2,60 @@ import { useModal } from '@/app/shared/modal-views/use-modal';
 import { PiXBold } from 'react-icons/pi';
 import { ActionIcon, Title, Flex, Badge, Text } from 'rizzui';
 import { formatDate } from '@core/utils/format-date';
-import { getAptStatusBadge } from '../../appointment/appointment-list/list/columns';
 
-export function getPaymentStatusBadge(status: number | string) {
+export function getPaymentStatusBadge(status: number | string | undefined) {
   switch (status) {
-    case 5:
+    case 1:
       return (
         <Flex gap="1" align="center">
-          <Badge color="secondary" renderAsDot />
-          <Text className="text-gray-dark ms-2 font-medium">Refund</Text>
-        </Flex>
-      );
-    case 4:
-      return (
-        <Flex gap="1" align="center">
-          <Badge color="warning" renderAsDot />
-          <Text className="text-gray-dark ms-2 font-medium">Void</Text>
-        </Flex>
-      );
-    case 3:
-      return (
-        <Flex gap="1" align="center">
-          <Badge color="success" renderAsDot />
-          <Text className="font-medium ms-2 text-green-dark">Paid</Text>
+          <Badge className='bg-[#484848]' renderAsDot />
+          <Text className="font-medium text-[#484848]">Draft</Text>
         </Flex>
       );
     case 2:
       return (
         <Flex gap="1" align="center">
-          <Badge color="info" renderAsDot />
-          <Text className="font-medium ms-2 text-gray-dark">Unpaid</Text>
+          <Badge className='bg-[#11833C]' renderAsDot />
+          <Text className="font-medium text-[#11833C]">
+            Paid
+          </Text>
         </Flex>
       );
-    case 1:
+    case 3:
       return (
         <Flex gap="1" align="center">
-          <Badge color="secondary" renderAsDot />
-          <Text className="font-medium ms-2 text-orange-dark">Draft</Text>
+          <Badge className='bg-[#E90000]' renderAsDot />
+          <Text className="font-medium text-[#E90000]">
+            Cancelled
+          </Text>
+        </Flex>
+      );
+    case 4:
+      return (
+        <Flex gap="1" align="center">
+          <Badge className='bg-[#F4A523]' renderAsDot />
+          <Text className="font-medium bg-[#F4A523]">Void</Text>
+        </Flex>
+      );
+    case 5:
+      return (
+        <Flex gap="1" align="center">
+          <Badge className='bg-[#AB570A]' renderAsDot />
+          <Text className="font-medium text-[#AB570A]">Refund</Text>
+        </Flex>
+      );
+    case 6:
+      return (
+        <Flex gap="1" align="center">
+          <Badge className='bg-[#1E88E5]' renderAsDot />
+          <Text className="font-medium text-[#1E88E5]">Unpaid</Text>
         </Flex>
       );
     default:
       return (
         <div className="flex items-center">
-          <Badge renderAsDot className="bg-gray-400" />
-          <Text className="font-medium ms-2 text-blue-600">-</Text>
+          <Badge renderAsDot className="bg-gray-600" />
+          <Text className="font-medium text-gray-600">Not Paid</Text>
         </div>
       );
   }

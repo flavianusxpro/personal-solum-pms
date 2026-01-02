@@ -11,11 +11,14 @@ import { IParamGetAppointments } from '@/types/paramTypes';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useQueryClient } from '@tanstack/react-query';
 
-export function useGetAppointments(params: IParamGetAppointments) {
+export function useGetAppointments(
+  params: IParamGetAppointments,
+  enabled: boolean = true
+) {
   return useQuery({
-    // queryKey: ['getAppointments' + params + params.patientId],
     queryKey: ['getAppointments', params.patientId, params],
     queryFn: async () => getAppointmentList(params),
+    enabled: enabled,
   });
 }
 

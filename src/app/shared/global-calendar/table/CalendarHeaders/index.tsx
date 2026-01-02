@@ -229,11 +229,11 @@ const CalendarHeader = (props: PropTypes) => {
                         label=""
                         displayValue={(selected: string[]) => {
                             if (!selected || selected.length === 0) {
-                                return 'All Doctors';
+                                return 'Select Doctors';
                             }
                             if (selected.length === 1) {
                                 const item = optionDoctors.find((item: any) => String(item.value) === selected[0]);
-                                return item ? item.label : 'All Doctors';
+                                return item ? item.label : 'Select Doctors';
                             }
                             return `${selected.length} Doctors Selected`;
                         }}
@@ -241,29 +241,23 @@ const CalendarHeader = (props: PropTypes) => {
                 ) : (
                     <Select
                         size="sm"
-                        value={selectedDoctor.length > 0 ? Number(selectedDoctor[0]) : 0}
+                        value={selectedDoctor.length > 0 ? Number(selectedDoctor[0]) : null}
                         placeholder="Select doctor"
                         onChange={(e: any) => {
-                            setSelectedDoctor(e.value === 0 ? [] : [String(e.value)]);
+                            setSelectedDoctor(e.value ? [String(e.value)] : []);
                         }}
-                        options={[
-                            {
-                                label: 'All Doctor',
-                                value: 0,
-                            },
-                            ...optionDoctors,
-                        ]}
+                        options={optionDoctors}
                         searchable
                         className="[&_.rizzui-select-input]:items-center w-[200px]"
                         prefix={<PiUser size={16} />}
-                        displayValue={(value: number) => {
-                            if (!value || value === 0) {
-                                return 'All Doctors';
+                        displayValue={(value: number | null) => {
+                            if (!value) {
+                                return 'Select Doctor';
                             }
                             const item = optionDoctors.find((item: any) => {
                                 return item.value == value;
                             });
-                            return item ? item.label : 'All Doctors';
+                            return item ? item.label : 'Select Doctor';
                         }}
                     />
                 )}

@@ -574,56 +574,56 @@ export function getAptStatusBadge(status: number | string) {
       return (
         <Flex gap="1" align="center">
           <Badge color="warning" renderAsDot />
-          <Text className="font-medium text-green-dark">No Show</Text>
+          <Text className="font-medium text-sm text-green-dark">No Show</Text>
         </Flex>
       );
     case 6:
       return (
         <Flex gap="1" align="center">
           <Badge color="info" renderAsDot />
-          <Text className="font-medium text-green-500">On Going</Text>
+          <Text className="font-medium text-sm text-green-500">On Going</Text>
         </Flex>
       );
     case 5:
       return (
         <Flex gap="1" align="center">
           <Badge color="danger" renderAsDot />
-          <Text className="font-medium text-red">Cancelled</Text>
+          <Text className="font-medium text-sm text-red">Cancelled</Text>
         </Flex>
       );
     case 4:
       return (
         <Flex gap="1" align="center">
           <Badge color="success" renderAsDot />
-          <Text className="font-medium text-green-dark">Completed</Text>
+          <Text className="font-medium text-sm text-green-dark">Completed</Text>
         </Flex>
       );
     case 3:
       return (
         <Flex gap="1" align="center">
           <Badge color="info" renderAsDot />
-          <Text className="font-medium text-blue-500">Checked In</Text>
+          <Text className="font-medium text-sm text-blue-500">Checked In</Text>
         </Flex>
       );
     case 2:
       return (
         <Flex gap="1" align="center">
           <Badge color="warning" renderAsDot />
-          <Text className="font-medium text-yellow-600">Scheduled</Text>
+          <Text className="font-medium text-sm text-yellow-600">Scheduled</Text>
         </Flex>
       );
     case 1:
       return (
         <Flex gap="1" align="center">
           <Badge color="info" renderAsDot />
-          <Text className="font-medium text-red-dark">Draft</Text>
+          <Text className="font-medium text-sm text-red-dark">Draft</Text>
         </Flex>
       );
     default:
       return (
         <div className="flex items-center">
           <Badge renderAsDot className="bg-gray-600" />
-          <Text className="font-medium text-blue-600">
+          <Text className="font-medium text-sm text-blue-600">
             N/A
           </Text>
         </div>

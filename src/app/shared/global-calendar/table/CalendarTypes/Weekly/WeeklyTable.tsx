@@ -6,8 +6,9 @@ import { getColumns } from './weeklyColumns';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import { IGetAppointmentListResponse } from '@/types/ApiResponse';
 import dayjs from '@/config/dayjs';
-import { Loader } from 'rizzui';
-import { LuCalendarX2 } from 'react-icons/lu';
+import { PiUser } from 'react-icons/pi';
+// import { Loader } from 'rizzui';
+// import { LuCalendarX2 } from 'react-icons/lu';
 
 interface PropTypes {
   data: any
@@ -16,7 +17,8 @@ interface PropTypes {
   isLoadingGetAppointments: boolean;
   events: any;
   selectedDoctor?: string[];
-  doctorSchedule?: any
+  doctorSchedule?: any;
+  refetch: () => void; 
 }
 
 const WeeklyTable = (props: PropTypes) => {
@@ -24,10 +26,11 @@ const WeeklyTable = (props: PropTypes) => {
     data,
     handleDrop,
     weekDates,
-    isLoadingGetAppointments,
-    events,
+    // isLoadingGetAppointments,
+    // events,
     selectedDoctor,
     doctorSchedule,
+    refetch,
   } = props
 
   const { openModal, closeModal } = useModal();
@@ -70,8 +73,17 @@ const WeeklyTable = (props: PropTypes) => {
         weekDates,
         isWithinSchedule,
         doctorSchedule,
+        refetch,
       }),
-    [openModal, handleDrop, closeModal, weekDates, isWithinSchedule, doctorSchedule]
+    [
+      openModal, 
+      handleDrop, 
+      closeModal, 
+      weekDates, 
+      isWithinSchedule, 
+      doctorSchedule, 
+      refetch
+    ]
   );
 
   const formatAppointments = useCallback(
@@ -102,7 +114,6 @@ const WeeklyTable = (props: PropTypes) => {
           const hour = parseInt(timeMatch[1]);
           const minute = parseInt(timeMatch[2]);
 
-          // Round to nearest 10-minute slot
           timeStr = roundToNearest10Min(hour, minute);
         } else {
           if (item.local_date) {
@@ -174,14 +185,14 @@ const WeeklyTable = (props: PropTypes) => {
     return formatAppointments(data ?? [], weekDates);
   }, [data, weekDates, formatAppointments]);
 
-  const hasAppointments = useMemo(() => {
-    return tableData.some(row => {
-      return weekDates.some(date => {
-        const dayKey = dayjs(date).format('ddd').toUpperCase();
-        return row[dayKey] && Array.isArray(row[dayKey]) && row[dayKey].length > 0;
-      });
-    });
-  }, [tableData, weekDates]);
+  // const hasAppointments = useMemo(() => {
+  //   return tableData.some(row => {
+  //     return weekDates.some(date => {
+  //       const dayKey = dayjs(date).format('ddd').toUpperCase();
+  //       return row[dayKey] && Array.isArray(row[dayKey]) && row[dayKey].length > 0;
+  //     });
+  //   });
+  // }, [tableData, weekDates]);
 
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const hasScrolledRef = useRef(false);
@@ -230,6 +241,17 @@ const WeeklyTable = (props: PropTypes) => {
     }
   }, [tableData, weekDates, selectedDoctor]);
 
+  // if (!selectedDoctor || selectedDoctor.length === 0) {
+  //   return (
+  //     <div className="flex items-center justify-center h-[50vh]">
+  //       <div className="text-center">
+  //         <PiUser className="mx-auto text-6xl text-gray-300 mb-4" />
+  //         <p className="text-gray-500 text-lg">Please select a doctor to view appointments</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
   return (
     <div ref={tableContainerRef}>
       <DndProvider backend={HTML5Backend}>
@@ -267,7 +289,7 @@ const WeeklyTable = (props: PropTypes) => {
           // @ts-ignore
           columns={columns}
           variant="bordered"
-          scroll={{ y: 'calc(100vh - 250px)' }} 
+          scroll={{ y: 'calc(100vh - 250px)' }}
           className="
     [&_td.rc-table-cell]:overflow-hidden 
     [&_td.rc-table-cell]:p-0 

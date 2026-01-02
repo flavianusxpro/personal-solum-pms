@@ -6,6 +6,7 @@ import MounthlyCustomCell from './MounthlyCustomCell';
 import dayjs from '@/config/dayjs';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import AppointmentDetailsCalendar from '../../AppointmentDetailsCalendar';
+import { PiUser } from 'react-icons/pi';
 
 interface PropTypes {
     data: any;
@@ -15,6 +16,7 @@ interface PropTypes {
     setSelectedDate: Dispatch<SetStateAction<string>>
     setViewType: Dispatch<SetStateAction<"daily" | "weekly" | "monthly">>
     rescheduleModal: (row: any, newDate: string, newDoctorName?: string | undefined, newTime?: string | undefined) => void
+    selectedDoctor?: String[]
 }
 
 const MounthlyCalendar = (props: PropTypes) => {
@@ -24,7 +26,8 @@ const MounthlyCalendar = (props: PropTypes) => {
         handleNavigate,
         setSelectedDate,
         setViewType,
-        rescheduleModal
+        rescheduleModal,
+        selectedDoctor
     } = props
 
     const localizer = dayjsLocalizer(dayjs);
@@ -58,6 +61,17 @@ const MounthlyCalendar = (props: PropTypes) => {
         );
     };
 
+    if (!selectedDoctor || selectedDoctor.length === 0) {
+        return (
+            <div className="flex items-center justify-center h-[50vh]">
+                <div className="text-center">
+                    <PiUser className="mx-auto text-6xl text-gray-300 mb-4" />
+                    <p className="text-gray-500 text-lg">Please select a doctor to view appointments</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <DnDCalendar
             localizer={localizer}
@@ -80,8 +94,8 @@ const MounthlyCalendar = (props: PropTypes) => {
                     dateHeader: CustomDateCellHeader,
                 },
                 dateCellWrapper: (props) => (
-                        <MounthlyCustomCell {...props} events={events} />
-                    ),
+                    <MounthlyCustomCell {...props} events={events} />
+                ),
             }}
             views={['month']}
             defaultView={Views.MONTH}
